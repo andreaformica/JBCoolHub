@@ -1,0 +1,9 @@
+Some instructions on submodules:
+$ cd other_project 
+$ git checkout master ...make your changes... 
+$ git commit -a -m "Fixed a bug" 
+$ git push 
+$ cd .. 
+$ git add other_project 
+$ git commit -m "Updated other_project" 
+

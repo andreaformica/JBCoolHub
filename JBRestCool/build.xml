@@ -1,0 +1,215 @@
+<project name="JBRestCool" default="build" basedir=".">
+  <target name="default" depends="build"/>
+	<import file="common/ant/commontasks.xml" />
+	<import file="common/ant/hibernatetask.xml" />
+
+	<!-- Init -->
+	<target name="init" depends="init-properties">
+		<property name="src.dir" value="${basedir}/src"/>
+		<property name="web.dir" value="${basedir}/WebContent"/>
+		<property name="resources.dir" value="${basedir}/WebContent"/>
+		
+		<property name="build.exe" value="${build.dir}/exe" />
+		<property name="all.lib.dir" value="${basedir}/lib" />
+
+		<path id="external.classpath">
+			<fileset dir="${basedir}/external/share/java/utils">
+				<include name="*.jar" />
+			</fileset>
+			<fileset dir="${basedir}/lib">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+		<path id="web.classpath">
+			<fileset dir="${web.dir}/WEB-INF/lib">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+
+
+		<path id="project.class.path">
+		    <path refid="jboss7.classpath"/>		
+		    <path refid="jdbc.classpath"/>
+		    <path refid="external.classpath"/>
+			<path refid="apache.classpath"/>
+			<path refid="web.classpath"/>
+		</path>
+		
+		
+		<!-- taskdef name="aopc" classname="org.jboss.aop.ant.AopC"
+		         classpathref="jbossaop.classpath"/ -->
+
+	</target>
+
+
+	<!-- copy-resources -->
+	<target name="copy-resources" depends="prepare">
+		<copy todir="${build.classes.dir}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.xml" />
+				<include name="**/*.MF" />
+				<include name="**/*html" />
+				<exclude name="etc/**" />
+			</fileset>
+		</copy>
+	</target>	
+	
+	<!-- copy-resources -->
+	<target name="copy-web-resources" depends="prepare">
+		<copy todir="${build.classes.dir}">
+			<fileset dir="${web.dir}">
+				<include name="**/*.xml" />
+				<include name="**/*.MF" />
+				<include name="**/*html" />
+				<include name="**/*jsp" />
+				<include name="resources/**/*" />
+				<exclude name="etc/**" />
+			</fileset>
+		</copy>
+	</target>	
+
+	
+	<!-- Prepare -->
+	<target name="prepare-web" depends="init">
+		<mkdir dir="${build.classes.dir}/WEB-INF/classes" />
+		<copy todir="${build.classes.dir}/WEB-INF/classes">
+			<fileset dir="${web.dir}">
+				<include name="**/persistence.xml" />
+			</fileset>
+			</copy>
+		
+		<mkdir dir="${build.classes.dir}/WEB-INF/lib" />
+		<copy todir="${build.classes.dir}/WEB-INF/lib">
+			<fileset dir="${web.dir}/WEB-INF/lib">
+				<include name="**/*.jar" />
+			</fileset>
+			</copy>
+	</target>
+
+
+	<target name="copy-aop" depends="prepare">
+		<copy todir="${build.classes.dir}/META-INF">
+			<fileset dir="${src.dir}/etc">
+				<include name="*aop.xml" />
+			</fileset>
+		</copy>		
+	</target>
+	
+	<!-- compile -->
+	<target name="compile" depends="copy-resources,prepare">
+		<javac debug="on" srcdir="${src.dir}" destdir="${build.classes.dir}"  verbose="no" includeantruntime="false"> 
+			<classpath>
+				<path refid="project.class.path" />
+			</classpath>
+		</javac>		
+	</target>
+
+	<target name="aopc" depends="compile">
+      <aopc compilerclasspathref="project.class.path"  classpathref="project.class.path"  verbose="true" report="false">
+        <classpath path="${build.classes.dir}"/>
+        <src path="${build.classes.dir}"/>
+        <!-- include name="**/*.class"/ -->
+   		<aoppath path="${src.dir}/etc/jboss-aop.xml"/> 
+        <!-- aopclasspath path="${build.classes.dir}"/ -->
+     </aopc>
+    </target>
+	
+	<!-- jar -->
+	<target name="client-jar" depends="prepare,compile">
+		<jar jarfile="${build.lib.dir}/${ant.project.name}.jar"
+			 manifest="${resources.dir}/META-INF/MANIFEST.MF">
+			<fileset dir="${build.dir}/classes">
+				<include name="**/*class" />
+				<include name="**/*xml" />
+				<include name="**/*html" />
+				<include name="**/*gif" />
+				<include name="**/*css" />
+				<include name="**/*png" />
+				<exclude name="atlas/mdt/dcs/server/**/*" />
+				<exclude name="WEB-INF/**/*" />
+				<exclude name="resources/**/*" />
+			</fileset>
+		</jar>
+		<!-- copy tofile="${lib.dir}/${ant.project.name}.jar" 
+			file="${build.lib.dir}/${ant.project.name}.jar"/ -->
+	</target>
+	
+	<!-- compile web-->
+	<target name="compile-web" depends="copy-resources,copy-web-resources,prepare-web">
+		<javac debug="on" srcdir="${src.dir}" destdir="${build.classes.dir}/WEB-INF/classes"  verbose="no" includeantruntime="false"> 
+			<classpath>
+				<path refid="project.class.path" />
+			</classpath>
+		</javac>		
+	</target>
+
+	<!-- war -->
+	<target name="client-war" depends="prepare,prepare-web,compile-web">
+		<jar jarfile="${build.lib.dir}/${ant.project.name}.war">
+			<fileset dir="${build.dir}/classes">
+				<include name="**/*jsp" />
+				<include name="**/*xml" />
+				<include name="**/*html" />
+				<include name="**/*gif" />
+				<include name="**/*css" />
+				<include name="**/*png" />
+				<include name="**/*js" />
+				<include name="WEB-INF/**/*" />
+				<exclude name="META-INF/persistence.xml" />
+				<exclude name="WEB-INF/web.xml" />
+			</fileset>
+		</jar>
+	</target>
+	<!-- war -->
+	<target name="client-warinear" depends="prepare,prepare-web,compile-web">
+		<jar jarfile="${build.lib.dir}/${ant.project.name}.war">
+			<fileset dir="${build.dir}/classes">
+				<include name="**/*jsp" />
+				<include name="**/*xml" />
+				<include name="**/*html" />
+				<include name="**/*gif" />
+				<include name="**/*css" />
+				<include name="**/*png" />
+				<include name="**/*js" />
+				<include name="WEB-INF/**/*" />
+				<exclude name="**/META-INF/persistence.xml" />
+				<exclude name="WEB-INF/*-ds.xml" />
+				<include name="WEB-INF/web.xml" />
+			</fileset>
+		</jar>
+		<copy tofile="${all.lib.dir}/${ant.project.name}.war" 
+			file="${build.lib.dir}/${ant.project.name}.war"/>
+	</target>
+
+	<target name="deploy" depends="build">
+	    <!-- Build path for deployed war-file -->
+	    <property name="war.filename" value="${build.lib.dir}/${ant.project.name}.war" />
+	    <property name="deployed.war" value="${jboss.home}/${jboss.deploy.dir}/${ant.project.name}.war" />
+
+	    <!-- remove current deployed war -->
+	    <delete file="${deployed.war}.deployed" failonerror="false" />
+	    <waitfor maxwait="10" maxwaitunit="second">
+	        <available file="${deployed.war}.undeployed" />
+	    </waitfor>
+	    <delete dir="${deployed.war}" />
+
+	    <!-- copy war-file -->
+	    <copy file="${war.filename}" todir="${jboss.home}/${jboss.deploy.dir}" />
+
+	    <!-- start deployment -->
+	    <echo>start deployment ...</echo>
+	    <touch file="${deployed.war}.dodeploy" />
+
+	    <!-- wait for deployment to complete -->
+	    <waitfor maxwait="10" maxwaitunit="second">
+	        <available file="${deployed.war}.deployed" />
+	    </waitfor>
+	    <echo>deployment ok!</echo>
+	</target>
+	
+	<target name="build-sa" depends="client-war" />
+	<target name="build" depends="client-warinear" />
+	
+	<target name="rebuild" depends="clean, build" />
+	
+</project>

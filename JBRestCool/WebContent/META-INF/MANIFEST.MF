@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Dependencies: atlas.common
+Class-Path: JBCoolEjbs.jar commons-io-2.4.jar 
+  
+ 
+

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:a="http://richfaces.org/a4j">
+	<h3>Run Selection viewer</h3>
+	<p>Select a range in time or using run numbers, and retrieve from COMA informations about the run list, 
+	with informations about run time range, luminosity, periods and others.
+	</p>
+	
+	<h:form id="runform">
+		<p:tabView id="tabview">
+			<p:tab id="rundata" title="Run List">
+				<h:panelGrid columns="2">
+					<p:selectCheckboxMenu value="#{runcolums.selectedColumns}"
+						label="Columns" filter="true" filterText="Filter"
+						filterMatchMode="startsWith" panelStyle="width:220px">
+						<f:selectItems value="#{runcolums.allcolumns}" />
+					</p:selectCheckboxMenu>
+					<p:commandButton value="Select" update="runtable" process="@parent" />
+				</h:panelGrid>
+				<h:panelGrid columns="1">
+					<p:dataTable id="runtable" var="run"
+						value="#{calendarparams.runList}" paginator="true"
+						rows="15"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="15,20,35" 
+						rowKey="#{run.runNumber}"
+						filteredValue="#{calendarparams.runListFiltered}"
+						>
+						<f:facet name="header">  
+            					List of #{fn:length(calendarparams.runList)} runs. 
+					        </f:facet>
+						<p:columns sortBy="#{run[column.property]}"
+							value="#{runcolums.columns}" var="column"
+							columnIndexVar="colIndex"  filterBy="#{run[column.property]}" filterMatchMode="contains">
+							<f:facet name="header">  #{column.header}  </f:facet>  
+            #{run[column.property]}  
+        </p:columns>
+					</p:dataTable>
+				</h:panelGrid>
+			</p:tab>
+		</p:tabView>
+	</h:form>
+
+</ui:composition>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:a="http://richfaces.org/a4j">
+	<!-- 	<ui:define name="content"> -->
+	<h3>Schema Node query</h3>
+	<h:form id="sysqueryform">
+	
+		<p:accordionPanel multiple="true">
+			<p:tab title="Search schemas nodes">
+				<p:panel id="sysquerypanel" header="Search Nodes in DB and Schema">
+					<h:panelGrid columns="2">
+						<h:outputText value="DB: " />
+						<p:selectOneMenu id="dbmenu" value="#{coolschemaparams.dbName}"
+							var="db">
+							<f:selectItem itemLabel="Select One" itemValue="" />
+							<f:selectItems value="#{coolschemaparams.dbList}" var="dbname"
+								itemLabel="#{dbname}" itemValue="#{dbname}" />
+							<p:ajax update="schemamenu"
+								listener="#{coolschemaparams.loadSchemas}" />
+						</p:selectOneMenu>
+
+						<h:outputText value="Schema: " />
+						<p:selectOneMenu id="schemamenu"
+							value="#{coolschemaparams.selSchema}" converter="#{schemaconverter}"
+							var="schema" filter="true"
+							filterMatchMode="contains">
+							<f:selectItem itemLabel="Select One" itemValue="" />
+							<f:selectItems value="#{coolschemaparams.schemaList}"
+								var="aschema" itemLabel="#{aschema.shortName}" itemValue="#{aschema}" />
+								<p:column>#{schema.shortName} </p:column>
+						</p:selectOneMenu>
+					</h:panelGrid>
+				</p:panel>
+		
+				<p:commandButton value="Submit"
+					update="sysquerypanel,:stform:tabview:snodes" id="sysquerybutton"
+					actionListener="#{coolschemaparams.retrieveNodeData}" />
+
+			</p:tab>
+
+			<p:tab title="Search Iovs for a selected node and tag">
+				<p:panel id="sysnodequerypanel" header="Search Iovs"
+					style="margin-bottom:10px;">
+					<h:panelGrid columns="2">
+						<h:outputText value="Schema: " />
+						<h:outputText value=" #{coolschemaparams.selSchemaName}" />
+						<h:outputText value="Node: " />
+						<h:outputText value=" #{coolschemaparams.selNodeName}" />
+						<h:outputText value="Tag: " />
+						<h:outputText value=" #{coolschemaparams.selNodeTagName}" />
+						<h:outputText value="Channel: " />
+						<p:selectOneMenu id="chanmenu" style="width:80%"
+							value="#{coolschemaparams.selChannel}" converter="#{channel}"
+							var="chan" filter="true" filterMatchMode="contains" panelStyle="width:200px">
+							<f:selectItem itemLabel="Select One" itemValue="" />
+							<f:selectItems value="#{coolschemaparams.channelList}"
+								var="achan" itemLabel="#{achan.label}" itemValue="#{achan}" />
+							<p:column>#{chan.channelId} : #{chan.channelName} </p:column>
+						</p:selectOneMenu>
+					</h:panelGrid>
+
+					<h:panelGroup rendered="#{coolschemaparams.viewrunlumi}">
+					<h:panelGrid columns="1">
+						<h:outputText value="Run-lumi since: " />
+						<p:selectOneMenu id="rsmenu" style="width:200px"
+							value="#{calendarparams.runSince}" converter="#{runconverter}"
+							var="run" filter="true" filterMatchMode="contains" panelStyle="width:250px">
+							<f:selectItem itemLabel="Select One" itemValue="" />
+							<f:selectItems value="#{calendarparams.runList}"
+								var="arun" itemLabel="#{arun.runNumber}" itemValue="#{arun}" />
+							<p:column>#{run.runNumber} : #{run.type}</p:column>
+						</p:selectOneMenu>
+						<h:outputText value="Run-lumi until: " />
+						<p:selectOneMenu id="rumenu" style="width:200px"
+							value="#{calendarparams.runUntil}" converter="#{runconverter}"
+							var="run" filter="true" filterMatchMode="contains" panelStyle="width:250px">
+							<f:selectItem itemLabel="Select One" itemValue="" />
+							<f:selectItems value="#{calendarparams.runList}"
+								var="arun" itemLabel="#{arun.runNumber}" itemValue="#{arun}" />
+							<p:column>#{run.runNumber} : #{run.type}</p:column>
+						</p:selectOneMenu>
+					</h:panelGrid>
+					</h:panelGroup>
+					<h:panelGroup rendered="#{coolschemaparams.viewtime}">
+					<h:panelGrid columns="1">
+						<h:outputText value="IOV since: " />
+						<p:calendar value="#{calendarparams.dateSince}" id="calsince"
+							navigator="true" pattern="MM/dd/yyyy HH:mm:ss" showButtonPanel="true" style="width:200px"/>
+						<h:outputText value="IOV until: " />
+						<p:calendar value="#{calendarparams.dateUntil}" id="caluntil"
+							navigator="true" pattern="MM/dd/yyyy HH:mm:ss" showButtonPanel="true" style="width:200px"/>
+					</h:panelGrid>
+					</h:panelGroup>
+				</p:panel>
+				<p:commandButton value="Submit"
+					update="sysnodequerypanel,:stform:tabview:iovdatalink,:stform:tabview:iovpaylod,:stform:tabview:chartdatalink"
+					id="sysiovquerybutton" action="#{coolschemaparams.loadPayload}" />
+
+			</p:tab>
+		</p:accordionPanel>
+
+	</h:form>
+</ui:composition>

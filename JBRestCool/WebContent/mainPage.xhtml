@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:a="http://richfaces.org/a4j">
+<!-- 	<ui:define name="content"> -->
+   <div id="guide">
+   	  <div class="dualbrand">
+         <img src="resources/gfx/dualbrand_logo.png" />
+      </div>
+   	  <p>This is a test project to visualize COOL based information in ATLAS detector.</p>
+   	  <p>The project is based on JSF, and JBoss AS7.</p>
+   	  <p>The access to COOL system is done via a PL/SQL API which is stored in Oracle; 
+   	  all the queries need to know which COOL DB we want to access, and allow navigation
+   	  into different schemas, nodes, tags. </p>
+   	  <p>Select on the COOL menu on the left the type of information that you want to retrieve. </p>
+   	  <p>The first item in the menu will allow to query global tags, using generic search string for schemas.</p>
+   	  <p>The second item allows to query a specific system information, together with some payload values.</p>
+   	  <p>The third item is conceived to search for nodes and tags over all schemas</p><BR />
+   	  <p>Clicking on one the menu on the left will trigger a modification of the panel on the right.</p>
+   	  <p>In the query panel you can input parameters to define your search; there are several types of query inputs possible.
+   	  For example when you search for global tags, you will have also a query sub-panel to search for differences among 2 global tags.</p> 
+   </div>	
+   <div id="footer">
+      <p>This project is a demo for COOL PL/SQL access, written by A.Formica<br /></p>
+   </div>
+
+      <div id="aside">
+         <p>Learn more about JBoss AS 7.</p>
+         <ul>
+            <li><a
+               href="https://docs.jboss.org/author/display/AS7/Getting+Started+Developing+Applications+Guide">Getting Started Developing Applications Guide</a></li>
+            <li><a href="http://jboss.org/jbossas">Community Project Information</a></li>
+         </ul>            
+      </div>
+	<!--  </ui:define>-->
+</ui:composition>

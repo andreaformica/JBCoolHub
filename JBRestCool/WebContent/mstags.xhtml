@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:a="http://richfaces.org/a4j">
+	<h3>Multi schema viewer</h3>
+	<p>Select a schema search string, DB and node search string (case sensitive) to get information through all schemas.
+	You can do the same type of search for system tags as well.
+	</p>
+	<h:form id="msform">
+		<p:tabView id="tabview">
+			<p:tab id="msnodedata" title="Nodes List">
+				<h:panelGrid columns="2">
+					<p:selectCheckboxMenu value="#{nodecolums.selectedColumns}"
+						label="Columns" filter="true" filterText="Filter"
+						filterMatchMode="startsWith" panelStyle="width:220px">
+						<f:selectItems value="#{nodecolums.allcolumns}" />
+					</p:selectCheckboxMenu>
+					<p:commandButton value="Select" update="msnodes" process="@parent" />
+				</h:panelGrid>
+				<h:panelGrid columns="1">
+					<p:dataTable id="msnodes" var="node"
+						value="#{coolnodeparams.nodeList}" paginator="true" 
+						rows="15"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="15,20,35" 
+						rowKey="#{node.nodeFullpath}"
+						filteredValue="#{coolnodeparams.nodeListFiltered}">
+						<f:facet name="header">  
+            					List of #{fn:length(coolnodeparams.nodeList)} nodes in schema #{coolnodeparams.schemaName}  
+					        </f:facet>
+						<p:columns sortBy="#{node[column.property]}"
+							value="#{nodecolums.columns}" var="column"
+							columnIndexVar="colIndex">
+							<f:facet name="header">  #{column.header}  </f:facet>  
+            #{node[column.property]}  
+        </p:columns>
+
+					</p:dataTable>
+				</h:panelGrid>
+				<!-- </p:panel> -->
+			</p:tab>
+			<p:tab id="mstagdata" title="Tag Data">
+				<!--  <p:panel id="nodedatadisplay" header="Node Tag data">-->
+				<h:panelGrid columns="2">
+					<p:selectCheckboxMenu value="#{tagcolums.selectedColumns}"
+						label="Columns" filter="true" filterText="Filter"
+						filterMatchMode="startsWith" panelStyle="width:220px">
+						<f:selectItems value="#{tagcolums.allcolumns}" />
+					</p:selectCheckboxMenu>
+					<p:commandButton value="Select" update="mstags" process="@parent" />
+				</h:panelGrid>
+				<h:panelGrid columns="1">
+					<p:dataTable id="mstags" var="tag"
+						value="#{coolnodeparams.tagList}" paginator="true"
+						rows="30"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						draggableColumns="true"
+						filteredValue="#{coolnodeparams.tagListFiltered}">
+						<f:facet name="header">  
+            					List of #{fn:length(coolnodeparams.tagList)}  tags using node search string #{coolnodeparams.nodeName}
+					        </f:facet>
+						<p:columns sortBy="#{tag[column.property]}"
+							value="#{tagcolums.columnsRich}" var="column"
+							columnIndexVar="colIndex" filterBy="#{tag[column.property]}"
+							filterMatchMode="contains">
+							<f:facet name="header">  #{column.header}  </f:facet>  
+            #{tag[column.property]}  
+        </p:columns>
+					</p:dataTable>
+				</h:panelGrid>
+				<!--  </p:panel>  -->
+			</p:tab>
+
+		</p:tabView>
+	</h:form>
+
+</ui:composition>

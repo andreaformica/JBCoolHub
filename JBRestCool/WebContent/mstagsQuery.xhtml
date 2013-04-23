@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:a="http://richfaces.org/a4j">
+	<!-- 	<ui:define name="content"> -->
+	<h3>Multi Schema query</h3>
+
+	<h:form id="msqueryform">
+	<p:accordionPanel multiple="true">
+		<p:tab  title="Search Nodes"> 
+		<p:panel id="msnodequerypanel" header="Search Nodes"
+			style="margin-bottom:10px;">
+			<h:panelGrid columns="2">
+				<h:outputText value="Schema Search: " />
+				<p:inputText value="#{coolnodeparams.schemaName}" />
+				<h:outputText value="DB Selection:" />
+				<p:selectOneMenu value="#{coolnodeparams.dbName}" var="db">
+					<f:selectItem itemLabel="Select One" itemValue="" />
+					<f:selectItems value="#{coolnodeparams.dbList}" var="dbname"
+						itemLabel="#{dbname}" itemValue="#{dbname}" />
+				</p:selectOneMenu>
+				<h:outputText value="Node Search: " />
+				<p:inputText value="#{coolnodeparams.nodeName}" />
+			</h:panelGrid>
+		</p:panel>
+
+		<p:commandButton value="Submit"
+			update="msnodequerypanel,:msform:tabview:msnodes" id="msnodequerybutton"
+			action="#{coolnodeparams.retrieveNodesData}" />
+	 </p:tab>
+		<p:tab  title="Search Tags"> 
+		<p:panel id="mstagquerypanel" header="Search Tags"
+			style="margin-bottom:10px;">
+			<h:panelGrid columns="2">
+				<h:outputText value="Schema Search: " />
+				<p:inputText value="#{coolnodeparams.schemaName}" />
+				<h:outputText value="DB Selection:" />
+				<p:selectOneMenu value="#{coolnodeparams.dbName}" var="db">
+					<f:selectItem itemLabel="Select One" itemValue="" />
+					<f:selectItems value="#{coolnodeparams.dbList}" var="dbname"
+						itemLabel="#{dbname}" itemValue="#{dbname}" />
+				</p:selectOneMenu>
+				<h:outputText value="Tag Search: " />
+				<p:inputText value="#{coolnodeparams.tagName}" />
+			</h:panelGrid>
+		</p:panel>
+
+		<p:commandButton value="Submit"
+			update="mstagquerypanel,:msform:tabview:mstags" id="mstagquerybutton"
+			action="#{coolnodeparams.retrieveTagsData}" />
+	 </p:tab>
+		</p:accordionPanel>
+ 
+	</h:form>
+</ui:composition>

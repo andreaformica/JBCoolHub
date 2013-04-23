@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:head>
+        <title>Login Form using CERN NICE authentication and authorization</title>
+    </h:head>
+    <h:body>
+    	<h1>Use you CERN NICE credentials</h1>
+        <h2>Please log in:</h2>
+        <form name="loginForm" method="post" action="j_security_check">
+            <p><strong>Please type your user name: </strong>
+                <input type="text" name="j_username" size="25"/></p>
+            <p><strong>Please type your password: </strong>
+                <input type="password" size="15" name="j_password"/></p>
+            <p>
+                <input type="submit" value="Submit"/>
+                <input type="reset" value="Reset"/></p>
+        </form>
+        <p>You need to be an ATLAS active member to access this page....</p>       
+    </h:body>
+</html>

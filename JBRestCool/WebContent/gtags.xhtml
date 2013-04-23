@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:a="http://richfaces.org/a4j">
+	<h3>Global Tags viewer</h3>
+	
+	<p>Select a schema search string, a DB and a global tag search string. You can then select a specific
+	global tag by clicking at the row in the table and retrieve a list of system tags associated, in the
+	second pane. Another tab pane allows you (using the query for global tag differences) to select two
+	global tags and retrieve differences.
+	</p>
+	
+	<h:form id="gtform">
+		<p:tabView id="tabview">
+			<p:tab id="data" title="GTAG Data">
+				<!-- <p:panel id="gtdatadisplay" header="GlobalTags Data"> -->
+					<h:panelGrid columns="1">
+						<p:dataTable id="gtags" var="gtag" value="#{coolparams.gtagList}"
+							paginator="true" rows="10"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="10,20,35"
+							rowKey="#{gtag.gtagName}" selection="#{coolparams.selGtag}"
+							selectionMode="single">
+							<p:ajax event="rowSelect" update=":gtform:tabview:nodegtagtags,:gtform:tabview:nodegtagdblfld" />
+							<f:facet name="header">  
+            					List of #{fn:length(coolparams.gtagList)} global tags  
+					        </f:facet>
+							<p:columns sortBy="#{gtag[column.property]}" value="#{gtagcolums.columns}" var="column"
+								columnIndexVar="colIndex">
+								<f:facet name="header">  #{column.header}  </f:facet>  
+            #{gtag[column.property]}  
+        </p:columns>
+
+						</p:dataTable>
+					</h:panelGrid>
+				<!-- </p:panel> -->
+			</p:tab>
+			<p:tab id="nodedata" title="Node Tag In GlobalTag Data">
+				<!--  <p:panel id="nodedatadisplay" header="Node Tag data">-->
+				<h:panelGrid columns="2">
+				    <p:selectCheckboxMenu value="#{nodegtagtagcolums.selectedColumns}" label="Columns" filter="true" filterText="Filter" filterMatchMode="startsWith" panelStyle="width:220px">  
+        				<f:selectItems value="#{nodegtagtagcolums.allcolumns}" />  
+    				</p:selectCheckboxMenu>  
+    				<p:commandButton value="Select" update="nodegtagtags" process="@parent"/>
+				</h:panelGrid>
+					<h:panelGrid columns="1">
+						<p:dataTable id="nodegtagtags" var="nodetag"
+							value="#{coolparams.nodegtagtagList}" 
+							paginator="true" 
+							rows="15"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="15,20,35" 
+							draggableColumns="true"
+							filteredValue="#{coolparams.nodegtagtagListFiltered}"
+							>
+							<f:facet name="header">  
+            					List of #{fn:length(coolparams.nodegtagtagList)} node tags
+            					associated to #{coolparams.selGtag.gtagName} 
+					        </f:facet>
+							<p:columns sortBy="#{nodetag[column.property]}" value="#{nodegtagtagcolums.columns}" var="column"
+								columnIndexVar="colIndex" filterBy="#{nodetag[column.property]}" filterMatchMode="contains">
+								<f:facet name="header">  #{column.header}  </f:facet>  
+            #{nodetag[column.property]}  
+        </p:columns>
+						</p:dataTable>
+					</h:panelGrid>
+				<!--  </p:panel>  -->
+			</p:tab>
+	
+			<p:tab id="nodedoubledata" title="Double Nodes In GlobalTag Data">
+				<!--  <p:panel id="nodedatadisplay" header="Node Tag data">-->
+				<h:panelGrid columns="2">
+				    <p:selectCheckboxMenu value="#{nodegtagtagcolums.selectedColumns}" 
+				    	label="Columns" filter="true" filterText="Filter" filterMatchMode="startsWith" panelStyle="width:220px">  
+        				<f:selectItems value="#{nodegtagtagcolums.allcolumns}" />  
+    				</p:selectCheckboxMenu>  
+    				<p:commandButton value="Select" update="nodegtagdblfld" process="@parent"/>
+				</h:panelGrid>
+					<h:panelGrid columns="1">
+						<p:dataTable id="nodegtagdblfld" var="nodetag"
+							value="#{coolparams.nodegtagdblfldList}" 
+							paginator="true" 
+							rows="15"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="15,20,35" 
+							draggableColumns="true"
+							>
+							<f:facet name="header">  
+            					List of #{fn:length(coolparams.nodegtagdblfldList)} double node tags
+            					associated to #{coolparams.selGtag.gtagName} 
+					        </f:facet>
+							<p:columns sortBy="#{nodetag[column.property]}" value="#{nodegtagtagcolums.columns}" var="column"
+								columnIndexVar="colIndex" filterBy="#{nodetag[column.property]}" filterMatchMode="contains">
+								<f:facet name="header">  #{column.header}  </f:facet>  
+            #{nodetag[column.property]}  
+        </p:columns>
+						</p:dataTable>
+					</h:panelGrid>
+				<!--  </p:panel>  -->
+			</p:tab>
+
+			<p:tab id="gtagdiffdata" title="Global Tag Differences">
+					<h:panelGrid columns="1">
+						<p:dataTable id="gtagsdiff" var="gtagd"
+							value="#{cooldiffparams.gtagDiffs}" 
+							paginator="true" rows="15"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							>
+							<f:facet name="header">  
+            					List of #{fn:length(cooldiffparams.gtagDiffs)} global tags differences
+            					associated to A = #{cooldiffparams.selGtagA} and B = #{cooldiffparams.selGtagB}
+					        </f:facet>
+							<p:columns sortBy="#{gtagd[column.property]}" value="#{gtagdiffcolums.columns}" var="column"
+								columnIndexVar="colIndex">
+								<f:facet name="header">  #{column.header}  </f:facet>  
+            #{gtagd[column.property]}  
+        </p:columns>
+						</p:dataTable>
+					</h:panelGrid>
+				<!--  </p:panel>  -->
+			</p:tab>
+			
+		</p:tabView>
+	</h:form>
+
+</ui:composition>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:a="http://richfaces.org/a4j">
+	<h3>System Tags viewer</h3>
+	<p>Select a DB and a schema, then navigate through the tab to select nodes and eventually tags and iovs.
+	Selection is done directly by clicking on the row of the table, for nodes and tags. Iovs selection requires
+	to enter a date range in the query panel. If the folder is run based, a run selection requires to navigate before
+	to the Run selection page (left menu), so that a range of runs is automatically proposed in the query panel.
+	</p>
+	<h:form id="stform">
+		<p:tabView id="tabview">
+		
+			<p:tab id="stnodedata" title="Nodes List">
+				<!-- <p:panel id="gtdatadisplay" header="GlobalTags Data"> -->
+				<h:panelGrid columns="2">
+					<p:selectCheckboxMenu value="#{nodecolums.selectedColumns}"
+						label="Columns" filter="true" filterText="Filter"
+						filterMatchMode="startsWith" panelStyle="width:220px">
+						<f:selectItems value="#{nodecolums.allcolumns}" />
+					</p:selectCheckboxMenu>
+					<p:commandButton value="Select" update="snodes" process="@parent" />
+				</h:panelGrid>
+				<h:panelGrid columns="1">
+					<p:dataTable id="snodes" var="node"
+						value="#{coolschemaparams.nodeList}" paginator="true" rows="15"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="15,20,35" rowKey="#{node.nodeFullpath}"
+						selection="#{coolschemaparams.selNode}" selectionMode="single"
+						filteredValue="#{coolschemaparams.nodeListFiltered}">
+						<p:ajax event="rowSelect"
+							update=":sysqueryform,:stform:tabview:nodetags,:stform:tabview:iovstat" />
+						<f:facet name="header">  
+            					List of #{fn:length(coolschemaparams.nodeList)} nodes in schema #{coolschemaparams.selSchema.schemaName}  
+					        </f:facet>
+						<p:columns sortBy="#{node[column.property]}"
+							value="#{nodecolums.columns}" var="column"
+							columnIndexVar="colIndex" filterBy="#{node[column.property]}"
+							filterMatchMode="contains">
+							<f:facet name="header">  #{column.header}  </f:facet>  
+            #{node[column.property]}  
+        </p:columns>
+
+					</p:dataTable>
+				</h:panelGrid>
+				<!-- </p:panel> -->
+			</p:tab>
+			
+			
+			
+			
+			<p:tab id="tagdata" title="Node Tag Data">
+				<!--  <p:panel id="nodedatadisplay" header="Node Tag data">-->
+				<h:panelGrid columns="2">
+					<p:selectCheckboxMenu value="#{tagcolums.selectedColumns}"
+						label="Columns" filter="true" filterText="Filter"
+						filterMatchMode="startsWith" panelStyle="width:220px">
+						<f:selectItems value="#{tagcolums.allcolumns}" />
+					</p:selectCheckboxMenu>
+					<p:commandButton value="Select" update="nodetags" process="@parent" />
+				</h:panelGrid>
+				<h:panelGrid columns="1">
+					<p:dataTable id="nodetags" var="nodetag"
+						value="#{coolschemaparams.nodetagList}" paginator="true" rows="15"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="15,20,35" rowKey="#{nodetag.tagName}"
+						draggableColumns="true" selection="#{coolschemaparams.selNodeTag}"
+						selectionMode="single"
+						filteredValue="#{coolschemaparams.nodetagListFiltered}">
+						<p:ajax event="rowSelect"
+							update=":sysqueryform,:stform:tabview:iovstattbl" />
+						<f:facet name="header">  
+            					List of #{fn:length(coolschemaparams.nodetagList)}  tags
+            					in node  #{coolschemaparams.selNode.nodeFullpath} 
+					        </f:facet>
+						<p:column style="width:2%">
+							<p:rowToggler />
+						</p:column>
+						<p:columns sortBy="#{nodetag[column.property]}"
+							value="#{tagcolums.columns}" var="column"
+							columnIndexVar="colIndex" filterBy="#{nodetag[column.property]}"
+							filterMatchMode="contains">
+							<f:facet name="header">  #{column.header}  </f:facet>  
+            #{nodetag[column.property]}  
+        </p:columns>
+
+						<p:rowExpansion>
+							<h:panelGrid id="display" columns="1" cellpadding="4"
+								style="width:300px;" styleClass=" ui-widget-content grid">
+								<p:dataList value="#{coolschemaparams.nodegtagfortagList}"
+									var="gtag" type="ordered">  
+    #{gtag.gtagName}, #{gtag.gtagDescription}  
+</p:dataList>
+							</h:panelGrid>
+						</p:rowExpansion>
+
+					</p:dataTable>
+				</h:panelGrid>
+				<!--  </p:panel>  -->
+			</p:tab>
+			
+			
+			
+			<p:tab id="iovdata" title="Iov Data">
+
+				<p>Use the second query panel to access IOV information and
+					payload. Pay attention to the intervals because selecting a bad
+					interval may result in no data retrieval, or if it is too large it
+					could be only partially dsplayed.</p>
+
+				<h:panelGrid id="iovdatalink">
+
+					<p:menubar autoDisplay="false">
+						<p:submenu label="IOV Payload" icon="ui-icon-cart">
+							<p:menuitem value="Save"
+								actionListener="#{coolschemaparams.savePayload}"
+								icon="ui-icon-disk"
+								update=":stform:tabview:iovdatalink,:stform:tabview:iovstat" />
+							<p:menuitem value="Refresh Iov stats"
+								actionListener="#{coolschemaparams.retrieveIovStatData}"
+								icon="ui-icon-arrowrefresh-1-w"
+								update=":stform:tabview:iovdatalink,:stform:tabview:iovstat" />
+						</p:submenu>
+						<p:submenu label="View Payload" icon="ui-icon-extlink">
+							<p:menuitem icon="ui-icon-lightbulb">
+								<h:outputLink style="bold"
+									value="#{coolschemaparams.pyldFileName}">payload link</h:outputLink>
+							</p:menuitem>
+							<p:separator />
+							<p:menuitem icon="ui-icon-arrowthichk-1-s">
+								<p:commandLink ajax="false" value="Download"
+									icon="ui-icon-arrowthichk-1-s">
+									<p:fileDownload value="#{coolschemaparams.payloadFile}" />
+								</p:commandLink>
+							</p:menuitem>
+						</p:submenu>
+					</p:menubar>
+				</h:panelGrid>
+				<p:separator id="separator1" />
+				<h:panelGrid id="iovstat" columns="1">
+					<p:commandButton value="Get Statistic" update=":stform:tabview:iovstat"
+					id="iovstatbutton" action="#{coolschemaparams.retrieveIovStatData}" />
+				
+					<p:dataTable id="iovstattbl" var="iovstat"
+						value="#{coolschemaparams.nodeiovstatList}">
+						<f:facet name="header">  
+            					Statistic for iovs 
+            					in node  #{coolschemaparams.selNode.nodeFullpath} 
+					        </f:facet>
+						<p:columns sortBy="#{iovstat[column.property]}"
+							value="#{iovstatcolums.columns}" var="column"
+							columnIndexVar="colIndex">
+							<f:facet name="header">  #{column.header}  </f:facet>  
+            #{iovstat[column.property]}  
+        </p:columns>
+					</p:dataTable>
+				</h:panelGrid>
+				<p:separator id="separator2" />
+
+				<h:panelGrid id="iovpaylod" columns="1">
+					<p:dataTable id="iovtbl" var="iovrow" value="#{coolschemaparams.payloadData}"
+						paginator="true" rows="15"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="15,20,35" rowKey="#{iovrow['OBJECT_ID']}"
+						filteredValue="#{coolschemaparams.filteredPayloadData}"
+						>
+						<!--  
+						scrollRows="20" 
+						scrollable="true" 
+						liveScroll="true"
+						scrollHeight="200"-->
+						<f:facet name="header">  
+            					Payload for #{fn:length(coolschemaparams.payloadData)} iovs 
+            					in node  #{coolschemaparams.selNode.nodeFullpath} 
+					        </f:facet>
+						<p:columns sortBy="#{iovrow[column]}"
+							value="#{coolschemaparams.payloadColumns}" 
+							var="column"
+							headerText="#{column}"
+							filterBy="#{iovrow[column]}"
+							filterMatchMode="contains">
+        					#{iovrow[column]}
+    					</p:columns>
+					</p:dataTable>
+				</h:panelGrid>
+			</p:tab>
+			
+			<p:tab id="chartdata" title="Chart Data">
+
+				<p>Select x and y columns and plot a linear chart</p>
+
+				<h:panelGrid id="chartdatalink" columns="3" >
+				<p:selectOneMenu value="#{coolschemaparams.selColumn}" style="width:200px" var="pyldcol"
+							filter="true" filterMatchMode="contains">
+							<f:selectItem itemLabel="Select One" itemValue="" />
+							<f:selectItems value="#{coolschemaparams.payloadNumberColumns}" var="pyld"
+								itemLabel="#{pyld}" itemValue="#{pyld}" />
+							
+				</p:selectOneMenu>
+				<p:commandButton value="Get Chart" update=":stform:tabview:chart"
+				id="chartbutton" action="#{coolschemaparams.initModel}" />
+				<p:commandButton value="Clear Chart" update=":stform:tabview:chart"
+				id="chartresetbutton" action="#{coolschemaparams.resetChart}" />
+				</h:panelGrid>
+				<p:separator id="separator3" />
+				<h:panelGrid id="chart" columns="1">
+					<p:outputPanel id="chartupd" rendered="#{coolschemaparams.chartHasData}">
+					<p:lineChart id="payloadchart" value="#{coolschemaparams.linearModel}" widgetVar="chart" 
+							legendPosition="e" title="#{coolschemaparams.chartTitle}" 
+							zoom="true"
+							style="height:500px;width:800px"
+							extender="chartExtender">
+					</p:lineChart>
+					<p>#{coolschemaparams.chartLegend}</p>
+					</p:outputPanel>		
+				</h:panelGrid>
+			</p:tab>			
+		</p:tabView>
+	</h:form>
+
+</ui:composition>
+
+<!-- 
+<f:facet name="header">  #{column}  </f:facet> 
+<f:convertDateTime pattern="yyyy/MM/dd HH:mm:ss" type="both"/>
+extender="chartExtender"
+ -->

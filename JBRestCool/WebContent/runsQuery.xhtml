@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:a="http://richfaces.org/a4j">
+	<!-- 	<ui:define name="content"> -->
+	<h3>Run selction query</h3>
+
+	<div>
+		<p>Select a range in time and search for runs</p>
+	</div>
+	<h:form id="runsqueryform">
+		<p:accordionPanel multiple="true">
+			
+			<p:tab title="Search Runs for a selected period in time">
+				<p:panel id="runsquerypanel" header="Search Runs By Range in Time"
+					style="margin-bottom:10px;">
+					<h:panelGrid columns="1">
+						<h:outputText value="IOV since: " />
+						<p:calendar style="width:200px" value="#{calendarparams.dateSince}" id="calsince"
+							navigator="true" pattern="MM/dd/yyyy HH:mm:ss" showButtonPanel="true" />
+						<h:outputText value="IOV until: " />
+						<p:calendar style="width:200px" value="#{calendarparams.dateUntil}" id="caluntil"
+							navigator="true" pattern="MM/dd/yyyy HH:mm:ss" showButtonPanel="true" />
+					</h:panelGrid>
+				</p:panel>
+				<p:commandButton value="Search"
+					update="runsquerypanel,:runform:tabview:rundata"
+					id="runiovquerybutton" action="#{calendarparams.loadRuns}" />
+			</p:tab>
+			<p:tab title="Search Runs for a selected range of run numbers">
+				<p:panel id="runsrnquerypanel" header="Search Runs By Run Number"
+					style="margin-bottom:10px;">
+					<h:panelGrid columns="2">
+						<h:outputText value="RUN since: " />
+						<p:inputText value="#{calendarparams.runLow}" />
+						<h:outputText value="RUN until: " />
+						<p:inputText value="#{calendarparams.runHigh}" />
+					</h:panelGrid>
+				</p:panel>
+				<p:commandButton value="Search"
+					update="runsrnquerypanel,:runform:tabview:rundata"
+					id="runrnquerybutton" action="#{calendarparams.loadRunsByRunNumber}" />
+			</p:tab>
+		</p:accordionPanel>
+	</h:form>
+</ui:composition>

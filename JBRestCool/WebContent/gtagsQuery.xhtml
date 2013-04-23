@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:a="http://richfaces.org/a4j">
+	<!-- 	<ui:define name="content"> -->
+	<h3>Global Tag query</h3>
+
+	<h:form id="queryform">
+	<p:accordionPanel multiple="true">
+		<p:tab  title="Search global tags"> 
+		<p:panel id="querypanel" header="Search Global Tag"
+			style="margin-bottom:10px;">
+			<h:panelGrid columns="2">
+				<h:outputText value="Schema Search: " />
+				<p:inputText value="#{coolparams.schemaName}" />
+				<h:outputText value="DB Selection:" />
+				<p:selectOneMenu value="#{coolparams.dbName}" var="db" filter="true"
+					filterMatchMode="contains">
+					<f:selectItem itemLabel="Select One" itemValue="" />
+					<f:selectItems value="#{coolparams.dbList}" var="dbname"
+						itemLabel="#{dbname}" itemValue="#{dbname}" />
+				</p:selectOneMenu>
+				<h:outputText value="GTag Search: " />
+				<p:inputText value="#{coolparams.gtagName}" />
+			</h:panelGrid>
+		</p:panel>
+
+		<p:commandButton value="Submit"
+			update="querypanel,gtdiffpanel,:gtform:tabview:gtags" id="querybutton"
+			action="#{coolparams.retrieveGtagsData}" />
+	 </p:tab>
+			<p:tab  title="Check Differences between 2 global tags A and B"> 
+
+				<p:panel id="gtdiffpanel">
+					<!--  <h:outputText value="Global Tag Differences : " /> -->
+					<h:panelGrid  columns="2">
+						<h:outputText value="A: " />
+						<p:selectOneMenu value="#{cooldiffparams.selGtagA}" var="gtag"
+							filter="true" filterMatchMode="contains">
+							<f:selectItem itemLabel="Select One" itemValue="" />
+							<f:selectItems value="#{coolparams.gtagList}" var="gta"
+								itemLabel="#{gta.gtagName}" itemValue="#{gta.gtagName}" />
+							
+						</p:selectOneMenu>
+
+						<h:outputText value="B: " />
+						<p:selectOneMenu value="#{cooldiffparams.selGtagB}" var="gtag"
+							filter="true" filterMatchMode="contains">
+							<f:selectItem itemLabel="Select One" itemValue="" />
+							<f:selectItems value="#{coolparams.gtagList}" var="gtb"
+								itemLabel="#{gtb.gtagName}" itemValue="#{gtb.gtagName}" />
+							
+						</p:selectOneMenu>
+					</h:panelGrid>
+				</p:panel>
+
+				<p:commandButton value="Check" update=":gtform:tabview:gtagsdiff"
+					id="querydiffbutton"
+					action="#{cooldiffparams.retrieveGtagsDiffData}" />
+			</p:tab>
+		</p:accordionPanel>
+ 
+	</h:form>
+</ui:composition>

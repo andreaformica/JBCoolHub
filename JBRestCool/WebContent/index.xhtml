@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/layout.xhtml"
+	xmlns:a="http://richfaces.org/a4j">
+
+	<ui:define name="content">
+	<ui:include src="/#{navPage.page}.xhtml" />
+	</ui:define>
+	<ui:define name="eastcontent">
+	<ui:include src="/#{queryPage.page}.xhtml" />
+	</ui:define>
+	<ui:define name="southcontent">
+	<ui:include src="/#{queryPage.chartpage}.xhtml" />
+	</ui:define>	
+<!--  
+	<h:panelGroup id="centerContentPanel">
+		<ui:include src="/#{navPage.page}.xhtml" />
+	</h:panelGroup>
+-->
+</ui:composition>
