@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<project name="jbcool" basedir="." default="default">
+	
+  <dirname property="dependencies.basedir" file="setup.sh"/>
+
+  <!-- The dependencies between the various projects -->
+  <target name="depend.JBCoolEjbs" depends="depend.JBCoolUtils">
+    <ant dir="${dependencies.basedir}/JBCoolEjbs" target="${dependency.target}" inheritAll="false"/>
+  </target>
+
+  <target name="depend.JBRestCool" depends="depend.JBCoolEjbs">
+    <ant dir="${dependencies.basedir}/JBRestCool" target="${dependency.target}" inheritAll="false"/>
+  </target>
+
+  <target name="depend.JBCoolUtils">
+    <ant dir="${dependencies.basedir}/JBCoolUtils" target="${dependency.target}" inheritAll="false"/>
+  </target>
+
+  <target name="depend.JBCoolEAR" depends="depend.JBCoolUtils, depend.JBCoolEjbs, depend.JBRestCool">
+    <ant dir="${dependencies.basedir}/JBCoolEAR" target="${dependency.target}" inheritAll="false"/>
+  </target>
+
+  <target name="deploy.JBCoolEAR">
+	<ant dir="${dependencies.basedir}/JBCoolEAR" target="${dependency.target}" inheritAll="false"/>
+  </target>
+	
+  <target name="depend.all" depends="depend.JBCoolEAR"/>	
+
+
+  <!-- The global targets -->
+  <target name="default">
+    <antcall target="depend.all">
+      <param name="dependency.target" value="default"/>
+    </antcall>
+  </target>
+
+  <target name="clean">
+    <antcall target="depend.all">
+      <param name="dependency.target" value="clean"/>
+    </antcall>
+  </target>
+  
+  <target name="deploy">
+	 <antcall target="deploy.JBCoolEAR">
+    	<param name="dependency.target" value="deploy"/>
+	 </antcall>
+  </target>
+
+</project>
