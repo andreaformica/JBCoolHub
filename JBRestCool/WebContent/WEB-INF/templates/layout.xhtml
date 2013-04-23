@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>JBOSS COOL Restful via PL/SQL web site</title>
+</h:head>
+<h:body>
+
+	<h:outputStylesheet library="css" name="default.css" />
+	<p:pieChart rendered="false" />
+	<p:layout fullPage="true">
+		<p:layoutUnit position="north" size="50" resizable="false"
+			closable="false" collapsible="true">
+			<div id="header">
+			<h1 color="gray">Welcome to COOL PL/SQL monitoring page</h1>
+			<div id="progressbar">
+ 			<p:ajaxStatus style="width:16px;height:16px;" id="ajaxStatusPanel">
+				<f:facet name="start">
+					<h:graphicImage value="resources/gfx/ajaxloadingbar.gif" />
+				</f:facet>
+
+				<f:facet name="complete">
+					<h:outputText value="done" />
+				</f:facet>
+			</p:ajaxStatus>          
+      		</div>
+      		</div>
+		</p:layoutUnit>
+
+		<p:layoutUnit position="south" size="50" header="Messages"
+			resizable="true" closable="false" collapsible="true">
+
+			<h:panelGroup id="southContentPanel">
+				<ui:insert name="southcontent">Put default content here, if any.</ui:insert>
+			</h:panelGroup>
+		</p:layoutUnit>
+
+		<p:layoutUnit position="west" size="140" header="Menu"
+			resizable="true" closable="false" collapsible="true">
+			<h:form>
+				<ui:include name="westMenu" src="/WEB-INF/templates/westMenu.xhtml" />
+			</h:form>
+			<!--  <h:outputText value="West unit content." /> -->
+		</p:layoutUnit>
+
+		<p:layoutUnit position="east" size="300" header="Query"
+			resizable="true" closable="false" collapsible="true" effect="fade">
+			<h:panelGroup id="eastContentPanel">
+				<ui:insert name="eastcontent">Put default content here, if any.</ui:insert>
+			</h:panelGroup>
+		</p:layoutUnit>
+
+
+		<p:layoutUnit position="center" id="centerPanel">
+			<!--  <h:panelGroup id="centerContentPanel">
+                <ui:include src="/#{navPage.page}.xhtml" />
+            	</h:panelGroup>-->
+			<h:panelGroup id="centerContentPanel">
+				<ui:insert name="content">Put default content here, if any.</ui:insert>
+			</h:panelGroup>
+		</p:layoutUnit>
+	</p:layout>
+	
+	<h:outputScript name="js/jqplot.canvasAxisTickRenderer.js" />
+<h:outputScript name="js/jqplot.canvasAxisTickRenderer.min.js" />
+<h:outputScript name="js/jqplot.dateAxisRenderer.js" />
+<h:outputScript name="js/jqplot.dateAxisRenderer.min.js" />
+<h:outputScript name="js/chartextender.js" />
+
+</h:body>
+</html>

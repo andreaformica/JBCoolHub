@@ -1,0 +1,70 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:a="http://richfaces.org/a4j">
+	
+	<p:growl life="200" id="messages"/> 
+
+<!-- 
+	<p:ajaxStatus style="width:16px;height:16px;" id="ajaxStatusPanel">  
+    <f:facet name="start">  
+        <h:graphicImage value="resources/gfx/ajaxloading.gif" />  
+    </f:facet>  
+      
+    <f:facet name="complete">  
+        <h:outputText value="" />  
+    </f:facet>  
+	</p:ajaxStatus> 	
+	 -->
+ 	<p:menu> 
+		<p:menuitem value="Home" action="#{navPage.doNav}" update="messages,:centerContentPanel,:eastContentPanel,:southContentPanel" icon="ui-icon-home">
+		<f:param name="coolpage" value="mainPage" />
+		</p:menuitem>  
+	</p:menu>
+	<!--  <p:panelMenu style="width:140px"> -->
+	<p:panelMenu>  
+		<p:submenu label="COOL">
+		<p:menuitem value="Global Tags" action="#{navPage.doNav}" 
+			icon="ui-icon-tag"
+			update="messages,:centerContentPanel,:eastContentPanel,:southContentPanel">
+		<f:param name="coolpage" value="gtags" />
+		</p:menuitem>
+		<p:menuitem value="Single Schema" action="#{navPage.doNav}" 
+			icon="ui-icon-document"
+			update="messages,:centerContentPanel,:eastContentPanel,:southContentPanel">
+		<f:param name="coolpage" value="stags" />
+		</p:menuitem>
+		<p:menuitem value="Multi Schema" action="#{navPage.doNav}" 
+			icon="ui-icon-folder-open"
+			update="messages,:centerContentPanel,:eastContentPanel,:southContentPanel">
+		<f:param name="coolpage" value="mstags" />
+		</p:menuitem>
+		</p:submenu>
+		<p:submenu label="RUN">
+		<p:menuitem value="Run Selection" action="#{navPage.doNav}" 
+			icon="ui-icon-gear"
+			update="messages,:centerContentPanel,:eastContentPanel,:southContentPanel">
+		<f:param name="coolpage" value="runs" />
+		</p:menuitem>
+		</p:submenu>
+	</p:panelMenu>
+<!--  
+		<p:submenu label="Mail">
+			<p:menuitem value="Gmail" url="http://www.google.com" />
+			<p:menuitem value="Hotmail" url="http://www.hotmail.com" />
+			<p:menuitem value="Yahoo Mail" url="http://mail.yahoo.com" />
+		</p:submenu>
+		<p:submenu label="Videos">
+			<p:menuitem value="Youtube" url="http://www.youtube.com" />
+			<p:menuitem value="Break" url="http://www.break.com" />
+			<p:menuitem value="Metacafe" url="http://www.metacafe.com" />
+		</p:submenu>
+		<p:submenu label="Social Networks">
+			<p:menuitem value="Facebook" url="http://www.facebook.com" />
+			<p:menuitem value="MySpace" url="http://www.myspace.com" />
+		</p:submenu>
+	-->
+	
+</ui:composition>
