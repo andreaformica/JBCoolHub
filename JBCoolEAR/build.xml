@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<project name="JBCoolEAR" default="build" basedir=".">
+  <target name="default" depends="build"/>
+  <import file="common/ant/commontasks.xml"/>
+
+	<!-- Init -->
+	<target name="init" depends="init-properties">
+
+		<property name="ear.content.dir" value="${basedir}/EarContent" />
+		<property name="ear.file" value="${ant.project.name}.ear" />
+		
+		<property name="resources.dir" value="${basedir}" />
+		<property name="lib.utils.name" value="JBCoolUtils.jar" />
+		<property name="lib.ejb.name" value="JBCoolEjbs.jar" />
+		<property name="lib.war.name" value="JBRestCool.war" />
+		<property name="all.lib.dir" value="${basedir}/lib" />
+				
+	    <patternset id="meta.files">
+	        <include name="jboss-app.xml"/>
+	    </patternset>
+		
+	</target>
+
+	<!-- Prepare -->
+	<target name="prepare" depends="init">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.lib.dir}" />
+	</target>
+	
+	<!-- Create application tree -->
+	<target name="create-app" depends="init,prepare">
+		<!--  <filter filtersfile="app-filters.properties"/> -->
+		<filter token="LIB" value="${lib.client.name}"/>
+	      <mkdir dir="${build.dir}/META-INF"/>
+	         <copy file="${ear.content.dir}/META-INF/application.xml"
+	            todir="${build.dir}/META-INF" filtering="on"/>	
+	    <!-- Useful shortcuts -->
+	    <patternset id="ear.files">
+	        <include name="${lib.client.name}"/>
+	        <include name="JBComaEjbs.jar"/>
+	        <include name="JBCoolEjbs.jar"/>
+	        <include name="JBRestCool.war"/>
+	    </patternset>
+	    <patternset id="lib.files">
+	        <include name="JBCoolUtils.jar"/>
+		</patternset>
+		<copy file="${all.lib.dir}/JBCoolUtils.jar" todir="${build.lib.dir}"/>
+	</target>
+	
+	
+	<!-- clean -->
+	<target name="clean" depends="init">
+		<delete dir="${build.dir}" />
+	</target>
+	
+	<!-- ear -->
+	<target name="ejb-ear" depends="prepare">
+		<ear destfile="${basedir}/${ant.project.name}.ear"
+			 manifest="${ear.content.dir}/META-INF/MANIFEST.MF"
+			 appxml="${build.dir}/META-INF/application.xml">
+			<metainf dir="${ear.content.dir}/META-INF">
+            	<patternset refid="meta.files"/>
+			</metainf>
+			<fileset dir="${all.lib.dir}">
+                <patternset refid="ear.files"/>
+			</fileset>
+			<fileset dir="${build.dir}" includes="lib/**"/>
+		</ear>
+		<!--copy tofile="${lib.dir}/${ear.file}" 
+			file="${build.lib.dir}/${ear.file}"/-->
+	</target>
+	
+	<!-- deploy -->
+	<target name="deploy-ear" depends="ejb-ear">
+		<copy file="${basedir}/${ant.project.name}.ear"
+			todir="${deploy.dir}"/>
+	</target>
+	
+	<target name="deploy" depends="build">
+	    <!-- Build path for deployed war-file -->
+	    <property name="war.filename" value="${basedir}/${ant.project.name}.ear" />
+	    <property name="deployed.jar" value="${jboss.home}/${jboss.deploy.dir}/${ant.project.name}.ear" />
+
+	    <!-- remove current deployed war -->
+	    <delete file="${deployed.jar}.deployed" failonerror="false" />
+	    <waitfor maxwait="10" maxwaitunit="second">
+	        <available file="${deployed.jar}.undeployed" />
+	    </waitfor>
+	    <delete dir="${deployed.jar}" />
+
+	    <!-- copy war-file -->
+	    <copy file="${war.filename}" todir="${jboss.home}/${jboss.deploy.dir}" />
+
+	    <!-- start deployment -->
+	    <echo>start deployment ...</echo>
+	    <touch file="${deployed.jar}.dodeploy" />
+
+	    <!-- wait for deployment to complete -->
+	    <waitfor maxwait="10" maxwaitunit="second">
+	        <available file="${deployed.jar}.deployed" />
+	    </waitfor>
+	    <echo>deployment ok!</echo>
+	</target>
+
+	
+	<!-- undeploy -->
+	<target name="undeploy-ear" depends="init">
+		<delete file="${deploy.dir}/${ear.file}"/>
+	</target>
+	
+	<target name="build" depends="create-app,ejb-ear" />
+	
+	<target name="rebuild" depends="clean, build" />
+
+</project>
