@@ -1,0 +1,140 @@
+<project name="JBComaEjbs" default="build" basedir=".">
+  <target name="default" depends="build"/>
+	<import file="common/ant/commontasks.xml" />
+	<import file="common/ant/hibernatetask.xml" />
+
+	<!-- Init -->
+	<target name="init" depends="init-properties">
+		<property name="src.dir" value="${basedir}/ejbModule"/>
+		<property name="hb.package.name" value="atlas.coma.model"/>
+		<property name="prj.lib" value="${basedir}/lib" />
+
+		<path id="external.classpath">
+			<fileset dir="${basedir}/external/share/java/utils">
+				<include name="*.jar" />
+			</fileset>
+		</path>
+
+
+		<path id="project.class.path">
+		    <path refid="jboss7.classpath"/>		
+		    <path refid="jdbc.classpath"/>
+		    <path refid="external.classpath"/>
+			<path refid="apache.classpath"/>
+		</path>
+		
+		
+		<!-- taskdef name="aopc" classname="org.jboss.aop.ant.AopC"
+		         classpathref="jbossaop.classpath"/ -->
+
+	</target>
+
+
+	<!-- copy-resources -->
+	<target name="copy-resources" depends="prepare">
+		<copy todir="${build.classes.dir}">
+			<fileset dir="${src.dir}">
+				<include name="**/*.xml" />
+				<include name="**/*.MF" />
+				<include name="**/*html" />
+				<exclude name="etc/**" />
+				<exclude name="**/*-ds.xml" />
+				<exclude name="**/persistence.xml" />
+
+			</fileset>
+		</copy>
+	</target>	
+	
+	<!-- copy-resources -->
+	<target name="copy-web-resources" depends="prepare">
+		<copy todir="${build.classes.dir}">
+			<fileset dir="${web.dir}">
+				<include name="**/*.xml" />
+				<include name="**/*.MF" />
+				<include name="**/*html" />
+				<include name="resources/**/*" />
+				<exclude name="etc/**" />
+			</fileset>
+		</copy>
+	</target>	
+
+	<target name="copy-aop" depends="prepare">
+		<copy todir="${build.classes.dir}/META-INF">
+			<fileset dir="${src.dir}/etc">
+				<include name="*aop.xml" />
+			</fileset>
+		</copy>		
+	</target>
+	
+	<!-- compile -->
+	<target name="compile" depends="copy-resources,prepare">
+		<javac debug="on" srcdir="${src.dir}" destdir="${build.classes.dir}"  verbose="no" includeantruntime="false"> 
+			<classpath>
+				<path refid="project.class.path" />
+			</classpath>
+		</javac>		
+	</target>
+
+	<target name="aopc" depends="compile">
+      <aopc compilerclasspathref="project.class.path"  classpathref="project.class.path"  verbose="true" report="false">
+        <classpath path="${build.classes.dir}"/>
+        <src path="${build.classes.dir}"/>
+        <!-- include name="**/*.class"/ -->
+   		<aoppath path="${src.dir}/etc/jboss-aop.xml"/> 
+        <!-- aopclasspath path="${build.classes.dir}"/ -->
+     </aopc>
+    </target>
+	
+	<!-- jar -->
+	<target name="client-jar" depends="prepare,compile">
+		<jar jarfile="${build.lib.dir}/${ant.project.name}.jar"
+			 manifest="${src.dir}/META-INF/MANIFEST.MF">
+			<fileset dir="${build.dir}/classes">
+				<include name="**/*class" />
+				<include name="**/*xml" />
+				<include name="**/*html" />
+				<include name="**/*gif" />
+				<include name="**/*css" />
+				<include name="**/*png" />
+				<exclude name="atlas/mdt/dcs/server/**/*" />
+				<exclude name="WEB-INF/**/*" />
+				<exclude name="resources/**/*" />
+				<exclude name="META-INF/*ds.xml" />
+			</fileset>
+		</jar>
+		<copy tofile="${prj.lib}/${ant.project.name}.jar" 
+			file="${build.lib.dir}/${ant.project.name}.jar"/>
+	</target>
+	
+
+	<target name="deploy" depends="build">
+	    <!-- Build path for deployed war-file -->
+	    <property name="war.filename" value="${build.lib.dir}/${ant.project.name}.jar" />
+	    <property name="deployed.jar" value="${jboss.home}/${jboss.deploy.dir}/${ant.project.name}.jar" />
+
+	    <!-- remove current deployed war -->
+	    <delete file="${deployed.jar}.deployed" failonerror="false" />
+	    <waitfor maxwait="10" maxwaitunit="second">
+	        <available file="${deployed.jar}.undeployed" />
+	    </waitfor>
+	    <delete dir="${deployed.jar}" />
+
+	    <!-- copy war-file -->
+	    <copy file="${war.filename}" todir="${jboss.home}/${jboss.deploy.dir}" />
+
+	    <!-- start deployment -->
+	    <echo>start deployment ...</echo>
+	    <touch file="${deployed.jar}.dodeploy" />
+
+	    <!-- wait for deployment to complete -->
+	    <waitfor maxwait="10" maxwaitunit="second">
+	        <available file="${deployed.jar}.deployed" />
+	    </waitfor>
+	    <echo>deployment ok!</echo>
+	</target>
+	
+	<target name="build" depends="client-jar" />
+	
+	<target name="rebuild" depends="clean, build" />
+	
+</project>
