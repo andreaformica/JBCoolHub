@@ -70,8 +70,8 @@
     <servlet-name>Faces Servlet</servlet-name>
     <url-pattern>/faces/*</url-pattern>
   </servlet-mapping>
-  
   -->
+  
  <security-constraint>
        <display-name>Constraint-0</display-name>
        <web-resource-collection>
@@ -91,7 +91,6 @@
 
  <login-config>
        <auth-method>FORM</auth-method>
-<!--        <auth-method>CLIENT-CERT</auth-method> -->
        <form-login-config>
        <form-login-page>/jsflogin.xhtml</form-login-page>
        <form-error-page>/jsfloginerror.xhtml</form-error-page>
@@ -99,9 +98,11 @@
 </login-config>
 
  <security-role>
-<!--         <role-name>atlas-active-members</role-name> -->
         <role-name>jbcoolUsers</role-name>
  </security-role>
+
+<!--        <auth-method>CLIENT-CERT</auth-method> -->
+<!--         <role-name>atlas-active-members</role-name> -->
   
   <context-param>  
     <param-name>primefaces.THEME</param-name>  
