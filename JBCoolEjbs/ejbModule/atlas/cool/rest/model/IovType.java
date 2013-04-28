@@ -23,7 +23,29 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 
 /**
  * @author formica
+ * @since 2013/04/01
+ * This POJO represents some statistics that can be gathered over IOVs. Cool iovs are defined in the _IOVS table of
+ * a COOL schema for every folder (node). The purpose of this POJO is to collect information on the amount of iovs
+ * are stored for a given node and tag and for every channel, computing also minimum and maximum time intervals.
+ * The main usage for this POJO is to explore time coverage for a given node/tag, which is very important
+ * when we want to verify the consistency of a GlobalTag.
+ * The Queries defined for this POJO are: 
+ * 		QUERY_FINDIOVS [cool_select_pkg]
+ * 		This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list of matching nodes/tags;
+ * 		it uses internally the function cool_select_pkg.f_Get_Iovs(.....).
+ * 		For every node/tag/channel there is one line with statistics of iovs.
  * 
+ *		QUERY_FINDHOLES [cool_select_pkg]
+ * 		This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list of matching nodes/tags;
+ * 		it uses internally the function cool_select_pkg.f_Get_Iovs(.....).
+ * 		For every node/tag/channel there is one line with statistics of holes spotted.
+ * 
+ *		QUERY_FINDIOVSUMMARY [cool_select_pkg]
+ * 		This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list of matching nodes/tags;
+ * 		it uses internally the function cool_select_pkg.f_Get_Iovs(.....).
+ * 		For every node/tag/channel there is at least one(+) line(s) with a summary of time ranges covered.
+ * 		For example: ch 1 : [0 - Inf] Niovs  
+ * 				 or  ch 1 : [0 - 100] Niovs ; [100 - 110] hole; [110 - Inf] Miovs;  
  */
 @Entity
 @NamedNativeQueries({

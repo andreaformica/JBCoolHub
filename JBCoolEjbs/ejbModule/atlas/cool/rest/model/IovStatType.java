@@ -22,6 +22,15 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 
 /**
  * @author formica
+ * @since 2013/04/01
+ * This POJO represents some statistics that can be gathered over IOVs. Cool iovs are defined in the _IOVS table of
+ * a COOL schema for every folder (node). The purpose of this POJO is to collect information on the amount of iovs
+ * are stored for a given node and tag, computing also minimum and maximum time intervals.
+ * The Queries defined for this POJO are: 
+ * 		QUERY_FINDIOVS [cool_select_pkg]
+ * 		This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list of matching nodes/tags;
+ * 		it uses internally the function cool_select_pkg.f_GetAll_IovShort(.....).
+ * 		For every node/tag there is one line with statistics of iovs.
  * 
  */
 @Entity

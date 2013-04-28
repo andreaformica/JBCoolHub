@@ -115,8 +115,10 @@ public class CoolQueryRepository {
 	
 	/**
 	 * 
-	 * @param args
-	 * @param parsedArgs
+	 * @param qryname
+	 * 		The name of the query to search.
+	 * @return QueryParams
+	 * 		The object which contains all the parameters needed for the query.
 	 */
 	public synchronized QueryParams getQueryParams(final String qryname) throws CoolQueryException {
 		try {
@@ -128,6 +130,10 @@ public class CoolQueryRepository {
 		}
 	}
 		
+	/**
+	 * @param pckgname
+	 * @throws CoolQueryException
+	 */
 	private void findAnnotatedClasses(final String pckgname)
 			throws CoolQueryException {
 
@@ -161,6 +167,11 @@ public class CoolQueryRepository {
 		}
 	}
 
+	/**
+	 * @param pckgname
+	 * @return
+	 * @throws ClassNotFoundException
+	 */
 	@SuppressWarnings("rawtypes")
 	public List<Class> getClassesForPackage(final String pckgname)
 			throws ClassNotFoundException {
@@ -256,6 +267,11 @@ public class CoolQueryRepository {
 		return classes;
 	}
 
+	/**
+	 * @param thePackage
+	 * @param theInterface
+	 * @return
+	 */
 	@SuppressWarnings("rawtypes")
 	public List<Class> getClassessOfInterface(final String thePackage,
 			final Class theInterface) {
@@ -275,6 +291,10 @@ public class CoolQueryRepository {
 	}
 
 	
+	/**
+	 * @param key
+	 * @param value
+	 */
 	public static void setDefaultSystemProperty(final String key, final String value) {
 		if (System.getProperty(key) == null) {
 			System.setProperty(key, value);

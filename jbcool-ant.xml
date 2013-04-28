@@ -34,6 +34,12 @@
     </antcall>
   </target>
 
+  <target name="doc">
+    <antcall target="depend.all">
+      <param name="dependency.target" value="doc"/>
+    </antcall>
+  </target>
+
   <target name="clean">
     <antcall target="depend.all">
       <param name="dependency.target" value="clean"/>

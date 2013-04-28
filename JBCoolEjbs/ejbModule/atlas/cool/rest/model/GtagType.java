@@ -5,7 +5,6 @@ package atlas.cool.rest.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,6 +20,20 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 
 /**
  * @author formica
+ * @since 2013/04/01
+ * This POJO represents the COOL Global Tag. Cool global tags are defined in the main _TAGS table of
+ * a COOL schema. The purpose of this POJO is to gather information on the global tag in order to
+ * see how many schemas are using it.
+ * The Queries defined for this POJO are: 
+ * 		QUERY_FINDTAGS [cool_select_pkg]
+ * 		This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching global tags;
+ * 		it uses internally the function cool_select_pkg.f_GetAll_GlobalTags(.....)
+ * 
+ * 		QUERY_COMA_FINDTAGS [coma_select_pkg]
+ * 		This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching global tags;
+ * 		it uses internally the function coma_select_pkg.f_GetAll_GlobalTags(.....).
+ * 		The difference respect to previous query is that the source is not COOL, but COMA.
+ * 
  * 
  */
 @Entity

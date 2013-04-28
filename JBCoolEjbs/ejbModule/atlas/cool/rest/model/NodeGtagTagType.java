@@ -19,6 +19,37 @@ import atlas.cool.annotations.CoolQuery;
 /**
  * @author formica
  * 
+ * @since 2013/04/01.
+ * 
+ * @version 1.0
+ * 
+ * This POJO represents the association between a global tag and a leaf tag in a given node. 
+ * Cool tags are defined in the _TAGS table of a COOL schema for every folder (node), as well as inside the
+ * main _TAGS table, where global tags are stored. 
+ * The Queries defined for this POJO are: 
+ *   
+ * 		<b>QUERY_FINDGTAGS_TAGS_TRACE [cool_select_pkg]</b>
+ * 		This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching nodes/tags;
+ * 		it uses internally the function cool_select_pkg.f_getall_tagsforgtag(.....).
+ * 		For every node/tag associated with the given gtag, there is one line with information on schema
+ * 		and db, gtag informations, tag informations, and node informations.
+ * 
+ * 		<b>QUERY_FINDGTAGS_FORTAG [cool_select_pkg]</b>
+ * 		This query takes as arguments the SCHEMA, DB, GTAG, TAG, NODE and retrieves a list of matching nodes/tags/gtags;
+ * 		it uses internally the function cool_select_pkg.f_getall_tagsforgtag(.....).
+ * 		For every node/tag associated with the given gtag, there is one line with information on schema
+ * 		and db, gtag informations, tag informations, and node informations.
+ * 
+ * 		<b>QUERY_FINDGTAG_DOUBLEFLD [cool_select_pkg]</b>
+ * 		This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching nodes/tags/gtags;
+ * 		it uses internally the function cool_select_pkg.f_getall_doubletagsforgtag(.....).
+ * 		It is used to search for folders which are associated twice to a given global tag.
+ * 
+ * 		<b>QUERY_COMA_FINDGTAGS_TAGS_TRACE [coma_select_pkg]</b>
+ * 		This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching nodes/tags/gtags;
+ * 		it uses internally the function cool_select_pkg.f_getall_tagsforgtag(.....).
+ * 		It is the same as the first query described, but the info is retrieved from COMA.
+ * 
  */
 @Entity
 @NamedNativeQueries({
