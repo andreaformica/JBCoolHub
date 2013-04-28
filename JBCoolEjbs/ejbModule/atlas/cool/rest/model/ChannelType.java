@@ -18,13 +18,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 import atlas.cool.annotations.CoolQuery;
 
 /**
- * @author formica
  * This POJO represents the COOL channel table. Cool channels are used in multi-version folders
  * and referenced inside the _IOVS table via the channel_id.
- * The Queries defined for this POJO are: 
- * 		QUERY_FINDCHANNELS [cool_select_pkg]
+ * <p>
+ * The Queries defined for this POJO are: <br>
+ * 		<b>QUERY_FINDCHANNELS [cool_select_pkg]</b><br>
  * 		This query takes as arguments the SCHEMA, DB, NODE, CHAN and retrieves a list of channels;
  * 		it uses internally the function cool_select_pkg.f_Get_Channels(.....)
+ * </p>
+ * @author formica
  */
 @Entity
 @NamedNativeQueries({ @NamedNativeQuery(name = ChannelType.QUERY_FINDCHANNELS, query = "select   "

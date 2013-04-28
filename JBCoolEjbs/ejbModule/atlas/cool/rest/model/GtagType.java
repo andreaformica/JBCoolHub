@@ -19,21 +19,24 @@ import atlas.cool.annotations.CoolQuery;
 import atlas.cool.rest.utils.TimestampStringFormatter;
 
 /**
- * @author formica
- * @since 2013/04/01
+ * <p>
  * This POJO represents the COOL Global Tag. Cool global tags are defined in the main _TAGS table of
  * a COOL schema. The purpose of this POJO is to gather information on the global tag in order to
- * see how many schemas are using it.
- * The Queries defined for this POJO are: 
- * 		QUERY_FINDTAGS [cool_select_pkg]
+ * see how many schemas are using it.</p>
+ * <p>
+ * The Queries defined for this POJO are:<br> 
+ * 		<b>QUERY_FINDTAGS [cool_select_pkg]</b><br>
  * 		This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching global tags;
  * 		it uses internally the function cool_select_pkg.f_GetAll_GlobalTags(.....)
- * 
- * 		QUERY_COMA_FINDTAGS [coma_select_pkg]
+ * </p>
+ * <p>
+ * 		<b>QUERY_COMA_FINDTAGS [coma_select_pkg]</b><br>
  * 		This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching global tags;
  * 		it uses internally the function coma_select_pkg.f_GetAll_GlobalTags(.....).
  * 		The difference respect to previous query is that the source is not COOL, but COMA.
- * 
+ * </p>
+ * @author formica
+ * @since  2013/04/01
  * 
  */
 @Entity
@@ -137,8 +140,8 @@ public class GtagType implements Serializable {
 	}
 
 	/**
-	 * @param nSchemas
-	 *            the nSchemas to set
+	 * @param nschemas
+	 *            the nschemas to set
 	 */
 	public void setNschemas(Integer nschemas) {
 		this.nschemas = nschemas;
