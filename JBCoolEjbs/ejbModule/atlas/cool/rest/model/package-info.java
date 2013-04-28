@@ -1,5 +1,3 @@
-package atlas.cool.rest.model;
-
 /**
  * <HTML> <BODY>
  * <p>
@@ -17,3 +15,5 @@ package atlas.cool.rest.model;
  * @author formica
  * 
 **/
+package atlas.cool.rest.model;
+
