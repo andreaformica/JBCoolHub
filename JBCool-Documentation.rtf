@@ -1,16 +1,18 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf510
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
 {\colortbl;\red255\green255\blue255;\red8\green78\blue230;}
-{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}}
-{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid101\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid2}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}}
 {\info
 {\author formica}
 {\*\company CEA/Saclay}}\paperw11900\paperh16840\margl1440\margr1440\vieww19980\viewh11840\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
 \f0\b\fs28 \cf0 JBCool\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\b0\fs24 This project is a test for using PL/SQL COOL API that is stored in Oracle (ATLAS_COND_TOOLS@ATLR), inside the package cool_select_pkg.\
+\b0\fs24 \cf0 This project is a test for using PL/SQL COOL API that is stored in Oracle (ATLAS_COND_TOOLS@ATLR), inside the package cool_select_pkg.\
 The API is not an official COOL API, and it is meant to be used to gather informations from several schemas in one shot.\
 The ATLAS_COND_TOOLS schema has read only privileges over all ATLAS_COOL* schemas, so that every function defined in the package can\
 perform select actions on the official COOL tables. Even though this is sort of redundant respect to COMA tables collecting METADATA from all important\
@@ -56,14 +58,11 @@ The structure of this package is the following:\
 		common/           (link to common ant tools) \
 		build.xml            (the ant build file)\
 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\b \cf0 JBRestCool
+\b JBRestCool
 \b0 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 The structure of this package is the following:\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 <basedir>/\
+The structure of this package is the following:\
+<basedir>/\
 		src/                     (java sources)\
 		WebContent/    (web jsf html asp pages, resources, libraries, etc. under WebContent/WEB-INF)\
 		build/                 (directory created dynamically for storing compiled classes)\
@@ -71,26 +70,24 @@ The structure of this package is the following:\
 		external/            (link to external libraries)\
 		common/           (link to common ant tools) \
 		build.xml            (the ant build file)\
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 \
 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\
 
-\b \cf0 General remarks
+\b General remarks
 \b0 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 To compile the packages you need JBOSS 7 to be installed on the machine, and the JBOSS_HOME env variable to be set.\
+To compile the packages you need JBOSS 7 to be installed on the machine, and the JBOSS_HOME env variable to be set.\
 \
 \
+
+\b VOATLAS connection\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\b \cf0 VOATLAS connection\
-
-\b0 To connect to voatlas135 machine which we will use for testing one needs to connect to : ssh <user>@lxvoadm.cern.ch\
+\b0 \cf0 To connect to voatlas135 machine which we will use for testing one needs to connect to : ssh <user>@lxvoadm.cern.ch\
 Then from here connect to voatlas135.cern.ch with the afs username.\
 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\b Local installation
+\b \cf0 Local installation
 \b0 \
 Go to the test area in your localhost where you did install everything. You will have a Servers directory, where jboss is installed.\
 In order to run java you need to setup appropriate env variable: JAVA_HOME, CLASSPATH, and add the java executable to your PATH.\
@@ -122,8 +119,7 @@ then \
 
 \b Software installation
 \b0 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf0 Clone the git repository\'85\
+Clone the git repository\'85\
 \pard\pardeftab720
 \cf0 git clone {\field{\*\fldinst{HYPERLINK "https://git.cern.ch/reps/JBCool"}}{\fldrslt \cf2 \ul \ulc2 https://git.cern.ch/reps/JBCool}} #LDAP authentication\
 We did then add by hands the common repository, the external repository and a lib repository to be copied in JBRestCool/WebContent/WEB-INF .\
@@ -131,6 +127,21 @@ These repositories contain only libraries, so they are not available in git.\
 \
 We need then to add ant package, we did this by manual installation, setting the appropriate ANT_HOME variable inside the javasetup.sh script in test area.\
 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b \cf0 Development plan
+\b0 \
+The development plan for phase 1 consists in 3 main points\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\pardirnatural
+\ls2\ilvl0\cf0 {\listtext	1.	}Standalone java program/library to perform the parsing of a CLOB: this means that the program should be able to read a File (or a String from a RESTful service), and unpack the given CLOBs in a structure which is more close to the meaning of the content of the CLOB. The output could be in the first place a list of generic Objects which we should define.\
+{\listtext	2.	}Implementation inside JBRestCool package of the previous classes: probably the best is to provide an external jar file, and allow the system to search for a plugin in order to unpack the CLOB if the plugin exists. This kind of functionality could be achieved using java annotations. The final step should be the creation of a RESTful service for which the output is easily parsed by a client program, in order to create a ROOT file.\
+{\listtext	3.	}Python client program: the python client should use the above service and implement the creation of a ROOT tree. Explore the existing XML parser in ROOT IO.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
+The definition of the XML output (if we see that is feasible) is very important\'85\
+\
+\pard\pardeftab720
+\cf0 \
 \
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
