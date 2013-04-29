@@ -104,13 +104,17 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		try {
 			con = datasource.getConnection();
 
+			String node = folder;
+			if (!node.startsWith("/")) {
+				node = "/"+node;
+			}
 			cstmt = con.prepareCall(stmt);
 			cstmt.setString(1, schemaname);
 			cstmt.setString(2, dbname);
-			cstmt.setString(3, "/" + folder);
+			cstmt.setString(3, node);
 			cstmt.setString(4, tagname);
 			cstmt.setBigDecimal(5, time);
-			cstmt.setInt(5, channelId);
+			cstmt.setInt(6, channelId);
 			log.info(" executing query ...");
 
 			/*

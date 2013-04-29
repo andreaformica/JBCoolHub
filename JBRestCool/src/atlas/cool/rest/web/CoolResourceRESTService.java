@@ -136,8 +136,12 @@ public class CoolResourceRESTService {
 			Integer chid = channel;
 			if (channel < 0)
 				chid = null;
+			String node = fld;
+			if (!fld.startsWith("/")) {
+				node = "/" + fld;
+			}
 			String output = "";
-			ResultSet pyld = payloaddao.getPayload(schema, db, fld, tag, time,
+			ResultSet pyld = payloaddao.getPayload(schema, db, node, tag, time,
 					chid);
 			if (pyld != null) {
 				output = dumpResultSet(pyld);
