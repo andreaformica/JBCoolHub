@@ -1,3 +1,4 @@
+lib
 JBRestCool/common
 JBRestCool/external
 JBRestCool/lib
@@ -20,3 +21,9 @@ JBComaEjbs/external
 JBCoolUtils/build
 JBCoolUtils/common
 JBCoolUtils/external
+JBCoolUtils/lib
+JBCoolClient/lib
+JBCoolClient/build
+JBCoolClient/external
+JBCoolClient/common
+JBRestCool/test
