@@ -94,7 +94,7 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 				  +" channel_id, "
 				  +" channel_name, "
 				  +" lowest_since as miniov_since, "
-				  +" lowest_since as miniov_until, "
+				  +" iov_until as miniov_until, "
 				  +" iov_since as maxiov_since, "
 				  +" highest_until as maxiov_until, "
 				  +" hole as iov_hole, "
