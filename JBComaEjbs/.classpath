@@ -14,5 +14,6 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JBCoolUtils"/>
 	<classpathentry kind="src" path="/JBCoolEjbs"/>
+	<classpathentry kind="var" path="JBOSS7_MODULES/org/hibernate/main/hibernate-core-4.0.1.Final.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

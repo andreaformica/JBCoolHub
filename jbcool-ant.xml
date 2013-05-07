@@ -4,9 +4,13 @@
   <dirname property="dependencies.basedir" file="setup.sh"/>
 
   <!-- The dependencies between the various projects -->
-  <target name="depend.JBCoolEjbs" depends="depend.JBCoolUtils">
-    <ant dir="${dependencies.basedir}/JBCoolEjbs" target="${dependency.target}" inheritAll="false"/>
-  </target>
+	  <target name="depend.JBCoolEjbs" depends="depend.JBCoolUtils">
+	    <ant dir="${dependencies.basedir}/JBCoolEjbs" target="${dependency.target}" inheritAll="false"/>
+	  </target>
+	
+	  <target name="depend.JBComaEjbs" depends="depend.JBCoolUtils">
+	    <ant dir="${dependencies.basedir}/JBComaEjbs" target="${dependency.target}" inheritAll="false"/>
+	  </target>
 
   <target name="depend.JBRestCool" depends="depend.JBCoolEjbs">
     <ant dir="${dependencies.basedir}/JBRestCool" target="${dependency.target}" inheritAll="false"/>
@@ -16,7 +20,7 @@
     <ant dir="${dependencies.basedir}/JBCoolUtils" target="${dependency.target}" inheritAll="false"/>
   </target>
 
-  <target name="depend.JBCoolEAR" depends="depend.JBCoolUtils, depend.JBCoolEjbs, depend.JBRestCool">
+  <target name="depend.JBCoolEAR" depends="depend.JBCoolUtils, depend.JBCoolEjbs,depend.JBComaEjbs, depend.JBRestCool">
     <ant dir="${dependencies.basedir}/JBCoolEAR" target="${dependency.target}" inheritAll="false"/>
   </target>
 

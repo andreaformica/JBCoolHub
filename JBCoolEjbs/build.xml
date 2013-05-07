@@ -103,6 +103,7 @@
 				<exclude name="WEB-INF/**/*" />
 				<exclude name="resources/**/*" />
 				<exclude name="META-INF/*ds.xml" />
+				<exclude name="META-INF/persistence*.xml" /> <!-- This is for the EAR packaging-->
 			</fileset>
 		</jar>
 		<copy tofile="${prj.lib}/${ant.project.name}.jar" 
