@@ -12,6 +12,11 @@ public class ComaQueryException extends Exception {
 	/**
 	 * 
 	 */
+	private static final long serialVersionUID = -6428928856326939872L;
+
+	/**
+	 * 
+	 */
 	public ComaQueryException() {
 		// TODO Auto-generated constructor stub
 	}

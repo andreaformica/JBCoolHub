@@ -1,5 +1,6 @@
 package atlas.cool.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import atlas.cool.rest.model.ChannelType;
@@ -26,5 +27,7 @@ public interface CoolDAO {
 	public List<SchemaType> retrieveSchemasFromNodeSchemaAndDb(String schema, String db, String node) throws CoolIOException;
 	public List<IovType> retrieveIovStatPerChannelFromNodeSchemaAndDb(String schema, String db, String node,String tag) throws CoolIOException;
 	public List<IovType> retrieveIovSummaryPerChannelFromNodeSchemaAndDb(String schema, String db, String node,String tag) throws CoolIOException;
+	public List<IovType> retrieveIovSummaryPerChannelFromNodeSchemaAndDbInRange(String schema, String db, String node,String tag,BigDecimal since,BigDecimal until) throws CoolIOException;
 	public List<IovType> retrieveHolesStatPerChannelFromNodeSchemaAndDb(String schema, String db, String node,String tag) throws CoolIOException;
+	public List<IovType> retrieveHolesStatPerChannelFromNodeSchemaAndDbInRange(String schema, String db, String node,String tag,BigDecimal since,BigDecimal until) throws CoolIOException;
 }

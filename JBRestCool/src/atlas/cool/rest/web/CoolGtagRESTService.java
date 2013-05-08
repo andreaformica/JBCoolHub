@@ -1,7 +1,8 @@
 package atlas.cool.rest.web;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,13 +17,14 @@ import javax.ws.rs.Produces;
 
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolIOException;
+import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.meta.CoolIov;
 import atlas.cool.rest.model.ChannelType;
+import atlas.cool.rest.model.CoolIovSummary;
+import atlas.cool.rest.model.CoolIovSummary.IovRange;
 import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
-import atlas.cool.rest.utils.CoolIovSummary;
-import atlas.cool.rest.utils.CoolIovSummary.IovRange;
 
 /**
  * JAX-RS Example
@@ -36,6 +38,8 @@ public class CoolGtagRESTService {
 
 	@Inject
 	private CoolDAO cooldao;
+	@Inject
+	private CoolUtilsDAO coolutilsdao;
 
 	@Inject
 	private Logger log;
@@ -176,9 +180,9 @@ public class CoolGtagRESTService {
 		String colorseptagstart = "<span style=\"color:#1A91C4\">";
 		String colorbadtagstart = "<span style=\"color:#B43613\">";
 		String colortagend = "</span>";
-		results.append("<head><style>" + "h1 {font-size:25px;} "
-				+ "h2 {font-size:20px;}" + "h3 {font-size:15px;}"
-				+ "hr {color:sienna;}" + "p {font-size:14px;}"
+		results.append("<head><style>" + "h1 {font-size:24px;} "
+				+ "h2 {font-size:18px;}" + "h3 {font-size:15px;}"
+				+ "hr {color:sienna;}" + "p {font-size:12px;}"
 				+ "p.small {line-height:80%;}" + "</style></head>");
 		try {
 			results.append("<body>");
@@ -205,104 +209,64 @@ public class CoolGtagRESTService {
 						+ "<br>");
 
 				results.append("<h3>chanId chanName iovbase - niovs [since] [until] [holes in seconds] .... </h3>");
-				List<IovType> iovperchanList = cooldao
-						.retrieveIovSummaryPerChannelFromNodeSchemaAndDb(
-								schema, db, node, nodeGtagTagType.getTagName());
-				IovType previov = null;
-				String previovDump = null;
-				String comment = "";
-				String colortagstart = colorgoodtagstart;
-				for (IovType aniov : iovperchanList) {
-					aniov.setIovBase(selnode.getNodeIovBase());
-					if (previov == null) {
-						previov = aniov;
-						results.append("<p class=\"small\">"
-								+ aniov.getChannelId() + " "
-								+ aniov.getChannelName() + " - "
-								+ aniov.getIovBase() + " : ");
-					}
-					String since = aniov.getCoolIovMinSince();
-					String until = aniov.getCoolIovMaxUntil();
-					long niovs = aniov.getNiovs();
 
-					// Now print the previous if no holes are found...
-					// if (previovDump != null) {
-					if (aniov.getChannelId() != previov.getChannelId()) {
-						log.info("Channel ID changed..." + aniov.getChannelId()
-								+ " previous was " + previov.getChannelId()
-								+ " iovdump is " + previovDump);
-						if (previovDump != null) {
-							results.append(" | " + previovDump + "</p>");
-							previovDump = null;
-							comment = "";
+				String seltag = nodeGtagTagType.getTagName();
+				// Long niovs = 0L;
+				Map<Long, CoolIovSummary> iovsummary = coolutilsdao.computeIovSummaryMap(
+						schema, db, node, seltag, selnode.getNodeIovBase());
+				List<ChannelType> chanList = cooldao
+						.retrieveChannelsFromNodeSchemaAndDb(schema, db, node,
+								"%");
+				Set<Long> channelList = iovsummary.keySet();
+
+				results.append("<p>Number of channels used "
+						+ channelList.size() + " over a total of "
+						+ chanList.size());
+
+				for (Long chanid : channelList) {
+					CoolIovSummary coolsumm = iovsummary.get(chanid);
+					results.append("<p class=\"small\">" + coolsumm.getChanId()
+							+ " " + coolsumm.getChannelName() + " - "
+							+ coolsumm.getIovbase() + " : ");
+					Map<Long, IovRange> timeranges = coolsumm.getIovRanges();
+					if (timeranges != null) {
+						Set<Long> sincetimes = timeranges.keySet();
+						String colortagstart = colorgoodtagstart;
+						String iovDump = "";
+						long minsince = coolsumm.getMinsince();
+						int iiov = 0;
+						for (Long asince : sincetimes) {
+							IovRange ivr = timeranges.get(asince);
 							colortagstart = colorgoodtagstart;
-							results.append("<p class=\"small\">"
-									+ aniov.getChannelId() + " "
-									+ aniov.getChannelName() + " - "
-									+ aniov.getIovBase() + " : ");
+							if ((iiov == 0)
+									&& (ivr.since.compareTo(minsince) != 0)) {
+								colortagstart = colorwarntagstart;
+							}
+							String holedump = "";
+							if (ivr.ishole) {
+								colortagstart = colorbadtagstart;
+								long timespan = ivr.until - ivr.since;
+								if (coolsumm.getIovbase().equals("time")) {
+									timespan = timespan / 1000L;
+								}
+								holedump = "[" + timespan + "] ";
+							}
+							iovDump = colortagstart
+									+ ivr.niovs
+									+ " ["
+									+ CoolIov.getCoolTimeString(ivr.since,
+											coolsumm.getIovbase())
+									+ "] ["
+									+ CoolIov.getCoolTimeString(ivr.until,
+											coolsumm.getIovbase()) + "] "
+									+ holedump + colortagend;
+
+							results.append(" | " + iovDump);
+							iiov++;
 						}
+						results.append("</p>");
 					}
-
-					if (aniov.getIovHole().doubleValue() == 0) {
-						// If the present iov is not a hole...then print the
-						// previous
-						if (previovDump != null)
-							results.append(" | " + previovDump);
-						comment = "";
-						previovDump = null;
-						colortagstart = colorgoodtagstart;
-						// In this part, we create a string for the NEXT iov,
-						// without writing it, since
-						// we may need to change it when holes are present....
-						if (previov.getChannelId() != aniov.getChannelId()
-								&& (!(previov.getCoolIovMinSince().equals(aniov
-										.getCoolIovMinSince())) || !(previov
-										.getCoolIovMaxUntil().equals(aniov
-										.getCoolIovMaxUntil())))) {
-							colortagstart = colorwarntagstart;
-							comment = "WARN";
-						}
-
-						previovDump = colortagstart + comment + " " + niovs
-								+ " [" + since + "] [" + until + "] "
-								+ colortagend;
-
-					} else {
-						// Modify the previous dump string
-						// In case we see a hole, takes also the previous since
-						// time, add niovs ....
-						if (previovDump != null) {
-							previovDump = colortagstart
-									+ (previov.getNiovs() + 1L) + " ["
-									+ previov.getCoolIovMinSince() + "] ["
-									+ aniov.getCoolIovMaxUntil() + "] "
-									+ colortagend;
-						} else {
-							colortagstart = colorgoodtagstart;
-							previovDump = colortagstart + niovs + " [" + since
-									+ "] [" + until + "] " + colortagend;
-						}
-						results.append(" | " + previovDump);
-						// Now add the hole...
-						previovDump = null;
-						colortagstart = colorbadtagstart;
-						comment = "HOLE";
-						Double hole = aniov.getIovHole().doubleValue();
-						if (selnode.getNodeIovBase().startsWith("time")) {
-							hole = hole / (1000000000.); // Express the hole in
-															// seconds !
-						}
-						since = aniov.getCoolIovMaxUntil();
-						until = aniov.getCoolHoleUntil();
-						previovDump = colortagstart + comment + " [" + since
-								+ "] [" + until + "] " + "[" + hole.intValue()
-								+ "] " + colortagend;
-						results.append(" | " + previovDump);
-						previovDump = null;
-					}
-					previov = aniov;
 				}
-				results.append(" | " + previovDump + "</p>");
 				results.append("</body>");
 			}
 
@@ -412,174 +376,9 @@ public class CoolGtagRESTService {
 		}
 		return results.toString();
 	}
-
-	@GET
-	@Produces("text/html")
-	@Path("/{schema}/{db}/{gtag}/iovsummary/svg")
-	public String listIovsSummaryInNodesSchemaSvg(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("gtag") String gtag) {
-
-		log.info("Calling listIovsSummaryInNodesSchemaSvg..." + schema + " "
-				+ db);
-		StringBuffer results = new StringBuffer();
-		StringBuffer svg = new StringBuffer();
-		List<NodeGtagTagType> nodeingtagList = null;
-		try {
-			results.append("<head><style>" + "h1 {font-size:25px;} "
-					+ "h2 {font-size:20px;}" + "h3 {font-size:15px;}"
-					+ "hr {color:sienna;}" + "p {font-size:14px;}"
-					+ "p.small {line-height:80%;}" + "</style></head>");
-
-			results.append("<body>");
-
-			results.append("<h1># List of NODEs and TAGs iovs statistic associated to "
-					+ gtag + "</h1><br>");
-			nodeingtagList = cooldao.retrieveGtagTagsFromSchemaAndDb(schema
-					+ "%", db, gtag);
-			int itag = 0;
-			for (NodeGtagTagType nodeGtagTagType : nodeingtagList) {
-				results.append("\n");
-				String node = nodeGtagTagType.getNodeFullpath();
-				List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(
-						schema, db, node);
-				NodeType selnode = null;
-				if (nodes != null && nodes.size() > 0) {
-					for (NodeType anode : nodes) {
-						log.info("Found " + anode.getNodeFullpath()
-								+ " of type " + anode.getNodeIovType());
-						selnode = anode;
-					}
-				}
-				results.append("<h3># " + schema + " > " + " "
-						+ selnode.getNodeFullpath() + " ; "
-						+ nodeGtagTagType.getTagName() + " ! " + "</h3><br>");
-
-				// results.append("<p># chanId chanName iovbase isvalid/ishole niovs [since] [until] [time span] .... </p><br>");
-				List<IovType> iovperchanList = cooldao
-						.retrieveIovSummaryPerChannelFromNodeSchemaAndDb(
-								schema, db, node, nodeGtagTagType.getTagName());
-				List<ChannelType> chanList = cooldao
-						.retrieveChannelsFromNodeSchemaAndDb(schema, db, node,
-								"%");
-				Integer viewboxy1 = 0;
-				if (itag > 0) {
-					viewboxy1 += (chanList.size() + 10);
-				}
-				// String svgcanvas =
-				// "<svg width=\""+svglinewidth+"px\" height=\""+chanList.size()+"px\" viewBox=\"0 "+viewboxy1+" "+svglinewidth+" "+chanList.size()+" >";
-				String svgcanvas = "<svg width=\""
-						+ svglinewidth
-						+ "px\" height=\""
-						+ (chanList.size() * linewidth + 10)
-						+ "px\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">";
-				svg.append(svgcanvas);
-				IovType previov = null;
-				itag++;
-				Long ichan = 0L;
-				svgheight = (long) chanList.size();
-				results.append("<p>Number of channels " + chanList.size() + " ");
-				long niovs = 0;
-				Long svgabsmax = 0L;
-				for (IovType aniov : iovperchanList) {
-					aniov.setIovBase(selnode.getNodeIovBase());
-					// results.append("<p>"
-					// + aniov.getChannelId() + " "
-					// + aniov.getChannelName() + " "
-					// + aniov.getIovBase() + "</p><br> ");
-					Double isvalid = aniov.getIovHole().doubleValue();
-					Long since = 0L;
-					Long until = 0L;
-					if (aniov.getIovBase().equals("time")) {
-						since = CoolIov.getTime(aniov.getMiniovSince()
-								.toBigInteger());
-						until = CoolIov.getTime(aniov.getMaxiovUntil()
-								.toBigInteger());
-					} else {
-						since = CoolIov.getRun(aniov.getMiniovSince()
-								.toBigInteger());
-						until = CoolIov.getRun(aniov.getMaxiovUntil()
-								.toBigInteger());
-					}
-
-					if (until > svgabsmax) {
-						svgabsmax = until;
-					}
-					niovs += aniov.getNiovs();
-					if (previov == null) {
-						svgabsmin = since;
-						if (svgabsmin == 0) {
-							svgabsmin = until;
-						}
-						results.append(" Since = " + since + " ");
-					}
-
-					if (previov != null) {
-						if (previov.getChannelId() != aniov.getChannelId()) {
-							ichan++;
-							svgabsmin = since;
-							if (ichan == 1) {
-								results.append(" Until = " + svgabsmax + " ");
-								results.append(" Niovs = " + niovs);
-							}
-							niovs = 0;
-						}
-					}
-					if (isvalid > 0) {
-						// in this case the isvalid flag has to be 0 for this
-						// iov
-						// results.append("<p>"+0 + " "
-						// +niovs+" "+since+" "+until+" "+timespan+"</p><br>");
-						svg.append(getSvgLine(since, until, ichan,
-								aniov.getIovBase(), false));
-					} else {
-						// results.append("<p>"+isvalid + " "
-						// +niovs+" "+since+" "+until+" "+timespan+"</p><br>");
-						svg.append(getSvgLine(since, until, ichan,
-								aniov.getIovBase(), false));
-					}
-					// If there is a hole then take its times from other fields
-					// and add a line for the previous good iov and the hole
-					if (isvalid > 0) {
-						// results.append("<p>"
-						// + aniov.getChannelId() + " "
-						// + aniov.getChannelName() + " "
-						// + aniov.getIovBase() + "</p><br> ");
-						since = until; // the since of the hole is the until of
-										// the last good
-						if (aniov.getIovBase().equals("time")) {
-							until = CoolIov.getTime(aniov.getHoleUntil()
-									.toBigInteger());
-						} else {
-							until = CoolIov.getRun(aniov.getHoleUntil()
-									.toBigInteger());
-						}
-						// results.append("<p>"+isvalid + " "
-						// +1+" "+since+" "+until+" "+timespan+"</p><br>");
-						svg.append(getSvgLine(since, until, ichan,
-								aniov.getIovBase(), true));
-					}
-					previov = aniov;
-				}
-				if (ichan == 0) {
-					results.append(" Until = " + svgabsmax + " ");
-					results.append(" Niovs = " + niovs);
-				}
-				results.append("</p><br>");
-				results.append(svg.toString() + "</svg><br>");
-				svg.delete(0, svg.length());
-			}
-			results.append("</body>");
-		} catch (CoolIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return results.toString();
-	}
-
+/*
 	protected Map<Long, CoolIovSummary> computeIovRangeMap(String schema,
 			String db, String node, String tag, String iovbase) {
-		List<NodeGtagTagType> nodeingtagList = null;
 		try {
 
 			List<IovType> iovperchanList = cooldao
@@ -614,8 +413,9 @@ public class CoolGtagRESTService {
 					iovsumm = iovsummary.get(aniov.getChannelId());
 				} else {
 					iovsumm = new CoolIovSummary(aniov.getChannelId());
+					iovsumm.setIovbase(aniov.getIovBase());
+					iovsumm.setChannelName(aniov.getChannelName());
 				}
-				iovsumm.setIovbase(aniov.getIovBase());
 				try {
 
 					iovsumm.appendIov(since, until, aniov.getNiovs(), false);
@@ -650,11 +450,11 @@ public class CoolGtagRESTService {
 		return null;
 
 	}
-
+*/
 	@GET
 	@Produces("text/html")
-	@Path("/{schema}/{db}/{gtag}/iovsummary/svgv1")
-	public String listIovsSummaryInNodesSchemaSvgv1(
+	@Path("/{schema}/{db}/{gtag}/iovsummary/svg")
+	public String listIovsSummaryInNodesSchemaSvg(
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("gtag") String gtag) {
 
@@ -664,20 +464,32 @@ public class CoolGtagRESTService {
 		StringBuffer svg = new StringBuffer();
 		List<NodeGtagTagType> nodeingtagList = null;
 		try {
-			results.append("<head><style>" + "h1 {font-size:25px;} "
-					+ "h2 {font-size:20px;}" + "h3 {font-size:15px;}"
-					+ "hr {color:sienna;}" + "p {font-size:14px;}"
+
+			String colorgoodstart = "<span style=\"color:#20D247\">";
+			String colorwarnstart = "<span style=\"color:#D1A22C\">";
+			String colorsepstart = "<span style=\"color:#1A91C4\">";
+			String colorbadstart = "<span style=\"color:#B43613\">";
+			String colortagend = "</span>";
+
+			results.append("<head><style>" + "h1 {font-size:24px;} "
+					+ "h2 {font-size:18px;}" + "h3 {font-size:14px;}"
+					+ "hr {color:sienna;}" + "p {font-size:12px;}"
 					+ "p.small {line-height:80%;}" + "</style></head>");
 
 			results.append("<body>");
 
-			results.append("<h1># List of NODEs and TAGs iovs statistic associated to "
-					+ gtag + "</h1><br>");
+			results.append("<h1>" + colorsepstart
+					+ "List of NODEs and TAGs iovs statistic associated to "
+					+ gtag + colortagend + "</h1><br>");
 			nodeingtagList = cooldao.retrieveGtagTagsFromSchemaAndDb(schema
 					+ "%", db, gtag);
-			int itag = 0;
+			
+			String link = createLink(schema, db, gtag, "");
+			results.append("<p>Follow this link for a text output "
+					+"<a href=\""+link+">"+"text output for iov coverage summary..."+"</a>");
+
 			for (NodeGtagTagType nodeGtagTagType : nodeingtagList) {
-				results.append("\n");
+				results.append("<br><hr>");
 				String node = nodeGtagTagType.getNodeFullpath();
 				List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(
 						schema, db, node);
@@ -697,17 +509,17 @@ public class CoolGtagRESTService {
 				svgabsmax = CoolIov.COOL_MAX_DATE;
 				String seltag = nodeGtagTagType.getTagName();
 				// Long niovs = 0L;
-				Map<Long, CoolIovSummary> iovsummary = computeIovRangeMap(
+				Map<Long, CoolIovSummary> iovsummary = coolutilsdao.computeIovSummaryMap(
 						schema, db, node, seltag, selnode.getNodeIovBase());
 				List<ChannelType> chanList = cooldao
 						.retrieveChannelsFromNodeSchemaAndDb(schema, db, node,
 								"%");
 				Set<Long> channelList = iovsummary.keySet();
-				if (channelList.size()<20) {
+				if (channelList.size() < 20) {
 					linewidth = 10;
-				} else if (channelList.size()<100) {
+				} else if (channelList.size() < 100) {
 					linewidth = 6;
-				} else if (channelList.size()<200) {
+				} else if (channelList.size() < 200) {
 					linewidth = 3;
 				} else {
 					linewidth = 1;
@@ -715,19 +527,12 @@ public class CoolGtagRESTService {
 				results.append("<p>Number of channels used "
 						+ channelList.size() + " over a total of "
 						+ chanList.size());
-				// Integer viewboxy1 = 0;
-				// if (itag > 0) {
-				// viewboxy1 += (channelList.size() + 10);
-				// }
-				// String svgcanvas =
-				// "<svg width=\""+svglinewidth+"px\" height=\""+chanList.size()+"px\" viewBox=\"0 "+viewboxy1+" "+svglinewidth+" "+chanList.size()+" >";
 				String svgcanvas = "<svg width=\""
 						+ svglinewidth
 						+ "px\" height=\""
-						+ (channelList.size() * linewidth + 10)
+						+ (channelList.size() * linewidth + svgheight)
 						+ "px\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">";
 				svg.append(svgcanvas);
-				itag++;
 				Long ichan = 0L;
 				for (Long chanid : channelList) {
 					CoolIovSummary coolsumm = iovsummary.get(chanid);
@@ -754,7 +559,7 @@ public class CoolGtagRESTService {
 							svgabsmax = coolsumm.getMaxsince() + 1000L;
 						}
 					}
-					log.info("Node " + node + " tag " + seltag + ": Chan "
+					log.finer("Node " + node + " tag " + seltag + ": Chan "
 							+ chanid + " is using svgmin " + svgabsmin
 							+ " and svgmax " + svgabsmax + " from "
 							+ coolsumm.getMinsince() + " "
@@ -809,7 +614,7 @@ public class CoolGtagRESTService {
 
 	protected String getSvgLine(Long start, Long end, Long ichan,
 			String iovtype, Boolean ishole) {
-		String svgline = "";
+		StringBuffer svgline = new StringBuffer();
 
 		Long infinity = new Date().getTime();
 		if (!iovtype.equals("time")) {
@@ -840,19 +645,50 @@ public class CoolGtagRESTService {
 			// convert(start,infinity)));
 			// svgline +=
 			// (" x=\""+convert(start,infinity)+"\" y=\""+0+"\" width=\""+width+"\" height=\""+svgheight*linewidth+"\"");
-			svgline = "<line";
-			svgline += (" x1=\"" + convert(start, infinity) + "\" y1=\""
-					+ ichan * linewidth + "\" x2=\"" + convert(end, infinity)
-					+ "\" y2=\"" + ichan * linewidth + "\"");
-			svgline += " stroke=\"red\" stroke-width=\"" + linewidth + "\"/>";
+			svgline.append("<line");
+			svgline.append(" x1=\"" + convert(start, infinity) + "\" y1=\""
+					+ (ichan * linewidth + svgheight) + "\" x2=\""
+					+ convert(end, infinity) + "\" y2=\""
+					+ (ichan * linewidth + svgheight) + "\"");
+			svgline.append(" stroke=\"red\" stroke-width=\"" + linewidth
+					+ "\"/>");
+
+			// Now add a vertical line plus a text giving the limits in the hole
+			// time range
+			svgline.append("<line");
+			svgline.append(" x1=\"" + convert(start, infinity) + "\" y1=\""
+					+ (2) + "\" x2=\"" + convert(start, infinity) + "\" y2=\""
+					+ (ichan * linewidth + svgheight) + "\"");
+			svgline.append(" stroke=\"black\" stroke-width=\"" + 1 + "\"/>");
+			svgline.append("<text x=\"" + convert(start, infinity)
+					+ "\" y=\"2\">");
+			svgline.append(CoolIov.getCoolTimeString(start, iovtype));
+			svgline.append("</text>");
+
 		} else {
-			svgline = "<line";
-			svgline += (" x1=\"" + convert(start, infinity) + "\" y1=\""
+			svgline.append("<line");
+			svgline.append(" x1=\"" + convert(start, infinity) + "\" y1=\""
 					+ ichan * linewidth + "\" x2=\"" + convert(end, infinity)
 					+ "\" y2=\"" + ichan * linewidth + "\"");
-			svgline += " stroke=\"green\" stroke-width=\"" + linewidth + "\"/>";
+			svgline.append(" stroke=\"green\" stroke-width=\"" + linewidth
+					+ "\"/>");
 		}
 
-		return svgline;
+		return svgline.toString();
+	}
+
+	protected String createLink(String schema, String db, 
+			String tag, String command) {
+		String urlbase = null;
+		String commandurl = null;
+		try {
+			urlbase = "https://" + InetAddress.getLocalHost().getHostName()
+					+ ":8443/JBRestCool/rest";
+			commandurl = ("coolgtag/" + schema + "/" + db + "/" + tag + "/" + command);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return urlbase + "/" + commandurl;
 	}
 }

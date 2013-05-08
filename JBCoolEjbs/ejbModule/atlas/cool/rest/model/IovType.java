@@ -23,38 +23,46 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 
 /**
  * <p>
- * This POJO represents some statistics that can be gathered over IOVs. Cool iovs are defined in the _IOVS table of
- * a COOL schema for every folder (node). The purpose of this POJO is to collect information on the amount of iovs
- * are stored for a given node and tag and for every channel, computing also minimum and maximum time intervals.
- * The main usage for this POJO is to explore time coverage for a given node/tag, which is very important
- * when we want to verify the consistency of a GlobalTag.
+ * This POJO represents some statistics that can be gathered over IOVs. Cool
+ * iovs are defined in the _IOVS table of a COOL schema for every folder (node).
+ * The purpose of this POJO is to collect information on the amount of iovs are
+ * stored for a given node and tag and for every channel, computing also minimum
+ * and maximum time intervals. The main usage for this POJO is to explore time
+ * coverage for a given node/tag, which is very important when we want to verify
+ * the consistency of a GlobalTag.
  * </p>
  * <p>
  * The Queries defined for this POJO are: <br>
- * 		<b>QUERY_FINDIOVS [cool_select_pkg]</b><br>
- * 		This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list of matching nodes/tags;
- * 		it uses internally the function cool_select_pkg.f_Get_Iovs(.....).<br>
- * 		For every node/tag/channel there is one line with statistics of iovs.<br>
+ * <b>QUERY_FINDIOVS [cool_select_pkg]</b><br>
+ * This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list
+ * of matching nodes/tags; it uses internally the function
+ * cool_select_pkg.f_Get_Iovs(.....).<br>
+ * For every node/tag/channel there is one line with statistics of iovs.<br>
  * 
- *		<b>QUERY_FINDHOLES [cool_select_pkg]</b><br>
- * 		This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list of matching nodes/tags;
- * 		it uses internally the function cool_select_pkg.f_Get_Iovs(.....).<br>
- * 		For every node/tag/channel there is one line with statistics of holes spotted.<br>
+ * <b>QUERY_FINDHOLES [cool_select_pkg]</b><br>
+ * This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list
+ * of matching nodes/tags; it uses internally the function
+ * cool_select_pkg.f_Get_Iovs(.....).<br>
+ * For every node/tag/channel there is one line with statistics of holes
+ * spotted.<br>
  * 
- *		<b>QUERY_FINDIOVSUMMARY [cool_select_pkg]</b><br>
- * 		This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list of matching nodes/tags;
- * 		it uses internally the function cool_select_pkg.f_Get_Iovs(.....).<br>
- * 		For every node/tag/channel there is at least one(+) line(s) with a summary of time ranges covered.<br>
- * 		For example: ch 1 : [0 - Inf] Niovs  <br>
- * 				 or  ch 1 : [0 - 100] Niovs ; [100 - 110] hole; [110 - Inf] Miovs; <br> 
+ * <b>QUERY_FINDIOVSUMMARY [cool_select_pkg]</b><br>
+ * This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list
+ * of matching nodes/tags; it uses internally the function
+ * cool_select_pkg.f_Get_Iovs(.....).<br>
+ * For every node/tag/channel there is at least one(+) line(s) with a summary of
+ * time ranges covered.<br>
+ * For example: ch 1 : [0 - Inf] Niovs <br>
+ * or ch 1 : [0 - 100] Niovs ; [100 - 110] hole; [110 - Inf] Miovs; <br>
  * </p>
+ * 
  * @author formica
  * @since 2013/04/01
  */
 @Entity
 @NamedNativeQueries({
 		@NamedNativeQuery(name = IovType.QUERY_FINDIOVS, query = "select   "
-				+" channel_id as row_id, "
+				+ " channel_id as row_id, "
 				+ "channel_id, "
 				+ "max(channel_name) as channel_name, "
 				+ "min(iov_since) as miniov_since, "
@@ -62,7 +70,7 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 				+ "max(iov_since) as maxiov_since, "
 				+ "max(iov_until) as maxiov_until, "
 				+ "sum(hole) as iov_hole, "
-				+" 0 as hole_until,"
+				+ " 0 as hole_until,"
 				+ "count(channel_id) as niovs "
 				+ " from ( "
 				+ "select channel_id, channel_name,iov_since, iov_until, next_since, (case when (next_since-iov_until)>0 then (next_since-iov_until) else 0 end) as hole "
@@ -72,7 +80,7 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 				+ "from table(cool_select_pkg.f_get_iovs(:schema,:db,:node,:tag)) order by channel_id asc ) "
 				+ ")  group by channel_id ", resultClass = IovType.class),
 		@NamedNativeQuery(name = IovType.QUERY_FINDHOLES, query = "select   "
-				+" channel_id as row_id, "
+				+ " channel_id as row_id, "
 				+ "channel_id, "
 				+ "max(channel_name) as channel_name, "
 				+ "min(iov_since) as miniov_since, "
@@ -80,7 +88,7 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 				+ "max(iov_since) as maxiov_since, "
 				+ "max(iov_until) as maxiov_until, "
 				+ "sum(hole) as iov_hole, "
-				+" 0 as hole_until,"
+				+ " 0 as hole_until,"
 				+ "count(channel_id) as niovs "
 				+ " from ( "
 				+ "select channel_id, channel_name,iov_since, iov_until, next_since, (case when (next_since-iov_until)>0 then (next_since-iov_until) else 0 end) as hole "
@@ -89,36 +97,84 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 				+ "channel_id, channel_name, iov_since, iov_until,  LEAD(iov_since) OVER(ORDER BY channel_id, iov_since) as next_since "
 				+ "from table(cool_select_pkg.f_get_iovs(:schema,:db,:node,:tag)) order by channel_id asc ) "
 				+ ") where hole>0 group by channel_id ", resultClass = IovType.class),
-			@NamedNativeQuery(name = IovType.QUERY_FINDIOVSUMMARY, query = "select "
-				  +" rownum as row_id, "
-				  +" channel_id, "
-				  +" channel_name, "
-				  +" lowest_since as miniov_since, "
-				  +" iov_until as miniov_until, "
-				  +" iov_since as maxiov_since, "
-				  +" highest_until as maxiov_until, "
-				  +" hole as iov_hole, "
-				  +" next_since as hole_until,"
-				  +" niovs "
-				  +" from (select " 
-				  +" channel_id, channel_name, iov_since, iov_until, next_since, hole, iov_sum, "
-				  +" FIRST_VALUE(iov_since) IGNORE NULLS OVER (PARTITION BY channel_id,iov_sum ORDER BY iov_since) AS lowest_since, "
-				  +" LAST_VALUE(iov_until) IGNORE NULLS OVER (PARTITION BY channel_id,iov_sum ORDER BY iov_since RANGE BETWEEN "
-				  +"  UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS highest_until, "
-				  +" COUNT(iov_sum) OVER (PARTITION BY channel_id,iov_sum ORDER BY iov_since) as niovs "
-				  +" from ( select "
-				  +" channel_id, channel_name,iov_since, iov_until,  next_since, iov_number, hole, "
-				  +" iov_number+LAG(iov_number,1,0) OVER (PARTITION BY channel_id ORDER BY iov_since) as iov_sum "
-				  //				  +" abs(iov_number+LAG(iov_number,1,0) OVER (order by channel_id, iov_since)) as iov_sum "
-				  +" from ( select "
-				  +" channel_id, channel_name,iov_since, iov_until, next_since, "
-				  +" (case when (next_since-iov_until)>0 then (next_since-iov_until) else 0 end) as hole, "
-				  +" SUM(case when (next_since-iov_until)>0 then 1 else 0 end) OVER (PARTITION BY channel_id ORDER BY iov_since "
-				  +" RANGE UNBOUNDED PRECEDING) as iov_number "
-				  +" from ( select " 
-				  +" channel_id, channel_name, iov_since, iov_until,  LEAD(iov_since) OVER (ORDER BY channel_id, iov_since) next_since "
-				  +" from table(cool_select_pkg.f_get_iovs(:schema,:db,:node,:tag)) order by channel_id asc )))) "
-				 + " where iov_until=highest_until ", resultClass = IovType.class)				
+		@NamedNativeQuery(name = IovType.QUERY_FINDIOVSUMMARY, query = "select "
+				+ " rownum as row_id, "
+				+ " channel_id, "
+				+ " channel_name, "
+				+ " lowest_since as miniov_since, "
+				+ " iov_until as miniov_until, "
+				+ " iov_since as maxiov_since, "
+				+ " highest_until as maxiov_until, "
+				+ " hole as iov_hole, "
+				+ " next_since as hole_until,"
+				+ " niovs "
+				+ " from (select "
+				+ " channel_id, channel_name, iov_since, iov_until, next_since, hole, iov_sum, "
+				+ " FIRST_VALUE(iov_since) IGNORE NULLS OVER (PARTITION BY channel_id,iov_sum ORDER BY iov_since) AS lowest_since, "
+				+ " LAST_VALUE(iov_until) IGNORE NULLS OVER (PARTITION BY channel_id,iov_sum ORDER BY iov_since RANGE BETWEEN "
+				+ "  UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS highest_until, "
+				+ " COUNT(iov_sum) OVER (PARTITION BY channel_id,iov_sum ORDER BY iov_since) as niovs "
+				+ " from ( select "
+				+ " channel_id, channel_name,iov_since, iov_until,  next_since, iov_number, hole, "
+				+ " iov_number+LAG(iov_number,1,0) OVER (PARTITION BY channel_id ORDER BY iov_since) as iov_sum "
+				// +" abs(iov_number+LAG(iov_number,1,0) OVER (order by channel_id, iov_since)) as iov_sum "
+				+ " from ( select "
+				+ " channel_id, channel_name,iov_since, iov_until, next_since, "
+				+ " (case when (next_since-iov_until)>0 then (next_since-iov_until) else 0 end) as hole, "
+				+ " SUM(case when (next_since-iov_until)>0 then 1 else 0 end) OVER (PARTITION BY channel_id ORDER BY iov_since "
+				+ " RANGE UNBOUNDED PRECEDING) as iov_number "
+				+ " from ( select "
+				+ " channel_id, channel_name, iov_since, iov_until,  LEAD(iov_since) OVER (ORDER BY channel_id, iov_since) next_since "
+				+ " from table(cool_select_pkg.f_get_iovs(:schema,:db,:node,:tag)) order by channel_id asc )))) "
+				+ " where iov_until=highest_until ", resultClass = IovType.class),
+		@NamedNativeQuery(name = IovType.QUERY_FINDIOVSUMMARY_INRANGE, query = "select "
+				+ " rownum as row_id, "
+				+ " channel_id, "
+				+ " channel_name, "
+				+ " lowest_since as miniov_since, "
+				+ " iov_until as miniov_until, "
+				+ " iov_since as maxiov_since, "
+				+ " highest_until as maxiov_until, "
+				+ " hole as iov_hole, "
+				+ " next_since as hole_until,"
+				+ " niovs "
+				+ " from (select "
+				+ " channel_id, channel_name, iov_since, iov_until, next_since, hole, iov_sum, "
+				+ " FIRST_VALUE(iov_since) IGNORE NULLS OVER (PARTITION BY channel_id,iov_sum ORDER BY iov_since) AS lowest_since, "
+				+ " LAST_VALUE(iov_until) IGNORE NULLS OVER (PARTITION BY channel_id,iov_sum ORDER BY iov_since RANGE BETWEEN "
+				+ "  UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS highest_until, "
+				+ " COUNT(iov_sum) OVER (PARTITION BY channel_id,iov_sum ORDER BY iov_since) as niovs "
+				+ " from ( select "
+				+ " channel_id, channel_name,iov_since, iov_until,  next_since, iov_number, hole, "
+				+ " iov_number+LAG(iov_number,1,0) OVER (PARTITION BY channel_id ORDER BY iov_since) as iov_sum "
+				// +" abs(iov_number+LAG(iov_number,1,0) OVER (order by channel_id, iov_since)) as iov_sum "
+				+ " from ( select "
+				+ " channel_id, channel_name,iov_since, iov_until, next_since, "
+				+ " (case when (next_since-iov_until)>0 then (next_since-iov_until) else 0 end) as hole, "
+				+ " SUM(case when (next_since-iov_until)>0 then 1 else 0 end) OVER (PARTITION BY channel_id ORDER BY iov_since "
+				+ " RANGE UNBOUNDED PRECEDING) as iov_number "
+				+ " from ( select "
+				+ " channel_id, channel_name, iov_since, iov_until,  LEAD(iov_since) OVER (ORDER BY channel_id, iov_since) next_since "
+				+ " from table(cool_select_pkg.f_get_iovsrange(:schema,:db,:node,:tag,:since,:until)) order by channel_id asc )))) "
+				+ " where iov_until=highest_until ", resultClass = IovType.class),
+		@NamedNativeQuery(name = IovType.QUERY_FINDHOLES_INRANGE, query = "select   "
+				+ " channel_id as row_id, "
+				+ "channel_id, "
+				+ "max(channel_name) as channel_name, "
+				+ "min(iov_since) as miniov_since, "
+				+ "min(iov_until) as miniov_until, "
+				+ "max(iov_since) as maxiov_since, "
+				+ "max(iov_until) as maxiov_until, "
+				+ "sum(hole) as iov_hole, "
+				+ " 0 as hole_until,"
+				+ "count(channel_id) as niovs "
+				+ " from ( "
+				+ "select channel_id, channel_name,iov_since, iov_until, next_since, (case when (next_since-iov_until)>0 then (next_since-iov_until) else 0 end) as hole "
+				+ " from ("
+				+ "select "
+				+ "channel_id, channel_name, iov_since, iov_until,  LEAD(iov_since) OVER(ORDER BY channel_id, iov_since) as next_since "
+				+ "from table(cool_select_pkg.f_get_iovsrange(:schema,:db,:node,:tag,:since,:until)) order by channel_id asc ) "
+				+ ") where hole>0 group by channel_id ", resultClass = IovType.class)
 
 })
 @XmlRootElement
@@ -133,7 +189,7 @@ public class IovType implements Serializable {
 	@Id
 	@Column(name = "ROW_ID", precision = 20, scale = 0)
 	BigDecimal rowId;
-	
+
 	@Column(name = "CHANNEL_ID", precision = 10, scale = 0)
 	Long channelId;
 	@Column(name = "CHANNEL_NAME", length = 255)
@@ -174,6 +230,10 @@ public class IovType implements Serializable {
 	public static final String QUERY_FINDHOLES = "cool.findholesperchan";
 	@CoolQuery(name = "cool.findiovsummaryperchan", params = "schema;db;node;tag")
 	public static final String QUERY_FINDIOVSUMMARY = "cool.findiovsummaryperchan";
+	@CoolQuery(name = "cool.findiovsummaryperchaninrange", params = "schema;db;node;tag;since;until")
+	public static final String QUERY_FINDIOVSUMMARY_INRANGE = "cool.findiovsummaryperchaninrange";
+	@CoolQuery(name = "cool.findholesperchaninrange", params = "schema;db;node;tag;since;until")
+	public static final String QUERY_FINDHOLES_INRANGE = "cool.findholesperchaninrange";
 
 	/**
 	 * @return the niovs
@@ -318,7 +378,8 @@ public class IovType implements Serializable {
 	}
 
 	/**
-	 * @param holeUntil the holeUntil to set
+	 * @param holeUntil
+	 *            the holeUntil to set
 	 */
 	public void setHoleUntil(BigDecimal holeUntil) {
 		this.holeUntil = holeUntil;
@@ -393,7 +454,7 @@ public class IovType implements Serializable {
 			Long time = CoolIov.getTime(maxiovSince.toBigInteger());
 			if (time == CoolIov.COOL_MAX_DATE)
 				return "Inf";
-//				return new Long(CoolIov.COOL_MAX_DATE).toString();
+			// return new Long(CoolIov.COOL_MAX_DATE).toString();
 			Date iov = new Date(time);
 			iovstr = TimestampStringFormatter.format(null, iov);
 		}
@@ -416,7 +477,7 @@ public class IovType implements Serializable {
 			Long time = CoolIov.getTime(maxiovUntil.toBigInteger());
 			if (time == CoolIov.COOL_MAX_DATE)
 				return "Inf";
-//				return new Long(CoolIov.COOL_MAX_DATE).toString();
+			// return new Long(CoolIov.COOL_MAX_DATE).toString();
 			Date iov = new Date(time);
 			iovstr = TimestampStringFormatter.format(null, iov);
 		}

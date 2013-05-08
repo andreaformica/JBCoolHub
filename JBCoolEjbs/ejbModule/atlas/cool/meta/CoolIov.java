@@ -6,6 +6,9 @@ package atlas.cool.meta;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Date;
+
+import atlas.cool.rest.utils.TimestampStringFormatter;
 
 /**
  * @author formica
@@ -57,6 +60,23 @@ public class CoolIov implements Serializable {
 		}
 		BigInteger timeInMilliSec = atime.divide(toNanoSeconds.toBigInteger());
 		return timeInMilliSec.longValue();
+	}
+	
+	public static String getCoolTimeString(Long time, String iovBase) {
+		String iovstr = "";
+		if (iovBase.equals("run-lumi")) {
+			if (time == CoolIov.COOL_MAX_DATE)
+				return "Inf";
+			iovstr = time.toString();
+		} else {
+			if (time == 0)
+				return "0";
+			if (time == CoolIov.COOL_MAX_DATE)
+				return "Inf";
+			Date iov = new Date(time);
+			iovstr = TimestampStringFormatter.format(null, iov);
+		}
+		return iovstr;
 	}
 
 }

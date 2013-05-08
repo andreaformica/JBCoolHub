@@ -12,6 +12,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -26,17 +28,28 @@ import oracle.sql.CLOB;
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolIOException;
 import atlas.cool.dao.CoolPayloadDAO;
+import atlas.cool.dao.CoolUtilsDAO;
+import atlas.cool.meta.CoolIov;
 import atlas.cool.meta.CoolPayload;
+import atlas.cool.rest.model.ChannelType;
+import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
+import atlas.cool.rest.model.CoolIovSummary.IovRange;
 
 /**
  * JAX-RS Example
  * 
  * This class produces a RESTful service to read the contents of the members
  * table.
+ * 
+ * <p>The base URL used by the following methods starts with</p>
+ * <p><b>URL: https://hostname:port/JBRestCool/rest/plsqlcool/</b></p>
+ * <p>Hostname: voatlas135</p>
+ * <p>Port: 8443</p> 
+ * <p>The protocol used is https for the moment</p>
  */
 @Path("/plsqlcool")
 @RequestScoped
@@ -46,10 +59,21 @@ public class CoolResourceRESTService {
 	private CoolDAO cooldao;
 	@Inject
 	private CoolPayloadDAO payloaddao;
+	@Inject
+	private CoolUtilsDAO coolutilsdao;
 
 	@Inject
 	private Logger log;
 
+	/**
+	 * <p>Method : /{schema}/{db}/nodes</p>
+	 * <p>It retrieves a list of nodes in XML format.</p>
+	 * @param schema
+	 * 			The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 * 			The Cool Instance name: e.g. COMP200
+	 * @return
+	 */
 	@GET
 	@Produces("text/xml")
 	@Path("/{schema}/{db}/nodes")
@@ -78,6 +102,18 @@ public class CoolResourceRESTService {
 		return results;
 	}
 
+	/**
+	 * <p>Method : /{schema}/{db}/{node}/tags</p>
+	 * <p>It retrieves a list of tags in XML format.</p>
+	 * @param schema
+	 * 			The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 * 			The Cool Instance name: e.g. COMP200
+	 * @param node
+	 * 			The node name : a search string like MDT, in this case we do not use full folder name
+	 * @return
+	 * 		An XML list of tags for the given node.
+	 */
 	@GET
 	@Produces("text/xml")
 	@Path("/{schema}/{db}/{node}/tags")
@@ -103,6 +139,18 @@ public class CoolResourceRESTService {
 		return results;
 	}
 
+	/**
+	 * <p>Method : /{schema}/{db}/{gtag}/trace</p>
+	 * <p>It retrieves a list of tags associated to the given global tag in XML format.</p>
+	 * @param schema
+	 * 			The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 * 			The Cool Instance name: e.g. COMP200
+	 * @param gtag
+	 * 			The Cool global tag : COMCOND-BLKPA-006-09
+	 * @return
+	 * 		An XML list of schemas and folders and tags which are associated to the global tag.
+	 */
 	@GET
 	@Produces("text/xml")
 	@Path("/{schema}/{db}/{gtag}/trace")
@@ -123,6 +171,23 @@ public class CoolResourceRESTService {
 		return results;
 	}
 
+	/**
+	 * <p>Method : /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{time}/{chan}/payload</p>
+	 * <p>It retrieves the payload inside the iov containing time, for the given folder and tag in TEXT format.</p>
+	 * @param schema
+	 * 			The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 * 			The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 * 			The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 * 			The tag name.
+	 * @param time
+	 * 			A time in COOL format.
+	 * @param channel
+	 * 			A channel number.
+	 * @return
+	 */
 	@GET
 	@Produces("text/plain")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{time}/{chan}/payload")
@@ -165,6 +230,26 @@ public class CoolResourceRESTService {
 		return "done";
 	}
 
+	/**
+	 * <p>Method : /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{stime}/{etime}/{chan}/payloads</p>
+	 * <p>It retrieves the payload inside the iov range stime - etime, for the given folder and tag in TEXT format.</p>
+	 * @param schema
+	 * 			The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 * 			The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 * 			The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 * 			The tag name.
+	 * @param stime
+	 * 			A start time in COOL format.
+	 * @param etime
+	 * 			An end time in COOL format.
+	 * @param channel
+	 * 			A channel number.
+	 * @return
+	 * 		Returns a text file with the payloads.
+	 */
 	@GET
 	@Produces("text/plain")
 	// @Path("/payload/{id}")
@@ -213,6 +298,20 @@ public class CoolResourceRESTService {
 		return "done";
 	}
 
+	/**
+	 * <p>Method : /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsperchan</p>
+	 * <p>It retrieves a summary of iovs per channel.</p>
+	 * @param schema
+	 * 			The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 * 			The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 * 			The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 * 			The tag name.
+	 * @return
+	 * 	The XML list of iovs per channel.
+	 */
 	@GET
 	@Produces("text/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsperchan")
@@ -224,6 +323,10 @@ public class CoolResourceRESTService {
 				+ fld + " " + tag);
 		List<IovType> results = null;
 		try {
+			String seltag = tag;
+			if (tag.equals("none")) {
+				seltag = null;
+			}
 			String node = fld;
 			if (!fld.startsWith("/")) {
 				node = "/" + fld;
@@ -239,7 +342,65 @@ public class CoolResourceRESTService {
 				}
 			}
 			results = cooldao.retrieveIovStatPerChannelFromNodeSchemaAndDb(
-					schema, db, node, tag);
+					schema, db, node, seltag);
+			for (IovType aniov : results) {
+				aniov.setIovBase(selnode.getNodeIovBase());
+			}
+		} catch (CoolIOException e) {
+			e.printStackTrace();
+		}
+		return results;
+	}
+	
+	/**
+	 * <p>Method : /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/holes</p>
+	 * <p>It retrieves a summary of holes per channel.</p>
+	 * @param schema
+	 * 			The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 * 			The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 * 			The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 * 			The tag name.
+	 * @param since
+	 * 			The COOL start time.
+	 * @param until
+	 * 			The COOL until time.
+	 * @return
+	 * 		An XML list of holes.
+	 */
+	@GET
+	@Produces("text/xml")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/holes")
+	public List<IovType> getIovHolesPerChannel(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag, 
+			@PathParam("since") BigDecimal since, @PathParam("until") BigDecimal until) {
+
+		log.info("Calling getIovHolesPerChannel..." + schema + " " + db + " "
+				+ fld + " " + tag+" "+since+" "+until);
+		List<IovType> results = null;
+		try {
+			String seltag = tag;
+			if (tag.equals("none")) {
+				seltag = null;
+			}
+			String node = fld;
+			if (!fld.startsWith("/")) {
+				node = "/" + fld;
+			}
+			List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
+					db, node);
+			NodeType selnode = null;
+			if (nodes != null && nodes.size() > 0) {
+				for (NodeType anode : nodes) {
+					log.info("Found " + anode.getNodeFullpath() + " of type "
+							+ anode.getNodeIovType());
+					selnode = anode;
+				}
+			}
+			results = cooldao.retrieveIovSummaryPerChannelFromNodeSchemaAndDbInRange(schema, db, node, seltag, since, until);
 			for (IovType aniov : results) {
 				aniov.setIovBase(selnode.getNodeIovBase());
 			}
@@ -249,6 +410,21 @@ public class CoolResourceRESTService {
 		return results;
 	}
 
+
+	/**
+	 * <p>Method : /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsummary</p>
+	 * <p>It retrieves a summary of iovs per channel.</p>
+	 * @param schema
+	 * 			The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 * 			The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 * 			The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 * 			The tag name.
+	 * @return
+	 * 		An HTML page of summary for every channel.
+	 */
 	@GET
 	@Produces("text/html")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsummary")
@@ -273,10 +449,7 @@ public class CoolResourceRESTService {
 			results.append("<body>");
 			results.append("<h1>List of NODEs and TAGs iovs statistic associated to "
 					+ tag + " in folder " + fld + "</h1><hr>");
-			// nodeingtagList = cooldao.re
-			// for (NodeGtagTagType nodeGtagTagType : nodeingtagList) {
-			// results.append("<br><hr>");
-			// String node = nodeGtagTagType.getNodeFullpath();
+
 			String node = fld;
 			if (!fld.startsWith("/")) {
 				node = "/" + fld;
@@ -291,108 +464,202 @@ public class CoolResourceRESTService {
 					selnode = anode;
 				}
 			}
+			String seltag = tag;
+			if (tag.equals("none")) {
+				seltag = null;
+			}
+
 			results.append("<h2>" + colorseptagstart + schema + " > " + " "
-					+ selnode.getNodeFullpath() + " ; " + tag + colortagend
+					+ selnode.getNodeFullpath() + " ; " + seltag + colortagend
 					+ "</h2>" + "<br>");
 
 			results.append("<h3>chanId chanName iovbase - niovs [since] [until] [holes in seconds] .... </h3>");
-			List<IovType> iovperchanList = cooldao
-					.retrieveIovSummaryPerChannelFromNodeSchemaAndDb(schema,
-							db, node, tag);
-			IovType previov = null;
-			String previovDump = null;
-			String comment = "";
-			String colortagstart = colorgoodtagstart;
-			for (IovType aniov : iovperchanList) {
-				aniov.setIovBase(selnode.getNodeIovBase());
-				if (previov == null) {
-					previov = aniov;
-					results.append("<p class=\"small\">" + aniov.getChannelId()
-							+ " " + aniov.getChannelName() + " - "
-							+ aniov.getIovBase() + " : ");
-				}
-				String since = aniov.getCoolIovMinSince();
-				String until = aniov.getCoolIovMaxUntil();
-				long niovs = aniov.getNiovs();
 
-				// Now print the previous if no holes are found...
-				// if (previovDump != null) {
-				if (aniov.getChannelId() != previov.getChannelId()) {
-					log.info("Channel ID changed..." + aniov.getChannelId()
-							+ " previous was " + previov.getChannelId()
-							+ " iovdump is " + previovDump);
-					if (previovDump != null) {
-						results.append(" | " + previovDump + "</p>");
-						previovDump = null;
-						comment = "";
+			Map<Long, CoolIovSummary> iovsummary = coolutilsdao
+					.computeIovSummaryMap(schema, db, node, seltag,
+							selnode.getNodeIovBase());
+			List<ChannelType> chanList = cooldao
+					.retrieveChannelsFromNodeSchemaAndDb(schema, db, node, "%");
+			Set<Long> channelList = iovsummary.keySet();
+
+			results.append("<p>Number of channels used " + channelList.size()
+					+ " over a total of " + chanList.size());
+
+			for (Long chanid : channelList) {
+				CoolIovSummary coolsumm = iovsummary.get(chanid);
+				results.append("<p class=\"small\">" + coolsumm.getChanId()
+						+ " " + coolsumm.getChannelName() + " - "
+						+ coolsumm.getIovbase() + " : ");
+				Map<Long, IovRange> timeranges = coolsumm.getIovRanges();
+				if (timeranges != null) {
+					Set<Long> sincetimes = timeranges.keySet();
+					String colortagstart = colorgoodtagstart;
+					String iovDump = "";
+					long minsince = coolsumm.getMinsince();
+					int iiov = 0;
+					for (Long asince : sincetimes) {
+						IovRange ivr = timeranges.get(asince);
 						colortagstart = colorgoodtagstart;
-						results.append("<p class=\"small\">"
-								+ aniov.getChannelId() + " "
-								+ aniov.getChannelName() + " - "
-								+ aniov.getIovBase() + " : ");
+						if ((iiov == 0) && (ivr.since.compareTo(minsince) != 0)) {
+							colortagstart = colorwarntagstart;
+						}
+						String holedump = "";
+						if (ivr.ishole) {
+							colortagstart = colorbadtagstart;
+							long timespan = ivr.until - ivr.since;
+							if (coolsumm.getIovbase().equals("time")) {
+								timespan = timespan / 1000L;
+							}
+							holedump = "[" + timespan + "] ";
+						}
+						iovDump = colortagstart
+								+ ivr.niovs
+								+ " ["
+								+ CoolIov.getCoolTimeString(ivr.since,
+										coolsumm.getIovbase())
+								+ "] ["
+								+ CoolIov.getCoolTimeString(ivr.until,
+										coolsumm.getIovbase()) + "] "
+								+ holedump + colortagend;
+
+						results.append(" | " + iovDump);
+						iiov++;
 					}
+					results.append("</p>");
 				}
-
-				if (aniov.getIovHole().doubleValue() == 0) {
-					// If the present iov is not a hole...then print the
-					// previous
-					if (previovDump != null)
-						results.append(" | " + previovDump);
-					comment = "";
-					previovDump = null;
-					colortagstart = colorgoodtagstart;
-					// In this part, we create a string for the NEXT iov,
-					// without writing it, since
-					// we may need to change it when holes are present....
-					if (previov.getChannelId() != aniov.getChannelId()
-							&& (!(previov.getCoolIovMinSince().equals(aniov
-									.getCoolIovMinSince())) || !(previov
-									.getCoolIovMaxUntil().equals(aniov
-									.getCoolIovMaxUntil())))) {
-						colortagstart = colorwarntagstart;
-						comment = "WARN";
-					}
-
-					previovDump = colortagstart + comment + " " + niovs + " ["
-							+ since + "] [" + until + "] " + colortagend;
-
-				} else {
-					// Modify the previous dump string
-					// In case we see a hole, takes also the previous since
-					// time, add niovs ....
-					if (previovDump != null) {
-						previovDump = colortagstart + (previov.getNiovs() + 1L)
-								+ " [" + previov.getCoolIovMinSince() + "] ["
-								+ aniov.getCoolIovMaxUntil() + "] "
-								+ colortagend;
-					} else {
-						colortagstart = colorgoodtagstart;
-						previovDump = colortagstart + niovs + " [" + since
-								+ "] [" + until + "] " + colortagend;
-					}
-					results.append(" | " + previovDump);
-					// Now add the hole...
-					previovDump = null;
-					colortagstart = colorbadtagstart;
-					comment = "HOLE";
-					Double hole = aniov.getIovHole().doubleValue();
-					if (selnode.getNodeIovBase().startsWith("time")) {
-						hole = hole / (1000000000.); // Express the hole in
-														// seconds !
-					}
-					since = aniov.getCoolIovMaxUntil();
-					until = aniov.getCoolHoleUntil();
-					previovDump = colortagstart + comment + " [" + since
-							+ "] [" + until + "] " + "[" + hole.intValue()
-							+ "] " + colortagend;
-					results.append(" | " + previovDump);
-					previovDump = null;
-				}
-				previov = aniov;
 			}
-			results.append(" | " + previovDump + "</p>");
 			results.append("</body>");
-			// }
+
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return results.toString();
+	}
+
+	/**
+	 * <p>Method : /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary</p>
+	 * <p>It retrieves a summary of iovs in a given range per channel.</p>
+	 * @param schema
+	 * 			The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 * 			The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 * 			The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 * 			The tag name.
+	 * @param since
+	 * 			The COOL since time.
+	 * @param until
+	 * 			The COOL until time.
+	 * @return
+	 * 		An HTML page of summary for every channel.
+	 */
+	@GET
+	@Produces("text/html")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary")
+	public String listIovsSummaryInNodesSchemaTagRange(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("since") BigDecimal since, @PathParam("until") BigDecimal until) {
+
+		log.info("Calling listIovsSummaryInNodesSchemaTag..." + schema + " "
+				+ db + " folder " + fld + " tag " + tag);
+		StringBuffer results = new StringBuffer();
+		// List<NodeGtagTagType> nodeingtagList = null;
+		String colorgoodtagstart = "<span style=\"color:#20D247\">";
+		String colorwarntagstart = "<span style=\"color:#D1A22C\">";
+		String colorseptagstart = "<span style=\"color:#1A91C4\">";
+		String colorbadtagstart = "<span style=\"color:#B43613\">";
+		String colortagend = "</span>";
+		results.append("<head><style>" + "h1 {font-size:25px;} "
+				+ "h2 {font-size:20px;}" + "h3 {font-size:15px;}"
+				+ "hr {color:sienna;}" + "p {font-size:14px;}"
+				+ "p.small {line-height:80%;}" + "</style></head>");
+		try {
+			results.append("<body>");
+			results.append("<h1>List of NODEs and TAGs iovs statistic associated to "
+					+ tag + " in folder " + fld + "</h1><hr>");
+
+			String node = fld;
+			if (!fld.startsWith("/")) {
+				node = "/" + fld;
+			}
+			List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
+					db, node);
+			NodeType selnode = null;
+			if (nodes != null && nodes.size() > 0) {
+				for (NodeType anode : nodes) {
+					log.info("Found " + anode.getNodeFullpath() + " of type "
+							+ anode.getNodeIovType());
+					selnode = anode;
+				}
+			}
+			String seltag = tag;
+			if (tag.equals("none")) {
+				seltag = null;
+			}
+
+			results.append("<h2>" + colorseptagstart + schema + " > " + " "
+					+ selnode.getNodeFullpath() + " ; " + seltag + colortagend
+					+ "</h2>" + "<br>");
+
+			results.append("<h3>chanId chanName iovbase - niovs [since] [until] [holes in seconds] .... </h3>");
+
+			Map<Long, CoolIovSummary> iovsummary = coolutilsdao
+					.computeIovSummaryRangeMap(schema, db, node, seltag,
+							selnode.getNodeIovBase(),since,until);
+			List<ChannelType> chanList = cooldao
+					.retrieveChannelsFromNodeSchemaAndDb(schema, db, node, "%");
+			Set<Long> channelList = iovsummary.keySet();
+
+			results.append("<p>Number of channels used " + channelList.size()
+					+ " over a total of " + chanList.size());
+
+			for (Long chanid : channelList) {
+				CoolIovSummary coolsumm = iovsummary.get(chanid);
+				results.append("<p class=\"small\">" + coolsumm.getChanId()
+						+ " " + coolsumm.getChannelName() + " - "
+						+ coolsumm.getIovbase() + " : ");
+				Map<Long, IovRange> timeranges = coolsumm.getIovRanges();
+				if (timeranges != null) {
+					Set<Long> sincetimes = timeranges.keySet();
+					String colortagstart = colorgoodtagstart;
+					String iovDump = "";
+					long minsince = coolsumm.getMinsince();
+					int iiov = 0;
+					for (Long asince : sincetimes) {
+						IovRange ivr = timeranges.get(asince);
+						colortagstart = colorgoodtagstart;
+						if ((iiov == 0) && (ivr.since.compareTo(minsince) != 0)) {
+							colortagstart = colorwarntagstart;
+						}
+						String holedump = "";
+						if (ivr.ishole) {
+							colortagstart = colorbadtagstart;
+							long timespan = ivr.until - ivr.since;
+							if (coolsumm.getIovbase().equals("time")) {
+								timespan = timespan / 1000L;
+							}
+							holedump = "[" + timespan + "] ";
+						}
+						iovDump = colortagstart
+								+ ivr.niovs
+								+ " ["
+								+ CoolIov.getCoolTimeString(ivr.since,
+										coolsumm.getIovbase())
+								+ "] ["
+								+ CoolIov.getCoolTimeString(ivr.until,
+										coolsumm.getIovbase()) + "] "
+								+ holedump + colortagend;
+
+						results.append(" | " + iovDump);
+						iiov++;
+					}
+					results.append("</p>");
+				}
+			}
+			results.append("</body>");
 
 		} catch (CoolIOException e) {
 			// TODO Auto-generated catch block

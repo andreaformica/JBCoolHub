@@ -3,6 +3,7 @@
  */
 package atlas.cool.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -282,6 +283,44 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 		params[3] = tag;
 		log.info("Using query "+IovType.QUERY_FINDIOVSUMMARY+" with "+schema+" "+db+" "+node+" "+tag);
 		List<IovType> iovstatlist = (List<IovType>) coolrep.findCoolList(IovType.QUERY_FINDIOVSUMMARY,params);
+		return iovstatlist;
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolDAO#retrieveIovSummaryPerChannelFromNodeSchemaAndDbInRange(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.math.BigDecimal, java.math.BigDecimal)
+	 */
+	@Override
+	public List<IovType> retrieveIovSummaryPerChannelFromNodeSchemaAndDbInRange(
+			String schema, String db, String node, String tag,
+			BigDecimal since, BigDecimal until) throws CoolIOException {
+		Object[] params = new Object[6];
+		params[0] = schema;
+		params[1] = db;
+		params[2] = node;
+		params[3] = tag;
+		params[4] = since;
+		params[5] = until;
+		log.info("Using query "+IovType.QUERY_FINDIOVSUMMARY_INRANGE+" with "+schema+" "+db+" "+node+" "+tag+" "+since+" "+until);
+		List<IovType> iovstatlist = (List<IovType>) coolrep.findCoolList(IovType.QUERY_FINDIOVSUMMARY_INRANGE,params);
+		return iovstatlist;
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolDAO#retrieveHolesStatPerChannelFromNodeSchemaAndDbInRange(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.math.BigDecimal, java.math.BigDecimal)
+	 */
+	@Override
+	public List<IovType> retrieveHolesStatPerChannelFromNodeSchemaAndDbInRange(
+			String schema, String db, String node, String tag,
+			BigDecimal since, BigDecimal until) throws CoolIOException {
+		Object[] params = new Object[6];
+		params[0] = schema;
+		params[1] = db;
+		params[2] = node;
+		params[3] = tag;
+		params[4] = since;
+		params[5] = until;
+		log.info("Using query "+IovType.QUERY_FINDHOLES_INRANGE+" with "+schema+" "+db+" "+node+" "+tag+" "+since+" "+until);
+		List<IovType> iovstatlist = (List<IovType>) coolrep.findCoolList(IovType.QUERY_FINDHOLES_INRANGE,params);
 		return iovstatlist;
 	}
 
