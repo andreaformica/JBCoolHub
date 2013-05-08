@@ -4,9 +4,17 @@
 package atlas.cool.rest.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import atlas.cool.meta.CoolIov;
 
@@ -14,14 +22,21 @@ import atlas.cool.meta.CoolIov;
  * @author formica
  * 
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CoolIovSummary implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
 	Long chanId;
 	String channelName;
+	String schema;
+	String db;
+	String node;
+	String tag;
 	String summary;
 	String iovbase;
 	Long totalIovs = 0L;
@@ -30,13 +45,10 @@ public class CoolIovSummary implements Serializable {
 	Long minuntil = CoolIov.COOL_MAX_DATE;
 	Long maxuntil = 0L;
 
-	public class IovRange {
-		public Long since;
-		public Long until;
-		public Long niovs;
-		public Boolean ishole;
-	}
+	@XmlElement(name="iovrange", type=IovRange.class)
+	Collection<IovRange> iovlist = null; 
 
+	@XmlTransient
 	Map<Long, IovRange> iovs = new TreeMap<Long, IovRange>();
 
 	/**
@@ -75,12 +87,15 @@ public class CoolIovSummary implements Serializable {
 		if (iovs.containsKey(since)) {
 			// modify existing iov if it is of the same type
 			IovRange iov = iovs.get(since);
-			if ((!(iov.ishole) && !(ishole)) && iov.until.compareTo(until) < 0) {
-				iov.until = until;
-				iov.niovs += niovs;
+			if ((!(iov.getIshole()) && !(ishole)) && iov.getUntil().compareTo(until) < 0) {
+				iov.setUntil(until);
+				iov.setNiovs(niovs);
 			} else {
 				throw new Exception(
-						"Cannot append an iov of different type for the same since!!");
+						"Cannot append an iov of different type for the same since:\n"
+								+"new iov: "+since+" "+until+" "+niovs+" "+ishole+" \n"
+								+"old iov: "+iov.getSince()+" "+iov.getUntil()+" "+iov.getNiovs()+" "+iov.getIshole()+" \n"
+						);
 			}
 		} else {
 			//
@@ -89,11 +104,11 @@ public class CoolIovSummary implements Serializable {
 			Set<Long> sincetimes = iovs.keySet();
 			for (Long asince : sincetimes) {
 				IovRange aniov = iovs.get(asince);
-				if (aniov.until.compareTo(since) == 0) {
+				if (aniov.getUntil().compareTo(since) == 0) {
 					if (!(aniov.ishole) && !(ishole)) {
-						aniov.until = until;
-						aniov.niovs += niovs;
-						if (aniov.since.compareTo(minsince) == 0)
+						aniov.setUntil(until);
+						aniov.setNiovs(niovs);
+						if (aniov.getSince().compareTo(minsince) == 0)
 							minuntil = until;
 						updatediov = true;
 					}
@@ -101,14 +116,12 @@ public class CoolIovSummary implements Serializable {
 			}
 			if (!updatediov) {
 				// store a new iov
-				IovRange iov = new IovRange();
-				iov.since = since;
-				iov.until = until;
-				iov.niovs = niovs;
-				iov.ishole = ishole;
+				IovRange iov = new IovRange(since,until,niovs,ishole);
 				iovs.put(since, iov);
 			}
 		}
+		setIovlist(iovs.values());
+		
 		totalIovs += niovs;
 		if (!ishole) {
 			if (since.longValue() < minsince.longValue())
@@ -123,6 +136,7 @@ public class CoolIovSummary implements Serializable {
 		}
 		
 	}
+
 
 	public Map<Long, IovRange> getIovRanges() {
 		return iovs;
@@ -225,6 +239,76 @@ public class CoolIovSummary implements Serializable {
 	 */
 	public void setChannelName(String channelName) {
 		this.channelName = channelName;
+	}
+
+	/**
+	 * @return the schema
+	 */
+	public String getSchema() {
+		return schema;
+	}
+
+	/**
+	 * @param schema the schema to set
+	 */
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
+
+	/**
+	 * @return the db
+	 */
+	public String getDb() {
+		return db;
+	}
+
+	/**
+	 * @param db the db to set
+	 */
+	public void setDb(String db) {
+		this.db = db;
+	}
+
+	/**
+	 * @return the node
+	 */
+	public String getNode() {
+		return node;
+	}
+
+	/**
+	 * @param node the node to set
+	 */
+	public void setNode(String node) {
+		this.node = node;
+	}
+
+	/**
+	 * @return the tag
+	 */
+	public String getTag() {
+		return tag;
+	}
+
+	/**
+	 * @param tag the tag to set
+	 */
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
+	/**
+	 * @return the iovlist
+	 */
+	public Collection<IovRange> getIovlist() {
+		return iovlist;
+	}
+
+	/**
+	 * @param iovlist the iovlist to set
+	 */
+	public void setIovlist(Collection<IovRange> iovlist) {
+		this.iovlist = iovlist;
 	}
 
 	

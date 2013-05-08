@@ -21,10 +21,11 @@ import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.meta.CoolIov;
 import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovSummary;
-import atlas.cool.rest.model.CoolIovSummary.IovRange;
+import atlas.cool.rest.model.IovRange;
 import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
+import atlas.cool.rest.utils.SvgRestUtils;
 
 /**
  * JAX-RS Example
@@ -44,11 +45,6 @@ public class CoolGtagRESTService {
 	@Inject
 	private Logger log;
 
-	final Integer svglinewidth = 1000;
-	Long svgabsmin = 0L;
-	Long svgabsmax = CoolIov.COOL_MAX_DATE;
-	Integer linewidth = 3;
-	Long svgheight = 10L;
 
 	@GET
 	@Produces("text/plain")
@@ -239,25 +235,25 @@ public class CoolGtagRESTService {
 							IovRange ivr = timeranges.get(asince);
 							colortagstart = colorgoodtagstart;
 							if ((iiov == 0)
-									&& (ivr.since.compareTo(minsince) != 0)) {
+									&& (ivr.getSince().compareTo(minsince) != 0)) {
 								colortagstart = colorwarntagstart;
 							}
 							String holedump = "";
-							if (ivr.ishole) {
+							if (ivr.getIshole()) {
 								colortagstart = colorbadtagstart;
-								long timespan = ivr.until - ivr.since;
+								long timespan = ivr.getUntil() - ivr.getSince();
 								if (coolsumm.getIovbase().equals("time")) {
 									timespan = timespan / 1000L;
 								}
 								holedump = "[" + timespan + "] ";
 							}
 							iovDump = colortagstart
-									+ ivr.niovs
+									+ ivr.getNiovs()
 									+ " ["
-									+ CoolIov.getCoolTimeString(ivr.since,
+									+ CoolIov.getCoolTimeString(ivr.getSince(),
 											coolsumm.getIovbase())
 									+ "] ["
-									+ CoolIov.getCoolTimeString(ivr.until,
+									+ CoolIov.getCoolTimeString(ivr.getUntil(),
 											coolsumm.getIovbase()) + "] "
 									+ holedump + colortagend;
 
@@ -376,81 +372,7 @@ public class CoolGtagRESTService {
 		}
 		return results.toString();
 	}
-/*
-	protected Map<Long, CoolIovSummary> computeIovRangeMap(String schema,
-			String db, String node, String tag, String iovbase) {
-		try {
 
-			List<IovType> iovperchanList = cooldao
-					.retrieveIovSummaryPerChannelFromNodeSchemaAndDb(schema,
-							db, node, tag);
-
-			svgabsmin = 0L;
-			svgabsmax = CoolIov.COOL_MAX_DATE;
-			Long niovs = 0L;
-			Map<Long, CoolIovSummary> iovsummary = new HashMap<Long, CoolIovSummary>();
-			for (IovType aniov : iovperchanList) {
-				aniov.setIovBase(iovbase);
-				Double isvalid = aniov.getIovHole().doubleValue();
-				Long since = 0L;
-				Long until = 0L;
-				if (aniov.getIovBase().equals("time")) {
-					since = CoolIov.getTime(aniov.getMiniovSince()
-							.toBigInteger());
-					until = CoolIov.getTime(aniov.getMaxiovUntil()
-							.toBigInteger());
-				} else {
-					since = CoolIov.getRun(aniov.getMiniovSince()
-							.toBigInteger());
-					until = CoolIov.getRun(aniov.getMaxiovUntil()
-							.toBigInteger());
-				}
-
-				// niovs += aniov.getNiovs();
-
-				CoolIovSummary iovsumm = null;
-				if (iovsummary.containsKey(aniov.getChannelId())) {
-					iovsumm = iovsummary.get(aniov.getChannelId());
-				} else {
-					iovsumm = new CoolIovSummary(aniov.getChannelId());
-					iovsumm.setIovbase(aniov.getIovBase());
-					iovsumm.setChannelName(aniov.getChannelName());
-				}
-				try {
-
-					iovsumm.appendIov(since, until, aniov.getNiovs(), false);
-					// If there is a hole then take its times from other
-					// fields and add a line for the previous good iov and
-					// the hole
-					if (isvalid > 0) {
-
-						since = until; // the since of the hole is the until
-										// of the last good
-						if (aniov.getIovBase().equals("time")) {
-							until = CoolIov.getTime(aniov.getHoleUntil()
-									.toBigInteger());
-						} else {
-							until = CoolIov.getRun(aniov.getHoleUntil()
-									.toBigInteger());
-						}
-						iovsumm.appendIov(since, until, 0L, true);
-					}
-					iovsummary.put(aniov.getChannelId(), iovsumm);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			return iovsummary;
-
-		} catch (CoolIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-
-	}
-*/
 	@GET
 	@Produces("text/html")
 	@Path("/{schema}/{db}/{gtag}/iovsummary/svg")
@@ -505,8 +427,9 @@ public class CoolGtagRESTService {
 						+ selnode.getNodeFullpath() + " ; "
 						+ nodeGtagTagType.getTagName() + " ! " + "</h3><br>");
 
-				svgabsmin = 0L;
-				svgabsmax = CoolIov.COOL_MAX_DATE;
+				SvgRestUtils svgutil = new SvgRestUtils();
+				svgutil.setSvgabsmin(0L);
+				svgutil.setSvgabsmax(CoolIov.COOL_MAX_DATE);
 				String seltag = nodeGtagTagType.getTagName();
 				// Long niovs = 0L;
 				Map<Long, CoolIovSummary> iovsummary = coolutilsdao.computeIovSummaryMap(
@@ -516,21 +439,21 @@ public class CoolGtagRESTService {
 								"%");
 				Set<Long> channelList = iovsummary.keySet();
 				if (channelList.size() < 20) {
-					linewidth = 10;
+					svgutil.setLinewidth(10);
 				} else if (channelList.size() < 100) {
-					linewidth = 6;
+					svgutil.setLinewidth(6);
 				} else if (channelList.size() < 200) {
-					linewidth = 3;
+					svgutil.setLinewidth(3);
 				} else {
-					linewidth = 1;
+					svgutil.setLinewidth(1);
 				}
 				results.append("<p>Number of channels used "
 						+ channelList.size() + " over a total of "
 						+ chanList.size());
 				String svgcanvas = "<svg width=\""
-						+ svglinewidth
+						+ svgutil.getSvglinewidth()
 						+ "px\" height=\""
-						+ (channelList.size() * linewidth + svgheight)
+						+ (channelList.size() * svgutil.getLinewidth() + svgutil.getSvgheight())
 						+ "px\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">";
 				svg.append(svgcanvas);
 				Long ichan = 0L;
@@ -544,24 +467,24 @@ public class CoolGtagRESTService {
 								+ coolsumm.getMaxsince() + " / "
 								+ coolsumm.getMaxuntil() + "</p><br>");
 
-						svgabsmin = coolsumm.getMinsince();
-						svgabsmax = coolsumm.getMaxuntil();
+						svgutil.setSvgabsmin(coolsumm.getMinsince());
+						svgutil.setSvgabsmax(coolsumm.getMaxuntil());
 						if (coolsumm.getMinuntil() < CoolIov.COOL_MAX_DATE) {
 							Long iovspan = coolsumm.getMinuntil()
 									- coolsumm.getMinsince();
 							if (iovspan < 1000L)
-								svgabsmin = coolsumm.getMinuntil()
-										- (Long) (iovspan / 10L);
+								svgutil.setSvgabsmin(coolsumm.getMinuntil()
+										- (Long) (iovspan / 10L));
 							else
-								svgabsmin = coolsumm.getMinuntil() - 1000L;
+								svgutil.setSvgabsmin(coolsumm.getMinuntil() - 1000L);
 						}
 						if (coolsumm.getMaxuntil() >= CoolIov.COOL_MAX_RUN) {
-							svgabsmax = coolsumm.getMaxsince() + 1000L;
+							svgutil.setSvgabsmax(coolsumm.getMaxsince() + 1000L);
 						}
 					}
 					log.finer("Node " + node + " tag " + seltag + ": Chan "
-							+ chanid + " is using svgmin " + svgabsmin
-							+ " and svgmax " + svgabsmax + " from "
+							+ chanid + " is using svgmin " + svgutil.getSvgabsmin()
+							+ " and svgmax " + svgutil.getSvgabsmax() + " from "
 							+ coolsumm.getMinsince() + " "
 							+ coolsumm.getMinuntil() + " "
 							+ coolsumm.getMaxsince());
@@ -570,8 +493,8 @@ public class CoolGtagRESTService {
 						Set<Long> sincetimes = timeranges.keySet();
 						for (Long asince : sincetimes) {
 							IovRange ivr = timeranges.get(asince);
-							svg.append(getSvgLine(ivr.since, ivr.until, ichan,
-									coolsumm.getIovbase(), ivr.ishole));
+							svg.append(svgutil.getSvgLine(ivr.getSince(), ivr.getUntil(), ichan,
+									coolsumm.getIovbase(), ivr.getIshole()));
 						}
 					}
 					ichan++;
@@ -585,96 +508,6 @@ public class CoolGtagRESTService {
 			e.printStackTrace();
 		}
 		return results.toString();
-	}
-
-	/**
-	 * Description: convert point from iov in real times to iov in a range
-	 * 0-1000 for svg visualization. In the following , INF is the infinity
-	 * (from Cool iovs), MW is the maximum width (set to 1000). f(x) = a.x + b
-	 * ==> f(t0) = a.t0 + b = 0 a = sinTh / cosTh = MW/(INF-t0) ==> t0 . MW/
-	 * (INF-t0) + b = 0 ==> b = -t0.MW/(INF-t0)
-	 * 
-	 * @param point
-	 * @param endrange
-	 * @return
-	 */
-	private Double convert(Long point, Long endrange) {
-		// map the point from the range svgabsmin - inf to 0 svglinewidth
-		Double b = -(svgabsmin.doubleValue() * (Double) (svglinewidth
-				.doubleValue() / (endrange.doubleValue() - svgabsmin
-				.doubleValue())));
-		Double newpoint = (point.doubleValue())
-				* (Double) (svglinewidth.doubleValue() / (endrange
-						.doubleValue() - svgabsmin.doubleValue())) + b;
-		// log.info("conversion gives " + point.doubleValue() + " ==> " +
-		// newpoint
-		// + " using " + svgabsmin);
-		return newpoint;
-	}
-
-	protected String getSvgLine(Long start, Long end, Long ichan,
-			String iovtype, Boolean ishole) {
-		StringBuffer svgline = new StringBuffer();
-
-		Long infinity = new Date().getTime();
-		if (!iovtype.equals("time")) {
-			// infinity = CoolIov.COOL_MAX_RUN;
-			infinity = svgabsmax;
-		}
-
-		if (start > infinity)
-			start = infinity;
-		if (end > infinity)
-			end = infinity;
-		if (start < svgabsmin) {
-			start = svgabsmin;
-		}
-		log.info("Using start = " + start + " -> " + convert(start, infinity)
-				+ " end= " + end + " -> " + convert(end, infinity)
-				+ " with svgmin " + svgabsmin + " and svgmax " + svgabsmax);
-		if (ishole) {
-			/*
-			 * svgline = "<circle"; Double radius = ((convert(end, infinity) -
-			 * convert(start,infinity)) / 2); Double xcenter =
-			 * convert(start,infinity) + (radius); svgline +=
-			 * (" cx=\""+xcenter+"\" cy=\""
-			 * +ichan*linewidth+"\" r=\""+radius*5+"\" ");
-			 */
-			// svgline = "<rect";
-			// Double width = ((convert(end, infinity) -
-			// convert(start,infinity)));
-			// svgline +=
-			// (" x=\""+convert(start,infinity)+"\" y=\""+0+"\" width=\""+width+"\" height=\""+svgheight*linewidth+"\"");
-			svgline.append("<line");
-			svgline.append(" x1=\"" + convert(start, infinity) + "\" y1=\""
-					+ (ichan * linewidth + svgheight) + "\" x2=\""
-					+ convert(end, infinity) + "\" y2=\""
-					+ (ichan * linewidth + svgheight) + "\"");
-			svgline.append(" stroke=\"red\" stroke-width=\"" + linewidth
-					+ "\"/>");
-
-			// Now add a vertical line plus a text giving the limits in the hole
-			// time range
-			svgline.append("<line");
-			svgline.append(" x1=\"" + convert(start, infinity) + "\" y1=\""
-					+ (2) + "\" x2=\"" + convert(start, infinity) + "\" y2=\""
-					+ (ichan * linewidth + svgheight) + "\"");
-			svgline.append(" stroke=\"black\" stroke-width=\"" + 1 + "\"/>");
-			svgline.append("<text x=\"" + convert(start, infinity)
-					+ "\" y=\"2\">");
-			svgline.append(CoolIov.getCoolTimeString(start, iovtype));
-			svgline.append("</text>");
-
-		} else {
-			svgline.append("<line");
-			svgline.append(" x1=\"" + convert(start, infinity) + "\" y1=\""
-					+ ichan * linewidth + "\" x2=\"" + convert(end, infinity)
-					+ "\" y2=\"" + ichan * linewidth + "\"");
-			svgline.append(" stroke=\"green\" stroke-width=\"" + linewidth
-					+ "\"/>");
-		}
-
-		return svgline.toString();
 	}
 
 	protected String createLink(String schema, String db, 

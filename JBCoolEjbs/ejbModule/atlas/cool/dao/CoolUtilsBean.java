@@ -57,7 +57,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 					.retrieveIovSummaryPerChannelFromNodeSchemaAndDb(schema,
 							db, node, tag);
 
-			Map<Long, CoolIovSummary> iovsummary = getSummary(iovperchanList, iovbase);
+			Map<Long, CoolIovSummary> iovsummary = getSummary(iovperchanList,schema,db,node,tag, iovbase);
 			return iovsummary;
 		} catch (CoolIOException e) {
 			// TODO Auto-generated catch block
@@ -66,7 +66,8 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		return null;
 	}
 	
-	protected Map<Long, CoolIovSummary> getSummary(List<IovType> iovperchanList,String iovbase) {
+	protected Map<Long, CoolIovSummary> getSummary(List<IovType> iovperchanList, String schema,
+			String db, String node, String tag, String iovbase) {
 		
 		Map<Long, CoolIovSummary> iovsummary = new HashMap<Long, CoolIovSummary>();
 
@@ -96,6 +97,10 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 				iovsumm = new CoolIovSummary(aniov.getChannelId());
 				iovsumm.setIovbase(aniov.getIovBase());
 				iovsumm.setChannelName(aniov.getChannelName());
+				iovsumm.setSchema(schema);
+				iovsumm.setDb(db);
+				iovsumm.setNode(node);
+				iovsumm.setTag(tag);
 			}
 			try {
 
@@ -125,6 +130,56 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		return iovsummary;
 	}
 
+	
+	protected Map<Long, CoolIovSummary> getSummaryOrigTime(List<IovType> iovperchanList, String schema,
+			String db, String node, String tag, String iovbase) {
+		
+		Map<Long, CoolIovSummary> iovsummary = new HashMap<Long, CoolIovSummary>();
+
+		for (IovType aniov : iovperchanList) {
+			aniov.setIovBase(iovbase);
+			Double isvalid = aniov.getIovHole().doubleValue();
+			Long since = 0L;
+			Long until = 0L;
+			since = aniov.getMiniovSince().longValueExact();
+			until = aniov.getMaxiovUntil().longValueExact();
+
+			// niovs += aniov.getNiovs();
+
+			CoolIovSummary iovsumm = null;
+			if (iovsummary.containsKey(aniov.getChannelId())) {
+				iovsumm = iovsummary.get(aniov.getChannelId());
+			} else {
+				iovsumm = new CoolIovSummary(aniov.getChannelId());
+				iovsumm.setIovbase(aniov.getIovBase());
+				iovsumm.setChannelName(aniov.getChannelName());
+				iovsumm.setSchema(schema);
+				iovsumm.setDb(db);
+				iovsumm.setNode(node);
+				iovsumm.setTag(tag);
+			}
+			try {
+
+				iovsumm.appendIov(since, until, aniov.getNiovs(), false);
+				// If there is a hole then take its times from other
+				// fields and add a line for the previous good iov and
+				// the hole
+				if (isvalid > 0) {
+
+					since = until; // the since of the hole is the until
+									// of the last good
+					until = aniov.getHoleUntil().longValueExact();
+					iovsumm.appendIov(since, until, 0L, true);
+				}
+				iovsummary.put(aniov.getChannelId(), iovsumm);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return iovsummary;
+	}
+
 	/* (non-Javadoc)
 	 * @see atlas.cool.dao.CoolUtilsDAO#computeIovSummaryRangeMap(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.math.BigDecimal, java.math.BigDecimal)
 	 */
@@ -138,7 +193,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			List<IovType> iovperchanList = cooldao
 					.retrieveIovSummaryPerChannelFromNodeSchemaAndDbInRange(schema, db, node, tag, since, until);
 
-			Map<Long, CoolIovSummary> iovsummary = getSummary(iovperchanList, iovbase);
+			Map<Long, CoolIovSummary> iovsummary = getSummaryOrigTime(iovperchanList, schema, db, node, tag,iovbase);
 			return iovsummary;
 		} catch (CoolIOException e) {
 			// TODO Auto-generated catch block
