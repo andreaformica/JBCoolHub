@@ -8,6 +8,9 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import atlas.cool.meta.CoolIov;
 
 /**
  * @author formica
@@ -25,7 +28,13 @@ public class IovRange implements Serializable {
 	Long until;
 	Long niovs;
 	Boolean ishole;
+	String sinceCoolStr;
+	String untilCoolStr;
 
+	@XmlTransient
+	String iovbase;
+	
+	
 	/**
 	 * 
 	 */
@@ -39,8 +48,12 @@ public class IovRange implements Serializable {
 	 * @param niovs
 	 * @param ishole
 	 */
-	public IovRange(Long since, Long until, Long niovs, Boolean ishole) {
+	public IovRange(Long since, Long until, Long niovs, Boolean ishole, String iovbase) {
 		super();
+
+		sinceCoolStr = CoolIov.getCoolTimeRunLumiString(since, iovbase);
+		untilCoolStr = CoolIov.getCoolTimeRunLumiString(until, iovbase);
+
 		this.since = since;
 		this.until = until;
 		this.niovs = niovs;
@@ -105,6 +118,42 @@ public class IovRange implements Serializable {
 	 */
 	public void setIshole(Boolean ishole) {
 		this.ishole = ishole;
+	}
+
+	/**
+	 * @return the sinceCoolStr
+	 */
+	public String getSinceCoolStr() {
+		return sinceCoolStr;
+	}
+
+	/**
+	 * @return the untilCoolStr
+	 */
+	public String getUntilCoolStr() {
+		return untilCoolStr;
+	}
+
+	
+	/**
+	 * @param iovbase the iovbase to set
+	 */
+	public void setIovbase(String iovbase) {
+		this.iovbase = iovbase;
+	}
+
+	/**
+	 * @param sinceCoolStr the sinceCoolStr to set
+	 */
+	public void setSinceCoolStr(String sinceCoolStr) {
+		this.sinceCoolStr = sinceCoolStr;
+	}
+
+	/**
+	 * @param untilCoolStr the untilCoolStr to set
+	 */
+	public void setUntilCoolStr(String untilCoolStr) {
+		this.untilCoolStr = untilCoolStr;
 	}
 
 }

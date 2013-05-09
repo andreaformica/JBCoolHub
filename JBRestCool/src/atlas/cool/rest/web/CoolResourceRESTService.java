@@ -594,7 +594,75 @@ public class CoolResourceRESTService {
 	/**
 	 * <p>
 	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary/list
+	 * </p>
+	 * <p>
+	 * It retrieves a summary of iovs in a given range per channel.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 *            The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 *            The tag name.
+	 * @param since
+	 *            The COOL since time.
+	 * @param until
+	 *            The COOL until time.
+	 * @return An HTML page of summary for every channel.
+	 */
+	@GET
+	@Produces("text/xml")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/run/rangesummary/list")
+	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRunRangeAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("since") String since,
+			@PathParam("until") String until) {
+
+		log.info("Calling listIovsSummaryInNodesSchemaTagRangeAsList..." + schema + " "
+				+ db + " folder " + fld + " tag " + tag);
+		Collection<CoolIovSummary> summarylist = null;
+		try {
+			String node = fld;
+			if (!fld.startsWith("/")) {
+				node = "/" + fld;
+			}
+			List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
+					db, node);
+			NodeType selnode = null;
+			if (nodes != null && nodes.size() > 0) {
+				for (NodeType anode : nodes) {
+					log.info("Found " + anode.getNodeFullpath() + " of type "
+							+ anode.getNodeIovType());
+					selnode = anode;
+				}
+			}
+			String seltag = tag;
+			if (tag.equals("none")) {
+				seltag = null;
+			}
+
+			Map<Long, CoolIovSummary> iovsummary = coolutilsdao
+					.computeIovSummaryRangeMap(schema, db, node, seltag,
+							selnode.getNodeIovBase(), CoolIov.getCoolRun(since), CoolIov.getCoolRun(until));
+
+			summarylist = iovsummary.values();
+			
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return summarylist;
+	}
+
+	/**
+	 * <p>
+	 * Method :
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary/list
 	 * </p>
 	 * <p>
 	 * It retrieves a summary of iovs in a given range per channel.
@@ -796,6 +864,29 @@ public class CoolResourceRESTService {
 		return results.toString();
 	}
 
+	/**
+	 * <p>
+	 * Method :
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary/svg
+	 * </p>
+	 * <p>
+	 * It retrieves a summary of iovs in a given range per channel.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 *            The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 *            The tag name.
+	 * @param since
+	 *            The COOL since time.
+	 * @param until
+	 *            The COOL until time.
+	 * @return An html page with svg plot of summary for every channel.
+	 */
 	@GET
 	@Produces("text/html")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary/svg")

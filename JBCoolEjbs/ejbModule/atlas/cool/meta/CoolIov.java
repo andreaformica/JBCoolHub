@@ -42,6 +42,17 @@ public class CoolIov implements Serializable {
 		return run.longValue();
 	}
 	
+	public static BigDecimal getCoolRun(String arun) {
+		if (arun == null)
+			return null;
+		if (arun.equals("Inf")) {
+			return new BigDecimal(COOL_MAX_DATE);
+		}
+		BigInteger coolrun = new BigInteger(arun);
+		BigInteger run = coolrun.shiftLeft(32);
+		return new BigDecimal(run);
+	}
+
 	public static Long getLumi(BigInteger atime) {
 		if (atime == null)
 			return null;
@@ -78,5 +89,25 @@ public class CoolIov implements Serializable {
 		}
 		return iovstr;
 	}
+	
+	public static String getCoolTimeRunLumiString(Long time, String iovBase) {
+		String iovstr = "";
+		if (iovBase.equals("run-lumi")) {
+			if (time == CoolIov.COOL_MAX_DATE)
+				return "Inf";
+			Long run = getRun(new BigInteger(time.toString()));
+			Long lb = getLumi(new BigInteger(time.toString()));
+			iovstr = run + " - "+lb;
+		} else {
+			if (time == 0)
+				return "0";
+			if (time == CoolIov.COOL_MAX_DATE)
+				return "Inf";
+			Date iov = new Date(time);
+			iovstr = TimestampStringFormatter.format(null, iov);
+		}
+		return iovstr;
+	}
+
 
 }

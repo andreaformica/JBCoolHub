@@ -116,7 +116,8 @@ public class CoolIovSummary implements Serializable {
 			}
 			if (!updatediov) {
 				// store a new iov
-				IovRange iov = new IovRange(since,until,niovs,ishole);
+				IovRange iov = new IovRange(since,until,niovs,ishole,iovbase);
+//				iov.setIovbase(iovbase);
 				iovs.put(since, iov);
 			}
 		}
