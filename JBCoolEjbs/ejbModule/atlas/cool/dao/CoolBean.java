@@ -15,6 +15,7 @@ import javax.inject.Named;
 
 import atlas.cool.dao.remote.CoolDAORemote;
 import atlas.cool.rest.model.ChannelType;
+import atlas.cool.rest.model.CoolIovType;
 import atlas.cool.rest.model.GtagTagDiffType;
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.IovStatType;
@@ -322,6 +323,26 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 		log.info("Using query "+IovType.QUERY_FINDHOLES_INRANGE+" with "+schema+" "+db+" "+node+" "+tag+" "+since+" "+until);
 		List<IovType> iovstatlist = (List<IovType>) coolrep.findCoolList(IovType.QUERY_FINDHOLES_INRANGE,params);
 		return iovstatlist;
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolDAO#retrieveIovsFromNodeSchemaAndDbInRangeByChanName(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.math.BigDecimal, java.math.BigDecimal)
+	 */
+	@Override
+	public List<CoolIovType> retrieveIovsFromNodeSchemaAndDbInRangeByChanName(
+			String schema, String db, String node, String tag, String channel,
+			BigDecimal since, BigDecimal until) throws CoolIOException {
+		Object[] params = new Object[7];
+		params[0] = schema;
+		params[1] = db;
+		params[2] = node;
+		params[3] = tag;
+		params[4] = channel;
+		params[5] = since;
+		params[6] = until;
+		log.info("Using query "+CoolIovType.QUERY_FINDIOVS_INRANGE_BYCHAN+" with "+schema+" "+db+" "+node+" "+tag+" "+channel+" "+since+" "+until);
+		List<CoolIovType> iovlist = (List<CoolIovType>) coolrep.findCoolList(CoolIovType.QUERY_FINDIOVS_INRANGE_BYCHAN,params);
+		return iovlist;
 	}
 
 	

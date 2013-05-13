@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import atlas.cool.rest.model.ChannelType;
+import atlas.cool.rest.model.CoolIovType;
 import atlas.cool.rest.model.GtagTagDiffType;
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.IovStatType;
@@ -30,4 +31,5 @@ public interface CoolDAO {
 	public List<IovType> retrieveIovSummaryPerChannelFromNodeSchemaAndDbInRange(String schema, String db, String node,String tag,BigDecimal since,BigDecimal until) throws CoolIOException;
 	public List<IovType> retrieveHolesStatPerChannelFromNodeSchemaAndDb(String schema, String db, String node,String tag) throws CoolIOException;
 	public List<IovType> retrieveHolesStatPerChannelFromNodeSchemaAndDbInRange(String schema, String db, String node,String tag,BigDecimal since,BigDecimal until) throws CoolIOException;
+	public List<CoolIovType> retrieveIovsFromNodeSchemaAndDbInRangeByChanName(String schema, String db, String node,String tag, String channel, BigDecimal since, BigDecimal until) throws CoolIOException;
 }

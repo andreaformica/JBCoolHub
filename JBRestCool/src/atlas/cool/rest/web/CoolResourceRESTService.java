@@ -34,6 +34,7 @@ import atlas.cool.meta.CoolIov;
 import atlas.cool.meta.CoolPayload;
 import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovSummary;
+import atlas.cool.rest.model.CoolIovType;
 import atlas.cool.rest.model.IovRange;
 import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
@@ -657,6 +658,94 @@ public class CoolResourceRESTService {
 			e.printStackTrace();
 		}
 		return summarylist;
+	}
+
+	/**
+	 * <p>
+	 * Method :
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary/list
+	 * </p>
+	 * <p>
+	 * It retrieves a summary of iovs in a given range per channel.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 *            The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 *            The tag name.
+	 * @param channel
+	 *            The channel name.
+	 * @param since
+	 *            The COOL since time as a string run-lb.
+	 * @param until
+	 *            The COOL until time as a string run-lb.
+	 * @return An HTML page of summary for every channel.
+	 */
+	@GET
+	@Produces("text/xml")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since}/{until}/runlb/iovs/list")
+	public NodeType listIovsInNodesSchemaTagRangeAsList(@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("channel") String channel,
+			@PathParam("since") String since,
+			@PathParam("until") String until) {
+
+		log.info("Calling listIovsInNodesSchemaTagRangeAsList..." + schema + " "
+				+ db + " folder " + fld + " tag " + tag+" "+channel+" "+since+" "+until);
+		List<CoolIovType> iovlist = null;
+		NodeType selnode = null;
+		try {
+			String chan = "%"+channel+"%";
+			if (channel.equals("all")) {
+				chan = "%";
+			}
+			String node = fld;
+			if (!fld.startsWith("/")) {
+				node = "/" + fld;
+			}
+			List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
+					db, node);
+			if (nodes != null && nodes.size() > 0) {
+				for (NodeType anode : nodes) {
+					log.info("Found " + anode.getNodeFullpath() + " of type "
+							+ anode.getNodeIovType());
+					selnode = anode;
+				}
+			}
+			String seltag = tag;
+			if (tag.equals("none")) {
+				seltag = null;
+			}
+
+			if (since.contains("-")) {
+				String[] sinceargs = since.split("-");
+				String[] untilargs = until.split("-");
+				String lbstr = null;
+				if (sinceargs.length>0 && !sinceargs[1].isEmpty()) {
+					lbstr = sinceargs[1];
+				}
+				BigDecimal _since = CoolIov.getCoolRunLumi(sinceargs[0], lbstr);
+				lbstr = null;
+				if (untilargs.length>0 && !untilargs[1].isEmpty()) {
+					lbstr = untilargs[1];
+				}
+				BigDecimal _until = CoolIov.getCoolRunLumi(untilargs[0], sinceargs[1]);
+				iovlist = cooldao.retrieveIovsFromNodeSchemaAndDbInRangeByChanName(
+						schema, db, node, seltag, chan, _since, _until);
+				selnode.setIovList(iovlist);
+			} else {
+				return null;
+			}
+
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return selnode;
 	}
 
 	/**

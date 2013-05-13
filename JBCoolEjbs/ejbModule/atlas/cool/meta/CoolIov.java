@@ -63,6 +63,30 @@ public class CoolIov implements Serializable {
 		return lumi.longValue();
 	}
 
+	public static BigDecimal getCoolRunLumi(String arun, String lb) {
+		BigInteger _run = null;
+		BigInteger _lb = null; 
+//		System.out.println("Received "+arun+" "+lb);
+		BigInteger runlumi = null;
+		BigInteger run =  null;
+		if (arun == null)
+			return null;
+		else if (arun.equals("Inf")) {
+			_run = new BigInteger(new Long(COOL_MAX_DATE).toString());
+			_lb = new BigInteger("0");
+			runlumi = _run;
+		} else {
+			_run = new BigInteger(arun);
+			if (lb == null)
+				_lb = new BigInteger("0");
+			else
+				_lb = new BigInteger(lb);
+			run = _run.shiftLeft(32);
+			runlumi = run.or(_lb);
+		}
+		return new BigDecimal(runlumi);
+	}
+
 	public static Long getTime(BigInteger atime) {
 		if (atime == null)
 			return null;

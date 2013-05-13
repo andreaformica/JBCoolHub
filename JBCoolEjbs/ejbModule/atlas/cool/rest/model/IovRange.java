@@ -47,17 +47,18 @@ public class IovRange implements Serializable {
 	 * @param until
 	 * @param niovs
 	 * @param ishole
+	 * @param iovbase
 	 */
 	public IovRange(Long since, Long until, Long niovs, Boolean ishole, String iovbase) {
 		super();
-
-		sinceCoolStr = CoolIov.getCoolTimeRunLumiString(since, iovbase);
-		untilCoolStr = CoolIov.getCoolTimeRunLumiString(until, iovbase);
-
 		this.since = since;
 		this.until = until;
 		this.niovs = niovs;
 		this.ishole = ishole;
+		this.iovbase = iovbase;
+
+		sinceCoolStr = CoolIov.getCoolTimeRunLumiString(since, iovbase);
+		untilCoolStr = CoolIov.getCoolTimeRunLumiString(until, iovbase);
 	}
 
 	/**

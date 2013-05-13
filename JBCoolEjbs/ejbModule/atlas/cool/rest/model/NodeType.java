@@ -6,14 +6,17 @@ package atlas.cool.rest.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -129,6 +132,10 @@ public class NodeType implements Serializable {
 	@CoolQuery(name="coma.findnodes",params="schema;dbname;node")
 	public static final String QUERY_COMA_FINDNODES = "coma.findnodes";
 
+	@Transient
+	@XmlElement(name="iov", type=CoolIovType.class)
+	List<CoolIovType> iovList = null;
+	
 	/**
 	 * @return the nodeId
 	 */
@@ -373,6 +380,20 @@ public class NodeType implements Serializable {
 	 */
 	public void setFolderPayloadSpec(String folderPayloadSpec) {
 		this.folderPayloadSpec = folderPayloadSpec;
+	}
+
+	/**
+	 * @return the iovList
+	 */
+	public List<CoolIovType> getIovList() {
+		return iovList;
+	}
+
+	/**
+	 * @param iovList the iovList to set
+	 */
+	public void setIovList(List<CoolIovType> iovList) {
+		this.iovList = iovList;
 	}
 
 }
