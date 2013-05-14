@@ -663,7 +663,7 @@ public class CoolResourceRESTService {
 	/**
 	 * <p>
 	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary/list
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since}/{until}/runlb/iovs/list
 	 * </p>
 	 * <p>
 	 * It retrieves a summary of iovs in a given range per channel.
@@ -683,7 +683,7 @@ public class CoolResourceRESTService {
 	 *            The COOL since time as a string run-lb.
 	 * @param until
 	 *            The COOL until time as a string run-lb.
-	 * @return An HTML page of summary for every channel.
+	 * @return An XML file with iovs for selected channels.
 	 */
 	@GET
 	@Produces("text/xml")
@@ -745,6 +745,41 @@ public class CoolResourceRESTService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return selnode;
+	}
+
+	/**
+	 * <p>
+	 * Method :
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/runlb/iovs/list
+	 * </p>
+	 * <p>
+	 * It retrieves a summary of iovs in a given range per channel.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 *            The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 *            The tag name.
+	 * @param since
+	 *            The COOL since time as a string run-lb.
+	 * @param until
+	 *            The COOL until time as a string run-lb.
+	 * @return An XML file with iovs for all channels.
+	 */
+	@GET
+	@Produces("text/xml")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/runlb/iovs/list")
+	public NodeType listIovsInNodesSchemaTagRangeAsList(@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("since") String since,
+			@PathParam("until") String until) {
+
+		NodeType selnode = listIovsInNodesSchemaTagRangeAsList(schema, db, fld, tag, "all", since, until);
 		return selnode;
 	}
 
