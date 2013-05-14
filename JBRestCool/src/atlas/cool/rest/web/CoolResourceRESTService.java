@@ -32,6 +32,7 @@ import atlas.cool.dao.CoolPayloadDAO;
 import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.meta.CoolIov;
 import atlas.cool.meta.CoolPayload;
+import atlas.cool.meta.CoolPayloadTransform;
 import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.CoolIovType;
@@ -780,6 +781,80 @@ public class CoolResourceRESTService {
 			@PathParam("until") String until) {
 
 		NodeType selnode = listIovsInNodesSchemaTagRangeAsList(schema, db, fld, tag, "all", since, until);
+		return selnode;
+	}
+
+	/**
+	 * <p>
+	 * Method :
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since}/{until}/time/data/list
+	 * </p>
+	 * <p>
+	 * It retrieves a summary of iovs in a given range per channel.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 *            The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 *            The tag name.
+	 * @param channel
+	 *            The channel name.
+	 * @param since
+	 *            The COOL since time as a string run-lb.
+	 * @param until
+	 *            The COOL until time as a string run-lb.
+	 * @return An XML file with iovs for selected channels.
+	 */
+	@GET
+	@Produces("text/xml")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since}/{until}/time/data/list")
+	public NodeType listPayloadInNodesSchemaTagRangeAsList(@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("channel") String channel,
+			@PathParam("since") BigDecimal since,
+			@PathParam("until") BigDecimal until) {
+
+		log.info("Calling listPayloadInNodesSchemaTagRangeAsList..." + schema + " "
+				+ db + " folder " + fld + " tag " + tag+" "+channel+" "+since+" "+until);
+		List<CoolIovType> iovlist = null;
+		NodeType selnode = null;
+		try {
+			Integer chan = 0;
+			if (channel.equals("all")) {
+				chan = null;
+			} else {
+				chan = new Integer(channel);
+			}
+			String node = fld;
+			if (!fld.startsWith("/")) {
+				node = "/" + fld;
+			}
+			List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
+					db, node);
+			if (nodes != null && nodes.size() > 0) {
+				for (NodeType anode : nodes) {
+					log.info("Found " + anode.getNodeFullpath() + " of type "
+							+ anode.getNodeIovType());
+					selnode = anode;
+				}
+			}
+			String seltag = tag;
+			if (tag.equals("none")) {
+				seltag = null;
+			}
+
+			CoolPayload payload = payloaddao.getPayloadsObj(schema, db, node, seltag, since, until, chan);
+			iovlist = new CoolPayloadTransform(payload).getIovsWithPayload();
+			selnode.setIovList(iovlist);
+			
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return selnode;
 	}
 

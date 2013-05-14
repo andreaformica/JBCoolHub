@@ -18,7 +18,9 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import javax.inject.Inject;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
@@ -27,6 +29,8 @@ import oracle.sql.CLOB;
  * @author formica
  * 
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class CoolPayload implements Serializable {
 
 	/**
@@ -277,7 +281,7 @@ public class CoolPayload implements Serializable {
 		masked = maskedColumns;
 	}
 
-	protected boolean isMasked(String col) {
+	public boolean isMasked(String col) {
 		if (masked.contains(col)) {
 			return true;
 		}
@@ -292,12 +296,12 @@ public class CoolPayload implements Serializable {
 		return false;
 	}
 	
-	protected boolean isNumber(String col) {
+	public boolean isNumber(String col) {
 		if (!isMasked(col)) {
-			log.info("Check if column "+col +" is a number ");
+			//log.info("Check if column "+col +" is a number ");
 			Class<?> clazz = getColumnType(getColumnIndex(col));
 			if (clazz != null) {
-				log.info("Class is "+clazz.getName());
+				//log.info("Class is "+clazz.getName());
 				if (clazz.equals(Number.class)  ||
 						clazz.equals(Boolean.class)||
 						clazz.equals(String.class)||

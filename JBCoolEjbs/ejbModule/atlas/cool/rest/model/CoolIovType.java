@@ -6,6 +6,8 @@ package atlas.cool.rest.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -87,6 +89,9 @@ public class CoolIovType implements Serializable {
 	@Transient
 	String untilCoolStr="";
 
+	@Transient
+	Map<String,String> payload = new LinkedHashMap<String, String>();
+	
 
 	@CoolQuery(name = "cool.findiovsinrange", params = "schema;db;node;tag;chanid;since;until")
 	public static final String QUERY_FINDIOVS_INRANGE = "cool.findiovsinrange";
@@ -336,5 +341,20 @@ public class CoolIovType implements Serializable {
 		this.untilCoolStr = untilCoolStr;
 	}
 
-	
+	/**
+	 * @return the payload
+	 */
+	@XmlElement
+	@XmlJavaTypeAdapter(atlas.cool.rest.utils.MapAdapter.class)
+	public Map<String, String> getPayload() {
+		return payload;
+	}
+
+	/**
+	 * @param payload the payload to set
+	 */
+	public void setPayload(Map<String, String> payload) {
+		this.payload = payload;
+	}
+
 }
