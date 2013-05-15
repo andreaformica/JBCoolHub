@@ -89,7 +89,7 @@ public class CoolIovSummary implements Serializable {
 			IovRange iov = iovs.get(since);
 			if ((!(iov.getIshole()) && !(ishole)) && iov.getUntil().compareTo(until) < 0) {
 				iov.setUntil(until);
-				iov.setNiovs(niovs);
+				iov.addNIovs(niovs);
 			} else {
 				throw new Exception(
 						"Cannot append an iov of different type for the same since:\n"
@@ -107,7 +107,7 @@ public class CoolIovSummary implements Serializable {
 				if (aniov.getUntil().compareTo(since) == 0) {
 					if (!(aniov.ishole) && !(ishole)) {
 						aniov.setUntil(until);
-						aniov.setNiovs(niovs);
+						aniov.addNIovs(niovs);
 						if (aniov.getSince().compareTo(minsince) == 0)
 							minuntil = until;
 						updatediov = true;

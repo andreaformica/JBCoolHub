@@ -157,4 +157,7 @@ public class IovRange implements Serializable {
 		this.untilCoolStr = untilCoolStr;
 	}
 
+	public void addNIovs(Long niovs) {
+		this.niovs += niovs;
+	}
 }

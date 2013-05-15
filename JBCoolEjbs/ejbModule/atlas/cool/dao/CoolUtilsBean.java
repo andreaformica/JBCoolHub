@@ -72,6 +72,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		Map<Long, CoolIovSummary> iovsummary = new HashMap<Long, CoolIovSummary>();
 
 		for (IovType aniov : iovperchanList) {
+			log.info("Analyze iov from DB : "+aniov.getChannelId()+" "+aniov.getNiovs());
 			aniov.setIovBase(iovbase);
 			Double isvalid = aniov.getIovHole().doubleValue();
 			Long since = 0L;
@@ -137,6 +138,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		Map<Long, CoolIovSummary> iovsummary = new HashMap<Long, CoolIovSummary>();
 
 		for (IovType aniov : iovperchanList) {
+			log.info("Analyze iov from DB : "+aniov.getChannelId()+" "+aniov.getNiovs());
 			aniov.setIovBase(iovbase);
 			Double isvalid = aniov.getIovHole().doubleValue();
 			Long since = 0L;
