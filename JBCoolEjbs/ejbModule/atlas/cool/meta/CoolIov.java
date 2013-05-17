@@ -6,6 +6,7 @@ package atlas.cool.meta;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Calendar;
 import java.util.Date;
 
 import atlas.cool.rest.utils.TimestampStringFormatter;
@@ -116,6 +117,8 @@ public class CoolIov implements Serializable {
 	
 	public static String getCoolTimeRunLumiString(Long time, String iovBase) {
 		String iovstr = "";
+		Calendar endofatlasyear = Calendar.getInstance();
+		endofatlasyear.set(2100, 1, 1);
 		if (iovBase.equals("run-lumi")) {
 			if (time == CoolIov.COOL_MAX_DATE)
 				return "Inf";
@@ -129,6 +132,14 @@ public class CoolIov implements Serializable {
 				return "Inf";
 			Date iov = new Date(time);
 			iovstr = TimestampStringFormatter.format(null, iov);
+			Calendar iovcal = Calendar.getInstance();
+			iovcal.setTime(iov);
+			int iovyear = iovcal.get(Calendar.YEAR);
+			if (iovyear > endofatlasyear.get(Calendar.YEAR)) {
+				Long run = getRun(new BigInteger(time.toString()));
+				Long lb = getLumi(new BigInteger(time.toString()));
+				iovstr = run + " - "+lb;
+			}
 		}
 		return iovstr;
 	}

@@ -76,8 +76,12 @@
        <display-name>Constraint-0</display-name>
        <web-resource-collection>
             <web-resource-name>Constraint-0</web-resource-name>
+            <!--
+            This is to put protection on rest services as well 
             <url-pattern>/rest/*</url-pattern>
             <url-pattern>/*</url-pattern>
+             -->
+             <url-pattern>/secure/*</url-pattern>
        </web-resource-collection>
 
        <auth-constraint>
