@@ -8,10 +8,7 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,10 +29,8 @@ import atlas.cool.dao.CoolPayloadDAO;
 import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.meta.CoolIov;
 import atlas.cool.meta.CoolPayload;
-import atlas.cool.meta.CoolPayloadTransform;
 import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovSummary;
-import atlas.cool.rest.model.CoolIovType;
 import atlas.cool.rest.model.IovRange;
 import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
@@ -102,18 +97,7 @@ public class CoolResourceRESTService {
 		log.info("Calling listNodesInSchema..." + schema + " " + db);
 		List<NodeType> results = null;
 		try {
-			results = cooldao.retrieveNodesFromSchemaAndDb(schema + "%", db,
-					"%");
-			if (results == null) {
-				// create a fake entry
-				NodeType nt = new NodeType();
-				nt.setNodeId(1L);
-				nt.setNodeFullpath("this is a fake node");
-				nt.setNodeTinstime(new Timestamp(new Date().getTime()));
-				List<NodeType> _fakes = new ArrayList<NodeType>();
-				_fakes.add(nt);
-				results = _fakes;
-			}
+			results = coolutilsdao.listNodesInSchema(schema, db);
 		} catch (CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -145,17 +129,9 @@ public class CoolResourceRESTService {
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("node") String node) {
 
-		log.info("Calling listTagsInNodeSchema..." + schema + " " + db + " "
-				+ node);
 		List<SchemaNodeTagType> results = null;
 		try {
-			if (node.equals("all")) {
-				node = "%";
-			} else {
-				node = "%" + node + "%";
-			}
-			results = cooldao.retrieveTagsFromNodesSchemaAndDb(schema + "%",
-					db, node, null);
+			results = coolutilsdao.listTagsInNodesSchema(schema, db, node);
 		} catch (CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -369,29 +345,7 @@ public class CoolResourceRESTService {
 				+ fld + " " + tag);
 		List<IovType> results = null;
 		try {
-			String seltag = tag;
-			if (tag.equals("none")) {
-				seltag = null;
-			}
-			String node = fld;
-			if (!fld.startsWith("/")) {
-				node = "/" + fld;
-			}
-			List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
-					db, node);
-			NodeType selnode = null;
-			if (nodes != null && nodes.size() > 0) {
-				for (NodeType anode : nodes) {
-					log.info("Found " + anode.getNodeFullpath() + " of type "
-							+ anode.getNodeIovType());
-					selnode = anode;
-				}
-			}
-			results = cooldao.retrieveIovStatPerChannelFromNodeSchemaAndDb(
-					schema, db, node, seltag);
-			for (IovType aniov : results) {
-				aniov.setIovBase(selnode.getNodeIovBase());
-			}
+			results = coolutilsdao.getIovStatPerChannel(schema, db, fld, tag);
 		} catch (CoolIOException e) {
 			e.printStackTrace();
 		}
@@ -556,7 +510,8 @@ public class CoolResourceRESTService {
 					for (Long asince : sincetimes) {
 						IovRange ivr = timeranges.get(asince);
 						colortagstart = colorgoodtagstart;
-						if ((iiov == 0) && (ivr.getSince().compareTo(minsince) != 0)) {
+						if ((iiov == 0)
+								&& (ivr.getSince().compareTo(minsince) != 0)) {
 							colortagstart = colorwarntagstart;
 						}
 						String holedump = "";
@@ -596,7 +551,8 @@ public class CoolResourceRESTService {
 	/**
 	 * <p>
 	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary/list
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary
+	 * /list
 	 * </p>
 	 * <p>
 	 * It retrieves a summary of iovs in a given range per channel.
@@ -622,38 +578,16 @@ public class CoolResourceRESTService {
 	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRunRangeAsList(
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("since") String since,
-			@PathParam("until") String until) {
+			@PathParam("since") String since, @PathParam("until") String until) {
 
-		log.info("Calling listIovsSummaryInNodesSchemaTagRangeAsList..." + schema + " "
-				+ db + " folder " + fld + " tag " + tag);
+		log.info("Calling listIovsSummaryInNodesSchemaTagRangeAsList..."
+				+ schema + " " + db + " folder " + fld + " tag " + tag);
 		Collection<CoolIovSummary> summarylist = null;
 		try {
-			String node = fld;
-			if (!fld.startsWith("/")) {
-				node = "/" + fld;
-			}
-			List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
-					db, node);
-			NodeType selnode = null;
-			if (nodes != null && nodes.size() > 0) {
-				for (NodeType anode : nodes) {
-					log.info("Found " + anode.getNodeFullpath() + " of type "
-							+ anode.getNodeIovType());
-					selnode = anode;
-				}
-			}
-			String seltag = tag;
-			if (tag.equals("none")) {
-				seltag = null;
-			}
+			summarylist = coolutilsdao
+					.listIovsSummaryInNodesSchemaTagRunRangeAsList(schema, db,
+							fld, tag, since, until);
 
-			Map<Long, CoolIovSummary> iovsummary = coolutilsdao
-					.computeIovSummaryRangeMap(schema, db, node, seltag,
-							selnode.getNodeIovBase(), CoolIov.getCoolRun(since), CoolIov.getCoolRun(until));
-
-			summarylist = iovsummary.values();
-			
 		} catch (CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -664,7 +598,8 @@ public class CoolResourceRESTService {
 	/**
 	 * <p>
 	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since}/{until}/runlb/iovs/list
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since
+	 * }/{until}/runlb/iovs/list
 	 * </p>
 	 * <p>
 	 * It retrieves a summary of iovs in a given range per channel.
@@ -689,59 +624,16 @@ public class CoolResourceRESTService {
 	@GET
 	@Produces("text/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since}/{until}/runlb/iovs/list")
-	public NodeType listIovsInNodesSchemaTagRangeAsList(@PathParam("schema") String schema, @PathParam("db") String db,
+	public NodeType listIovsInNodesSchemaTagRangeAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("fld") String fld, @PathParam("tag") String tag,
 			@PathParam("channel") String channel,
-			@PathParam("since") String since,
-			@PathParam("until") String until) {
+			@PathParam("since") String since, @PathParam("until") String until) {
 
-		log.info("Calling listIovsInNodesSchemaTagRangeAsList..." + schema + " "
-				+ db + " folder " + fld + " tag " + tag+" "+channel+" "+since+" "+until);
-		List<CoolIovType> iovlist = null;
 		NodeType selnode = null;
 		try {
-			String chan = "%"+channel+"%";
-			if (channel.equals("all")) {
-				chan = "%";
-			}
-			String node = fld;
-			if (!fld.startsWith("/")) {
-				node = "/" + fld;
-			}
-			List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
-					db, node);
-			if (nodes != null && nodes.size() > 0) {
-				for (NodeType anode : nodes) {
-					log.info("Found " + anode.getNodeFullpath() + " of type "
-							+ anode.getNodeIovType());
-					selnode = anode;
-				}
-			}
-			String seltag = tag;
-			if (tag.equals("none")) {
-				seltag = null;
-			}
-
-			if (since.contains("-")) {
-				String[] sinceargs = since.split("-");
-				String[] untilargs = until.split("-");
-				String lbstr = null;
-				if (sinceargs.length>0 && !sinceargs[1].isEmpty()) {
-					lbstr = sinceargs[1];
-				}
-				BigDecimal _since = CoolIov.getCoolRunLumi(sinceargs[0], lbstr);
-				lbstr = null;
-				if (untilargs.length>0 && !untilargs[1].isEmpty()) {
-					lbstr = untilargs[1];
-				}
-				BigDecimal _until = CoolIov.getCoolRunLumi(untilargs[0], sinceargs[1]);
-				iovlist = cooldao.retrieveIovsFromNodeSchemaAndDbInRangeByChanName(
-						schema, db, node, seltag, chan, _since, _until);
-				selnode.setIovList(iovlist);
-			} else {
-				return null;
-			}
-
+			selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema,
+					db, fld, tag, channel, since, until);
 		} catch (CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -775,19 +667,27 @@ public class CoolResourceRESTService {
 	@GET
 	@Produces("text/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/runlb/iovs/list")
-	public NodeType listIovsInNodesSchemaTagRangeAsList(@PathParam("schema") String schema, @PathParam("db") String db,
+	public NodeType listIovsInNodesSchemaTagRangeAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("since") String since,
-			@PathParam("until") String until) {
+			@PathParam("since") String since, @PathParam("until") String until) {
 
-		NodeType selnode = listIovsInNodesSchemaTagRangeAsList(schema, db, fld, tag, "all", since, until);
+		NodeType selnode = null;
+		try {
+			selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema,
+					db, fld, tag, "all", since, until);
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return selnode;
 	}
 
 	/**
 	 * <p>
 	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since}/{until}/time/data/list
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since
+	 * }/{until}/time/data/list
 	 * </p>
 	 * <p>
 	 * It retrieves a summary of iovs in a given range per channel.
@@ -812,45 +712,16 @@ public class CoolResourceRESTService {
 	@GET
 	@Produces("text/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since}/{until}/time/data/list")
-	public NodeType listPayloadInNodesSchemaTagRangeAsList(@PathParam("schema") String schema, @PathParam("db") String db,
+	public NodeType listPayloadInNodesSchemaTagRangeAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("fld") String fld, @PathParam("tag") String tag,
 			@PathParam("channel") String channel,
 			@PathParam("since") BigDecimal since,
 			@PathParam("until") BigDecimal until) {
-
-		log.info("Calling listPayloadInNodesSchemaTagRangeAsList..." + schema + " "
-				+ db + " folder " + fld + " tag " + tag+" "+channel+" "+since+" "+until);
-		List<CoolIovType> iovlist = null;
 		NodeType selnode = null;
 		try {
-			Integer chan = 0;
-			if (channel.equals("all")) {
-				chan = null;
-			} else {
-				chan = new Integer(channel);
-			}
-			String node = fld;
-			if (!fld.startsWith("/")) {
-				node = "/" + fld;
-			}
-			List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
-					db, node);
-			if (nodes != null && nodes.size() > 0) {
-				for (NodeType anode : nodes) {
-					log.info("Found " + anode.getNodeFullpath() + " of type "
-							+ anode.getNodeIovType());
-					selnode = anode;
-				}
-			}
-			String seltag = tag;
-			if (tag.equals("none")) {
-				seltag = null;
-			}
-
-			CoolPayload payload = payloaddao.getPayloadsObj(schema, db, node, seltag, since, until, chan);
-			iovlist = new CoolPayloadTransform(payload).getIovsWithPayload();
-			selnode.setIovList(iovlist);
-			
+			selnode = coolutilsdao.listPayloadInNodesSchemaTagRangeAsList(
+					schema, db, fld, tag, channel, since, until);
 		} catch (CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -861,7 +732,8 @@ public class CoolResourceRESTService {
 	/**
 	 * <p>
 	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary/list
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary
+	 * /list
 	 * </p>
 	 * <p>
 	 * It retrieves a summary of iovs in a given range per channel.
@@ -890,35 +762,12 @@ public class CoolResourceRESTService {
 			@PathParam("since") BigDecimal since,
 			@PathParam("until") BigDecimal until) {
 
-		log.info("Calling listIovsSummaryInNodesSchemaTagRangeAsList..." + schema + " "
-				+ db + " folder " + fld + " tag " + tag);
 		Collection<CoolIovSummary> summarylist = null;
 		try {
-			String node = fld;
-			if (!fld.startsWith("/")) {
-				node = "/" + fld;
-			}
-			List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
-					db, node);
-			NodeType selnode = null;
-			if (nodes != null && nodes.size() > 0) {
-				for (NodeType anode : nodes) {
-					log.info("Found " + anode.getNodeFullpath() + " of type "
-							+ anode.getNodeIovType());
-					selnode = anode;
-				}
-			}
-			String seltag = tag;
-			if (tag.equals("none")) {
-				seltag = null;
-			}
+			summarylist = coolutilsdao
+					.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db,
+							fld, tag, since, until);
 
-			Map<Long, CoolIovSummary> iovsummary = coolutilsdao
-					.computeIovSummaryRangeMap(schema, db, node, seltag,
-							selnode.getNodeIovBase(), since, until);
-
-			summarylist = iovsummary.values();
-			
 		} catch (CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1026,7 +875,8 @@ public class CoolResourceRESTService {
 					for (Long asince : sincetimes) {
 						IovRange ivr = timeranges.get(asince);
 						colortagstart = colorgoodtagstart;
-						if ((iiov == 0) && (ivr.getSince().compareTo(minsince) != 0)) {
+						if ((iiov == 0)
+								&& (ivr.getSince().compareTo(minsince) != 0)) {
 							colortagstart = colorwarntagstart;
 						}
 						String holedump = "";
@@ -1208,8 +1058,9 @@ public class CoolResourceRESTService {
 					Set<Long> sincetimes = timeranges.keySet();
 					for (Long asince : sincetimes) {
 						IovRange ivr = timeranges.get(asince);
-						svg.append(svgutil.getSvgLine(ivr.getSince(), ivr.getUntil(),
-								ichan, coolsumm.getIovbase(), ivr.getIshole()));
+						svg.append(svgutil.getSvgLine(ivr.getSince(),
+								ivr.getUntil(), ichan, coolsumm.getIovbase(),
+								ivr.getIshole()));
 					}
 				}
 				ichan++;
