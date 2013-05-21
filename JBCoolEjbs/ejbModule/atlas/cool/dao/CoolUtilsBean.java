@@ -37,9 +37,6 @@ import atlas.cool.rest.model.SchemaNodeTagType;
 public class CoolUtilsBean implements CoolUtilsDAO {
 
 	@Inject
-	private CoolRepository coolrep;
-
-	@Inject
 	private CoolDAO cooldao;
 	@Inject
 	private CoolPayloadDAO payloaddao;
@@ -149,8 +146,8 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		Map<Long, CoolIovSummary> iovsummary = new HashMap<Long, CoolIovSummary>();
 
 		for (IovType aniov : iovperchanList) {
-			log.info("Analyze iov from DB : " + aniov.getChannelId() + " "
-					+ aniov.getNiovs());
+			// log.info("Analyze iov from DB : " + aniov.getChannelId() + " "
+			// + aniov.getNiovs());
 			aniov.setIovBase(iovbase);
 			Double isvalid = aniov.getIovHole().doubleValue();
 			Long since = 0L;
@@ -439,35 +436,40 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		List<CoolIovType> iovlist = null;
 		NodeType selnode = null;
 
-		Integer chan = 0;
-		if (channel.equals("all")) {
-			chan = null;
-		} else {
-			chan = new Integer(channel);
-		}
-		String node = fld;
-		if (!fld.startsWith("/")) {
-			node = "/" + fld;
-		}
-		List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema, db,
-				node);
-		if (nodes != null && nodes.size() > 0) {
-			for (NodeType anode : nodes) {
-				log.info("Found " + anode.getNodeFullpath() + " of type "
-						+ anode.getNodeIovType());
-				selnode = anode;
+		try {
+			Integer chan = 0;
+			if (channel.equals("all")) {
+				chan = null;
+			} else {
+				chan = new Integer(channel);
 			}
-		}
-		String seltag = tag;
-		if (tag.equals("none")) {
-			seltag = null;
-		}
+			String node = fld;
+			if (!fld.startsWith("/")) {
+				node = "/" + fld;
+			}
+			List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
+					db, node);
+			if (nodes != null && nodes.size() > 0) {
+				for (NodeType anode : nodes) {
+					log.info("Found " + anode.getNodeFullpath() + " of type "
+							+ anode.getNodeIovType());
+					selnode = anode;
+				}
+			}
+			String seltag = tag;
+			if (tag.equals("none")) {
+				seltag = null;
+			}
 
-		CoolPayload payload = payloaddao.getPayloadsObj(schema, db, node,
-				seltag, since, until, chan);
-		iovlist = new CoolPayloadTransform(payload).getIovsWithPayload();
-		selnode.setIovList(iovlist);
-
+			CoolPayload payload = payloaddao.getPayloadsObj(schema, db, node,
+					seltag, since, until, chan);
+			iovlist = new CoolPayloadTransform(payload).getIovsWithPayload();
+			selnode.setIovList(iovlist);
+		} catch (Exception e) {
+			throw new CoolIOException(e.getMessage());
+		} finally {
+			payloaddao.remove();
+		}
 		return selnode;
 	}
 
@@ -481,8 +483,8 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 */
 	@Override
 	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(
-			String schema, String db, String fld, String tag, 
-			BigDecimal since, BigDecimal until) throws CoolIOException {
+			String schema, String db, String fld, String tag, BigDecimal since,
+			BigDecimal until) throws CoolIOException {
 		log.info("Calling listIovsSummaryInNodesSchemaTagRangeAsList..."
 				+ schema + " " + db + " folder " + fld + " tag " + tag);
 		Collection<CoolIovSummary> summarylist = null;

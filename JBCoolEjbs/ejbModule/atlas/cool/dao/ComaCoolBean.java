@@ -23,7 +23,7 @@ import atlas.cool.rest.model.CmpCoolComaTagType;
 public class ComaCoolBean implements ComaCoolDAO {
 
 	@Inject
-	private CoolRepository coolrep;
+	private CoolRepositoryDAO coolrep;
 	
 	@Inject
 	private Logger log;

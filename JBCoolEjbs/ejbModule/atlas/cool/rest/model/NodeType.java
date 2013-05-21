@@ -6,6 +6,7 @@ package atlas.cool.rest.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -135,7 +136,11 @@ public class NodeType implements Serializable {
 	@Transient
 	@XmlElement(name="iov", type=CoolIovType.class)
 	List<CoolIovType> iovList = null;
-	
+
+	@Transient
+	@XmlElement(name="iovsummary", type=CoolIovSummary.class)
+	Collection<CoolIovSummary> iovSummaryList = null;
+
 	/**
 	 * @return the nodeId
 	 */
@@ -394,6 +399,20 @@ public class NodeType implements Serializable {
 	 */
 	public void setIovList(List<CoolIovType> iovList) {
 		this.iovList = iovList;
+	}
+
+	/**
+	 * @return the iovSummaryList
+	 */
+	public Collection<CoolIovSummary> getIovSummaryList() {
+		return iovSummaryList;
+	}
+
+	/**
+	 * @param iovSummaryList the iovSummaryList to set
+	 */
+	public void setIovSummaryList(Collection<CoolIovSummary> iovSummaryList) {
+		this.iovSummaryList = iovSummaryList;
 	}
 
 }

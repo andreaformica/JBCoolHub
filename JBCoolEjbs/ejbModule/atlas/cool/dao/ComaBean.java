@@ -32,7 +32,7 @@ import atlas.cool.rest.model.SchemaType;
 public class ComaBean implements ComaDAO {
 
 	@Inject
-	private CoolRepository coolrep;
+	private CoolRepositoryDAO coolrep;
 	
 	@Inject
 	private Logger log;

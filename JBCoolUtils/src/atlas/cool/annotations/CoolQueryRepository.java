@@ -122,7 +122,7 @@ public class CoolQueryRepository {
 	 */
 	public synchronized QueryParams getQueryParams(final String qryname) throws CoolQueryException {
 		try {
-			System.out.println("Searching for "+qryname+" in map "+queryMap+" inside coolqueryrep "+this.toString());
+			//System.out.println("Searching for "+qryname+" in map "+queryMap+" inside coolqueryrep "+this.toString());
 			QueryParams query = queryMap.get(qryname);
 			return query;
 		} catch (Exception e) {
@@ -145,9 +145,9 @@ public class CoolQueryRepository {
                     new TypeAnnotationsScanner(), 
                     new SubTypesScanner()));
 		
-		System.out.println("Reflections for "+pckgname+"  - "+reflections.toString());
+		//System.out.println("Reflections for "+pckgname+"  - "+reflections.toString());
 		Set<Class<?>> jpaEntities = reflections.getTypesAnnotatedWith(Entity.class);
-		System.out.println("jpaEntities size "+jpaEntities.size());
+		//System.out.println("jpaEntities size "+jpaEntities.size());
 		for (Class<?> jpaclass : jpaEntities) {
 			//System.out.println("Analyse class "+jpaclass.getName());
 			Field[] fields = jpaclass.getDeclaredFields();
@@ -155,12 +155,12 @@ public class CoolQueryRepository {
 				if (fields[ifield].isAnnotationPresent(CoolQuery.class)) {
 					CoolQuery ann = (CoolQuery) fields[ifield]
 							.getAnnotation(CoolQuery.class);
-				System.out.println("Got field annotated "+fields[ifield].getName());
+				//System.out.println("Got field annotated "+fields[ifield].getName());
 				String name = ann.name();
 				String paramstr = ann.params();
 				String[] paramsarr = paramstr.split(";");
 				QueryParams params = new QueryParams(name,paramsarr);
-				System.out.println("Update map "+queryMap+" with query "+params);
+				//System.out.println("Update map "+queryMap+" with query "+params);
 				queryMap.put(name, params);				
 			}
 			}
@@ -193,7 +193,7 @@ public class CoolQueryRepository {
 			System.out.println("Resources found has elements "+resources.hasMoreElements());
 			while (resources.hasMoreElements()) {
 				URL res = resources.nextElement();
-				System.out.println("URL element "+res);
+				//System.out.println("URL element "+res);
 				if (res.getProtocol().equalsIgnoreCase("jar") ) {
 					JarURLConnection conn = (JarURLConnection) res
 							.openConnection();
@@ -212,11 +212,11 @@ public class CoolQueryRepository {
 
 				} else if (res.getProtocol().equalsIgnoreCase("vfs")) { 
 					// use virtual file
-					System.out.println("Protocol is VFS...");
+					//System.out.println("Protocol is VFS...");
 			        Vfs.Dir dir = Vfs.fromURL(res);
 			        Iterable<Vfs.File> files = dir.getFiles();
 			        Vfs.File first = files.iterator().next();
-			        System.out.println("Getting file "+first.getName()+" on path "+first.getRelativePath());
+			        //System.out.println("Getting file "+first.getName()+" on path "+first.getRelativePath());
 			        first.getName();
 			        try {
 			            first.openInputStream();

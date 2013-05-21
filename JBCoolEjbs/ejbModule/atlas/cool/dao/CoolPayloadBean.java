@@ -41,11 +41,6 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 	private CallableStatement cstmt = null;
 	private Connection con = null;
 
-	// private int firstResult=0;
-	// private int maxResults=0;
-	// private int step=10000;
-	// private boolean doPagination = false;
-
 	/**
 	 * Default constructor.
 	 */
@@ -64,7 +59,6 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 	public ResultSet getPayload(String schemaname, String dbname,
 			String folder, String tagname, BigDecimal time, Integer channelId)
 			throws CoolIOException {
-		// TODO Auto-generated method stub
 		try {
 			BigDecimal _time = time;
 			if (_time.longValue() < 0) {
@@ -72,7 +66,6 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			}
 			return getCursorIov(schemaname, dbname, folder, tagname, _time,
 					channelId);
-			// return pyld;
 		} catch (Exception e) {
 			throw new CoolIOException(e.getMessage());
 		}
@@ -98,9 +91,6 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			if (_etime.longValue() < 0) {
 				_etime = new BigDecimal(CoolIov.COOL_MAX_DATE);
 			}
-
-			// CoolPayload pyld = performRefCursorIovs(schemaname, dbname,
-			// folder, tagname, _stime, _etime);
 			return getCursorIovs(schemaname, dbname, folder, tagname, _stime,
 					_etime, channelId);
 		} catch (Exception e) {
@@ -128,7 +118,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 
 			ResultSetMetaData rsmd_rs = rs.getMetaData();
 			for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-				log.info("col " + i + " name = " + rsmd_rs.getColumnName(i));
+				log.fine("col " + i + " name = " + rsmd_rs.getColumnName(i));
 			}
 			log.fine(" rs is on first row " + rs.isFirst());
 			while (rs.next()) {
@@ -143,7 +133,6 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 							+ dumpObject(colval));
 				}
 			}
-
 			return payload;
 
 		} catch (SQLException e) {
@@ -159,8 +148,8 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		ResultSet rset = null;
 		ResultSet rs = null;
 		// PreparedStatement pstmt = null;
-		log.info("Using CallableStatement / ResultSet");
-		log.info("-----------------------------------");
+		log.fine("Using CallableStatement / ResultSet");
+		log.fine("-----------------------------------");
 
 		try {
 			con = datasource.getConnection();
@@ -176,7 +165,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			cstmt.setString(4, tagname);
 			cstmt.setBigDecimal(5, time);
 			cstmt.setInt(6, channelId);
-			log.info(" executing query ...");
+			log.fine(" executing query ...");
 
 			/*
 			 * pstmt = con.prepareStatement(stmt); pstmt.setString(1,
@@ -187,12 +176,12 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			rset = cstmt.executeQuery();
 			ResultSetMetaData rsmd = rset.getMetaData();
 
-			log.info("Retrieved n = " + rsmd.getColumnCount() + " columns ");
-			log.info("col1name = " + rsmd.getColumnName(1));
-			log.info("col1type = " + rsmd.getColumnClassName(1));
+			log.fine("Retrieved n = " + rsmd.getColumnCount() + " columns ");
+			log.fine("col1name = " + rsmd.getColumnName(1));
+			log.fine("col1type = " + rsmd.getColumnClassName(1));
 			while (rset.next()) {
 
-				log.info(" - " + rset.getObject(1).toString());
+				log.fine(" - " + rset.getObject(1).toString());
 				rs = (ResultSet) rset.getObject(1);
 				return rs;
 			}
@@ -211,15 +200,15 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		ResultSet rset = null;
 		ResultSet rs = null;
 		// PreparedStatement pstmt = null;
-		log.info("Using CallableStatement / ResultSet");
-		log.info("-----------------------------------");
-		log.info("- schema  " + schemaname);
-		log.info("- db      " + dbname);
-		log.info("- folder  " + folder);
-		log.info("- tag     " + tagname);
-		log.info("- since   " + stime);
-		log.info("- until   " + etime);
-		log.info("- channel " + channelId);
+		log.fine("Using CallableStatement / ResultSet");
+		log.fine("-----------------------------------");
+		log.fine("- schema  " + schemaname);
+		log.fine("- db      " + dbname);
+		log.fine("- folder  " + folder);
+		log.fine("- tag     " + tagname);
+		log.fine("- since   " + stime);
+		log.fine("- until   " + etime);
+		log.fine("- channel " + channelId);
 
 		try {
 			String fld = folder;
@@ -229,7 +218,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			con = datasource.getConnection();
 			cstmt = con.prepareCall(stmt);
 			// cstmt.registerOutParameter(1, OracleTypes.CURSOR);
-			log.info(" Setting parameters for callable statement ...");
+			log.fine(" Setting parameters for callable statement ...");
 			cstmt.setString(1, schemaname);
 			cstmt.setString(2, dbname);
 			cstmt.setString(3, fld);
@@ -243,16 +232,16 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			// Set the fetch size to some large value
 			cstmt.setFetchSize(5000);
 
-			log.info(" executing query ...");
+			log.fine(" executing query ...");
 
 			rset = cstmt.executeQuery();
 			ResultSetMetaData rsmd = rset.getMetaData();
 
-			log.info("Retrieved n = " + rsmd.getColumnCount() + " columns ");
-			log.info("col1name = " + rsmd.getColumnName(1));
-			log.info("col1type = " + rsmd.getColumnClassName(1));
+			log.fine("Retrieved n = " + rsmd.getColumnCount() + " columns ");
+			log.fine("col1name = " + rsmd.getColumnName(1));
+			log.fine("col1type = " + rsmd.getColumnClassName(1));
 			while (rset.next()) {
-				log.info(" - " + rset.getObject(1).toString());
+				log.fine(" - " + rset.getObject(1).toString());
 				rs = (ResultSet) rset.getObject(1);
 				return rs;
 			}
@@ -279,8 +268,8 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		ResultSet rset = null;
 		ResultSet rs = null;
 		// PreparedStatement pstmt = null;
-		log.info("Using CallableStatement / ResultSet");
-		log.info("-----------------------------------");
+		log.fine("Using CallableStatement / ResultSet");
+		log.fine("-----------------------------------");
 
 		CoolPayload payload = new CoolPayload();
 		try {
@@ -293,7 +282,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			cstmt.setString(3, "/" + folder);
 			cstmt.setString(4, tagname);
 			cstmt.setBigDecimal(5, time);
-			log.info(" executing query ...");
+			log.fine(" executing query ...");
 
 			/*
 			 * pstmt = con.prepareStatement(stmt); pstmt.setString(1,
@@ -311,28 +300,28 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			 */
 			ResultSetMetaData rsmd = rset.getMetaData();
 
-			log.info("Retrieved n = " + rsmd.getColumnCount() + " columns ");
-			log.info("col1name = " + rsmd.getColumnName(1));
-			log.info("col1type = " + rsmd.getColumnClassName(1));
+			log.fine("Retrieved n = " + rsmd.getColumnCount() + " columns ");
+			log.fine("col1name = " + rsmd.getColumnName(1));
+			log.fine("col1type = " + rsmd.getColumnClassName(1));
 			while (rset.next()) {
 
-				log.info(" - " + rset.getObject(1).toString());
+				log.fine(" - " + rset.getObject(1).toString());
 				rs = (ResultSet) rset.getObject(1);
 
 				ResultSetMetaData rsmd_rs = rs.getMetaData();
 				for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-					log.info("col " + i + " name = " + rsmd_rs.getColumnName(i));
+					log.fine("col " + i + " name = " + rsmd_rs.getColumnName(i));
 				}
-				log.info(" rs is on first row " + rs.isFirst());
+				log.fine(" rs is on first row " + rs.isFirst());
 				while (rs.next()) {
 					int ncol = rsmd_rs.getColumnCount();
-					log.info(" rs loop on n columns " + ncol);
+					log.fine(" rs loop on n columns " + ncol);
 					for (int i = 1; i <= ncol; i++) {
 						String colname = rsmd_rs.getColumnName(i);
 						Object colval = rs.getObject(i);
 						// payload.addColumn(i, colname);
 						// payload.addData(i, colval);
-						log.info("Retrieved " + colname + " = "
+						log.fine("Retrieved " + colname + " = "
 								+ dumpObject(colval));
 					}
 				}
@@ -364,8 +353,8 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		ResultSet rset = null;
 		ResultSet rs = null;
 		// PreparedStatement pstmt = null;
-		log.info("Using CallableStatement / ResultSet");
-		log.info("-----------------------------------");
+		log.fine("Using CallableStatement / ResultSet");
+		log.fine("-----------------------------------");
 
 		CoolPayload payload = new CoolPayload();
 
@@ -380,26 +369,26 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			cstmt.setString(4, tagname);
 			cstmt.setBigDecimal(5, stime);
 			cstmt.setBigDecimal(6, etime);
-			log.info(" executing query ...");
+			log.fine(" executing query ...");
 
 			rset = cstmt.executeQuery();
 			ResultSetMetaData rsmd = rset.getMetaData();
 
-			log.info("Retrieved n = " + rsmd.getColumnCount() + " columns ");
-			log.info("col1name = " + rsmd.getColumnName(1));
-			log.info("col1type = " + rsmd.getColumnClassName(1));
+			log.fine("Retrieved n = " + rsmd.getColumnCount() + " columns ");
+			log.fine("col1name = " + rsmd.getColumnName(1));
+			log.fine("col1type = " + rsmd.getColumnClassName(1));
 			while (rset.next()) {
 
-				log.info(" - " + rset.getObject(1).toString());
+				log.fine(" - " + rset.getObject(1).toString());
 				rs = (ResultSet) rset.getObject(1);
 				ResultSetMetaData rsmd_rs = rs.getMetaData();
 				for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-					log.info("col " + i + " name = " + rsmd_rs.getColumnName(i));
+					log.fine("col " + i + " name = " + rsmd_rs.getColumnName(i));
 				}
-				log.info(" rs is on first row " + rs.isFirst());
+				log.fine(" rs is on first row " + rs.isFirst());
 				while (rs.next()) {
 					int ncol = rsmd_rs.getColumnCount();
-					log.info(" rs loop on column " + ncol);
+					log.fine(" rs loop on column " + ncol);
 					for (int i = 1; i <= ncol; i++) {
 						String colname = rsmd_rs.getColumnName(i);
 						Object colval = rs.getObject(i);
@@ -413,7 +402,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 						// }
 						payload.addColumn(i, colname);
 						payload.addData(i, colval);
-						log.info("Retrieved " + colname + " = "
+						log.fine("Retrieved " + colname + " = "
 								+ dumpObject(colval));
 					}
 				}
@@ -465,10 +454,10 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 	 */
 	@Override
 	@Remove
-	public void remove() throws CoolIOException {
+	public void remove() {
 		try {
 			if (cstmt != null) {
-				log.info("Close statement...");
+				log.fine("Close statement...");
 				cstmt.close();
 			}
 		} catch (SQLException e) {

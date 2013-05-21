@@ -12,7 +12,7 @@ import javax.inject.Named;
 import atlas.coma.exceptions.ComaQueryException;
 import atlas.coma.model.ComaCbamiGtags;
 import atlas.cool.dao.CoolIOException;
-import atlas.cool.dao.CoolRepository;
+import atlas.cool.dao.CoolRepositoryDAO;
 
 /**
  * Session Bean implementation class ComaCbBean
@@ -24,7 +24,7 @@ import atlas.cool.dao.CoolRepository;
 public class ComaCbBean implements ComaCbDAO {
 
 	@Inject
-	private CoolRepository coolrep;
+	private CoolRepositoryDAO coolrep;
 	
 	@Inject
 	private Logger log;

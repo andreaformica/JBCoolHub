@@ -37,7 +37,7 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 
 
 	@Inject
-	private CoolRepository coolrep;
+	private CoolRepositoryDAO coolrep;
 	
 	@Inject
 	private Logger log;

@@ -6,7 +6,8 @@ package atlas.cool.dao;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -15,12 +16,14 @@ import javax.persistence.Query;
 import atlas.cool.annotations.CoolQueryRepository;
 import atlas.cool.annotations.QueryParams;
 
-@RequestScoped
+///////@////RequestScoped
 /**
  * @author formica
  *
  */
-public class CoolRepository {
+@Stateless
+@Local(CoolRepositoryDAO.class)
+public class CoolRepository implements CoolRepositoryDAO {
 
 	@Inject
 	private EntityManager em;
@@ -39,6 +42,10 @@ public class CoolRepository {
 		// TODO Auto-generated constructor stub
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolRepositoryDAO#findCoolList(java.lang.String, java.lang.Object[])
+	 */
+	@Override
 	public synchronized List<?> findCoolList(String qryname, Object[] params)
 			throws CoolIOException {
 
@@ -52,6 +59,10 @@ public class CoolRepository {
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolRepositoryDAO#findCoolListByRange(java.lang.String, java.lang.Object[], int, int)
+	 */
+	@Override
 	public synchronized List<?> findCoolListByRange(String qryname, Object[] params, int firstResult, int maxResults)
 			throws CoolIOException {
 
@@ -73,15 +84,15 @@ public class CoolRepository {
 			throws CoolIOException {
 		// log.info("Build query "+qry+" with N parameters "+params.length);
 		try {
-			log.info("Search query in "+coolqry);
+			log.finest("Search query in "+coolqry);
 			QueryParams annparams = coolqry.getQueryParams(qry);
 			String[] paramnames = annparams.getParams();
-			log.info("Creating named query "+qry);
+			log.finest("Creating named query "+qry);
 			Query q = em.createNamedQuery(qry);
 			for (int i = 0; i < paramnames.length; i++) {
 				String key = paramnames[i];
 				Object val = params[i];
-				log.info("setting query parameter " + key+" value "+val);
+				log.finest("setting query parameter " + key+" value "+val);
 				if (val == null && paramnames[i].equals("node")) {
 					val = "%";
 				} else if (val == null && paramnames[i].equals("tag")) {

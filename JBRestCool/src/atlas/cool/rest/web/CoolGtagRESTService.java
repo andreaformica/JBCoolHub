@@ -2,6 +2,8 @@ package atlas.cool.rest.web;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -159,6 +161,49 @@ public class CoolGtagRESTService {
 		}
 		return results.toString();
 	}
+	
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{gtag}/iovsummary/list")
+	public List<NodeType> listIovsSummaryInNodesSchemaAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("gtag") String gtag) {
+
+		log.info("Calling listIovsSummaryInNodesSchema..." + schema + " " + db);
+		List<NodeGtagTagType> nodeingtagList = null;
+		List<NodeType> nodeList = new ArrayList<NodeType>();
+		try {
+			
+			nodeingtagList = cooldao.retrieveGtagTagsFromSchemaAndDb(schema
+					+ "%", db, gtag);
+			for (NodeGtagTagType nodeGtagTagType : nodeingtagList) {
+				String node = nodeGtagTagType.getNodeFullpath();
+				List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(
+						schema, db, node);
+				NodeType selnode = null;
+				if (nodes != null && nodes.size() > 0) {
+					for (NodeType anode : nodes) {
+						log.info("Found " + anode.getNodeFullpath()
+								+ " of type " + anode.getNodeIovType());
+						selnode = anode;
+					}
+				}
+				
+				String seltag = nodeGtagTagType.getTagName();
+				
+				Collection<CoolIovSummary> summarylist = 
+						coolutilsdao.listIovsSummaryInNodesSchemaTagRunRangeAsList(schema, db, selnode.getNodeFullpath(), seltag, "0", "Inf");
+				selnode.setIovSummaryList(summarylist);
+				nodeList.add(selnode);
+			}
+
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return nodeList;
+	}
+
 
 	@GET
 	@Produces("text/html")

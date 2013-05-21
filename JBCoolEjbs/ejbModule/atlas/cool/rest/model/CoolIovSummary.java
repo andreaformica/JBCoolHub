@@ -31,7 +31,7 @@ public class CoolIovSummary implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	Long chanId;
+	Long   chanId;
 	String channelName;
 	String schema;
 	String db;

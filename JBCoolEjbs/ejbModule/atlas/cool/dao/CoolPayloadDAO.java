@@ -23,5 +23,5 @@ public interface CoolPayloadDAO {
 
     public CoolPayload getPayloadsObj(String schemaname, String dbname,
             String folder, String tagname, BigDecimal stime, BigDecimal etime, Integer channelId) throws CoolIOException;
-    public void remove() throws CoolIOException;
+    public void remove();
 }

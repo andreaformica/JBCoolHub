@@ -1,13 +1,5 @@
 package atlas.cool.rest.web;
 
-import java.io.BufferedReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,14 +13,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import oracle.sql.BLOB;
-import oracle.sql.CLOB;
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolIOException;
-import atlas.cool.dao.CoolPayloadDAO;
-import atlas.cool.meta.CoolPayload;
 import atlas.cool.rest.model.ChannelType;
-import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
@@ -45,9 +32,6 @@ public class CoolCherryPyResourceRESTService {
 
 	@Inject
 	private CoolDAO cooldao;
-	@Inject
-	private CoolPayloadDAO payloaddao;
-
 	@Inject
 	private Logger log;
 

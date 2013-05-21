@@ -232,12 +232,7 @@ public class CoolResourceRESTService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			try {
 				payloaddao.remove();
-			} catch (CoolIOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 		return "done";
 	}
@@ -306,12 +301,7 @@ public class CoolResourceRESTService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			try {
 				payloaddao.remove();
-			} catch (CoolIOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 		return "done";
 	}

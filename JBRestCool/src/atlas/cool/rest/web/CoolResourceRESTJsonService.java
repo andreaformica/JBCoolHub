@@ -54,8 +54,6 @@ public class CoolResourceRESTJsonService {
 	@Inject
 	private CoolDAO cooldao;
 	@Inject
-	private CoolPayloadDAO payloaddao;
-	@Inject
 	private CoolUtilsDAO coolutilsdao;
 
 	@Inject

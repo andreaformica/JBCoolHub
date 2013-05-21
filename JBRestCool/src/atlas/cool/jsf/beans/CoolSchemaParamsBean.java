@@ -349,6 +349,8 @@ public class CoolSchemaParamsBean implements Serializable {
 		} catch (CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			coolpylddao.remove();
 		}
 	}
 
