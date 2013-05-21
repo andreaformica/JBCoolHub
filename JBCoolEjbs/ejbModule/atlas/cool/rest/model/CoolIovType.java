@@ -41,7 +41,7 @@ import atlas.cool.meta.CoolIov;
  + " lastmod_date ," 
  + " new_head_id, " 
  + " iov_base "
- + "from table(cool_select_pkg.f_Get_IovsRangeForChannel(:schema,:db,:node,:tag,:chanid,:since,:until))", resultClass = CoolIovType.class),
+ + " from table(cool_select_pkg.f_Get_IovsRangeForChannel(:schema,:db,:node,:tag,:chanid,:since,:until))", resultClass = CoolIovType.class),
 @NamedNativeQuery(name = CoolIovType.QUERY_FINDIOVS_INRANGE_BYCHAN, query = "select   object_id,"
 + " channel_name , "
 + " channel_id ," 
@@ -53,8 +53,8 @@ import atlas.cool.meta.CoolIov;
 + " lastmod_date ," 
 + " new_head_id, "
 + " iov_base "
-+ "from table(cool_select_pkg.f_Get_IovsRangeForChannelName(:schema,:db,:node,:tag,:channame,:since,:until)) "
-+ "order by channel_id, iov_since asc", resultClass = CoolIovType.class)
++ " from table(cool_select_pkg.f_Get_IovsRangeForChannelName(:schema,:db,:node,:tag,:channame,:since,:until)) "
++ " order by channel_id, iov_since asc", resultClass = CoolIovType.class)
 })
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)

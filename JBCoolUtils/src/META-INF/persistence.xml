@@ -18,6 +18,7 @@
          <property name="hibernate.default_batch_fetch_size" value="20" />
          <property name="hibernate.jdbc.fetch_size" value="1000" />
          <property name="hibernate.jdbc.batch_size" value="25" />
+         <property name="hibernate.ejb.interceptor" value="atlas.cool.interceptors.ApplyOrderByInterceptor" />
       </properties>
    </persistence-unit>
 </persistence>

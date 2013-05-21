@@ -4,8 +4,11 @@
 package atlas.cool.rest.web;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -17,9 +20,11 @@ import javax.ws.rs.Produces;
 
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolIOException;
-import atlas.cool.dao.CoolPayloadDAO;
 import atlas.cool.dao.CoolUtilsDAO;
+import atlas.cool.exceptions.CoolQueryException;
+import atlas.cool.query.tools.QueryTools;
 import atlas.cool.rest.model.CoolIovSummary;
+import atlas.cool.rest.model.CoolIovType;
 import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
@@ -58,6 +63,11 @@ public class CoolResourceRESTJsonService {
 
 	@Inject
 	private Logger log;
+
+	
+	protected void setSort(String orderByName) {
+		atlas.cool.interceptors.WebRestContextHolder.put("OrderBy", orderByName);	
+	}
 
 	/**
 	 * <p>
@@ -109,7 +119,7 @@ public class CoolResourceRESTJsonService {
 	 */
 	@GET
 	@Produces("application/json")
-	@Path("/{schema}/{db}/{node}/tags")
+	@Path("/{schema}/{db}/{node:.*}/tags")
 	public List<SchemaNodeTagType> listTagsInNodesSchema(
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("node") String node) {
@@ -294,6 +304,52 @@ public class CoolResourceRESTJsonService {
 	/**
 	 * <p>
 	 * Method :
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/chanid/{since
+	 * }/{until}/runlb/iovs/list
+	 * </p>
+	 * <p>
+	 * It retrieves a summary of iovs in a given range per channel.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 *            The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 *            The tag name.
+	 * @param channel
+	 *            The channel ID.
+	 * @param since
+	 *            The COOL since time as a string run-lb.
+	 * @param until
+	 *            The COOL until time as a string run-lb.
+	 * @return An XML file with iovs for selected channels.
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/chanid/{since}/{until}/runlb/iovs/list")
+	public NodeType listIovsInNodesSchemaTagRangeAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("channel") Long channel,
+			@PathParam("since") String since, @PathParam("until") String until) {
+
+		NodeType selnode = null;
+		try {
+			selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema,
+					db, fld, tag, channel, since, until);
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return selnode;
+	}
+
+	/**
+	 * <p>
+	 * Method :
 	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/runlb/iovs/list
 	 * </p>
 	 * <p>
@@ -327,6 +383,115 @@ public class CoolResourceRESTJsonService {
 			selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema,
 					db, fld, tag, "all", since, until);
 		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return selnode;
+	}
+
+	/**
+	 * <p>
+	 * Method :
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/runlb/iovs/list
+	 * </p>
+	 * <p>
+	 * It retrieves a summary of iovs in a given range per channel.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 *            The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 *            The tag name.
+	 * @param since
+	 *            The COOL since time as a string run-lb.
+	 * @param until
+	 *            The COOL until time as a string run-lb.
+	 * @return An XML file with iovs for all channels.
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/time/iovs/list")
+	public NodeType listIovsInNodesSchemaTagTimeRangeAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("since") String since, @PathParam("until") String until) {
+
+		NodeType selnode = null;
+		try {
+			selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema,
+					db, fld, tag, "all", since, until);
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return selnode;
+	}
+
+	/**
+	 * <p>
+	 * Method :
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{since}/{until}/runlb/iovs/list
+	 * </p>
+	 * <p>
+	 * It retrieves a summary of iovs in a given range per channel.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 *            The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 *            The tag name.
+	 * @param sort
+	 * 			  The sort list in format name1-mode/name2-mode/ ... , where mode is either ASC or DESC.	
+	 * @param since
+	 *            The COOL since time as a string run-lb.
+	 * @param until
+	 *            The COOL until time as a string run-lb.
+	 * @return An XML file with iovs for all channels.
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{since}/{until}/runlb/iovs/list")
+	public NodeType listIovsInNodesSchemaTagRangeSortedAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("sort") String sort,
+			@PathParam("since") String since, @PathParam("until") String until) {
+
+		NodeType selnode = null;
+		try {
+			String orderByName = "";
+			String[] sortcolumns = sort.split("/");
+			if (sortcolumns.length>=0) {
+				Map<String, Boolean> colmap = new LinkedHashMap<String,Boolean>();
+				for (int i=0; i<sortcolumns.length;i++) {
+					String[] colsort = sortcolumns[i].split("-");
+					String colname = colsort[0];
+					String sortkey = (colsort[1] != null) ? colsort[1] : "ASC";
+					Boolean sortflag = true;
+					if (sortkey.equals("DESC"))
+						sortflag = false;
+					colmap.put(colname, sortflag);
+				}
+				orderByName = QueryTools.getOrderedBy(new CoolIovType(),colmap);
+			}
+			setSort(orderByName);
+			selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema,
+					db, fld, tag, "all", since, until);
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CoolQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

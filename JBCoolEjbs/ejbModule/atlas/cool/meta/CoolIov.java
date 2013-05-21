@@ -125,13 +125,26 @@ public class CoolIov implements Serializable {
 			Long run = getRun(new BigInteger(time.toString()));
 			Long lb = getLumi(new BigInteger(time.toString()));
 			iovstr = run + " - "+lb;
-		} else {
+		} else if (iovBase.equals("time")) {
 			if (time == 0)
 				return "0";
 			if (time == CoolIov.COOL_MAX_DATE)
 				return "Inf";
-			Date iov = new Date(time);
+			Long timeInMilliSec = time/TO_NANOSECONDS;
+			Date iov = new Date(timeInMilliSec);
 			iovstr = TimestampStringFormatter.format(null, iov);
+			
+		} else {
+			// Try to guess...
+			// Suppose that it is a time....
+			if (time == 0)
+				return "0";
+			if (time == CoolIov.COOL_MAX_DATE)
+				return "Inf";
+			Long timeInMilliSec = time/TO_NANOSECONDS;
+			Date iov = new Date(timeInMilliSec);
+			iovstr = TimestampStringFormatter.format(null, iov);
+			
 			Calendar iovcal = Calendar.getInstance();
 			iovcal.setTime(iov);
 			int iovyear = iovcal.get(Calendar.YEAR);

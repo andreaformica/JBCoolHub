@@ -345,5 +345,26 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 		return iovlist;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolDAO#retrieveIovsFromNodeSchemaAndDbInRangeByChanId(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Long, java.math.BigDecimal, java.math.BigDecimal)
+	 */
+	@Override
+	public List<CoolIovType> retrieveIovsFromNodeSchemaAndDbInRangeByChanId(
+			String schema, String db, String node, String tag,
+			Long chanid, BigDecimal since, BigDecimal until)
+			throws CoolIOException {
+		Object[] params = new Object[7];
+		params[0] = schema;
+		params[1] = db;
+		params[2] = node;
+		params[3] = tag;
+		params[4] = chanid;
+		params[5] = since;
+		params[6] = until;
+		log.info("Using query "+CoolIovType.QUERY_FINDIOVS_INRANGE+" with "+schema+" "+db+" "+node+" "+tag+" "+chanid+" "+since+" "+until);
+		List<CoolIovType> iovlist = (List<CoolIovType>) coolrep.findCoolList(CoolIovType.QUERY_FINDIOVS_INRANGE,params);
+		return iovlist;
+	}
+
 	
 }

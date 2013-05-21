@@ -15,5 +15,6 @@
 	<classpathentry kind="var" path="JBOSS7_MODULES/org/hibernate/main/hibernate-core-4.0.1.Final.jar"/>
 	<classpathentry kind="var" path="EXTERNALS_LIB/share/java/db/sqlite-jdbc-3.7.2.jar"/>
 	<classpathentry kind="var" path="EXTERNALS_LIB/share/java/db/ojdbc6.jar"/>
+	<classpathentry kind="src" path="/JBCoolUtils"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

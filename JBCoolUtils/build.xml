@@ -94,7 +94,6 @@
 				<include name="**/*gif" />
 				<include name="**/*css" />
 				<include name="**/*png" />
-				<exclude name="atlas/mdt/dcs/server/**/*" />
 				<exclude name="WEB-INF/**/*" />
 				<exclude name="resources/**/*" />
 				<exclude name="META-INF/*ds.xml" />

@@ -3,6 +3,9 @@
 	
   <dirname property="dependencies.basedir" file="setup.sh"/>
 
+  <property name="build.doc.dir" value="${basedir}/doc" />
+
+
   <!-- The dependencies between the various projects -->
 	  <target name="depend.JBCoolEjbs" depends="depend.JBCoolUtils">
 	    <ant dir="${dependencies.basedir}/JBCoolEjbs" target="${dependency.target}" inheritAll="false"/>
@@ -30,6 +33,9 @@
 	
   <target name="depend.all" depends="depend.JBCoolEAR"/>	
 
+  <target name="depend.doc" depends="depend.JBCoolUtils, depend.JBCoolEjbs,depend.JBComaEjbs, depend.JBRestCool">  
+  </target>
+	
 
   <!-- The global targets -->
   <target name="default">
@@ -39,8 +45,9 @@
   </target>
 
   <target name="doc">
-    <antcall target="depend.all">
-      <param name="dependency.target" value="doc"/>
+    <antcall target="depend.doc">
+        <param name="dependency.target" value="doc"/>
+        <param name="build.doc.dir" value="${basedir}/doc"/>
     </antcall>
   </target>
 

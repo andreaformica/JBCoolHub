@@ -22,5 +22,6 @@
 	<classpathentry kind="var" path="EXTERNALS_LIB/share/java/db/sqlite-jdbc-3.7.2.jar"/>
 	<classpathentry kind="var" path="JALIGN_LIB_DIR/commons-io-2.4.jar"/>
 	<classpathentry kind="var" path="EXTERNALS_LIB/share/java/db/ojdbc6.jar"/>
+	<classpathentry kind="src" path="/JBCoolUtils"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -32,4 +32,5 @@ public interface CoolDAO {
 	public List<IovType> retrieveHolesStatPerChannelFromNodeSchemaAndDb(String schema, String db, String node,String tag) throws CoolIOException;
 	public List<IovType> retrieveHolesStatPerChannelFromNodeSchemaAndDbInRange(String schema, String db, String node,String tag,BigDecimal since,BigDecimal until) throws CoolIOException;
 	public List<CoolIovType> retrieveIovsFromNodeSchemaAndDbInRangeByChanName(String schema, String db, String node,String tag, String channel, BigDecimal since, BigDecimal until) throws CoolIOException;
+	public List<CoolIovType> retrieveIovsFromNodeSchemaAndDbInRangeByChanId(String schema, String db, String node,String tag, Long chanid, BigDecimal since, BigDecimal until) throws CoolIOException;
 }
