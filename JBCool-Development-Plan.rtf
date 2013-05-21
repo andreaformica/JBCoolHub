@@ -1,0 +1,71 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf510
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red8\green78\blue230;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid1\'02\'00.;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listname ;}\listid1}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+{\info
+{\author formica}
+{\*\company CEA/Saclay}}\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f0\b\fs24 \cf0 Local installation
+\b0 \
+Go to the test area in your localhost where you did install everything. You will have a Servers directory, where jboss is installed.\
+In order to run java you need to setup appropriate env variable: JAVA_HOME, CLASSPATH, and add the java executable to your PATH.\
+You need to modify the $JBOSS_HOME/standalone/configuration/standalone.xml, changing the hardcoded path to your own system installation paths.\
+\
+For the moment the list of changes are: the Vault repository (/Xxx/ffff/Encrypted), the static web directory (/Xxx/fff/myweb) and the openSSL keys.\
+\
+To start JBoss:\
+\
+$JBOSS_HOME/bin/standalone.sh \
+\
+This will print the output to the console\'85\
+\
+If you do not want this, you can launch it using\
+\
+nohup /bin/standalone.sh &\
+\
+In this way the output will go to nohup.out file.\
+\
+Verify that the system is working by going to the web page :   https://localhost:8443/JBRestCool\
+\
+To stop JBoss:\
+either Ctrl-C, or \
+	  ps aux | egrep jboss, \
+then \
+	  kill <id> ,  or \
+ 	  kill -9 <id>\
+\
+
+\b Software installation
+\b0 \
+Clone the git repository\'85\
+\pard\pardeftab720
+\cf0 git clone {\field{\*\fldinst{HYPERLINK "https://git.cern.ch/reps/JBCool"}}{\fldrslt \cf2 \ul \ulc2 https://git.cern.ch/reps/JBCool}} #LDAP authentication\
+\
+We need then to add the "common" repository, the "external" repository and a "lib" repository to be copied in JBRestCool/WebContent/WEB-INF .\
+These repositories contain only libraries, so they are not available in git. Ask andrea.formica@cern.ch for access to these libraries. In future they will be available\
+in some area for download.\
+\
+If you do not have "ant" installed on your system, go to the website of apache-ant and install it following the instructions.\
+You need to set the appropriate ANT_HOME variable. If you have a java setup script you can put the declaration of ANT_HOME inside the javasetup.sh script.\
+\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b \cf0 \
+Development plan
+\b0 \
+The development plan for phase 1 consists in 3 main points\
+\pard\tx220\tx720\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\li720\fi-720\pardirnatural
+\ls1\ilvl0\cf0 {\listtext	1.	}Standalone java program/library to perform the parsing of a CLOB: this means that the program should be able to read a File (or a String from a RESTful service), and unpack the given CLOBs in a structure which is more close to the meaning of the content of the CLOB. The output could be in the first place a list of generic Objects which we should define.\
+{\listtext	2.	}Implementation inside JBRestCool package of the previous classes: probably the best is to provide an external jar file, and allow the system to search for a plugin in order to unpack the CLOB if the plugin exists. This kind of functionality could be achieved using java annotations. The final step should be the creation of a RESTful service for which the output is easily parsed by a client program, in order to create a ROOT file.\
+{\listtext	3.	}Python client program: the python client should use the above service and implement the creation of a ROOT tree. Explore the existing XML parser in ROOT IO.\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
+The definition of the XML output (if we see that is feasible) is very important\'85\
+\
+\pard\pardeftab720
+\cf0 \
+}

@@ -40,7 +40,7 @@ import atlas.cool.rest.model.SchemaNodeTagType;
  * The base URL used by the following methods starts with
  * </p>
  * <p>
- * <b>URL: https://hostname:port/JBRestCool/rest/plsqlcool/</b>
+ * <b>URL: https://hostname:port/JBRestCool/rest/plsqlcooljson/</b>
  * </p>
  * <p>
  * Hostname: voatlas135

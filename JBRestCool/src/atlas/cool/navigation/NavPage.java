@@ -6,6 +6,7 @@ package atlas.cool.navigation;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.SessionScoped;
@@ -48,6 +49,24 @@ public class NavPage implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
+	public String getLocal() {
+		String hostname = "localhost";
+		try {
+			java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+			log.info("Hostname of local machine: " + localMachine.getHostName());
+			hostname = localMachine.getHostName();
+			}
+			catch (java.net.UnknownHostException uhe) { // [beware typo in code sample -dmw]
+			// handle exception
+			}
+
+		Properties props = System.getProperties();
+		for (Object key : props.keySet()) {
+			log.info("Found property key "+key+" with value "+props.get(key));
+		}
+		return hostname+":8080";
+	}
+	
 	public void doNav() {
 		log.info("Navigation ....");
 		String str = facesContext.getExternalContext().getRequestParameterMap()
