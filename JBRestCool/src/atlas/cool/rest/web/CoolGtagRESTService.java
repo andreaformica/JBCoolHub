@@ -1,5 +1,6 @@
 package atlas.cool.rest.web;
 
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -166,7 +167,8 @@ public class CoolGtagRESTService {
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{gtag}/iovsummary/list")
 	public List<NodeType> listIovsSummaryInNodesSchemaAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("schema") String schema, 
+			@PathParam("db") String db,
 			@PathParam("gtag") String gtag) {
 
 		log.info("Calling listIovsSummaryInNodesSchema..." + schema + " " + db);
@@ -192,7 +194,7 @@ public class CoolGtagRESTService {
 				String seltag = nodeGtagTagType.getTagName();
 				
 				Collection<CoolIovSummary> summarylist = 
-						coolutilsdao.listIovsSummaryInNodesSchemaTagRunRangeAsList(schema, db, selnode.getNodeFullpath(), seltag, "0", "Inf");
+						coolutilsdao.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, selnode.getNodeFullpath(), seltag, new BigDecimal(0L), new BigDecimal(CoolIov.COOL_MAX_DATE));
 				selnode.setIovSummaryList(summarylist);
 				nodeList.add(selnode);
 			}

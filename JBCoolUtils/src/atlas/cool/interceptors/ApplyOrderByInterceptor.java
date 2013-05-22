@@ -53,7 +53,7 @@ public class ApplyOrderByInterceptor extends EmptyInterceptor {
 	 */
 	@Override
 	public String onPrepareStatement(String sql) {
-		log.log(Level.INFO, "Interceptor received prepared statement : " + sql);
+		log.log(Level.FINE, "Interceptor received prepared statement : " + sql);
 
 		String orderbyclause = null;
 		if (WebRestContextHolder.containsKey("OrderBy")) {
@@ -63,7 +63,7 @@ public class ApplyOrderByInterceptor extends EmptyInterceptor {
 			// check if order by clause contains correct col fields
 			if (!isOrderByCorrect(sql, orderbyclause)) {
 				orderbyclause = "";
-				log.log(Level.INFO,
+				log.log(Level.FINE,
 						"Interceptor is removing orderby clause...wrong columns...");
 			} else {
 				// remove previous order by
@@ -81,14 +81,14 @@ public class ApplyOrderByInterceptor extends EmptyInterceptor {
 	}
 
 	protected Boolean isOrderByCorrect(String sql, String orderby) {
-		log.log(Level.INFO,
+		log.log(Level.FINE,
 				"Interceptor is checking orderby clause "+orderby);
 		
 		String[] orderbylist = orderby.split(",");
 		if (orderbylist.length==0) {
 			orderbylist[0] = new String(orderby);
 		}
-		log.log(Level.INFO,
+		log.log(Level.FINE,
 				"Interceptor found order by list of  "+orderbylist.length);
 		Boolean retval = true;
 		for (int i = 0; i < orderbylist.length; i++) {
@@ -96,11 +96,11 @@ public class ApplyOrderByInterceptor extends EmptyInterceptor {
 					.split(" ")[0] : "none";
 			if (!colname.equals("none")) {
 				if (sql.contains(colname) || sql.contains(colname.toLowerCase())) {
-					log.log(Level.INFO,
+					log.log(Level.FINE,
 							"Interceptor found column  "+colname+" in "+sql);
 					retval = (retval & true);
 				} else {
-					log.log(Level.INFO,
+					log.log(Level.FINE,
 							"Interceptor did NOT find column  "+colname+" in "+sql);
 					retval = (retval & false);
 				}

@@ -14,9 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-
 import atlas.cool.dao.CoolIOException;
 import atlas.cool.rest.model.CoolIovType;
 

@@ -232,16 +232,6 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		log.info("Calling listNodesInSchema..." + schema + " " + db);
 		List<NodeType> results = null;
 		results = cooldao.retrieveNodesFromSchemaAndDb(schema + "%", db, "%");
-		if (results == null) {
-			// create a fake entry
-			NodeType nt = new NodeType();
-			nt.setNodeId(1L);
-			nt.setNodeFullpath("this is a fake node");
-			nt.setNodeTinstime(new Timestamp(new Date().getTime()));
-			List<NodeType> _fakes = new ArrayList<NodeType>();
-			_fakes.add(nt);
-			results = _fakes;
-		}
 
 		return results;
 	}
@@ -310,49 +300,49 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		return results;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * atlas.cool.dao.CoolUtilsDAO#listIovsSummaryInNodesSchemaTagRunRangeAsList
-	 * (java.lang.String, java.lang.String, java.lang.String, java.lang.String,
-	 * java.lang.String, java.lang.String)
-	 */
-	@Override
-	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRunRangeAsList(
-			String schema, String db, String fld, String tag, String since,
-			String until) throws CoolIOException {
-		log.info("Calling listIovsSummaryInNodesSchemaTagRangeAsList..."
-				+ schema + " " + db + " folder " + fld + " tag " + tag);
-		Collection<CoolIovSummary> summarylist = null;
-
-		String node = fld;
-		if (!fld.startsWith("/")) {
-			node = "/" + fld;
-		}
-		List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema, db,
-				node);
-		NodeType selnode = null;
-		if (nodes != null && nodes.size() > 0) {
-			for (NodeType anode : nodes) {
-				log.info("Found " + anode.getNodeFullpath() + " of type "
-						+ anode.getNodeIovType());
-				selnode = anode;
-			}
-		}
-		String seltag = tag;
-		if (tag.equals("none")) {
-			seltag = null;
-		}
-
-		Map<Long, CoolIovSummary> iovsummary = computeIovSummaryRangeMap(
-				schema, db, node, seltag, selnode.getNodeIovBase(),
-				CoolIov.getCoolRun(since), CoolIov.getCoolRun(until));
-
-		summarylist = iovsummary.values();
-
-		return summarylist;
-	}
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see
+//	 * atlas.cool.dao.CoolUtilsDAO#listIovsSummaryInNodesSchemaTagRunRangeAsList
+//	 * (java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+//	 * java.lang.String, java.lang.String)
+//	 */
+//	@Override
+//	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRunRangeAsList(
+//			String schema, String db, String fld, String tag, String since,
+//			String until) throws CoolIOException {
+//		log.info("Calling listIovsSummaryInNodesSchemaTagRangeAsList..."
+//				+ schema + " " + db + " folder " + fld + " tag " + tag);
+//		Collection<CoolIovSummary> summarylist = null;
+//
+//		String node = fld;
+//		if (!fld.startsWith("/")) {
+//			node = "/" + fld;
+//		}
+//		List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema, db,
+//				node);
+//		NodeType selnode = null;
+//		if (nodes != null && nodes.size() > 0) {
+//			for (NodeType anode : nodes) {
+//				log.info("Found " + anode.getNodeFullpath() + " of type "
+//						+ anode.getNodeIovType());
+//				selnode = anode;
+//			}
+//		}
+//		String seltag = tag;
+//		if (tag.equals("none")) {
+//			seltag = null;
+//		}
+//
+//		Map<Long, CoolIovSummary> iovsummary = computeIovSummaryRangeMap(
+//				schema, db, node, seltag, selnode.getNodeIovBase(),
+//				CoolIov.getCoolRun(since), CoolIov.getCoolRun(until));
+//
+//		summarylist = iovsummary.values();
+//
+//		return summarylist;
+//	}
 
 	/*
 	 * (non-Javadoc)
@@ -458,7 +448,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		NodeType selnode = null;
 
 		try {
-			String chan = channel;
+			String chan = "%"+channel+"%";
 			if (channel.equals("all")) {
 				chan = null;
 			} 
@@ -485,6 +475,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			iovlist = new CoolPayloadTransform(payload).getIovsWithPayload();
 			selnode.setIovList(iovlist);
 		} catch (Exception e) {
+			//payloaddao.remove();
 			throw new CoolIOException(e.getMessage());
 		} finally {
 			payloaddao.remove();

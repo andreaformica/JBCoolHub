@@ -322,13 +322,13 @@ public class CoolSchemaParamsBean implements Serializable {
 					+ " " + selNode.getNodeFullpath() + " " + channelId + " "
 					+ stime + " " + etime);
 
-			Integer chId = null;
+			Long chId = null;
 
 //			if (channelId.equals("") || channelId.equals("all")) {
 			if (channelId != null && channelId.equals("all")) {
 				log.info("no cut on channel ID...");
 			} else {
-				chId = selChannel.getChannelId().intValue();
+				chId = selChannel.getChannelId().longValue();
 			}
 //				chId = new Integer(channelId);
 

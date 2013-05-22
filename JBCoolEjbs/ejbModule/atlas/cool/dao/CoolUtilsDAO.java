@@ -38,38 +38,28 @@ public interface CoolUtilsDAO {
 	public List<IovType> getIovStatPerChannel(String schema, String db,
 			String fld, String tag) throws CoolIOException;
 
-	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRunRangeAsList(
-			String schema, String db, String fld, String tag, String since,
-			String until) throws CoolIOException;
-	
-	public NodeType listIovsInNodesSchemaTagRangeAsList( String schema, String db,
-			String fld, String tag,
-			 String channel,
-			 BigDecimal since,
-			 BigDecimal until) throws CoolIOException;
+	public NodeType listIovsInNodesSchemaTagRangeAsList(String schema,
+			String db, String fld, String tag, String channel,
+			BigDecimal since, BigDecimal until) throws CoolIOException;
 
-	public NodeType listIovsInNodesSchemaTagRangeAsList( String schema, String db,
-			String fld, String tag,
-			Long chanid,
-			BigDecimal since,
+	public NodeType listIovsInNodesSchemaTagRangeAsList(String schema,
+			String db, String fld, String tag, Long chanid, BigDecimal since,
 			BigDecimal until) throws CoolIOException;
-	
-	public NodeType listPayloadInNodesSchemaTagRangeAsList(String schema, String db,
-			String fld, String tag,
-			 String channel,
-			 BigDecimal since,
-			 BigDecimal until) throws CoolIOException;
 
-	public NodeType listPayloadInNodesSchemaTagRangeAsList(String schema, String db,
-			String fld, String tag,
-			 Long chanid,
-			 BigDecimal since,
-			 BigDecimal until) throws CoolIOException;
-	
-	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(String schema, String db,
-			 String fld, String tag,
-			 BigDecimal since,
-			 BigDecimal until) throws CoolIOException;
-	
-	
+	public NodeType listPayloadInNodesSchemaTagRangeAsList(String schema,
+			String db, String fld, String tag, String channel,
+			BigDecimal since, BigDecimal until) throws CoolIOException;
+
+	public NodeType listPayloadInNodesSchemaTagRangeAsList(String schema,
+			String db, String fld, String tag, Long chanid, BigDecimal since,
+			BigDecimal until) throws CoolIOException;
+
+	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(
+			String schema, String db, String fld, String tag, BigDecimal since,
+			BigDecimal until) throws CoolIOException;
+
+//	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRunRangeAsList(
+//			String schema, String db, String fld, String tag, String since,
+//			String until) throws CoolIOException;
+
 }

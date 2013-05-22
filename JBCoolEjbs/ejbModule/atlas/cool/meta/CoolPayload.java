@@ -56,7 +56,7 @@ public class CoolPayload implements Serializable {
 	public void addColumn(int icol, String name) {
 		if (!columns.containsKey(icol) && !columns.containsValue(name)) {
 			columns.put(icol, name);
-			log.info("Adding column "+icol+" "+name+" to payload...");
+			log.fine("Adding column "+icol+" "+name+" to payload...");
 			// types.put(name, type);
 		}
 	}
@@ -97,7 +97,7 @@ public class CoolPayload implements Serializable {
 			String colname = getColumn(icol);
 			if (colname != null) {
 				columnlist.add(colname);
-				log.info("Adding column "+colname +" to list of columns ");
+				log.fine("Adding column "+colname +" to list of columns ");
 			}
 		}
 		return columnlist;
@@ -118,7 +118,7 @@ public class CoolPayload implements Serializable {
 			if (colname != null) {
 				if (isNumber(colname)) {
 					columnlist.add(colname);
-					log.info("Adding column "+colname +" to list of chart fields ");
+					log.fine("Adding column "+colname +" to list of chart fields ");
 				}
 			}
 		}
@@ -139,7 +139,7 @@ public class CoolPayload implements Serializable {
 					i = icol;
 			}
 		}
-		log.info("Selected column "+colname+" with index "+i);
+		log.fine("Selected column "+colname+" with index "+i);
 		if (!data.containsKey(i))
 			return null;
 		return data.get(i);

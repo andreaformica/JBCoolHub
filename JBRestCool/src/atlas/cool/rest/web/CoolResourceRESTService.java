@@ -8,7 +8,10 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,119 +65,142 @@ import atlas.cool.rest.utils.SvgRestUtils;
  */
 @Path("/plsqlcool")
 @RequestScoped
-public class CoolResourceRESTService {
+public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 
 	@Inject
-	private CoolDAO cooldao;
-	@Inject
-	private CoolPayloadDAO payloaddao;
-	@Inject
-	private CoolUtilsDAO coolutilsdao;
+	protected CoolPayloadDAO payloaddao;
 
-	@Inject
-	private Logger log;
-
-	/**
-	 * <p>
-	 * Method : /{schema}/{db}/nodes
-	 * </p>
-	 * <p>
-	 * It retrieves a list of nodes in XML format.
-	 * </p>
-	 * 
-	 * @param schema
-	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
-	 * @param db
-	 *            The Cool Instance name: e.g. COMP200
-	 * @return
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#setSort(java.lang.String)
 	 */
+	@Override
+	protected void setSort(String orderByName) {
+		// TODO Auto-generated method stub
+		super.setSort(orderByName);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listNodesInSchema(java.lang.String, java.lang.String)
+	 */
+	@Override
 	@GET
-	@Produces("text/xml")
+	@Produces("application/xml")
 	@Path("/{schema}/{db}/nodes")
-	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
-			@PathParam("db") String db) {
-
-		log.info("Calling listNodesInSchema..." + schema + " " + db);
-		List<NodeType> results = null;
-		try {
-			results = coolutilsdao.listNodesInSchema(schema, db);
-		} catch (CoolIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return results;
+	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema, @PathParam("db") String db) {
+		// TODO Auto-generated method stub
+		return super.listNodesInSchema(schema, db);
 	}
 
-	/**
-	 * <p>
-	 * Method : /{schema}/{db}/{node}/tags
-	 * </p>
-	 * <p>
-	 * It retrieves a list of tags in XML format.
-	 * </p>
-	 * 
-	 * @param schema
-	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
-	 * @param db
-	 *            The Cool Instance name: e.g. COMP200
-	 * @param node
-	 *            The node name : a search string like MDT, in this case we do
-	 *            not use full folder name
-	 * @return An XML list of tags for the given node.
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	@GET
-	@Produces("text/xml")
-	@Path("/{schema}/{db}/{node}/tags")
-	public List<SchemaNodeTagType> listTagsInNodesSchema(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("node") String node) {
-
-		List<SchemaNodeTagType> results = null;
-		try {
-			results = coolutilsdao.listTagsInNodesSchema(schema, db, node);
-		} catch (CoolIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return results;
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{node:.*}/tags")
+	public List<SchemaNodeTagType> listTagsInNodesSchema(@PathParam("schema") String schema, @PathParam("db") String db, @PathParam("node") String node) {
+		// TODO Auto-generated method stub
+		return super.listTagsInNodesSchema(schema, db, node);
 	}
 
-	/**
-	 * <p>
-	 * Method : /{schema}/{db}/{gtag}/trace
-	 * </p>
-	 * <p>
-	 * It retrieves a list of tags associated to the given global tag in XML
-	 * format.
-	 * </p>
-	 * 
-	 * @param schema
-	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
-	 * @param db
-	 *            The Cool Instance name: e.g. COMP200
-	 * @param gtag
-	 *            The Cool global tag : COMCOND-BLKPA-006-09
-	 * @return An XML list of schemas and folders and tags which are associated
-	 *         to the global tag.
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listGlobalTagsTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	@GET
-	@Produces("text/xml")
+	@Produces("application/xml")
 	@Path("/{schema}/{db}/{gtag}/trace")
-	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
-			@PathParam("schema") String schema, @PathParam("db") String db,
+	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("gtag") String gtag) {
+		// TODO Auto-generated method stub
+		return super.listGlobalTagsTagsInNodesSchema(schema, db, gtag);
+	}
 
-		log.info("Calling listGlobalTagsTagsInNodesSchema..." + schema + " "
-				+ db);
-		List<NodeGtagTagType> results = null;
-		try {
-			results = cooldao.retrieveGtagTagsFromSchemaAndDb(schema + "%", db,
-					"%" + gtag + "%");
-		} catch (CoolIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return results;
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#getIovStatPerChannel(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsperchan")
+	public List<IovType> getIovStatPerChannel(@PathParam("schema") String schema, @PathParam("db") String db, @PathParam("fld") String fld,
+			@PathParam("tag") String tag) {
+		// TODO Auto-generated method stub
+		return super.getIovStatPerChannel(schema, db, fld, tag);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listIovsInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
+	public NodeType listIovsInNodesSchemaTagRangeAsList(@PathParam("schema") String schema,
+			@PathParam("db") String db, @PathParam("fld") String fld, @PathParam("tag") String tag, @PathParam("channel") String channel, @PathParam("chansel") String chansel,
+			@PathParam("since") String since, @PathParam("until") String until, @PathParam("timespan") String timespan) {
+
+		return super.listIovsInNodesSchemaTagRangeAsList(schema, db, fld, tag, channel,
+				chansel, since, until, timespan);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listIovsInNodesSchemaTagRangeSortedAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
+	public NodeType listIovsInNodesSchemaTagRangeSortedAsList(@PathParam("schema") String schema,
+			@PathParam("db") String db, @PathParam("fld") String fld, @PathParam("tag") String tag, @PathParam("sort") String sort, @PathParam("channel") String channel,
+			@PathParam("chansel") String chansel, @PathParam("since") String since, @PathParam("until") String until, @PathParam("timespan") String timespan) {
+
+		return super.listIovsInNodesSchemaTagRangeSortedAsList(schema, db, fld, tag,
+				sort, channel, chansel, since, until, timespan);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listPayloadInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/data/list")
+	public NodeType listPayloadInNodesSchemaTagRangeAsList(@PathParam("schema") String schema,
+			@PathParam("db") String db, @PathParam("fld") String fld, @PathParam("tag") String tag, @PathParam("channel") String channel, @PathParam("chansel") String chansel,
+			@PathParam("since") String since, @PathParam("until") String until, @PathParam("timespan") String timespan) {
+		return super.listPayloadInNodesSchemaTagRangeAsList(schema, db, fld, tag,
+				channel, chansel, since, until, timespan);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listPayloadInNodesSchemaTagRangeSortedAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{channel}/{chansel}/{since}/{until}/{timespan}/data/list")
+	public NodeType listPayloadInNodesSchemaTagRangeSortedAsList(@PathParam("schema") String schema,
+			@PathParam("db") String db, @PathParam("fld") String fld, @PathParam("tag") String tag, @PathParam("sort") String sort, @PathParam("channel") String channel,
+			@PathParam("chansel") String chansel, @PathParam("since") String since, @PathParam("until") String until, @PathParam("timespan") String timespan) {
+
+		return super.listPayloadInNodesSchemaTagRangeSortedAsList(schema, db, fld, tag,
+				sort, channel, chansel, since, until, timespan);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listIovsSummaryInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/{timespan}/rangesummary/list")
+	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(@PathParam("schema") String schema,
+			@PathParam("db") String db, @PathParam("fld") String fld, @PathParam("tag") String tag, @PathParam("since") String since, @PathParam("until") String until,
+			@PathParam("timespan") String timespan) {
+
+		return super.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, fld, tag,
+				since, until, timespan);
 	}
 
 	/**
@@ -206,11 +232,11 @@ public class CoolResourceRESTService {
 	public String getPayload(@PathParam("schema") String schema,
 			@PathParam("db") String db, @PathParam("fld") String fld,
 			@PathParam("tag") String tag, @PathParam("time") BigDecimal time,
-			@PathParam("chan") Integer channel) {
+			@PathParam("chan") Long channel) {
 		log.info("Calling getPayload..." + schema + " " + db + " " + fld + " "
 				+ channel);
 		try {
-			Integer chid = channel;
+			Long chid = channel;
 			if (channel < 0)
 				chid = null;
 			String node = fld;
@@ -272,7 +298,7 @@ public class CoolResourceRESTService {
 			@PathParam("db") String db, @PathParam("fld") String fld,
 			@PathParam("tag") String tag, @PathParam("stime") BigDecimal stime,
 			@PathParam("etime") BigDecimal etime,
-			@PathParam("chan") Integer channel) {
+			@PathParam("chan") Long channel) {
 		/*
 		 * MultivaluedMap<String,String> params = id.getMatrixParameters();
 		 * String schema = params.get("schema").get(0); String db =
@@ -281,7 +307,7 @@ public class CoolResourceRESTService {
 		 * BigDecimal(params.get("time").get(0));
 		 */log.info("Calling getPayload..." + schema + " " + db + " " + fld);
 		try {
-			Integer chid = channel;
+			Long chid = channel;
 			if (channel < 0)
 				chid = null;
 			String fldname = fld.replaceAll("/", "_");
@@ -306,41 +332,6 @@ public class CoolResourceRESTService {
 		return "done";
 	}
 
-	/**
-	 * <p>
-	 * Method : /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsperchan
-	 * </p>
-	 * <p>
-	 * It retrieves a summary of iovs per channel.
-	 * </p>
-	 * 
-	 * @param schema
-	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
-	 * @param db
-	 *            The Cool Instance name: e.g. COMP200
-	 * @param fld
-	 *            The folder name: /MUONALIGN/MDT/BARREL
-	 * @param tag
-	 *            The tag name.
-	 * @return The XML list of iovs per channel.
-	 */
-	@GET
-	@Produces("text/xml")
-	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsperchan")
-	public List<IovType> getIovStatPerChannel(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag) {
-
-		log.info("Calling getIovStatPerChannel..." + schema + " " + db + " "
-				+ fld + " " + tag);
-		List<IovType> results = null;
-		try {
-			results = coolutilsdao.getIovStatPerChannel(schema, db, fld, tag);
-		} catch (CoolIOException e) {
-			e.printStackTrace();
-		}
-		return results;
-	}
 
 	/**
 	 * <p>
@@ -538,232 +529,6 @@ public class CoolResourceRESTService {
 		return results.toString();
 	}
 
-	/**
-	 * <p>
-	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary
-	 * /list
-	 * </p>
-	 * <p>
-	 * It retrieves a summary of iovs in a given range per channel.
-	 * </p>
-	 * 
-	 * @param schema
-	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
-	 * @param db
-	 *            The Cool Instance name: e.g. COMP200
-	 * @param fld
-	 *            The folder name: /MUONALIGN/MDT/BARREL
-	 * @param tag
-	 *            The tag name.
-	 * @param since
-	 *            The COOL since time.
-	 * @param until
-	 *            The COOL until time.
-	 * @return An HTML page of summary for every channel.
-	 */
-	@GET
-	@Produces("text/xml")
-	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/run/rangesummary/list")
-	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRunRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("since") String since, @PathParam("until") String until) {
-
-		log.info("Calling listIovsSummaryInNodesSchemaTagRangeAsList..."
-				+ schema + " " + db + " folder " + fld + " tag " + tag);
-		Collection<CoolIovSummary> summarylist = null;
-		try {
-			summarylist = coolutilsdao
-					.listIovsSummaryInNodesSchemaTagRunRangeAsList(schema, db,
-							fld, tag, since, until);
-
-		} catch (CoolIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return summarylist;
-	}
-
-	/**
-	 * <p>
-	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since
-	 * }/{until}/runlb/iovs/list
-	 * </p>
-	 * <p>
-	 * It retrieves a summary of iovs in a given range per channel.
-	 * </p>
-	 * 
-	 * @param schema
-	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
-	 * @param db
-	 *            The Cool Instance name: e.g. COMP200
-	 * @param fld
-	 *            The folder name: /MUONALIGN/MDT/BARREL
-	 * @param tag
-	 *            The tag name.
-	 * @param channel
-	 *            The channel name.
-	 * @param since
-	 *            The COOL since time as a string run-lb.
-	 * @param until
-	 *            The COOL until time as a string run-lb.
-	 * @return An XML file with iovs for selected channels.
-	 */
-	@GET
-	@Produces("text/xml")
-	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since}/{until}/runlb/iovs/list")
-	public NodeType listIovsInNodesSchemaTagRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("channel") String channel,
-			@PathParam("since") String since, @PathParam("until") String until) {
-
-		NodeType selnode = null;
-		try {
-			selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema,
-					db, fld, tag, channel, since, until);
-		} catch (CoolIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return selnode;
-	}
-
-	/**
-	 * <p>
-	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/runlb/iovs/list
-	 * </p>
-	 * <p>
-	 * It retrieves a summary of iovs in a given range per channel.
-	 * </p>
-	 * 
-	 * @param schema
-	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
-	 * @param db
-	 *            The Cool Instance name: e.g. COMP200
-	 * @param fld
-	 *            The folder name: /MUONALIGN/MDT/BARREL
-	 * @param tag
-	 *            The tag name.
-	 * @param since
-	 *            The COOL since time as a string run-lb.
-	 * @param until
-	 *            The COOL until time as a string run-lb.
-	 * @return An XML file with iovs for all channels.
-	 */
-	@GET
-	@Produces("text/xml")
-	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/runlb/iovs/list")
-	public NodeType listIovsInNodesSchemaTagRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("since") String since, @PathParam("until") String until) {
-
-		NodeType selnode = null;
-		try {
-			selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema,
-					db, fld, tag, "all", since, until);
-		} catch (CoolIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return selnode;
-	}
-
-	/**
-	 * <p>
-	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since
-	 * }/{until}/time/data/list
-	 * </p>
-	 * <p>
-	 * It retrieves a summary of iovs in a given range per channel.
-	 * </p>
-	 * 
-	 * @param schema
-	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
-	 * @param db
-	 *            The Cool Instance name: e.g. COMP200
-	 * @param fld
-	 *            The folder name: /MUONALIGN/MDT/BARREL
-	 * @param tag
-	 *            The tag name.
-	 * @param channel
-	 *            The channel name.
-	 * @param since
-	 *            The COOL since time as a string run-lb.
-	 * @param until
-	 *            The COOL until time as a string run-lb.
-	 * @return An XML file with iovs for selected channels.
-	 */
-	@GET
-	@Produces("text/xml")
-	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since}/{until}/time/data/list")
-	public NodeType listPayloadInNodesSchemaTagRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("channel") String channel,
-			@PathParam("since") BigDecimal since,
-			@PathParam("until") BigDecimal until) {
-		NodeType selnode = null;
-		try {
-			selnode = coolutilsdao.listPayloadInNodesSchemaTagRangeAsList(
-					schema, db, fld, tag, channel, since, until);
-		} catch (CoolIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return selnode;
-	}
-
-	/**
-	 * <p>
-	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary
-	 * /list
-	 * </p>
-	 * <p>
-	 * It retrieves a summary of iovs in a given range per channel.
-	 * </p>
-	 * 
-	 * @param schema
-	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
-	 * @param db
-	 *            The Cool Instance name: e.g. COMP200
-	 * @param fld
-	 *            The folder name: /MUONALIGN/MDT/BARREL
-	 * @param tag
-	 *            The tag name.
-	 * @param since
-	 *            The COOL since time.
-	 * @param until
-	 *            The COOL until time.
-	 * @return An HTML page of summary for every channel.
-	 */
-	@GET
-	@Produces("text/xml")
-	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary/list")
-	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("since") BigDecimal since,
-			@PathParam("until") BigDecimal until) {
-
-		Collection<CoolIovSummary> summarylist = null;
-		try {
-			summarylist = coolutilsdao
-					.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db,
-							fld, tag, since, until);
-
-		} catch (CoolIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return summarylist;
-	}
 
 	/**
 	 * <p>
@@ -1163,4 +928,6 @@ public class CoolResourceRESTService {
 		return strOut.toString();
 	}
 
+	
+	
 }
