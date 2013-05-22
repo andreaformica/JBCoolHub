@@ -29,6 +29,7 @@ import oracle.sql.CLOB;
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolIOException;
 import atlas.cool.dao.CoolPayloadDAO;
+import atlas.cool.dao.CoolResultSetDAO;
 import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.meta.CoolIov;
 import atlas.cool.meta.CoolPayload;
@@ -68,7 +69,7 @@ import atlas.cool.rest.utils.SvgRestUtils;
 public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 
 	@Inject
-	protected CoolPayloadDAO payloaddao;
+	protected CoolResultSetDAO payloaddao;
 
 	/* (non-Javadoc)
 	 * @see atlas.cool.rest.web.CoolRESTImpl#setSort(java.lang.String)
@@ -249,7 +250,7 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 			if (pyld != null) {
 				output = dumpResultSet(pyld);
 			}
-			// payloaddao.remove();
+			payloaddao.closeConnection();
 			return output;
 		} catch (CoolIOException e) {
 			// TODO Auto-generated catch block

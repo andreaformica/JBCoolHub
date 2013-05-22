@@ -29,7 +29,7 @@ import atlas.cool.meta.CoolPayload;
 /**
  * Session Bean implementation class CoolPayloadBean
  */
-@Stateful
+@Stateless
 @Local(CoolPayloadDAO.class)
 public class CoolPayloadBean implements CoolPayloadDAO {
 
@@ -49,15 +49,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		// TODO Auto-generated constructor stub
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see atlas.cool.dao.CoolPayloadDAO#getPayload(java.lang.String,
-	 * java.lang.String, java.lang.String, java.lang.String,
-	 * java.math.BigDecimal, java.lang.Long)
-	 */
-	@Override
-	public ResultSet getPayload(String schemaname, String dbname,
+	protected ResultSet getPayload(String schemaname, String dbname,
 			String folder, String tagname, BigDecimal time, Long channelId)
 			throws CoolIOException {
 		try {
@@ -72,15 +64,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see atlas.cool.dao.CoolPayloadDAO#getPayloads(java.lang.String,
-	 * java.lang.String, java.lang.String, java.lang.String,
-	 * java.math.BigDecimal, java.math.BigDecimal, java.lang.Long)
-	 */
-	@Override
-	public ResultSet getPayloads(String schemaname, String dbname,
+	protected ResultSet getPayloads(String schemaname, String dbname,
 			String folder, String tagname, BigDecimal stime, BigDecimal etime,
 			Long channelId) throws CoolIOException {
 		try {
@@ -99,15 +83,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see atlas.cool.dao.CoolPayloadDAO#getPayload(java.lang.String,
-	 * java.lang.String, java.lang.String, java.lang.String,
-	 * java.math.BigDecimal, java.lang.String)
-	 */
-	@Override
-	public ResultSet getPayload(String schemaname, String dbname,
+	protected ResultSet getPayload(String schemaname, String dbname,
 			String folder, String tagname, BigDecimal time, String channelName)
 			throws CoolIOException {
 		try {
@@ -122,15 +98,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see atlas.cool.dao.CoolPayloadDAO#getPayloads(java.lang.String,
-	 * java.lang.String, java.lang.String, java.lang.String,
-	 * java.math.BigDecimal, java.math.BigDecimal, java.lang.String)
-	 */
-	@Override
-	public ResultSet getPayloads(String schemaname, String dbname,
+	protected ResultSet getPayloads(String schemaname, String dbname,
 			String folder, String tagname, BigDecimal stime, BigDecimal etime,
 			String channelName) throws CoolIOException {
 		try {
