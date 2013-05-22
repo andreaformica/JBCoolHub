@@ -45,18 +45,24 @@ public interface CoolUtilsDAO {
 	public NodeType listIovsInNodesSchemaTagRangeAsList( String schema, String db,
 			String fld, String tag,
 			 String channel,
-			 String since,
-			 String until) throws CoolIOException;
+			 BigDecimal since,
+			 BigDecimal until) throws CoolIOException;
 
 	public NodeType listIovsInNodesSchemaTagRangeAsList( String schema, String db,
 			String fld, String tag,
 			Long chanid,
-			 String since,
-			 String until) throws CoolIOException;
+			BigDecimal since,
+			BigDecimal until) throws CoolIOException;
 	
 	public NodeType listPayloadInNodesSchemaTagRangeAsList(String schema, String db,
 			String fld, String tag,
 			 String channel,
+			 BigDecimal since,
+			 BigDecimal until) throws CoolIOException;
+
+	public NodeType listPayloadInNodesSchemaTagRangeAsList(String schema, String db,
+			String fld, String tag,
+			 Long chanid,
 			 BigDecimal since,
 			 BigDecimal until) throws CoolIOException;
 	

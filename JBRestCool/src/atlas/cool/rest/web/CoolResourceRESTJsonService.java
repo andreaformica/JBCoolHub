@@ -5,7 +5,10 @@ package atlas.cool.rest.web;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +25,7 @@ import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolIOException;
 import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.exceptions.CoolQueryException;
+import atlas.cool.meta.CoolIov;
 import atlas.cool.query.tools.QueryTools;
 import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.CoolIovType;
@@ -64,6 +68,7 @@ public class CoolResourceRESTJsonService {
 	@Inject
 	private Logger log;
 
+	private SimpleDateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
 	
 	protected void setSort(String orderByName) {
 		atlas.cool.interceptors.WebRestContextHolder.put("OrderBy", orderByName);	
@@ -188,7 +193,7 @@ public class CoolResourceRESTJsonService {
 	 *            The folder name: /MUONALIGN/MDT/BARREL
 	 * @param tag
 	 *            The tag name.
-	 * @return The XML list of iovs per channel.
+	 * @return A JSON list of iovs per channel.
 	 */
 	@GET
 	@Produces("application/json")
@@ -211,11 +216,13 @@ public class CoolResourceRESTJsonService {
 	/**
 	 * <p>
 	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/rangesummary
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/run/rangesummary/list
 	 * /list
 	 * </p>
 	 * <p>
-	 * It retrieves a summary of iovs in a given range per channel.
+	 * It retrieves a summary of iovs in a given range per channel. The time is given
+	 * as run number, without the lbs...since we are interested in summary we do not provide here
+	 * a better time resolution for selecting the time range.
 	 * </p>
 	 * 
 	 * @param schema
@@ -227,10 +234,10 @@ public class CoolResourceRESTJsonService {
 	 * @param tag
 	 *            The tag name.
 	 * @param since
-	 *            The COOL since time.
+	 *            The COOL since run.
 	 * @param until
-	 *            The COOL until time.
-	 * @return An HTML page of summary for every channel.
+	 *            The COOL until run.
+	 * @return  A JSON page of summary for every channel.
 	 */
 	@GET
 	@Produces("application/json")
@@ -255,14 +262,15 @@ public class CoolResourceRESTJsonService {
 		return summarylist;
 	}
 
+
 	/**
 	 * <p>
 	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since
-	 * }/{until}/runlb/iovs/list
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list
 	 * </p>
 	 * <p>
-	 * It retrieves a summary of iovs in a given range per channel.
+	 * It retrieves iovs in a given range for every channel. The date format is a number
+	 * representing a date: yyyyMMddhhmmss ; it does not take fractions of seconds.
 	 * </p>
 	 * 
 	 * @param schema
@@ -274,157 +282,83 @@ public class CoolResourceRESTJsonService {
 	 * @param tag
 	 *            The tag name.
 	 * @param channel
-	 *            The channel name.
+	 *            The channel selection, either an ID or a channel name, or <b>all</b> for selecting every channel.
+	 * @param chansel
+	 * 			  The channel selector: can be either <b>channel</b> or <b>chanid</b> 
 	 * @param since
-	 *            The COOL since time as a string run-lb.
+	 *            The COOL since time as a string following the format given by timespan.
 	 * @param until
-	 *            The COOL until time as a string run-lb.
-	 * @return An XML file with iovs for selected channels.
+	 *            The COOL until time as a string following the format given by timespan.
+	 * @param timespan
+	 *            The COOL date format to be used: time, date, runlb.
+	 *            
+	 * @return A JSON file with iovs for all channels.
 	 */
 	@GET
 	@Produces("application/json")
-	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/channel/{since}/{until}/runlb/iovs/list")
-	public NodeType listIovsInNodesSchemaTagRangeAsList(
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
+	public NodeType listIovsInNodesSchemaTagDateTimeRangeAsList(
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("fld") String fld, @PathParam("tag") String tag,
 			@PathParam("channel") String channel,
-			@PathParam("since") String since, @PathParam("until") String until) {
+			@PathParam("chansel") String chansel,
+			@PathParam("since") String since,
+			@PathParam("until") String until,
+			@PathParam("timespan") String timespan) {
 
 		NodeType selnode = null;
 		try {
-			selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema,
-					db, fld, tag, channel, since, until);
+		
+			// Time selection
+			BigDecimal _since = null;
+			BigDecimal _until = null;
+			if (timespan.equals("time")) {
+				// Interpret field as BigDecimal
+				_since = new BigDecimal(since);
+				_until = new BigDecimal(until);
+			} else if (timespan.equals("date")) {
+				// Interpret fields as dates in the yyyyMMddhhmmss format
+				Date st = df.parse(since);
+				Date ut = df.parse(until);
+				_since = new BigDecimal(st.getTime()*CoolIov.TO_NANOSECONDS);
+				_until = new BigDecimal(ut.getTime()*CoolIov.TO_NANOSECONDS);
+			} else if (timespan.equals("runlb")) {
+				String[] sinceargs = since.split("-");
+				String[] untilargs = until.split("-");
+
+				String lbstr = null;
+				if (sinceargs.length > 0 && !sinceargs[1].isEmpty()) {
+					lbstr = sinceargs[1];
+				}
+				_since = CoolIov.getCoolRunLumi(sinceargs[0], lbstr);
+
+				lbstr = null;
+				if (untilargs.length > 0 && !untilargs[1].isEmpty()) {
+					lbstr = untilargs[1];
+				}
+				_until = CoolIov.getCoolRunLumi(untilargs[0], lbstr);
+			}
+			
+			
+			String chan = channel;
+			// Channel Selection
+			if (chansel.equals("chanid")) {
+				// Treat the channel in input as a Long
+				Long chanid = new Long(channel);
+				selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(
+						schema, db, fld, tag, chanid, _since, _until);
+
+			} else if (chansel.equals("channel")) {
+				selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(
+						schema, db, fld, tag, chan, _since, _until);
+			} else {
+				throw new CoolIOException("Wrong REST syntax...refer to documentation");
+			}
+
 		} catch (CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		return selnode;
-	}
-
-	/**
-	 * <p>
-	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/chanid/{since
-	 * }/{until}/runlb/iovs/list
-	 * </p>
-	 * <p>
-	 * It retrieves a summary of iovs in a given range per channel.
-	 * </p>
-	 * 
-	 * @param schema
-	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
-	 * @param db
-	 *            The Cool Instance name: e.g. COMP200
-	 * @param fld
-	 *            The folder name: /MUONALIGN/MDT/BARREL
-	 * @param tag
-	 *            The tag name.
-	 * @param channel
-	 *            The channel ID.
-	 * @param since
-	 *            The COOL since time as a string run-lb.
-	 * @param until
-	 *            The COOL until time as a string run-lb.
-	 * @return An XML file with iovs for selected channels.
-	 */
-	@GET
-	@Produces("application/json")
-	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/chanid/{since}/{until}/runlb/iovs/list")
-	public NodeType listIovsInNodesSchemaTagRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("channel") Long channel,
-			@PathParam("since") String since, @PathParam("until") String until) {
-
-		NodeType selnode = null;
-		try {
-			selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema,
-					db, fld, tag, channel, since, until);
-		} catch (CoolIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return selnode;
-	}
-
-	/**
-	 * <p>
-	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/runlb/iovs/list
-	 * </p>
-	 * <p>
-	 * It retrieves a summary of iovs in a given range per channel.
-	 * </p>
-	 * 
-	 * @param schema
-	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
-	 * @param db
-	 *            The Cool Instance name: e.g. COMP200
-	 * @param fld
-	 *            The folder name: /MUONALIGN/MDT/BARREL
-	 * @param tag
-	 *            The tag name.
-	 * @param since
-	 *            The COOL since time as a string run-lb.
-	 * @param until
-	 *            The COOL until time as a string run-lb.
-	 * @return An XML file with iovs for all channels.
-	 */
-	@GET
-	@Produces("application/json")
-	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/runlb/iovs/list")
-	public NodeType listIovsInNodesSchemaTagRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("since") String since, @PathParam("until") String until) {
-
-		NodeType selnode = null;
-		try {
-			selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema,
-					db, fld, tag, "all", since, until);
-		} catch (CoolIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return selnode;
-	}
-
-	/**
-	 * <p>
-	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/runlb/iovs/list
-	 * </p>
-	 * <p>
-	 * It retrieves a summary of iovs in a given range per channel.
-	 * </p>
-	 * 
-	 * @param schema
-	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
-	 * @param db
-	 *            The Cool Instance name: e.g. COMP200
-	 * @param fld
-	 *            The folder name: /MUONALIGN/MDT/BARREL
-	 * @param tag
-	 *            The tag name.
-	 * @param since
-	 *            The COOL since time as a string run-lb.
-	 * @param until
-	 *            The COOL until time as a string run-lb.
-	 * @return An XML file with iovs for all channels.
-	 */
-	@GET
-	@Produces("application/json")
-	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/time/iovs/list")
-	public NodeType listIovsInNodesSchemaTagTimeRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("since") String since, @PathParam("until") String until) {
-
-		NodeType selnode = null;
-		try {
-			selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema,
-					db, fld, tag, "all", since, until);
-		} catch (CoolIOException e) {
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -437,7 +371,7 @@ public class CoolResourceRESTJsonService {
 	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{since}/{until}/runlb/iovs/list
 	 * </p>
 	 * <p>
-	 * It retrieves a summary of iovs in a given range per channel.
+	 * It retrieves iovs in a given range for every channel, and enabling ad hoc sorting mode.
 	 * </p>
 	 * 
 	 * @param schema
@@ -458,12 +392,16 @@ public class CoolResourceRESTJsonService {
 	 */
 	@GET
 	@Produces("application/json")
-	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{since}/{until}/runlb/iovs/list")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
 	public NodeType listIovsInNodesSchemaTagRangeSortedAsList(
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("fld") String fld, @PathParam("tag") String tag,
 			@PathParam("sort") String sort,
-			@PathParam("since") String since, @PathParam("until") String until) {
+			@PathParam("channel") String channel,
+			@PathParam("chansel") String chansel,
+			@PathParam("since") String since,
+			@PathParam("until") String until,
+			@PathParam("timespan") String timespan) {
 
 		NodeType selnode = null;
 		try {
@@ -483,15 +421,109 @@ public class CoolResourceRESTJsonService {
 				orderByName = QueryTools.getOrderedBy(new CoolIovType(),colmap);
 			}
 			setSort(orderByName);
-			selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema,
-					db, fld, tag, "all", since, until);
-		} catch (CoolIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			selnode = listIovsInNodesSchemaTagDateTimeRangeAsList(schema, db, fld, tag, channel, chansel, since, until, timespan);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (CoolQueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return selnode;
+	}
+
+	/**
+	 * <p>
+	 * Method :
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/data/list
+	 * </p>
+	 * <p>
+	 * It retrieves a list of iovs with their payload in a given range per every channel.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 *            The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 *            The tag name.
+	 * @param channel
+	 *            The channel selection, either an ID or a channel name, or <b>all</b> for selecting every channel.
+	 * @param chansel
+	 * 			  The channel selector: can be either <b>channel</b> or <b>chanid</b> 
+	 * @param since
+	 *            The COOL since time as a string following the format given by timespan.
+	 * @param until
+	 *            The COOL until time as a string following the format given by timespan.
+	 * @param timespan
+	 *            The COOL date format to be used: time, date, runlb.
+	 *            
+	 * @return A JSON file with payloads for selected channels in a given range.
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/data/list")
+	public NodeType listPayloadInNodesSchemaTagRangeAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("channel") String channel,
+			@PathParam("chansel") String chansel,
+			@PathParam("since") String since,
+			@PathParam("until") String until,
+			@PathParam("timespan") String timespan) {
+		NodeType selnode = null;
+		try {
+			// Time selection
+			BigDecimal _since = null;
+			BigDecimal _until = null;
+			if (timespan.equals("time")) {
+				// Interpret field as BigDecimal
+				_since = new BigDecimal(since);
+				_until = new BigDecimal(until);
+			} else if (timespan.equals("date")) {
+				// Interpret fields as dates in the yyyyMMddhhmmss format
+				Date st = df.parse(since);
+				Date ut = df.parse(until);
+				_since = new BigDecimal(st.getTime()*CoolIov.TO_NANOSECONDS);
+				_until = new BigDecimal(ut.getTime()*CoolIov.TO_NANOSECONDS);
+			} else if (timespan.equals("runlb")) {
+				String[] sinceargs = since.split("-");
+				String[] untilargs = until.split("-");
+
+				String lbstr = null;
+				if (sinceargs.length > 0 && !sinceargs[1].isEmpty()) {
+					lbstr = sinceargs[1];
+				}
+				_since = CoolIov.getCoolRunLumi(sinceargs[0], lbstr);
+
+				lbstr = null;
+				if (untilargs.length > 0 && !untilargs[1].isEmpty()) {
+					lbstr = untilargs[1];
+				}
+				_until = CoolIov.getCoolRunLumi(untilargs[0], lbstr);
+			}
+			
+			
+			String chan = channel;
+			// Channel Selection
+			if (chansel.equals("chanid")) {
+				// Treat the channel in input as a Long
+				Long chanid = new Long(channel);
+				selnode = coolutilsdao.listPayloadInNodesSchemaTagRangeAsList(
+						schema, db, fld, tag, chanid, _since, _until);
+
+			} else if (chansel.equals("channel")) {
+				selnode = coolutilsdao.listPayloadInNodesSchemaTagRangeAsList(
+						schema, db, fld, tag, chan, _since, _until);
+			} else {
+				throw new CoolIOException("Wrong REST syntax...refer to documentation");
+			}
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -522,7 +554,7 @@ public class CoolResourceRESTJsonService {
 	 *            The COOL since time as a string run-lb.
 	 * @param until
 	 *            The COOL until time as a string run-lb.
-	 * @return An XML file with iovs for selected channels.
+	 * @return A JSON file with iovs for selected channels.
 	 */
 	@GET
 	@Produces("application/json")
@@ -543,6 +575,7 @@ public class CoolResourceRESTJsonService {
 		}
 		return selnode;
 	}
+
 
 	/**
 	 * <p>

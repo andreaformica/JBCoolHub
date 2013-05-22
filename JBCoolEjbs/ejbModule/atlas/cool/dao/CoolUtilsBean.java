@@ -360,12 +360,12 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * @see
 	 * atlas.cool.dao.CoolUtilsDAO#listIovsInNodesSchemaTagRangeAsList(java.
 	 * lang.String, java.lang.String, java.lang.String, java.lang.String,
-	 * java.lang.String, java.lang.String, java.lang.String)
+	 * java.lang.String, java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
 	public NodeType listIovsInNodesSchemaTagRangeAsList(String schema,
-			String db, String fld, String tag, String channel, String since,
-			String until) throws CoolIOException {
+			String db, String fld, String tag, String channel, BigDecimal since,
+			BigDecimal until) throws CoolIOException {
 		log.info("Calling listIovsInNodesSchemaTagRangeAsList..." + schema
 				+ " " + db + " folder " + fld + " tag " + tag + " " + channel
 				+ " " + since + " " + until);
@@ -374,7 +374,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 
 		String chan = "%" + channel + "%";
 		if (channel.equals("all")) {
-			chan = "%";
+			chan = null;
 		}
 		String node = fld;
 		if (!fld.startsWith("/")) {
@@ -394,42 +394,20 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			seltag = null;
 		}
 
-		if (since.contains("-")) {
-			String[] sinceargs = since.split("-");
-			String[] untilargs = until.split("-");
-			String lbstr = null;
-			if (sinceargs.length > 0 && !sinceargs[1].isEmpty()) {
-				lbstr = sinceargs[1];
-			}
-			BigDecimal _since = CoolIov.getCoolRunLumi(sinceargs[0], lbstr);
-			lbstr = null;
-			if (untilargs.length > 0 && !untilargs[1].isEmpty()) {
-				lbstr = untilargs[1];
-			}
-			BigDecimal _until = CoolIov.getCoolRunLumi(untilargs[0], lbstr);
-			
-			iovlist = cooldao.retrieveIovsFromNodeSchemaAndDbInRangeByChanName(
-					schema, db, node, seltag, chan, _since, _until);
-			selnode.setIovList(iovlist);
-		} else {
-			// Interpret the since and until as time ranges in COOL format
-			BigDecimal _since = new BigDecimal(since);
-			BigDecimal _until = new BigDecimal(until);
-			iovlist = cooldao.retrieveIovsFromNodeSchemaAndDbInRangeByChanName(
-					schema, db, node, seltag, chan, _since, _until);
-			selnode.setIovList(iovlist);
-		}
+		iovlist = cooldao.retrieveIovsFromNodeSchemaAndDbInRangeByChanName(
+				schema, db, node, seltag, chan, since, until);
+		selnode.setIovList(iovlist);
 
 		return selnode;
 	}
 
 	/* (non-Javadoc)
-	 * @see atlas.cool.dao.CoolUtilsDAO#listIovsInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Long, java.lang.String, java.lang.String)
+	 * @see atlas.cool.dao.CoolUtilsDAO#listIovsInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Long, java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
 	public NodeType listIovsInNodesSchemaTagRangeAsList(String schema,
-			String db, String fld, String tag, Long chanid, String since,
-			String until) throws CoolIOException {
+			String db, String fld, String tag, Long chanid, BigDecimal since,
+			BigDecimal until) throws CoolIOException {
 		log.info("Calling listIovsInNodesSchemaTagRangeAsList..." + schema
 				+ " " + db + " folder " + fld + " tag " + tag + " " + chanid
 				+ " " + since + " " + until);
@@ -453,32 +431,10 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		if (tag.equals("none")) {
 			seltag = null;
 		}
-
-		if (since.contains("-")) {
-			String[] sinceargs = since.split("-");
-			String[] untilargs = until.split("-");
-			String lbstr = null;
-			if (sinceargs.length > 0 && !sinceargs[1].isEmpty()) {
-				lbstr = sinceargs[1];
-			}
-			BigDecimal _since = CoolIov.getCoolRunLumi(sinceargs[0], lbstr);
-			lbstr = null;
-			if (untilargs.length > 0 && !untilargs[1].isEmpty()) {
-				lbstr = untilargs[1];
-			}
-			BigDecimal _until = CoolIov.getCoolRunLumi(untilargs[0], lbstr);
-			
-			iovlist = cooldao.retrieveIovsFromNodeSchemaAndDbInRangeByChanId(
-					schema, db, node, seltag, chanid, _since, _until);
-			selnode.setIovList(iovlist);
-		} else {
-			// Interpret the since and until as time ranges in COOL format
-			BigDecimal _since = new BigDecimal(since);
-			BigDecimal _until = new BigDecimal(until);
-			iovlist = cooldao.retrieveIovsFromNodeSchemaAndDbInRangeByChanId(
-					schema, db, node, seltag, chanid, _since, _until);
-			selnode.setIovList(iovlist);
-		}
+		
+		iovlist = cooldao.retrieveIovsFromNodeSchemaAndDbInRangeByChanId(
+				schema, db, node, seltag, chanid, since, until);
+		selnode.setIovList(iovlist);
 
 		return selnode;
 	}
@@ -502,12 +458,56 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		NodeType selnode = null;
 
 		try {
-			Integer chan = 0;
+			String chan = channel;
 			if (channel.equals("all")) {
 				chan = null;
-			} else {
-				chan = new Integer(channel);
+			} 
+			String node = fld;
+			if (!fld.startsWith("/")) {
+				node = "/" + fld;
 			}
+			List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
+					db, node);
+			if (nodes != null && nodes.size() > 0) {
+				for (NodeType anode : nodes) {
+					log.info("Found " + anode.getNodeFullpath() + " of type "
+							+ anode.getNodeIovType());
+					selnode = anode;
+				}
+			}
+			String seltag = tag;
+			if (tag.equals("none")) {
+				seltag = null;
+			}
+
+			CoolPayload payload = payloaddao.getPayloadsObj(schema, db, node,
+					seltag, since, until, chan);
+			iovlist = new CoolPayloadTransform(payload).getIovsWithPayload();
+			selnode.setIovList(iovlist);
+		} catch (Exception e) {
+			throw new CoolIOException(e.getMessage());
+		} finally {
+			payloaddao.remove();
+		}
+		return selnode;
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolUtilsDAO#listPayloadInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Long, java.math.BigDecimal, java.math.BigDecimal)
+	 */
+	@Override
+	public NodeType listPayloadInNodesSchemaTagRangeAsList(String schema,
+			String db, String fld, String tag, Long chanid, BigDecimal since,
+			BigDecimal until) throws CoolIOException {
+		log.info("Calling listPayloadInNodesSchemaTagRangeAsList..." + schema
+				+ " " + db + " folder " + fld + " tag " + tag + " " + chanid
+				+ " " + since + " " + until);
+		List<CoolIovType> iovlist = null;
+		NodeType selnode = null;
+
+		try {
+			Long chan = chanid;
+
 			String node = fld;
 			if (!fld.startsWith("/")) {
 				node = "/" + fld;
