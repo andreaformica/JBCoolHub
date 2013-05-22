@@ -24,7 +24,7 @@ import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
 
-//@//Named
+@Named
 @Stateless
 @Local(CoolUtilsDAO.class)
 /**
@@ -479,7 +479,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			throw new CoolIOException(e.getMessage());
 		} finally {
 			log.info("here I would call remove...");
-			payloaddao.remove();
+			//payloaddao.remove();
 		}
 		return selnode;
 	}
@@ -526,7 +526,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			throw new CoolIOException(e.getMessage());
 		} finally {
 			log.info("here I would call remove...");
-			payloaddao.remove();
+			//payloaddao.remove();
 		}
 		return selnode;
 	}

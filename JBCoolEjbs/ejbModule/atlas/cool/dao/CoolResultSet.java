@@ -1,6 +1,7 @@
 package atlas.cool.dao;
 
 import java.io.BufferedReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -11,27 +12,30 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Date;
-import java.util.logging.Logger;
+import java.util.List;
 
 import javax.annotation.Resource;
-import javax.ejb.Local;
+import javax.ejb.LocalBean;
 import javax.ejb.Remove;
-import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import atlas.cool.meta.CoolIov;
 import atlas.cool.meta.CoolPayload;
 
 /**
- * Session Bean implementation class CoolPayloadBean
+ * Session Bean implementation class CoolResultSet
  */
-@Stateful
-@Local(CoolPayloadDAO.class)
-public class CoolPayloadBean implements CoolPayloadDAO {
+@Stateless(mappedName = "coolrset")
+@LocalBean
+public class CoolResultSet implements CoolResultSetDAO {
 
 	@Resource(mappedName = "java:jboss/datasources/JBCoolRestDS")
 	DataSource datasource;
@@ -42,12 +46,12 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 	private CallableStatement cstmt = null;
 	private Connection con = null;
 
-	/**
-	 * Default constructor.
-	 */
-	public CoolPayloadBean() {
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * Default constructor. 
+     */
+    public CoolResultSet() {
+        // TODO Auto-generated constructor stub
+    }
 
 	/*
 	 * (non-Javadoc)
@@ -99,12 +103,9 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see atlas.cool.dao.CoolPayloadDAO#getPayload(java.lang.String,
-	 * java.lang.String, java.lang.String, java.lang.String,
-	 * java.math.BigDecimal, java.lang.String)
+	
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolPayloadDAO#getPayload(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.math.BigDecimal, java.lang.String)
 	 */
 	@Override
 	public ResultSet getPayload(String schemaname, String dbname,
@@ -122,21 +123,15 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see atlas.cool.dao.CoolPayloadDAO#getPayloads(java.lang.String,
-	 * java.lang.String, java.lang.String, java.lang.String,
-	 * java.math.BigDecimal, java.math.BigDecimal, java.lang.String)
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolPayloadDAO#getPayloads(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.math.BigDecimal, java.math.BigDecimal, java.lang.String)
 	 */
 	@Override
 	public ResultSet getPayloads(String schemaname, String dbname,
 			String folder, String tagname, BigDecimal stime, BigDecimal etime,
 			String channelName) throws CoolIOException {
 		try {
-			log.fine("Calling getPayloads " + schemaname + " " + dbname + " "
-					+ folder + " " + tagname + " " + stime + " " + etime + " "
-					+ channelName);
+			log.fine("Calling getPayloads "+schemaname+" "+dbname+" "+folder+" "+tagname+" "+stime+" "+etime+" "+channelName);
 
 			BigDecimal _stime = stime;
 			if (_stime.longValue() < 0) {
@@ -153,112 +148,25 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see atlas.cool.dao.CoolPayloadDAO#getPayloadsObj(java.lang.String,
-	 * java.lang.String, java.lang.String, java.lang.String,
-	 * java.math.BigDecimal, java.math.BigDecimal, java.lang.Long)
+	
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolResultSetDAO#closeConnection()
 	 */
 	@Override
-	public CoolPayload getPayloadsObj(String schemaname, String dbname,
-			String folder, String tagname, BigDecimal stime, BigDecimal etime,
-			Long channelId) throws CoolIOException {
-
-		ResultSet rs = getPayloads(schemaname, dbname, folder, tagname, stime,
-				etime, channelId);
-		CoolPayload payload = new CoolPayload();
-
+	@Remove
+	public void closeConnection() {
+		// TODO Auto-generated method stub
 		try {
-
-			ResultSetMetaData rsmd_rs = rs.getMetaData();
-			for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-				log.fine("col " + i + " name = " + rsmd_rs.getColumnName(i));
-			}
-			log.fine(" rs is on first row " + rs.isFirst());
-			while (rs.next()) {
-				int ncol = rsmd_rs.getColumnCount();
-				log.fine(" rs loop on column " + ncol);
-				for (int i = 1; i <= ncol; i++) {
-					String colname = rsmd_rs.getColumnName(i);
-					Object colval = rs.getObject(i);
-					payload.addColumn(i, colname);
-					payload.addData(i, colval);
-					log.fine("Retrieved " + colname + " = "
-							+ dumpObject(colval));
-				}
-			}
 			if (cstmt != null) {
 				cstmt.close();
 				cstmt = null;
 			}
-			// if (con != null) {
-			// con.close();
-			// }
-
-			return payload;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+			if (con != null) {
+				con.close();
+			}
+		} catch (Exception e) {
+			log.log(Level.SEVERE, e.getMessage());
 		}
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see atlas.cool.dao.CoolPayloadDAO#getPayloadsObj(java.lang.String,
-	 * java.lang.String, java.lang.String, java.lang.String,
-	 * java.math.BigDecimal, java.math.BigDecimal, java.lang.String)
-	 */
-	@Override
-	public CoolPayload getPayloadsObj(String schemaname, String dbname,
-			String folder, String tagname, BigDecimal stime, BigDecimal etime,
-			String channelName) throws CoolIOException {
-
-		log.fine("Calling getPayloadObjs " + schemaname + " " + dbname + " "
-				+ folder + " " + tagname + " " + stime + " " + etime + " "
-				+ channelName);
-		ResultSet rs = getPayloads(schemaname, dbname, folder, tagname, stime,
-				etime, channelName);
-		CoolPayload payload = new CoolPayload();
-
-		try {
-
-			ResultSetMetaData rsmd_rs = rs.getMetaData();
-			for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-				log.fine("col " + i + " name = " + rsmd_rs.getColumnName(i));
-			}
-			log.fine(" rs is on first row " + rs.isFirst());
-			while (rs.next()) {
-				int ncol = rsmd_rs.getColumnCount();
-				log.fine(" rs loop on column " + ncol);
-				for (int i = 1; i <= ncol; i++) {
-					String colname = rsmd_rs.getColumnName(i);
-					Object colval = rs.getObject(i);
-					payload.addColumn(i, colname);
-					payload.addData(i, colval);
-					log.fine("Retrieved " + colname + " = "
-							+ dumpObject(colval));
-				}
-			}
-			if (cstmt != null) {
-				cstmt.close();
-				cstmt = null;
-			}
-			// if (con != null) {
-			// con.close();
-			// }
-
-			if (payload != null)
-				log.info("Retrieved payload " + payload.getNcol() + " "
-						+ payload.getRows());
-			return payload;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	protected ResultSet getCursorIov(String schemaname, String dbname,
@@ -272,8 +180,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		log.fine("-----------------------------------");
 
 		try {
-			if (con == null)
-				con = datasource.getConnection();
+			con = datasource.getConnection();
 
 			String node = folder;
 			if (!node.startsWith("/")) {
@@ -336,8 +243,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			if (!fld.startsWith("/")) {
 				fld = "/" + folder;
 			}
-			if (con == null)
-				con = datasource.getConnection();
+			con = datasource.getConnection();
 			cstmt = con.prepareCall(stmt);
 			// cstmt.registerOutParameter(1, OracleTypes.CURSOR);
 			log.fine(" Setting parameters for callable statement ...");
@@ -385,8 +291,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		log.fine("-----------------------------------");
 
 		try {
-			if (con == null)
-				con = datasource.getConnection();
+			con = datasource.getConnection();
 
 			String node = folder;
 			if (!node.startsWith("/")) {
@@ -449,8 +354,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			if (!fld.startsWith("/")) {
 				fld = "/" + folder;
 			}
-			if (con == null)
-				con = datasource.getConnection();
+			con = datasource.getConnection();
 			cstmt = con.prepareCall(stmt);
 			// cstmt.registerOutParameter(1, OracleTypes.CURSOR);
 			log.fine(" Setting parameters for callable statement ...");
@@ -487,168 +391,71 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 
 	}
 
-	/**
-	 * This method is used to return a REF CURSOR that will be used to retrieve
-	 * data from a result set. This REF CUSROR is retrieved by the JDBC program
-	 * into a ResultSet.
-	 * 
-	 * This method Uses the the regular CallableStatement and ResultSet classes.
-	 */
-	protected CoolPayload performRefCursorIov(String schemaname, String dbname,
-			String folder, String tagname, BigDecimal time) {
-
-		// String stmt =
-		// "begin ? := cool_select_pkg.f_get_payloadiov(?,?,?,?,?); end;";
-		String stmt = "select cool_select_pkg.f_get_payloadiov(?,?,?,?,?) from dual";
-		ResultSet rset = null;
-		ResultSet rs = null;
-		// PreparedStatement pstmt = null;
-		log.fine("Using CallableStatement / ResultSet");
-		log.fine("-----------------------------------");
-
-		CoolPayload payload = new CoolPayload();
-		try {
-			con = datasource.getConnection();
-
-			cstmt = con.prepareCall(stmt);
-			// cstmt.registerOutParameter(1, OracleTypes.CURSOR);
-			cstmt.setString(1, schemaname);
-			cstmt.setString(2, dbname);
-			cstmt.setString(3, "/" + folder);
-			cstmt.setString(4, tagname);
-			cstmt.setBigDecimal(5, time);
-			log.fine(" executing query ...");
-
-			/*
-			 * pstmt = con.prepareStatement(stmt); pstmt.setString(1,
-			 * schemaname); pstmt.setString(2, dbname); pstmt.setString(3, "/" +
-			 * folder); pstmt.setString(4, tagname); pstmt.setBigDecimal(5,
-			 * time); log.info(" call function..."); if (pstmt.execute()) {
-			 */
-			rset = cstmt.executeQuery();
-			/*
-			 * if (cstmt.execute()) { // rset = (ResultSet)
-			 * pstmt.getResultSet(); log.info(" check resultset ..."); rset =
-			 * (ResultSet) cstmt.getObject(1);
-			 * 
-			 * log.info(" retrieved resultset ..."); }
-			 */
-			ResultSetMetaData rsmd = rset.getMetaData();
-
-			log.fine("Retrieved n = " + rsmd.getColumnCount() + " columns ");
-			log.fine("col1name = " + rsmd.getColumnName(1));
-			log.fine("col1type = " + rsmd.getColumnClassName(1));
-			while (rset.next()) {
-
-				log.fine(" - " + rset.getObject(1).toString());
-				rs = (ResultSet) rset.getObject(1);
-
-				ResultSetMetaData rsmd_rs = rs.getMetaData();
-				for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-					log.fine("col " + i + " name = " + rsmd_rs.getColumnName(i));
-				}
-				log.fine(" rs is on first row " + rs.isFirst());
-				while (rs.next()) {
-					int ncol = rsmd_rs.getColumnCount();
-					log.fine(" rs loop on n columns " + ncol);
-					for (int i = 1; i <= ncol; i++) {
-						String colname = rsmd_rs.getColumnName(i);
-						Object colval = rs.getObject(i);
-						// payload.addColumn(i, colname);
-						// payload.addData(i, colval);
-						log.fine("Retrieved " + colname + " = "
-								+ dumpObject(colval));
-					}
-				}
-			}
-
-			cstmt.close();
-			return payload;
-		} catch (SQLException e) {
-			e.printStackTrace();
+	protected String dumpResultSet(ResultSet rs) throws SQLException {
+		ResultSetMetaData rsmd_rs = rs.getMetaData();
+		for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
+			log.info("col " + i + " name = " + rsmd_rs.getColumnName(i));
 		}
-		return null;
+		log.info(" rs is on first row " + rs.isFirst());
+		StringBuffer buf = new StringBuffer();
+		int ncol = rsmd_rs.getColumnCount();
+		while (rs.next()) {
+			for (int i = 1; i <= ncol; i++) {
+				String colname = rsmd_rs.getColumnName(i);
+				Object colval = rs.getObject(i);
+				// payload.addColumn(i, colname);
+				// payload.addData(i, colval);
+				// log.info("Retrieved " + colname + " = " + dumpObject(colval)
+				// );
+				buf.append("[" + colname + "]=" + dumpObject(colval) + " ; \n");
+			}
+		}
+		return buf.toString();
 	}
 
-	/**
-	 * This method is used to return a REF CURSOR that will be used to retrieve
-	 * data from a result set. This REF CUSROR is retrieved by the JDBC program
-	 * into a ResultSet.
-	 * 
-	 * This method Uses the the regular CallableStatement and ResultSet classes.
-	 */
-	protected CoolPayload performRefCursorIovs(String schemaname,
-			String dbname, String folder, String tagname, BigDecimal stime,
-			BigDecimal etime) {
-
-		// String stmt =
-		// "begin ? := cool_select_pkg.f_get_payloadiov(?,?,?,?,?); end;";
-		String stmt = "select cool_select_pkg.f_get_payloadiovs(?,?,?,?,?,?) from dual";
-		CallableStatement cstmt = null;
-		ResultSet rset = null;
-		ResultSet rs = null;
-		// PreparedStatement pstmt = null;
-		log.fine("Using CallableStatement / ResultSet");
-		log.fine("-----------------------------------");
-
-		CoolPayload payload = new CoolPayload();
-
+	protected String dump2FileResultSet(ResultSet rs, String fname)
+			throws SQLException {
+		FileWriter fw = null;
+		CoolPayload pyld = new CoolPayload();
+		List<String> masked = pyld.getMasked();
 		try {
-			con = datasource.getConnection();
-
-			cstmt = con.prepareCall(stmt);
-			// cstmt.registerOutParameter(1, OracleTypes.CURSOR);
-			cstmt.setString(1, schemaname);
-			cstmt.setString(2, dbname);
-			cstmt.setString(3, "/" + folder);
-			cstmt.setString(4, tagname);
-			cstmt.setBigDecimal(5, stime);
-			cstmt.setBigDecimal(6, etime);
-			log.fine(" executing query ...");
-
-			rset = cstmt.executeQuery();
-			ResultSetMetaData rsmd = rset.getMetaData();
-
-			log.fine("Retrieved n = " + rsmd.getColumnCount() + " columns ");
-			log.fine("col1name = " + rsmd.getColumnName(1));
-			log.fine("col1type = " + rsmd.getColumnClassName(1));
-			while (rset.next()) {
-
-				log.fine(" - " + rset.getObject(1).toString());
-				rs = (ResultSet) rset.getObject(1);
-				ResultSetMetaData rsmd_rs = rs.getMetaData();
-				for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-					log.fine("col " + i + " name = " + rsmd_rs.getColumnName(i));
-				}
-				log.fine(" rs is on first row " + rs.isFirst());
-				while (rs.next()) {
-					int ncol = rsmd_rs.getColumnCount();
-					log.fine(" rs loop on column " + ncol);
-					for (int i = 1; i <= ncol; i++) {
-						String colname = rsmd_rs.getColumnName(i);
-						Object colval = rs.getObject(i);
-						// if (colval != null) {
-						// // check if it is CLOB, BLOB
-						// if (colval instanceof oracle.sql.CLOB) {
-						// colval = rs.getClob(i);
-						// } else if (colval instanceof oracle.sql.BLOB) {
-						// colval = rs.getBlob(i);
-						// }
-						// }
-						payload.addColumn(i, colname);
-						payload.addData(i, colval);
-						log.fine("Retrieved " + colname + " = "
-								+ dumpObject(colval));
-					}
-				}
+			fw = new FileWriter(fname);
+			ResultSetMetaData rsmd_rs = rs.getMetaData();
+			StringBuffer bufheader = new StringBuffer();
+			for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
+				String colname = rsmd_rs.getColumnName(i);
+				log.info("col " + i + " name = " + colname);
+				if (masked.contains(colname)) {
+					log.info("Ignore column " + colname
+							+ " in the output file ");
+				} else
+					bufheader.append(colname + "  ");
 			}
-			cstmt.close();
-			return payload;
+			fw.write(bufheader.toString() + "\n");
+			log.info(" rs is on first row " + rs.isFirst());
+			int ncol = rsmd_rs.getColumnCount();
+			while (rs.next()) {
+				StringBuffer bufline = new StringBuffer();
+				for (int i = 1; i <= ncol; i++) {
+					String colname = rsmd_rs.getColumnName(i);
+					Object colval = rs.getObject(i);
+					if (masked.contains(colname)) {
+						log.info("Ignore column " + colname
+								+ " in the output file ");
+					} else
+						bufline.append(dumpObject(colval) + " ; ");
 
-		} catch (SQLException e) {
+				}
+				fw.write(bufline.toString() + "\n");
+				fw.flush();
+			}
+			fw.flush();
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return fname;
 	}
 
 	protected String dumpObject(Object val) throws SQLException {
@@ -682,21 +489,4 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		return strOut.toString();
 	}
 
-	@Remove
-	public void closeConnection() {
-		// should remove the sfsb
-		try {
-			if (cstmt != null) {
-				cstmt.close();
-				cstmt = null;
-			}
-			if (con != null) {
-				con.close();
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
 }

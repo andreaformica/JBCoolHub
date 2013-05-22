@@ -258,7 +258,7 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-				payloaddao.remove();
+			//should remove the sfsb
 		}
 		return "done";
 	}
@@ -327,7 +327,7 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-				payloaddao.remove();
+			//should remove the sfsb
 		}
 		return "done";
 	}
