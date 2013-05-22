@@ -4,10 +4,7 @@
 package atlas.cool.dao;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +24,7 @@ import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
 
-@Named
+//@//Named
 @Stateless
 @Local(CoolUtilsDAO.class)
 /**
@@ -470,14 +467,18 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 				seltag = null;
 			}
 
+			log.info("Retrieving payload "+payloaddao);
 			CoolPayload payload = payloaddao.getPayloadsObj(schema, db, node,
 					seltag, since, until, chan);
 			iovlist = new CoolPayloadTransform(payload).getIovsWithPayload();
+			if (iovlist != null)
+				log.info("Retrieved iovlist of "+iovlist.size());
 			selnode.setIovList(iovlist);
 		} catch (Exception e) {
 			//payloaddao.remove();
 			throw new CoolIOException(e.getMessage());
 		} finally {
+			log.info("here I would call remove...");
 			payloaddao.remove();
 		}
 		return selnode;
@@ -516,7 +517,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			if (tag.equals("none")) {
 				seltag = null;
 			}
-
+			log.info("Retrieving payload "+payloaddao);
 			CoolPayload payload = payloaddao.getPayloadsObj(schema, db, node,
 					seltag, since, until, chan);
 			iovlist = new CoolPayloadTransform(payload).getIovsWithPayload();
@@ -524,6 +525,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		} catch (Exception e) {
 			throw new CoolIOException(e.getMessage());
 		} finally {
+			log.info("here I would call remove...");
 			payloaddao.remove();
 		}
 		return selnode;

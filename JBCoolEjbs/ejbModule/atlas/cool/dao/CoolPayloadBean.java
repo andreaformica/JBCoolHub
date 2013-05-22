@@ -126,6 +126,8 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			String folder, String tagname, BigDecimal stime, BigDecimal etime,
 			String channelName) throws CoolIOException {
 		try {
+			log.fine("Calling getPayloads "+schemaname+" "+dbname+" "+folder+" "+tagname+" "+stime+" "+etime+" "+channelName);
+
 			BigDecimal _stime = stime;
 			if (_stime.longValue() < 0) {
 				_stime = new BigDecimal(new Date().getTime());
@@ -176,6 +178,11 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 							+ dumpObject(colval));
 				}
 			}
+			if (cstmt != null) {
+				cstmt.close();
+				cstmt = null;
+			}
+
 			return payload;
 
 		} catch (SQLException e) {
@@ -193,6 +200,8 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 	public CoolPayload getPayloadsObj(String schemaname,
 			String dbname, String folder, String tagname, BigDecimal stime,
 			BigDecimal etime, String channelName) throws CoolIOException {
+
+		log.fine("Calling getPayloadObjs "+schemaname+" "+dbname+" "+folder+" "+tagname+" "+stime+" "+etime+" "+channelName);
 		ResultSet rs = getPayloads(schemaname, dbname, folder, tagname, stime,
 				etime, channelName);
 		CoolPayload payload = new CoolPayload();
@@ -216,6 +225,12 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 							+ dumpObject(colval));
 				}
 			}
+			if (cstmt != null) {
+				cstmt.close();
+				cstmt = null;
+			}
+			if (payload != null)
+				log.info("Retrieved payload "+payload.getNcol()+" "+payload.getRows());
 			return payload;
 
 		} catch (SQLException e) {
@@ -650,6 +665,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 	@Remove
 	public void remove() {
 		try {
+			log.info("Removing payload SFSB...");
 			if (cstmt != null) {
 				log.fine("Close statement...");
 				cstmt.close();
