@@ -8,14 +8,10 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -26,11 +22,8 @@ import javax.ws.rs.Produces;
 
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
-import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolIOException;
-import atlas.cool.dao.CoolPayloadDAO;
 import atlas.cool.dao.CoolResultSetDAO;
-import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.meta.CoolIov;
 import atlas.cool.meta.CoolPayload;
 import atlas.cool.rest.model.ChannelType;
@@ -45,8 +38,8 @@ import atlas.cool.rest.utils.SvgRestUtils;
 /**
  * JAX-RS Example
  * 
- * This class produces a RESTful service to read the contents of the members
- * table.
+ * This class produces a RESTful service to read the contents of the Cool
+ * tables via PL/SQL. 
  * 
  * <p>
  * The base URL used by the following methods starts with

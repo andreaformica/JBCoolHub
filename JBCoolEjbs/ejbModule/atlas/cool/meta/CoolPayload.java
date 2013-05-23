@@ -278,6 +278,7 @@ public class CoolPayload implements Serializable {
 		maskedColumns.add("TAG_ID");
 		maskedColumns.add("TAG_DESCRIPTION");
 		maskedColumns.add("TAG_NAME");
+		maskedColumns.add("IOV_BASE");
 		masked = maskedColumns;
 	}
 

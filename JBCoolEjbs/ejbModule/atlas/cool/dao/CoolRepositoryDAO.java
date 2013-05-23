@@ -19,4 +19,5 @@ public interface CoolRepositoryDAO {
 			Object[] params, int firstResult, int maxResults, Map<String, Boolean> orderbyParams)
 			throws CoolIOException;
 
+	public abstract <T> T findObj(Class<T> clazz, Object pk) throws CoolIOException;
 }

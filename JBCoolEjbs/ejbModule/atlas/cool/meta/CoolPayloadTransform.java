@@ -51,8 +51,13 @@ public class CoolPayloadTransform {
 			String sysInstimeStr = (String)map.get("SYS_INSTIME");
 			String  lastmodDateStr = (String)map.get("LASTMOD_DATE"); 
 			BigDecimal newHeadId= (BigDecimal)map.get("NEW_HEAD_ID");
-			String tagName="unkown";
-			String iovBase="unkown";
+			String tagName="unknown";
+			if (map.containsKey("TAG_NAME"))
+				tagName = (String) map.get("TAG_NAME");
+			String iovBase="unknown";
+			if (map.containsKey("IOV_BASE"))
+				iovBase = (String) map.get("IOV_BASE");
+			
 			Date sysInstime = null;
 			Date lastmodDate = null;
 			try {

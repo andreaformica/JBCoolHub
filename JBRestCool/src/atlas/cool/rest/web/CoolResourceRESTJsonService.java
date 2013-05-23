@@ -23,8 +23,8 @@ import atlas.cool.rest.model.SchemaNodeTagType;
 /**
  * JAX-RS Example
  * 
- * This class produces a RESTful service to read the contents of the members
- * table. It is the same interface as @See CoolResourceRESTService but the output is in JSON.
+ * This class produces a RESTful service to read the contents of the Cool
+ * tables via PL/SQL. It is the same interface as @See CoolResourceRESTService but the output is in JSON.
  * 
  * <p>
  * The base URL used by the following methods starts with

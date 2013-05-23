@@ -48,6 +48,20 @@ public class CoolRepository implements CoolRepositoryDAO {
 		// TODO Auto-generated constructor stub
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolRepositoryDAO#findObj(java.lang.Class, java.lang.Object)
+	 */
+	@Override
+	public <T> T findObj(Class<T> clazz, Object pk) throws CoolIOException {
+		try {
+			T obj = em.find(clazz, pk);
+			return obj;
+		} catch (NoResultException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

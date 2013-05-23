@@ -336,11 +336,13 @@ public class CoolSchemaParamsBean implements Serializable {
 //					: "SINGLE_VERSION";
 			String tagname = (selNode.getFolderVersioning() > 0) ? selNodeTag.getTagName()
 					: "SINGLE_VERSION";
-			ResultSet pyld = coolpylddao.getPayloads(schemaName, dbName,
-					selNode.getNodeFullpath(), tagname, stime, etime, chId);
-			if (pyld != null) {
+//			ResultSet pyld = coolpylddao.getPayloads(schemaName, dbName,
+//					selNode.getNodeFullpath(), tagname, stime, etime, chId);
+//			if (pyld != null) {
 
-				payload = pyldHelper.resultSetToPayload(pyld);
+//				payload = pyldHelper.resultSetToPayload(pyld);
+			payload = coolpylddao.getPayloadsObj(schemaName, dbName, selNode.getNodeFullpath(), tagname, stime, etime, chId);
+			if (payload != null) {
 				payloadColumns = payload.getColumns();
 				payloadNumberColumns = payload.getNumberColumns();
 				payloadData = payload.getDataList();
@@ -350,7 +352,7 @@ public class CoolSchemaParamsBean implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			coolpylddao.remove();
+			//coolpylddao.remove();
 		}
 	}
 

@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.Local;
 import javax.ejb.Remove;
-import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -68,6 +67,8 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			String folder, String tagname, BigDecimal stime, BigDecimal etime,
 			Long channelId) throws CoolIOException {
 		try {
+			if (stime == null || etime == null)
+				return null;
 			BigDecimal _stime = stime;
 			if (_stime.longValue() < 0) {
 				_stime = new BigDecimal(new Date().getTime());
@@ -87,6 +88,8 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			String folder, String tagname, BigDecimal time, String channelName)
 			throws CoolIOException {
 		try {
+			if (time == null)
+				return null;
 			BigDecimal _time = time;
 			if (_time.longValue() < 0) {
 				_time = new BigDecimal(new Date().getTime());
@@ -102,10 +105,12 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			String folder, String tagname, BigDecimal stime, BigDecimal etime,
 			String channelName) throws CoolIOException {
 		try {
-			log.fine("Calling getPayloads " + schemaname + " " + dbname + " "
+			log.info("Calling getPayloads " + schemaname + " " + dbname + " "
 					+ folder + " " + tagname + " " + stime + " " + etime + " "
 					+ channelName);
 
+			if (stime == null || etime == null)
+				return null;
 			BigDecimal _stime = stime;
 			if (_stime.longValue() < 0) {
 				_stime = new BigDecimal(new Date().getTime());
@@ -138,36 +143,32 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		CoolPayload payload = new CoolPayload();
 
 		try {
+			if (rs != null) {
 
-			ResultSetMetaData rsmd_rs = rs.getMetaData();
-			for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-				log.fine("col " + i + " name = " + rsmd_rs.getColumnName(i));
-			}
-			log.fine(" rs is on first row " + rs.isFirst());
-			while (rs.next()) {
-				int ncol = rsmd_rs.getColumnCount();
-				log.fine(" rs loop on column " + ncol);
-				for (int i = 1; i <= ncol; i++) {
-					String colname = rsmd_rs.getColumnName(i);
-					Object colval = rs.getObject(i);
-					payload.addColumn(i, colname);
-					payload.addData(i, colval);
-					log.fine("Retrieved " + colname + " = "
-							+ dumpObject(colval));
+				ResultSetMetaData rsmd_rs = rs.getMetaData();
+				for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
+					log.fine("col " + i + " name = " + rsmd_rs.getColumnName(i));
+				}
+				log.fine(" rs is on first row " + rs.isFirst());
+				while (rs.next()) {
+					int ncol = rsmd_rs.getColumnCount();
+					log.fine(" rs loop on column " + ncol);
+					for (int i = 1; i <= ncol; i++) {
+						String colname = rsmd_rs.getColumnName(i);
+						Object colval = rs.getObject(i);
+						payload.addColumn(i, colname);
+						payload.addData(i, colval);
+						log.fine("Retrieved " + colname + " = "
+								+ dumpObject(colval));
+					}
 				}
 			}
-			if (cstmt != null) {
-				cstmt.close();
-				cstmt = null;
-			}
-			// if (con != null) {
-			// con.close();
-			// }
-
 			return payload;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			closeConnection();
 		}
 		return null;
 	}
@@ -192,31 +193,25 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		CoolPayload payload = new CoolPayload();
 
 		try {
-
-			ResultSetMetaData rsmd_rs = rs.getMetaData();
-			for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-				log.fine("col " + i + " name = " + rsmd_rs.getColumnName(i));
-			}
-			log.fine(" rs is on first row " + rs.isFirst());
-			while (rs.next()) {
-				int ncol = rsmd_rs.getColumnCount();
-				log.fine(" rs loop on column " + ncol);
-				for (int i = 1; i <= ncol; i++) {
-					String colname = rsmd_rs.getColumnName(i);
-					Object colval = rs.getObject(i);
-					payload.addColumn(i, colname);
-					payload.addData(i, colval);
-					log.fine("Retrieved " + colname + " = "
-							+ dumpObject(colval));
+			if (rs != null) {
+				ResultSetMetaData rsmd_rs = rs.getMetaData();
+				for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
+					log.fine("col " + i + " name = " + rsmd_rs.getColumnName(i));
+				}
+				log.fine(" rs is on first row " + rs.isFirst());
+				while (rs.next()) {
+					int ncol = rsmd_rs.getColumnCount();
+					log.fine(" rs loop on column " + ncol);
+					for (int i = 1; i <= ncol; i++) {
+						String colname = rsmd_rs.getColumnName(i);
+						Object colval = rs.getObject(i);
+						payload.addColumn(i, colname);
+						payload.addData(i, colval);
+						log.fine("Retrieved " + colname + " = "
+								+ dumpObject(colval));
+					}
 				}
 			}
-			if (cstmt != null) {
-				cstmt.close();
-				cstmt = null;
-			}
-			// if (con != null) {
-			// con.close();
-			// }
 
 			if (payload != null)
 				log.info("Retrieved payload " + payload.getNcol() + " "
@@ -225,6 +220,8 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			closeConnection();
 		}
 		return null;
 	}
@@ -306,6 +303,9 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			}
 			if (con == null)
 				con = datasource.getConnection();
+			else
+				log.info("Connection is still active...? " + con.toString());
+
 			cstmt = con.prepareCall(stmt);
 			// cstmt.registerOutParameter(1, OracleTypes.CURSOR);
 			log.fine(" Setting parameters for callable statement ...");
@@ -402,15 +402,15 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		ResultSet rset = null;
 		ResultSet rs = null;
 		// PreparedStatement pstmt = null;
-		log.fine("Using CallableStatement / ResultSet");
-		log.fine("-----------------------------------");
-		log.fine("- schema  " + schemaname);
-		log.fine("- db      " + dbname);
-		log.fine("- folder  " + folder);
-		log.fine("- tag     " + tagname);
-		log.fine("- since   " + stime);
-		log.fine("- until   " + etime);
-		log.fine("- channel " + channelName);
+		log.info("Using CallableStatement / ResultSet");
+		log.info("-----------------------------------");
+		log.info("- schema  " + schemaname);
+		log.info("- db      " + dbname);
+		log.info("- folder  " + folder);
+		log.info("- tag     " + tagname);
+		log.info("- since   " + stime);
+		log.info("- until   " + etime);
+		log.info("- channel " + channelName);
 
 		try {
 			String fld = folder;
@@ -419,6 +419,9 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			}
 			if (con == null)
 				con = datasource.getConnection();
+			else
+				log.info("Connection is still active...? " + con.toString());
+
 			cstmt = con.prepareCall(stmt);
 			// cstmt.registerOutParameter(1, OracleTypes.CURSOR);
 			log.fine(" Setting parameters for callable statement ...");
@@ -660,6 +663,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			}
 			if (con != null) {
 				con.close();
+				con = null;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -6,5 +6,7 @@
 	<sql-type jdbc-type="100" hibernate-type="float"></sql-type>
 </type-mapping>
 <!--table-filter match-schema="ATLAS_MUONCALIB_RM_2012" match-name=".*"  /-->
-<table-filter match-schema="ATLAS_TAGS_METADATA" match-name="COMA_CB.*"  />
+<!--<table-filter match-schema="ATLAS_TAGS_METADATA" match-name="COMA_CB.*"  /-->
+<table-filter match-schema="ATLAS_COND_TOOLS" match-name="CB_VIEW.*"  />
+<table-filter match-schema="ATLAS_COND_TOOLS" match-name="CR_VIEW.*"  />
 </hibernate-reverse-engineering>

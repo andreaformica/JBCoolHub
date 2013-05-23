@@ -414,7 +414,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 					db, node);
 			if (nodes != null && nodes.size() > 0) {
 				for (NodeType anode : nodes) {
-					log.info("Found " + anode.getNodeFullpath() + " of type "
+					log.fine("Found " + anode.getNodeFullpath() + " of type "
 							+ anode.getNodeIovType());
 					selnode = anode;
 				}
@@ -434,9 +434,6 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		} catch (Exception e) {
 			//payloaddao.remove();
 			throw new CoolIOException(e.getMessage());
-		} finally {
-			log.info("here I would call remove...");
-			//payloaddao.remove();
 		}
 		return selnode;
 	}
@@ -465,7 +462,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 					db, node);
 			if (nodes != null && nodes.size() > 0) {
 				for (NodeType anode : nodes) {
-					log.info("Found " + anode.getNodeFullpath() + " of type "
+					log.fine("Found " + anode.getNodeFullpath() + " of type "
 							+ anode.getNodeIovType());
 					selnode = anode;
 				}
@@ -481,9 +478,6 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			selnode.setIovList(iovlist);
 		} catch (Exception e) {
 			throw new CoolIOException(e.getMessage());
-		} finally {
-			log.info("here I would call remove...");
-			//payloaddao.remove();
 		}
 		return selnode;
 	}

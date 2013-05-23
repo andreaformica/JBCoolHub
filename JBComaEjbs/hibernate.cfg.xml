@@ -38,11 +38,12 @@
    )-->
   </property>
 <!--   <property name="hibernate.connection.username">ATLAS_MUONCALIB_READER</property> -->
-  <property name="hibernate.connection.username">ATLAS_COOL_READER</property>
+  <!--  <property name="hibernate.connection.username">ATLAS_COOL_READER</property>  -->
+  <property name="hibernate.connection.username">ATLAS_COND_TOOLS</property>
   <!--   <property name="hibernate.default_schema">ATLAS_MDT_DCSMON</property> -->
   <property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>
   <property name="hibernate.connection.pool_size">3</property>
 <!--   <property name="hibernate.connection.password"></property> -->
-  <property name="hibernate.connection.password"></property>
+  <property name="hibernate.connection.password">xx</property>
  </session-factory>
 </hibernate-configuration>

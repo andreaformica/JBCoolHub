@@ -117,7 +117,8 @@ public interface ICoolREST {
 	 * </p>
 	 * <p>
 	 * It retrieves iovs in a given range for every channel. The date format is a number
-	 * representing a date: yyyyMMddhhmmss ; it does not take fractions of seconds.
+	 * representing a date: yyyyMMddhhmmss ; it does not take fractions of seconds. For details on how the
+	 * timespan option is implemented see @See CoolRESTImpl documentation for method getTimeRange.
 	 * </p>
 	 * 
 	 * @param schema
@@ -155,10 +156,12 @@ public interface ICoolREST {
 	/**
 	 * <p>
 	 * Method :
-	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{since}/{until}/runlb/iovs/list
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{since}/{until}/{timespan}/iovs/list
 	 * </p>
 	 * <p>
 	 * It retrieves iovs in a given range for every channel, and enabling ad hoc sorting mode.
+	 * For details on how the timespan option is implemented 
+	 * see @See CoolRESTImpl documentation for method getTimeRange.
 	 * </p>
 	 * 
 	 * @param schema
@@ -196,6 +199,8 @@ public interface ICoolREST {
 	 * </p>
 	 * <p>
 	 * It retrieves a list of iovs with their payload in a given range per every channel.
+	 * For details on how the timespan option is implemented 
+	 * see @See CoolRESTImpl documentation for method getTimeRange.
 	 * </p>
 	 * 
 	 * @param schema
@@ -237,6 +242,8 @@ public interface ICoolREST {
 	 * </p>
 	 * <p>
 	 * It retrieves iovs in a given range for every channel, and enabling ad hoc sorting mode.
+	 * For details on how the timespan option is implemented 
+	 * see @See CoolRESTImpl documentation for method getTimeRange.
 	 * </p>
 	 * 
 	 * @param schema
