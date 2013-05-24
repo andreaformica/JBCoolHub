@@ -21,7 +21,7 @@ import javax.inject.Named;
 
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
-import atlas.cool.meta.CoolPayload;
+import atlas.cool.payload.model.CoolPayload;
 
 
 @Named("pyldhelper")

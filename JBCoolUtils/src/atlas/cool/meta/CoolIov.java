@@ -43,6 +43,14 @@ public class CoolIov implements Serializable {
 		return run.longValue();
 	}
 	
+	public static Long getRun(Long atime) {
+		if (atime == null)
+			return null;
+		BigDecimal _time = new BigDecimal(atime);
+		return getRun(_time.toBigInteger());
+	}
+
+	
 	public static BigDecimal getCoolRun(String arun) {
 		if (arun == null)
 			return null;
@@ -64,7 +72,20 @@ public class CoolIov implements Serializable {
 		return lumi.longValue();
 	}
 
+	public static Long getLumi(Long atime) {
+		if (atime == null)
+			return null;
+		BigDecimal _time = new BigDecimal(atime);
+		return getLumi(_time.toBigInteger());
+	}
+
 	public static BigDecimal getCoolRunLumi(String arun, String lb) {
+		Long runlong = new Long(arun);
+		Long lblong = new Long(lb);
+		return getCoolRunLumi(runlong, lblong);
+	}
+
+	public static BigDecimal getCoolRunLumi(Long arun, Long lb) {
 		BigInteger _run = null;
 		BigInteger _lb = null; 
 //		System.out.println("Received "+arun+" "+lb);
@@ -73,15 +94,15 @@ public class CoolIov implements Serializable {
 		if (arun == null)
 			return null;
 		else if (arun.equals("Inf")) {
-			_run = new BigInteger(new Long(COOL_MAX_DATE).toString());
-			_lb = new BigInteger("0");
+			_run = new BigDecimal(new Long(COOL_MAX_DATE)).toBigIntegerExact();
+			_lb = new BigDecimal(0L).toBigIntegerExact();
 			runlumi = _run;
 		} else {
-			_run = new BigInteger(arun);
+			_run = new BigDecimal(arun).toBigIntegerExact();
 			if (lb == null)
-				_lb = new BigInteger("0");
+				_lb = new BigDecimal(0L).toBigIntegerExact();
 			else
-				_lb = new BigInteger(lb);
+				_lb = new BigDecimal(lb).toBigIntegerExact();
 			run = _run.shiftLeft(32);
 			runlumi = run.or(_lb);
 		}
@@ -122,8 +143,8 @@ public class CoolIov implements Serializable {
 		if (iovBase.equals("run-lumi")) {
 			if (time == CoolIov.COOL_MAX_DATE)
 				return "Inf";
-			Long run = getRun(new BigInteger(time.toString()));
-			Long lb = getLumi(new BigInteger(time.toString()));
+			Long run = getRun(time);
+			Long lb = getLumi(time);
 			iovstr = run + " - "+lb;
 		} else if (iovBase.equals("time")) {
 			if (time == 0)

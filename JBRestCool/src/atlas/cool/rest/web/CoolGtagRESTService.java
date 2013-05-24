@@ -18,8 +18,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import atlas.cool.dao.CoolDAO;
-import atlas.cool.dao.CoolIOException;
 import atlas.cool.dao.CoolUtilsDAO;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
 import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovSummary;

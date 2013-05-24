@@ -11,7 +11,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import atlas.cool.dao.ComaCoolDAO;
-import atlas.cool.dao.CoolIOException;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.CmpCoolComaGlobalTagType;
 import atlas.cool.rest.model.CmpCoolComaNodeType;
 import atlas.cool.rest.model.CmpCoolComaTagType;

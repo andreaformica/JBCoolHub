@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import atlas.cool.dao.CoolDAO;
-import atlas.cool.dao.CoolIOException;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.SchemaType;

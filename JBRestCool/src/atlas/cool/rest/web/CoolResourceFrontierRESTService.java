@@ -15,7 +15,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import atlas.cool.dao.CoolDAO;
-import atlas.cool.dao.CoolIOException;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;

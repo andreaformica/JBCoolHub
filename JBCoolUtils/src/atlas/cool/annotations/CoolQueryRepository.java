@@ -122,7 +122,7 @@ public class CoolQueryRepository {
 	 */
 	public synchronized QueryParams getQueryParams(final String qryname) throws CoolQueryException {
 		try {
-			//System.out.println("Searching for "+qryname+" in map "+queryMap+" inside coolqueryrep "+this.toString());
+			System.out.println("Searching for "+qryname+" in map "+queryMap+" inside coolqueryrep "+this.toString());
 			QueryParams query = queryMap.get(qryname);
 			return query;
 		} catch (Exception e) {
@@ -131,6 +131,9 @@ public class CoolQueryRepository {
 	}
 		
 	/**
+	 *         Jar files URLs [
+     *           vfs:/content/JBCoolEjbs.jar
+     *           vfs:/content/JBComaEjbs.jar]
 	 * @param pckgname
 	 * @throws CoolQueryException
 	 */
@@ -139,6 +142,11 @@ public class CoolQueryRepository {
 
 		System.out.println("Fill annotation for "+pckgname+" from query repository "+this.toString());
 //		log.info("Package name for reflections "+pckgname);
+//		Set<URL> packageurls = ClasspathHelper.forPackage("atlas");
+//		for (URL url : packageurls) {
+//			System.out.println("Found url "+url);
+//		}
+				
 		Reflections reflections = new Reflections(new ConfigurationBuilder()
         .addUrls(ClasspathHelper.forPackage(pckgname))
        .setScanners(new ResourcesScanner(), 
@@ -147,20 +155,20 @@ public class CoolQueryRepository {
 		
 		//System.out.println("Reflections for "+pckgname+"  - "+reflections.toString());
 		Set<Class<?>> jpaEntities = reflections.getTypesAnnotatedWith(Entity.class);
-		//System.out.println("jpaEntities size "+jpaEntities.size());
+//		System.out.println("jpaEntities size "+jpaEntities.size());
 		for (Class<?> jpaclass : jpaEntities) {
-			//System.out.println("Analyse class "+jpaclass.getName());
+//			System.out.println("Analyse class "+jpaclass.getName());
 			Field[] fields = jpaclass.getDeclaredFields();
 			for(int ifield = 0; ifield < fields.length; ifield++) {
 				if (fields[ifield].isAnnotationPresent(CoolQuery.class)) {
 					CoolQuery ann = (CoolQuery) fields[ifield]
 							.getAnnotation(CoolQuery.class);
-				//System.out.println("Got field annotated "+fields[ifield].getName());
+//				System.out.println("Got field annotated "+fields[ifield].getName());
 				String name = ann.name();
 				String paramstr = ann.params();
 				String[] paramsarr = paramstr.split(";");
 				QueryParams params = new QueryParams(name,paramsarr);
-				//System.out.println("Update map "+queryMap+" with query "+params);
+//				System.out.println("Update map "+queryMap+" with query "+params);
 				queryMap.put(name, params);				
 			}
 			}

@@ -5,9 +5,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +24,12 @@ import javax.ws.rs.Produces;
 
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
-import atlas.cool.dao.CoolIOException;
+import atlas.coma.exceptions.ComaQueryException;
+import atlas.coma.model.CrViewRuninfo;
 import atlas.cool.dao.CoolResultSetDAO;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
-import atlas.cool.meta.CoolPayload;
+import atlas.cool.payload.model.CoolPayload;
 import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.IovRange;
@@ -38,8 +42,8 @@ import atlas.cool.rest.utils.SvgRestUtils;
 /**
  * JAX-RS Example
  * 
- * This class produces a RESTful service to read the contents of the Cool
- * tables via PL/SQL. 
+ * This class produces a RESTful service to read the contents of the Cool tables
+ * via PL/SQL.
  * 
  * <p>
  * The base URL used by the following methods starts with
@@ -64,7 +68,9 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	@Inject
 	protected CoolResultSetDAO payloaddao;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see atlas.cool.rest.web.CoolRESTImpl#setSort(java.lang.String)
 	 */
 	@Override
@@ -73,128 +79,197 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		super.setSort(orderByName);
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.CoolRESTImpl#listNodesInSchema(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listNodesInSchema(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/nodes")
-	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema, @PathParam("db") String db) {
+	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
+			@PathParam("db") String db) {
 		// TODO Auto-generated method stub
 		return super.listNodesInSchema(schema, db);
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.CoolRESTImpl#listTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.CoolRESTImpl#listTagsInNodesSchema(java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{node:.*}/tags")
-	public List<SchemaNodeTagType> listTagsInNodesSchema(@PathParam("schema") String schema, @PathParam("db") String db, @PathParam("node") String node) {
+	public List<SchemaNodeTagType> listTagsInNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("node") String node) {
 		// TODO Auto-generated method stub
 		return super.listTagsInNodesSchema(schema, db, node);
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.CoolRESTImpl#listGlobalTagsTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.CoolRESTImpl#listGlobalTagsTagsInNodesSchema(java
+	 * .lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{gtag}/trace")
-	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(@PathParam("schema") String schema, @PathParam("db") String db,
+	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("gtag") String gtag) {
 		// TODO Auto-generated method stub
 		return super.listGlobalTagsTagsInNodesSchema(schema, db, gtag);
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.CoolRESTImpl#getIovStatPerChannel(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.CoolRESTImpl#getIovStatPerChannel(java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsperchan")
-	public List<IovType> getIovStatPerChannel(@PathParam("schema") String schema, @PathParam("db") String db, @PathParam("fld") String fld,
-			@PathParam("tag") String tag) {
+	public List<IovType> getIovStatPerChannel(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag) {
 		// TODO Auto-generated method stub
 		return super.getIovStatPerChannel(schema, db, fld, tag);
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.CoolRESTImpl#listIovsInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.CoolRESTImpl#listIovsInNodesSchemaTagRangeAsList(
+	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
-	public NodeType listIovsInNodesSchemaTagRangeAsList(@PathParam("schema") String schema,
-			@PathParam("db") String db, @PathParam("fld") String fld, @PathParam("tag") String tag, @PathParam("channel") String channel, @PathParam("chansel") String chansel,
-			@PathParam("since") String since, @PathParam("until") String until, @PathParam("timespan") String timespan) {
+	public NodeType listIovsInNodesSchemaTagRangeAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("channel") String channel,
+			@PathParam("chansel") String chansel,
+			@PathParam("since") String since, @PathParam("until") String until,
+			@PathParam("timespan") String timespan) {
 
-		return super.listIovsInNodesSchemaTagRangeAsList(schema, db, fld, tag, channel,
-				chansel, since, until, timespan);
+		return super.listIovsInNodesSchemaTagRangeAsList(schema, db, fld, tag,
+				channel, chansel, since, until, timespan);
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.CoolRESTImpl#listIovsInNodesSchemaTagRangeSortedAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.CoolRESTImpl#listIovsInNodesSchemaTagRangeSortedAsList
+	 * (java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
-	public NodeType listIovsInNodesSchemaTagRangeSortedAsList(@PathParam("schema") String schema,
-			@PathParam("db") String db, @PathParam("fld") String fld, @PathParam("tag") String tag, @PathParam("sort") String sort, @PathParam("channel") String channel,
-			@PathParam("chansel") String chansel, @PathParam("since") String since, @PathParam("until") String until, @PathParam("timespan") String timespan) {
+	public NodeType listIovsInNodesSchemaTagRangeSortedAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("sort") String sort,
+			@PathParam("channel") String channel,
+			@PathParam("chansel") String chansel,
+			@PathParam("since") String since, @PathParam("until") String until,
+			@PathParam("timespan") String timespan) {
 
-		return super.listIovsInNodesSchemaTagRangeSortedAsList(schema, db, fld, tag,
-				sort, channel, chansel, since, until, timespan);
+		return super.listIovsInNodesSchemaTagRangeSortedAsList(schema, db, fld,
+				tag, sort, channel, chansel, since, until, timespan);
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.CoolRESTImpl#listPayloadInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.CoolRESTImpl#listPayloadInNodesSchemaTagRangeAsList
+	 * (java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/data/list")
-	public NodeType listPayloadInNodesSchemaTagRangeAsList(@PathParam("schema") String schema,
-			@PathParam("db") String db, @PathParam("fld") String fld, @PathParam("tag") String tag, @PathParam("channel") String channel, @PathParam("chansel") String chansel,
-			@PathParam("since") String since, @PathParam("until") String until, @PathParam("timespan") String timespan) {
-		return super.listPayloadInNodesSchemaTagRangeAsList(schema, db, fld, tag,
-				channel, chansel, since, until, timespan);
+	public NodeType listPayloadInNodesSchemaTagRangeAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("channel") String channel,
+			@PathParam("chansel") String chansel,
+			@PathParam("since") String since, @PathParam("until") String until,
+			@PathParam("timespan") String timespan) {
+		return super.listPayloadInNodesSchemaTagRangeAsList(schema, db, fld,
+				tag, channel, chansel, since, until, timespan);
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.CoolRESTImpl#listPayloadInNodesSchemaTagRangeSortedAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.CoolRESTImpl#listPayloadInNodesSchemaTagRangeSortedAsList
+	 * (java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{channel}/{chansel}/{since}/{until}/{timespan}/data/list")
-	public NodeType listPayloadInNodesSchemaTagRangeSortedAsList(@PathParam("schema") String schema,
-			@PathParam("db") String db, @PathParam("fld") String fld, @PathParam("tag") String tag, @PathParam("sort") String sort, @PathParam("channel") String channel,
-			@PathParam("chansel") String chansel, @PathParam("since") String since, @PathParam("until") String until, @PathParam("timespan") String timespan) {
+	public NodeType listPayloadInNodesSchemaTagRangeSortedAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("sort") String sort,
+			@PathParam("channel") String channel,
+			@PathParam("chansel") String chansel,
+			@PathParam("since") String since, @PathParam("until") String until,
+			@PathParam("timespan") String timespan) {
 
-		return super.listPayloadInNodesSchemaTagRangeSortedAsList(schema, db, fld, tag,
-				sort, channel, chansel, since, until, timespan);
+		return super.listPayloadInNodesSchemaTagRangeSortedAsList(schema, db,
+				fld, tag, sort, channel, chansel, since, until, timespan);
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.CoolRESTImpl#listIovsSummaryInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.CoolRESTImpl#listIovsSummaryInNodesSchemaTagRangeAsList
+	 * (java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/{timespan}/rangesummary/list")
-	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(@PathParam("schema") String schema,
-			@PathParam("db") String db, @PathParam("fld") String fld, @PathParam("tag") String tag, @PathParam("since") String since, @PathParam("until") String until,
+	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("since") String since, @PathParam("until") String until,
 			@PathParam("timespan") String timespan) {
 
-		return super.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, fld, tag,
-				since, until, timespan);
+		return super.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db,
+				fld, tag, since, until, timespan);
 	}
 
 	/**
@@ -252,7 +327,7 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			//should remove the sfsb
+			// should remove the sfsb
 		}
 		return "done";
 	}
@@ -321,11 +396,10 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			//should remove the sfsb
+			// should remove the sfsb
 		}
 		return "done";
 	}
-
 
 	/**
 	 * <p>
@@ -522,7 +596,6 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		}
 		return results.toString();
 	}
-
 
 	/**
 	 * <p>
@@ -824,6 +897,327 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		return results.toString();
 	}
 
+	@GET
+	@Produces("text/html")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsummary/{type}/dump")
+	public String dumpIovsSummaryInNodesSchemaTag(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag, 
+			@PathParam("type") String type) {
+
+		log.info("Calling dumpIovsSummaryInNodesSchemaTag..." + schema + " "
+				+ db + " folder " + fld + " tag " + tag);
+		Collection<CoolIovSummary> iovsummaryColl = super.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, fld, tag, "0", "Inf", "time");
+		Integer channels = 0;
+		if (iovsummaryColl != null) {
+			channels = iovsummaryColl.size();
+		}
+		String results = "Empty result string...retrieved list of "+channels;
+		if (type.equals("text")) {
+			results = "";
+			log.info("Dumping list as text html");
+			results = dumpIovSummaryAsText(iovsummaryColl);
+		} else if (type.equals("svg")){
+			results = "";
+			log.info("Dumping list as text html");
+			results = dumpIovSummaryAsSvg(iovsummaryColl);			
+		}
+		return results;
+	}
+	
+	@GET
+	@Produces("text/html")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/{timespan}/rangesummary/{type}/dump")
+	public String dumpIovsSummaryInNodesSchemaTagRange(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("since") String since, @PathParam("until") String until,
+			@PathParam("timespan") String timespan,
+			@PathParam("type") String type) {
+
+		log.info("Calling dumpIovsSummaryInNodesSchemaTagRange..." + schema + " "
+				+ db + " folder " + fld + " tag " + tag+" "+since+" "+until);
+		Collection<CoolIovSummary> iovsummaryColl = super.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, fld, tag, since, until, timespan);
+		Integer channels = 0;
+		if (iovsummaryColl != null) {
+			channels = iovsummaryColl.size();
+		}		
+		StringBuffer results = new StringBuffer();
+		String resultsDefault = "Empty result string...retrieved list of "+channels+" channels ";
+		if (type.equals("text")) {
+			log.info("Dumping list as text html");
+			results.append(dumpIovSummaryAsText(iovsummaryColl));
+		} else if (type.equals("svg")){
+			log.info("Dumping list as text html");
+			results.append(dumpIovSummaryAsSvg(iovsummaryColl));			
+		} else {
+			results.append(resultsDefault);
+		}
+		String coverage = "<p>All important runs are covered</p>";
+		try {
+			coverage = checkHoles(iovsummaryColl);
+		} catch (ComaQueryException e) {
+			e.printStackTrace();
+			coverage = "<p>Error in coverage checking...</p>";
+		}
+		results.append(coverage);
+		return results.toString();
+	}
+
+	protected String checkHoles(Collection<CoolIovSummary> iovsummaryColl) throws ComaQueryException {
+		StringBuffer results = new StringBuffer();
+
+		// List<NodeGtagTagType> nodeingtagList = null;
+		String colorgoodtagstart = "<span style=\"color:#20D247\">";
+		String colorseptagstart = "<span style=\"color:#1A91C4\">";
+		String colorbadtagstart = "<span style=\"color:#B43613\">";
+		String colortagend = "</span>";
+		results.append("<head><style>" + "h1 {font-size:25px;} "
+				+ "h2 {font-size:20px;}" + "h3 {font-size:15px;}"
+				+ "hr {color:sienna;}" + "p {font-size:14px;}"
+				+ "p.small {line-height:80%;}" + "</style></head>");
+		results.append("<body>");
+
+		results.append("<h1>Coverage verification.... </h1>");
+
+		CoolIovSummary firstsumm = iovsummaryColl.iterator().next();
+		results.append("<h2>" + colorseptagstart + firstsumm.getSchema()
+				+ " > " + " " + firstsumm.getNode() + " ; "
+				+ firstsumm.getTag() + colortagend + "</h2>" + "<br>");
+		Boolean ishole = false;
+		Boolean coverageerror = true;
+		for (CoolIovSummary iovsummary : iovsummaryColl) {
+			Map<Long, IovRange> timeranges = iovsummary.getIovRanges();
+			if (timeranges != null) {
+				Set<Long> sincetimes = timeranges.keySet();
+				String colortagstart = colorgoodtagstart;
+				String iovDump = "";
+				int iiov = 0;
+				for (Long asince : sincetimes) {
+					IovRange ivr = timeranges.get(asince);
+					colortagstart = colorgoodtagstart;
+					String holedump = "";
+					if (ivr.getIshole()) {
+						if (iiov==0) {
+						results.append("<p class=\"small\">" + iovsummary.getChanId() + " "
+								+ iovsummary.getChannelName() + " - "
+								+ iovsummary.getIovbase() + " : ");
+						}
+						iiov++;
+						ishole = true;
+						colortagstart = colorbadtagstart;
+						List<CrViewRuninfo> runlist = null;
+						long timespan = ivr.getUntil() - ivr.getSince();
+						if (iovsummary.getIovbase().equals("time")) {
+							timespan = timespan / 1000L;
+							holedump = "[" + timespan + "] ";
+							Timestamp _since = new Timestamp(ivr.getSince()/CoolIov.TO_NANOSECONDS);
+							Timestamp _until = new Timestamp(ivr.getUntil()/CoolIov.TO_NANOSECONDS);
+							runlist = super.comadao.findRunsInRange(_since, _until);
+
+						} else if (iovsummary.getIovbase().equals("run-lumi")) {
+							Long runsince = CoolIov.getRun(ivr.getSince());
+							Long rununtil = CoolIov.getRun(ivr.getUntil());
+							timespan = rununtil - runsince;
+							holedump = "[" + timespan +"]";
+							BigDecimal _since = new BigDecimal(runsince);
+							BigDecimal _until = new BigDecimal(rununtil);
+							// Verify holes with run ranges
+							runlist = super.comadao.findRunsInRange(_since, _until);
+						}
+						for (CrViewRuninfo arun : runlist) {
+							if (arun.getPPeriod() != null && arun.getPProject() != null) {
+								if (arun.getPProject().startsWith("data")) {
+									coverageerror = false;
+									iovDump = colortagstart
+											+ ivr.getNiovs()
+											+ " ["
+											+ arun.getRunNumber()+" "+arun.getPProject()
+											+ "] " + holedump
+											+ colortagend;
+
+									results.append(" | " + iovDump);									
+								}
+							}
+						}
+					}
+				}
+				if (ishole)
+					results.append("</p>");
+			}
+		}
+		if (coverageerror) {
+			results.append("All relevant runs are covered...");
+		}
+		results.append("</body>");
+		return results.toString();
+	}
+
+	protected String dumpIovSummaryAsText(
+			Collection<CoolIovSummary> iovsummaryColl) {
+
+		StringBuffer results = new StringBuffer();
+
+		// List<NodeGtagTagType> nodeingtagList = null;
+		String colorgoodtagstart = "<span style=\"color:#20D247\">";
+		String colorwarntagstart = "<span style=\"color:#D1A22C\">";
+		String colorseptagstart = "<span style=\"color:#1A91C4\">";
+		String colorbadtagstart = "<span style=\"color:#B43613\">";
+		String colortagend = "</span>";
+		results.append("<head><style>" + "h1 {font-size:25px;} "
+				+ "h2 {font-size:20px;}" + "h3 {font-size:15px;}"
+				+ "hr {color:sienna;}" + "p {font-size:14px;}"
+				+ "p.small {line-height:80%;}" + "</style></head>");
+		results.append("<body>");
+
+		results.append("<h1>Iovs statistics.... </h1>");
+
+		int channels = iovsummaryColl.size();
+		CoolIovSummary firstsumm = iovsummaryColl.iterator().next();
+		results.append("<h2>" + colorseptagstart + firstsumm.getSchema()
+				+ " > " + " " + firstsumm.getNode() + " ; "
+				+ firstsumm.getTag() + colortagend + "</h2>" + "<br>");
+
+		results.append("<h3>Total of used channels is "+channels+" </h3>");
+		results.append("<h3>chanId chanName iovbase - niovs [since] [until] [holes in seconds] .... </h3>");
+
+		for (CoolIovSummary iovsummary : iovsummaryColl) {
+			results.append("<p class=\"small\">" + iovsummary.getChanId() + " "
+					+ iovsummary.getChannelName() + " - "
+					+ iovsummary.getIovbase() + " : ");
+			Map<Long, IovRange> timeranges = iovsummary.getIovRanges();
+			if (timeranges != null) {
+				Set<Long> sincetimes = timeranges.keySet();
+				String colortagstart = colorgoodtagstart;
+				String iovDump = "";
+				long minsince = iovsummary.getMinsince();
+				int iiov = 0;
+				for (Long asince : sincetimes) {
+					IovRange ivr = timeranges.get(asince);
+					colortagstart = colorgoodtagstart;
+					if ((iiov == 0)
+							&& (ivr.getSince().compareTo(minsince) != 0)) {
+						colortagstart = colorwarntagstart;
+					}
+					String holedump = "";
+					if (ivr.getIshole()) {
+						colortagstart = colorbadtagstart;
+						long timespan = ivr.getUntil() - ivr.getSince();
+						if (iovsummary.getIovbase().equals("time")) {
+							timespan = timespan / 1000L;
+						}
+						holedump = "[" + timespan + "] ";
+					}
+					iovDump = colortagstart
+							+ ivr.getNiovs()
+							+ " ["
+							+ ivr.getSinceCoolStr()
+							+ "] ["
+							+ ivr.getUntilCoolStr() + "] " + holedump
+							+ colortagend;
+
+					results.append(" | " + iovDump);
+					iiov++;
+				}
+				results.append("</p>");
+			}
+		}
+		results.append("</body>");
+		return results.toString();
+	}
+
+	protected String dumpIovSummaryAsSvg(
+			Collection<CoolIovSummary> iovsummaryColl) {
+
+		StringBuffer results = new StringBuffer();
+		StringBuffer svg = new StringBuffer();
+
+		String colorseptagstart = "<span style=\"color:#1A91C4\">";
+		String colortagend = "</span>";
+		results.append("<head><style>" + "h1 {font-size:25px;} "
+				+ "h2 {font-size:20px;}" + "h3 {font-size:15px;}"
+				+ "hr {color:sienna;}" + "p {font-size:14px;}"
+				+ "p.small {line-height:80%;}" + "</style></head>");
+
+		results.append("<body>");
+		results.append("<h1>Iovs statistics.... </h1>");
+		int channels = iovsummaryColl.size();
+		
+		results.append("<h3>chanId chanName iovbase - niovs [since] [until] [holes in seconds] .... </h3>");
+		CoolIovSummary firstsumm = iovsummaryColl.iterator().next();
+		results.append("<h2>" + colorseptagstart + firstsumm.getSchema()
+				+ " > " + " " + firstsumm.getNode() + " ; "
+				+ firstsumm.getTag() + colortagend + "</h2>" + "<br>");
+		
+			SvgRestUtils svgutil = new SvgRestUtils();
+		svgutil.setSvgabsmin(0L);
+		svgutil.setSvgabsmax(CoolIov.COOL_MAX_DATE);
+		if (channels < 20) {
+			svgutil.setLinewidth(10);
+		} else if (channels < 100) {
+			svgutil.setLinewidth(6);
+		} else if (channels < 200) {
+			svgutil.setLinewidth(3);
+		} else {
+			svgutil.setLinewidth(1);
+		}
+		results.append("<p>Number of channels used " + channels);
+		String svgcanvas = "<svg width=\""
+				+ svgutil.getSvglinewidth()
+				+ "px\" height=\""
+				+ (channels * svgutil.getLinewidth() + svgutil
+						.getSvgheight())
+				+ "px\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">";
+		svg.append(svgcanvas);
+		Long ichan = 0L;
+		for (CoolIovSummary iovsummary : iovsummaryColl) {
+			
+			Map<Long, IovRange> timeranges = iovsummary.getIovRanges();
+			if (ichan == 0) {
+				results.append(" | Info in ichan 0: niovs="
+						+ iovsummary.getTotalIovs() + " from "
+						+ iovsummary.getMinsince() + " / "
+						+ iovsummary.getMinuntil() + " to "
+						+ iovsummary.getMaxsince() + " / "
+						+ iovsummary.getMaxuntil() + "</p><br>");
+
+				svgutil.setSvgabsmin(iovsummary.getMinsince());
+				svgutil.setSvgabsmax(iovsummary.getMaxuntil());
+				if (iovsummary.getMinuntil() < CoolIov.COOL_MAX_DATE) {
+					Long iovspan = iovsummary.getMinuntil()
+							- iovsummary.getMinsince();
+					if (iovspan < 1000L)
+						svgutil.setSvgabsmin(iovsummary.getMinuntil()
+								- (Long) (iovspan / 10L));
+					else
+						svgutil.setSvgabsmin(iovsummary.getMinuntil() - 1000L);
+				}
+				if (iovsummary.getMaxuntil() >= CoolIov.COOL_MAX_RUN) {
+					svgutil.setSvgabsmax(iovsummary.getMaxsince() + 1000L);
+				}
+			}
+			log.finer("Node " + iovsummary.getNode() + " tag " + iovsummary.getTag() + ": Chan "
+					+ iovsummary.getChanId() + " is using svgmin " + svgutil.getSvgabsmin()
+					+ " and svgmax " + svgutil.getSvgabsmax() + " from "
+					+ iovsummary.getMinsince() + " " + iovsummary.getMinuntil()
+					+ " " + iovsummary.getMaxsince());
+			if (timeranges != null) {
+				Set<Long> sincetimes = timeranges.keySet();
+				for (Long asince : sincetimes) {
+					IovRange ivr = timeranges.get(asince);
+					svg.append(svgutil.getSvgLine(ivr.getSince(),
+							ivr.getUntil(), ichan, iovsummary.getIovbase(),
+							ivr.getIshole()));
+				}
+			}
+			ichan++;
+		}
+		results.append(svg.toString() + "</svg><br>");
+		svg.delete(0, svg.length());
+		results.append("</body>");
+		return results.toString();
+	}
+
 	protected String dumpResultSet(ResultSet rs) throws SQLException {
 		ResultSetMetaData rsmd_rs = rs.getMetaData();
 		for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
@@ -922,6 +1316,4 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		return strOut.toString();
 	}
 
-	
-	
 }

@@ -1,13 +1,12 @@
 /**
  * 
  */
-package atlas.cool.dao;
+package atlas.connection.dao;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -18,10 +17,12 @@ import javax.persistence.Query;
 
 import atlas.cool.annotations.CoolQueryRepository;
 import atlas.cool.annotations.QueryParams;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.exceptions.CoolQueryException;
 import atlas.cool.query.tools.QueryTools;
 
 ///////@////RequestScoped
+//TODO Investigate is this could be SessionScoped...
 /**
  * @author formica
  * 
@@ -165,15 +166,15 @@ public class CoolRepository implements CoolRepositoryDAO {
 			throws CoolIOException {
 		// log.info("Build query "+qry+" with N parameters "+params.length);
 		try {
-			log.finest("Search query in " + coolqry);
+			log.info("Search query in " + coolqry);
 			QueryParams annparams = coolqry.getQueryParams(qry);
 			String[] paramnames = annparams.getParams();
-			log.finest("Creating named query " + qry);
+			log.info("Creating named query " + qry);
 			Query q = em.createNamedQuery(qry);
 			for (int i = 0; i < paramnames.length; i++) {
 				String key = paramnames[i];
 				Object val = params[i];
-				log.finest("setting query parameter " + key + " value " + val);
+				log.info("setting query parameter " + key + " value " + val);
 				if (val == null && paramnames[i].equals("node")) {
 					val = "%";
 				} else if (val == null && paramnames[i].equals("tag")) {

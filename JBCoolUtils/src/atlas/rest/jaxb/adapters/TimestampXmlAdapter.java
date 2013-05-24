@@ -1,7 +1,7 @@
 /**
  * 
  */
-package atlas.cool.rest.utils;
+package atlas.rest.jaxb.adapters;
 
 import java.sql.Timestamp;
 import java.util.Date;

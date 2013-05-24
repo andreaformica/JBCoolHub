@@ -21,9 +21,9 @@ import org.primefaces.model.chart.CartesianChartModel;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.LineChartSeries;
 
-import atlas.cool.dao.CoolIOException;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
-import atlas.cool.meta.CoolPayload;
+import atlas.cool.payload.model.CoolPayload;
 
 /**
  * @author formica

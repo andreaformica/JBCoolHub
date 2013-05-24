@@ -1,7 +1,7 @@
 /**
  * 
  */
-package atlas.cool.dao;
+package atlas.cool.exceptions;
 
 /**
  * @author formica

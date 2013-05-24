@@ -1,7 +1,9 @@
-package atlas.cool.dao;
+package atlas.connection.dao;
 
 import java.util.List;
 import java.util.Map;
+
+import atlas.cool.exceptions.CoolIOException;
 
 public interface CoolRepositoryDAO {
 

@@ -3,23 +3,18 @@
  */
 package atlas.cool.rest.web;
 
+
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import atlas.coma.dao.ComaCbDAO;
-import atlas.coma.exceptions.ComaQueryException;
 import atlas.coma.model.CrViewRuninfo;
-import atlas.cool.dao.CoolIOException;
-import atlas.cool.dao.CoolResultSetDAO;
-import atlas.cool.rest.model.NodeType;
+
 
 /**
  * JAX-RS Example
@@ -47,27 +42,18 @@ import atlas.cool.rest.model.NodeType;
  */
 @Path("/coma")
 @RequestScoped
-public class ComaRESTService {
+public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 
-	@Inject
-	protected ComaCbDAO comadao;
-
-	@Inject
-	protected Logger log;
-
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ComaRESTImpl#listRuns(java.math.BigDecimal, java.math.BigDecimal)
+	 */
+	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{runstart}/{runend}/runs")
 	public List<CrViewRuninfo> listRuns(@PathParam("runstart") BigDecimal runstart, @PathParam("runend") BigDecimal runend) {
-		log.info("Calling listRuns..." + runstart + " " + runend);
-		List<CrViewRuninfo> results = null;
-		try {
-			results = comadao.findRunsInRange(runstart, runend);
-		} catch (ComaQueryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return results;
+		// TODO Auto-generated method stub
+		return super.listRuns(runstart, runend);
 	}
 
 

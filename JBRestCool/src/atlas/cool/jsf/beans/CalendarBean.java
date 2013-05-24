@@ -16,7 +16,7 @@ import javax.inject.Named;
 
 import atlas.coma.dao.ComaRunDAO;
 import atlas.coma.model.RunSummary;
-import atlas.cool.dao.CoolIOException;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
 
 @Named("calendarparams")

@@ -27,10 +27,10 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.chart.CartesianChartModel;
 
 import atlas.cool.dao.CoolDAO;
-import atlas.cool.dao.CoolIOException;
 import atlas.cool.dao.CoolPayloadDAO;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.jsf.utils.PayloadHelperBean;
-import atlas.cool.meta.CoolPayload;
+import atlas.cool.payload.model.CoolPayload;
 import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.IovStatType;
 import atlas.cool.rest.model.NodeGtagTagType;
