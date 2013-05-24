@@ -10,6 +10,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import atlas.connection.dao.CoolRepositoryDAO;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.CmpCoolComaGlobalTagType;
 import atlas.cool.rest.model.CmpCoolComaNodeType;
 import atlas.cool.rest.model.CmpCoolComaTagType;

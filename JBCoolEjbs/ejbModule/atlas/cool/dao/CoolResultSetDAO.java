@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 
 import javax.ejb.Local;
 
+import atlas.cool.exceptions.CoolIOException;
+
 @Local
 public interface CoolResultSetDAO {
 

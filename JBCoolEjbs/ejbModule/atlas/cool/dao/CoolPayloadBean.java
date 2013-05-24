@@ -22,8 +22,9 @@ import javax.sql.DataSource;
 
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
-import atlas.cool.meta.CoolPayload;
+import atlas.cool.payload.model.CoolPayload;
 
 /**
  * Session Bean implementation class CoolPayloadBean

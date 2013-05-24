@@ -27,8 +27,9 @@ import oracle.sql.CLOB;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
-import atlas.cool.meta.CoolPayload;
+import atlas.cool.payload.model.CoolPayload;
 
 /**
  * Session Bean implementation class CoolResultSet

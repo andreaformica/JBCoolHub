@@ -13,7 +13,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import atlas.connection.dao.CoolRepositoryDAO;
 import atlas.cool.dao.remote.CoolDAORemote;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovType;
 import atlas.cool.rest.model.GtagTagDiffType;

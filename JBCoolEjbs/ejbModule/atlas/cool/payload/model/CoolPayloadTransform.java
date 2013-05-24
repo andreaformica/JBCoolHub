@@ -1,7 +1,7 @@
 /**
  * 
  */
-package atlas.cool.meta;
+package atlas.cool.payload.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import atlas.cool.dao.CoolIOException;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.CoolIovType;
 
 /**

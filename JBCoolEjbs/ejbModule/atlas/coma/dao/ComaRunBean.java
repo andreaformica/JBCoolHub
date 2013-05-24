@@ -20,7 +20,7 @@ import javax.persistence.Query;
 
 import atlas.coma.model.PeriodSummary;
 import atlas.coma.model.RunSummary;
-import atlas.cool.dao.CoolIOException;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.utils.PrintPojo;
 
 /**

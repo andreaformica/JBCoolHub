@@ -1,7 +1,7 @@
 /**
  * 
  */
-package atlas.cool.meta;
+package atlas.cool.payload.model;
 
 import java.io.BufferedReader;
 import java.io.IOException;

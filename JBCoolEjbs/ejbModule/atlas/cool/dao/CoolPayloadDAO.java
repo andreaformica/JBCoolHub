@@ -5,7 +5,8 @@ package atlas.cool.dao;
 
 import java.math.BigDecimal;
 
-import atlas.cool.meta.CoolPayload;
+import atlas.cool.exceptions.CoolIOException;
+import atlas.cool.payload.model.CoolPayload;
 
 //import atlas.cool.meta.CoolPayload;
 

@@ -8,8 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.PathParam;
-
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeType;

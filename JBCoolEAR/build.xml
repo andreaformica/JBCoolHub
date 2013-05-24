@@ -38,13 +38,14 @@
 	    <patternset id="ear.files">
 	        <include name="${lib.client.name}"/>
 	        <include name="JBComaEjbs.jar"/>
+	        <include name="JBCoolUtils.jar"/>
 	        <include name="JBCoolEjbs.jar"/>
 	        <include name="JBRestCool.war"/>
 	    </patternset>
 	    <patternset id="lib.files">
-	        <include name="JBCoolUtils.jar"/>
+	        <!--<include name="JBCoolUtils.jar"/ -->
 		</patternset>
-		<copy file="${all.lib.dir}/JBCoolUtils.jar" todir="${build.lib.dir}"/>
+		<!--<copy file="${all.lib.dir}/JBCoolUtils.jar" todir="${build.lib.dir}"/-->
 	</target>
 	
 	

@@ -8,10 +8,11 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
+import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -29,8 +30,8 @@ public class CoolIovSummary implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-
+	private static final long serialVersionUID = 6861013465081549944L;
+	
 	Long   chanId;
 	String channelName;
 	String schema;
@@ -108,9 +109,11 @@ public class CoolIovSummary implements Serializable {
 					if (!(aniov.ishole) && !(ishole)) {
 						aniov.setUntil(until);
 						aniov.addNIovs(niovs);
+						aniov.setUntilCoolStr(CoolIov.getCoolTimeRunLumiString(until, iovbase));
 						if (aniov.getSince().compareTo(minsince) == 0)
 							minuntil = until;
 						updatediov = true;
+						System.out.println("Update old iovrange "+since+" "+until+" "+aniov.getSinceCoolStr()+" "+aniov.getUntilCoolStr()+" "+aniov.getIshole());
 					}
 				} 
 			}
@@ -119,6 +122,8 @@ public class CoolIovSummary implements Serializable {
 				IovRange iov = new IovRange(since,until,niovs,ishole,iovbase);
 //				iov.setIovbase(iovbase);
 				iovs.put(since, iov);
+//				log.info("Store new iovrange "+since+" "+until+" "+iov.getSinceCoolStr()+" "+iov.getUntilCoolStr()+" "+iov.getIshole());
+				System.out.println("Store new iovrange "+since+" "+until+" "+iov.getSinceCoolStr()+" "+iov.getUntilCoolStr()+" "+iov.getIshole());
 			}
 		}
 		setIovlist(iovs.values());

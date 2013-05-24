@@ -16,5 +16,6 @@
 	<classpathentry kind="var" path="EXTERNALS_LIB/share/java/db/sqlite-jdbc-3.7.2.jar"/>
 	<classpathentry kind="var" path="EXTERNALS_LIB/share/java/db/ojdbc6.jar"/>
 	<classpathentry kind="src" path="/JBCoolUtils"/>
+	<classpathentry kind="src" path="/JBComaEjbs"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -8,7 +8,7 @@ import java.util.List;
 
 import atlas.coma.model.PeriodSummary;
 import atlas.coma.model.RunSummary;
-import atlas.cool.dao.CoolIOException;
+import atlas.cool.exceptions.CoolIOException;
 
 /**
  * @author formica

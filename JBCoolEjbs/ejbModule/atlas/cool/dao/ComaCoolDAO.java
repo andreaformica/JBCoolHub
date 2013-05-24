@@ -5,6 +5,7 @@ package atlas.cool.dao;
 
 import java.util.List;
 
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.CmpCoolComaGlobalTagType;
 import atlas.cool.rest.model.CmpCoolComaNodeType;
 import atlas.cool.rest.model.CmpCoolComaTagType;

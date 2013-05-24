@@ -15,9 +15,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
-import atlas.cool.meta.CoolPayload;
-import atlas.cool.meta.CoolPayloadTransform;
+import atlas.cool.payload.model.CoolPayload;
+import atlas.cool.payload.model.CoolPayloadTransform;
 import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.CoolIovType;
 import atlas.cool.rest.model.IovType;
@@ -524,5 +525,4 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 
 		return summarylist;
 	}
-
 }

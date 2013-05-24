@@ -107,7 +107,7 @@ public class CrViewRuninfo implements java.io.Serializable {
 
 	@Column(name = "START_TIME", nullable = false)
 	@XmlElement
-	@XmlJavaTypeAdapter(atlas.cool.rest.utils.TimestampXmlAdapter.class)
+	@XmlJavaTypeAdapter(atlas.rest.jaxb.adapters.TimestampXmlAdapter.class)
 	public Timestamp getStartTime() {
 		return this.startTime;
 	}
@@ -118,7 +118,7 @@ public class CrViewRuninfo implements java.io.Serializable {
 
 	@Column(name = "END_TIME", nullable = false)
 	@XmlElement
-	@XmlJavaTypeAdapter(atlas.cool.rest.utils.TimestampXmlAdapter.class)
+	@XmlJavaTypeAdapter(atlas.rest.jaxb.adapters.TimestampXmlAdapter.class)
 	public Timestamp getEndTime() {
 		return this.endTime;
 	}

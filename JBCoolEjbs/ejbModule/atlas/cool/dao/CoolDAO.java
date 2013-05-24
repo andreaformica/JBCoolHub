@@ -3,6 +3,7 @@ package atlas.cool.dao;
 import java.math.BigDecimal;
 import java.util.List;
 
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovType;
 import atlas.cool.rest.model.GtagTagDiffType;

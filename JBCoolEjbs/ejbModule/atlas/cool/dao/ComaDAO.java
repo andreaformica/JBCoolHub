@@ -2,6 +2,7 @@ package atlas.cool.dao;
 
 import java.util.List;
 
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;

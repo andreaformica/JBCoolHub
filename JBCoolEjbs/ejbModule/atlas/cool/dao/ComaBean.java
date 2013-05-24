@@ -7,20 +7,16 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.Local;
-import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import atlas.cool.dao.remote.CoolDAORemote;
-import atlas.cool.rest.model.ChannelType;
-import atlas.cool.rest.model.GtagTagDiffType;
+import atlas.connection.dao.CoolRepositoryDAO;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.GtagType;
-import atlas.cool.rest.model.IovStatType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
-import atlas.cool.rest.model.SchemaType;
 
 @Named
 @Stateless
@@ -55,7 +51,7 @@ public class ComaBean implements ComaDAO {
 		params[1] =db;
 		params[2] =node;
 		log.info("Using query "+NodeType.QUERY_COMA_FINDNODES+" with "+schema+" "+db+" "+node);
-		List<NodeType> nodelist = (List<NodeType>) coolrep.findCoolList(NodeType.QUERY_COMA_FINDNODES,params);
+		List<NodeType> nodelist = ((List<NodeType>) coolrep.findCoolList(NodeType.QUERY_COMA_FINDNODES,params));
 //		log.info("Retrieved a list of "+nodelist.size()+" nodes");
 		return nodelist;
 	}

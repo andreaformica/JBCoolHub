@@ -14,8 +14,8 @@ import javax.inject.Named;
 import atlas.coma.exceptions.ComaQueryException;
 import atlas.coma.model.ComaCbamiGtags;
 import atlas.coma.model.CrViewRuninfo;
-import atlas.cool.dao.CoolIOException;
-import atlas.cool.dao.CoolRepositoryDAO;
+import atlas.connection.dao.CoolRepositoryDAO;
+import atlas.cool.exceptions.CoolIOException;
 
 /**
  * Session Bean implementation class ComaCbBean

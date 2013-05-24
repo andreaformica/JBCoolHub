@@ -31,7 +31,7 @@ import org.reflections.vfs.SystemDir;
 import org.reflections.vfs.Vfs;
 import org.reflections.vfs.ZipDir;
 
-import atlas.cool.dao.CoolIOException;
+import atlas.cool.exceptions.CoolIOException;
 
 /**
  * @author formica
