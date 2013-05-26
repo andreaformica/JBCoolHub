@@ -21,8 +21,6 @@ public class SvgRestUtils {
 	Long svgheight = 10L;
 
 	
-	
-	
 	/**
 	 * 
 	 */
@@ -79,11 +77,12 @@ public class SvgRestUtils {
 			String iovtype, Boolean ishole) {
 		StringBuffer svgline = new StringBuffer();
 
-		Long infinity = new Date().getTime();
-		if (!iovtype.equals("time")) {
-			// infinity = CoolIov.COOL_MAX_RUN;
-			infinity = svgabsmax;
-		}
+		Long infinity = svgabsmax;
+//		Long infinity = new Date().getTime();
+//		if (!iovtype.equals("time")) {
+//			// infinity = CoolIov.COOL_MAX_RUN;
+//			infinity = svgabsmax;
+//		}
 
 		if (start > infinity)
 			start = infinity;
@@ -136,6 +135,45 @@ public class SvgRestUtils {
 		}
 
 		return svgline.toString();
+	}
+	
+	public void computeBestRange(Long minsince, Long minuntil, Long maxsince, Long maxuntil) {
+		setSvgabsmin(minsince);
+		setSvgabsmax(maxuntil);
+		double firstspan = minuntil - minsince;
+		double lastspan = maxuntil - maxsince;
+		System.out.println("computeBestRange: "+minsince+" "+minuntil+" "+maxsince+" "+maxuntil+" spanning "+firstspan+" "+lastspan);
+		if (minuntil < maxsince) {
+			// there are at least 3 IOV ranges
+			double timespan = maxsince - minuntil;
+			System.out.println("computeBestRange: timespan "+timespan);
+			if (timespan<0.1*firstspan) {
+				firstspan = 0.5*timespan;
+			} else {
+				firstspan = 0.1*timespan;
+			}
+			if (timespan<0.1*lastspan) {
+				lastspan = 0.5*timespan;
+			} else {
+				lastspan = 0.1*timespan;
+			}
+			setSvgabsmin(minuntil-(long)firstspan);
+			setSvgabsmax(maxsince+(long)lastspan);
+			System.out.println("computeBestRange: after changes "+svgabsmin+" "+svgabsmax);
+		}
+/*		
+		if (minuntil < CoolIov.COOL_MAX_DATE) {
+			Long iovspan = minuntil - minsince;
+			if (iovspan < 1000L)
+				setSvgabsmin(minuntil 
+						- (Long) (iovspan / 10L));
+			else
+				setSvgabsmin(minuntil - 1000L);
+		}
+		if (maxuntil >= CoolIov.COOL_MAX_RUN) {
+			setSvgabsmax(maxsince + 1000L);
+		}
+		*/
 	}
 
 	/**

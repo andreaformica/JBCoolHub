@@ -15,7 +15,6 @@
 			</fileset>
 			<fileset dir="${basedir}/lib">
 				<include name="JBCoolUtils.jar" />
-				<include name="JBCoolEjbs.jar" />
 			</fileset>
 		</path>
 

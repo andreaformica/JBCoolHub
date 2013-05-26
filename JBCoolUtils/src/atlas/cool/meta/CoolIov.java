@@ -28,6 +28,7 @@ public class CoolIov implements Serializable {
 
 	public static long COOL_MAX_DATE = 9223372036854775807L;
 	public static long COOL_MAX_RUN = 2147483647L;
+	public static long COOL_MAX_LUMIBLOCK = 4294967295L;
 	
 	
 	public static BigInteger lumimask = new BigInteger("00000000FFFFFFFF",16);
@@ -146,6 +147,9 @@ public class CoolIov implements Serializable {
 			Long run = getRun(time);
 			Long lb = getLumi(time);
 			iovstr = run + " - "+lb;
+			if (lb == COOL_MAX_LUMIBLOCK) {
+				iovstr = run + " - maxlb";
+			}
 		} else if (iovBase.equals("time")) {
 			if (time == 0)
 				return "0";

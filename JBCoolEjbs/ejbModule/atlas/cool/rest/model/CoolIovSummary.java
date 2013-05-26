@@ -113,7 +113,7 @@ public class CoolIovSummary implements Serializable {
 						if (aniov.getSince().compareTo(minsince) == 0)
 							minuntil = until;
 						updatediov = true;
-						System.out.println("Update old iovrange "+since+" "+until+" "+aniov.getSinceCoolStr()+" "+aniov.getUntilCoolStr()+" "+aniov.getIshole());
+//						System.out.println("Update old iovrange "+since+" "+until+" "+aniov.getSinceCoolStr()+" "+aniov.getUntilCoolStr()+" "+aniov.getIshole());
 					}
 				} 
 			}
@@ -123,7 +123,6 @@ public class CoolIovSummary implements Serializable {
 //				iov.setIovbase(iovbase);
 				iovs.put(since, iov);
 //				log.info("Store new iovrange "+since+" "+until+" "+iov.getSinceCoolStr()+" "+iov.getUntilCoolStr()+" "+iov.getIshole());
-				System.out.println("Store new iovrange "+since+" "+until+" "+iov.getSinceCoolStr()+" "+iov.getUntilCoolStr()+" "+iov.getIshole());
 			}
 		}
 		setIovlist(iovs.values());

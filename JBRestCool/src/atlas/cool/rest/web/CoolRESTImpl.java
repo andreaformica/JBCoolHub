@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -449,6 +450,10 @@ public class CoolRESTImpl {
 					throw new CoolIOException("Cannot search using timespan "
 							+ timespan);
 				}
+			}
+			if (_since.longValue()>_until.longValue()) {
+				log.log(Level.SEVERE, "Until time preceeds Since time...!!!!");
+				throw new CoolIOException("Cannot query DB with this range...");
 			}
 			timerangeMap.put("since", _since);
 			timerangeMap.put("until", _until);
