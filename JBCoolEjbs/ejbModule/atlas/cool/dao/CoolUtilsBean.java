@@ -574,10 +574,14 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		results.append("<h1>Iovs statistics.... </h1>");
 
 		int channels = iovsummaryColl.size();
-		CoolIovSummary firstsumm = iovsummaryColl.iterator().next();
-		results.append("<h2>" + colorseptagstart + firstsumm.getSchema()
-				+ " > " + " " + firstsumm.getNode() + " ; "
-				+ firstsumm.getTag() + colortagend + "</h2>" + "<br>");
+		Iterator<CoolIovSummary> it = iovsummaryColl.iterator();
+		if (it.hasNext()) {
+			CoolIovSummary firstsumm = it.next();
+			results.append("<h2>" + colorseptagstart
+					+ firstsumm.getSchema() + " > " + " "
+					+ firstsumm.getNode() + " ; " + firstsumm.getTag()
+					+ colortagend + "</h2>" + "<br>");
+		}
 
 		results.append("<h3>Total of used channels is " + channels + " </h3>");
 		results.append("<h3>chanId chanName iovbase - niovs [since] [until] [holes in seconds] .... </h3>");
@@ -639,11 +643,14 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		results.append("<h1>Iovs statistics.... </h1>");
 
 		int channels = iovsummaryColl.size();
-		CoolIovSummary firstsumm = iovsummaryColl.iterator().next();
-		results.append("<h2>" + colorseptagstart + firstsumm.getSchema()
-				+ " > " + " " + firstsumm.getNode() + " ; "
-				+ firstsumm.getTag() + colortagend + "</h2>" + "<br>");
-
+		Iterator<CoolIovSummary> it = iovsummaryColl.iterator();
+		if (it.hasNext()) {
+			CoolIovSummary firstsumm = it.next();
+			results.append("<h2>" + colorseptagstart
+					+ firstsumm.getSchema() + " > " + " "
+					+ firstsumm.getNode() + " ; " + firstsumm.getTag()
+					+ colortagend + "</h2>" + "<br>");
+		}
 		results.append("<h3>Total of used channels is " + channels + " </h3>");
 		results.append("<h3>chanId chanName iovbase - niovs [since] [until] [holes in seconds] .... </h3>");
 
