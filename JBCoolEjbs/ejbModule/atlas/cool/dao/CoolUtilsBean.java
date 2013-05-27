@@ -5,7 +5,10 @@ package atlas.cool.dao;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Local;
@@ -53,6 +57,9 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 
 	@Inject
 	private Logger log;
+	
+	protected SimpleDateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
+
 
 	/**
 	 * 
@@ -560,11 +567,6 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		String colorseptagstart = "<span style=\"color:#1A91C4\">";
 		String colorbadtagstart = "<span style=\"color:#B43613\">";
 		String colortagend = "</span>";
-//		results.append("<head><style>" + "h1 {font-size:25px;} "
-//				+ "h2 {font-size:20px;}" + "h3 {font-size:15px;}"
-//				+ "hr {color:sienna;}" + "p {font-size:14px;}"
-//				+ "p.small {line-height:80%;}" + "</style></head>");
-//		results.append("<body>");
 
 		results.append("<h1>Iovs statistics.... </h1>");
 
@@ -581,6 +583,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			results.append("<p class=\"small\">" + iovsummary.getChanId() + " "
 					+ iovsummary.getChannelName() + " - "
 					+ iovsummary.getIovbase() + " : ");
+
 			Map<Long, IovRange> timeranges = iovsummary.getIovRanges();
 			if (timeranges != null) {
 				Set<Long> sincetimes = timeranges.keySet();
@@ -618,6 +621,103 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 //		results.append("</body>");
 		return results.toString();
 	}
+	
+	public String dumpIovSummaryAsText(Collection<CoolIovSummary> iovsummaryColl, BigDecimal since, BigDecimal until) {
+
+		StringBuffer results = new StringBuffer();
+
+		// List<NodeGtagTagType> nodeingtagList = null;
+		String colorgoodtagstart = "<span style=\"color:#20D247\">";
+		String colorwarntagstart = "<span style=\"color:#D1A22C\">";
+		String colorseptagstart = "<span style=\"color:#1A91C4\">";
+		String colorbadtagstart = "<span style=\"color:#B43613\">";
+		String colortagend = "</span>";
+
+		results.append("<h1>Iovs statistics.... </h1>");
+
+		int channels = iovsummaryColl.size();
+		CoolIovSummary firstsumm = iovsummaryColl.iterator().next();
+		results.append("<h2>" + colorseptagstart + firstsumm.getSchema()
+				+ " > " + " " + firstsumm.getNode() + " ; "
+				+ firstsumm.getTag() + colortagend + "</h2>" + "<br>");
+
+		results.append("<h3>Total of used channels is " + channels + " </h3>");
+		results.append("<h3>chanId chanName iovbase - niovs [since] [until] [holes in seconds] .... </h3>");
+
+		for (CoolIovSummary iovsummary : iovsummaryColl) {
+			results.append("<p class=\"small\">" + iovsummary.getChanId() + " "
+					+ iovsummary.getChannelName() + " - "
+					+ iovsummary.getIovbase() + " : ");
+
+			Map<Long, IovRange> timeranges = iovsummary.getIovRanges();
+			if (timeranges != null) {
+				Set<Long> sincetimes = timeranges.keySet();
+				String colortagstart = colorgoodtagstart;
+				String iovDump = "";
+				long minsince = iovsummary.getMinsince();
+				long maxuntil = iovsummary.getMaxuntil();
+
+				if (minsince > since.longValueExact()) {
+					colortagstart = colorbadtagstart;
+					long timespan = minsince - since.longValue();
+					if (iovsummary.getIovbase().equals("time")) {
+						timespan = timespan / 1000L;
+					}
+					String holedump = "[" + timespan + "] ";
+					iovDump = colortagstart +  "0 ["
+						+ CoolIov.getCoolTimeRunLumiString(since.longValue(), iovsummary.getIovbase()) + "] ["
+						+ CoolIov.getCoolTimeRunLumiString(minsince, iovsummary.getIovbase()) + "] " + holedump
+						+ colortagend;
+
+					results.append(" | " + iovDump);
+				}
+				int iiov = 0;
+				for (Long asince : sincetimes) {
+					IovRange ivr = timeranges.get(asince);
+					colortagstart = colorgoodtagstart;
+					if ((iiov == 0)
+							&& (ivr.getSince().compareTo(minsince) != 0)) {
+						colortagstart = colorwarntagstart;
+					}
+					String holedump = "";
+					if (ivr.getIshole()) {
+						colortagstart = colorbadtagstart;
+						long timespan = ivr.getUntil() - ivr.getSince();
+						if (iovsummary.getIovbase().equals("time")) {
+							timespan = timespan / 1000L;
+						}
+						holedump = "[" + timespan + "] ";
+					}
+					iovDump = colortagstart + ivr.getNiovs() + " ["
+							+ ivr.getSinceCoolStr() + "] ["
+							+ ivr.getUntilCoolStr() + "] " + holedump
+							+ colortagend;
+
+					results.append(" | " + iovDump);
+					iiov++;
+				}
+				if (maxuntil < until.longValueExact()) {
+					colortagstart = colorbadtagstart;
+					long timespan = until.longValue() - maxuntil;
+					if (iovsummary.getIovbase().equals("time")) {
+						timespan = timespan / 1000L;
+					}
+					String holedump = "[" + timespan + "] ";
+					iovDump = colortagstart +  "0 ["
+						+ CoolIov.getCoolTimeRunLumiString(maxuntil, iovsummary.getIovbase()) + "] ["
+						+ CoolIov.getCoolTimeRunLumiString(until.longValue(), iovsummary.getIovbase()) + "] " + holedump
+						+ colortagend;
+
+					results.append(" | " + iovDump);
+				}
+
+				results.append("</p>");
+			}
+		}
+//		results.append("</body>");
+		return results.toString();
+	}
+
 
 	/* (non-Javadoc)
 	 * @see atlas.cool.dao.CoolUtilsDAO#dumpIovSummaryAsSvg(java.util.Collection)
@@ -699,6 +799,110 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 							ivr.getUntil(), ichan, iovsummary.getIovbase(),
 							ivr.getIshole()));
 				}
+			}
+			ichan++;
+		}
+		results.append(svg.toString() + "</svg><br>");
+		svg.delete(0, svg.length());
+//		results.append("</body>");
+		return results.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolUtilsDAO#dumpIovSummaryAsSvg(java.util.Collection)
+	 */
+	public String dumpIovSummaryAsSvg(Collection<CoolIovSummary> iovsummaryColl, BigDecimal since, BigDecimal until) {
+
+		StringBuffer results = new StringBuffer();
+		StringBuffer svg = new StringBuffer();
+
+		String colorseptagstart = "<span style=\"color:#1A91C4\">";
+		String colortagend = "</span>";
+//		results.append("<head><style>" + "h1 {font-size:25px;} "
+//				+ "h2 {font-size:20px;}" + "h3 {font-size:15px;}"
+//				+ "hr {color:sienna;}" + "p {font-size:14px;}"
+//				+ "p.small {line-height:80%;}" + "</style></head>");
+
+//		results.append("<body>");
+		results.append("<h1>Iovs statistics.... </h1>");
+		int channels = 0;
+		if (iovsummaryColl != null) {
+			channels = iovsummaryColl.size();
+
+			results.append("<h3>chanId chanName iovbase - niovs [since] [until] [holes in seconds] .... </h3>");
+			Iterator<CoolIovSummary> it = iovsummaryColl.iterator();
+			if (it.hasNext()) {
+				CoolIovSummary firstsumm = it.next();
+				results.append("<h2>" + colorseptagstart
+						+ firstsumm.getSchema() + " > " + " "
+						+ firstsumm.getNode() + " ; " + firstsumm.getTag()
+						+ colortagend + "</h2>" + "<br>");
+			}
+		}
+		SvgRestUtils svgutil = new SvgRestUtils();
+		svgutil.setSvgabsmin(since.longValue());
+		svgutil.setSvgabsmax(until.longValue());
+		if (channels < 20) {
+			svgutil.setLinewidth(10);
+		} else if (channels < 100) {
+			svgutil.setLinewidth(6);
+		} else if (channels < 300) {
+			svgutil.setLinewidth(3);
+		}  else if (channels < 600) {
+			svgutil.setLinewidth(2);
+		} else {
+			svgutil.setLinewidth(1);
+		}
+		results.append("<p>Number of channels used " + channels);
+		String svgcanvas = "<svg width=\"" + svgutil.getSvglinewidth()
+				+ "px\" height=\""
+				+ (channels * svgutil.getLinewidth() + svgutil.getSvgheight())
+				+ "px\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">";
+		svg.append(svgcanvas);
+		Long ichan = 0L;
+		for (CoolIovSummary iovsummary : iovsummaryColl) {
+
+			Map<Long, IovRange> timeranges = iovsummary.getIovRanges();
+			if (ichan == 0) {
+				results.append(" | Info in ichan 0: niovs="
+						+ iovsummary.getTotalIovs() + " from "
+						+ iovsummary.getMinsince() + " / "
+						+ iovsummary.getMinuntil() + " to "
+						+ iovsummary.getMaxsince() + " / "
+						+ iovsummary.getMaxuntil() + "</p><br>");
+
+//				svgutil.computeBestRange(iovsummary.getMinsince(), iovsummary.getMinuntil(), 
+//						iovsummary.getMaxsince(), iovsummary.getMaxuntil());
+			}
+			log.fine("Node " + iovsummary.getNode() + " tag "
+					+ iovsummary.getTag() + ": Chan " + iovsummary.getChanId()
+					+ " is using svgmin " + svgutil.getSvgabsmin()
+					+ " and svgmax " + svgutil.getSvgabsmax() + " from "
+					+ iovsummary.getMinsince() + " " + iovsummary.getMinuntil()
+					+ " " + iovsummary.getMaxsince());
+			if (timeranges != null) {
+				long minsince = iovsummary.getMinsince();
+				long maxuntil = iovsummary.getMaxuntil();
+
+				if (minsince > since.longValueExact()) {
+					svg.append(svgutil.getSvgLine(since.longValueExact(),
+							minsince, ichan, iovsummary.getIovbase(),
+							true));
+				}
+
+				Set<Long> sincetimes = timeranges.keySet();
+				for (Long asince : sincetimes) {
+					IovRange ivr = timeranges.get(asince);
+					svg.append(svgutil.getSvgLine(ivr.getSince(),
+							ivr.getUntil(), ichan, iovsummary.getIovbase(),
+							ivr.getIshole()));
+				}
+				if (maxuntil < until.longValueExact()) {
+					svg.append(svgutil.getSvgLine(maxuntil,
+							until.longValueExact(), ichan, iovsummary.getIovbase(),
+							true));
+				}
+
 			}
 			ichan++;
 		}
@@ -822,6 +1026,190 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			results.append("All relevant runs are covered...");
 		}
 		return results.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolUtilsDAO#getTimeRange(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public Map<String, Object> getTimeRange(String since, String until,
+			String timespan) throws CoolIOException {
+		// Time selection
+		Map<String, Object> timerangeMap = new HashMap<String, Object>();
+		BigDecimal _since = null;
+		BigDecimal _until = null;
+		String outputformat="time";
+		try {
+			if (since.equals("0") && until.equals("Inf")) {
+				// Select full range of COOL IOVs
+				_since = new BigDecimal(0L);
+				_until = new BigDecimal(CoolIov.COOL_MAX_DATE);
+				outputformat="fullspan";
+			} else {
+				if (timespan.equals("time")) {
+					// Interpret field as BigDecimal
+					_since = new BigDecimal(since);
+					_until = new BigDecimal(until);
+				} else if (timespan.equals("date")) {
+					// Interpret fields as dates in the yyyyMMddhhmmss format
+					Date st = df.parse(since);
+					Date ut = df.parse(until);
+					_since = new BigDecimal(st.getTime()
+							* CoolIov.TO_NANOSECONDS);
+					_until = new BigDecimal(ut.getTime()
+							* CoolIov.TO_NANOSECONDS);
+				} else if (timespan.equals("runlb")) {
+					String[] sinceargs = since.split("-");
+					String[] untilargs = until.split("-");
+
+					String lbstr = null;
+					if (sinceargs.length > 0 && !sinceargs[1].isEmpty()) {
+						lbstr = sinceargs[1];
+					}
+					_since = CoolIov.getCoolRunLumi(sinceargs[0], lbstr);
+
+					lbstr = null;
+					if (untilargs.length > 0 && !untilargs[1].isEmpty()) {
+						lbstr = untilargs[1];
+					}
+					_until = CoolIov.getCoolRunLumi(untilargs[0], lbstr);
+					outputformat="run-lumi";
+				} else if (timespan.equals("runtime")) {
+					// Convert run request into time range given by start of
+					// since run
+					// and end of until run
+					List<CrViewRuninfo> results = null;
+					try {
+						BigDecimal runstart = new BigDecimal(since);
+						BigDecimal runend = new BigDecimal(until);
+						results = comadao.findRunsInRange(runstart, runend);
+						if (results.size() > 0) {
+							Timestamp runsince = results.get(0).getStartTime();
+							Timestamp rununtil = results.get(0).getEndTime();
+							if (results.size() > 1)
+								rununtil = results.get(results.size() - 1)
+										.getEndTime();
+							_since = new BigDecimal(runsince.getTime()
+									* CoolIov.TO_NANOSECONDS);
+							_until = new BigDecimal(rununtil.getTime()
+									* CoolIov.TO_NANOSECONDS);
+						}
+					} catch (ComaQueryException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				} else if (timespan.equals("runlbtime")) {
+					// Convert run request into time range given by start of
+					// since run
+					// and end of until run
+					List<CrViewRuninfo> results = null;
+					try {
+						BigDecimal runlbstart = new BigDecimal(since);
+						BigDecimal runlbend = new BigDecimal(until);
+						Long runstart = CoolIov.getRun(runlbstart.toBigInteger());
+						Long runend = CoolIov.getRun(runlbend.toBigInteger());
+						results = comadao.findRunsInRange(new BigDecimal(runstart), new BigDecimal(runend));
+						if (results.size() > 0) {
+							Timestamp runsince = results.get(0).getStartTime();
+							Timestamp rununtil = results.get(0).getEndTime();
+							if (results.size() > 1)
+								rununtil = results.get(results.size() - 1)
+										.getEndTime();
+							_since = new BigDecimal(runsince.getTime()
+									* CoolIov.TO_NANOSECONDS);
+							_until = new BigDecimal(rununtil.getTime()
+									* CoolIov.TO_NANOSECONDS);
+						}
+					} catch (ComaQueryException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				} else if (timespan.equals("daterun")) {
+					// Convert run request into time range given by start of
+					// since run
+					// and end of until run
+					List<CrViewRuninfo> results = null;
+					try {
+						Date st = df.parse(since);
+						Date ut = df.parse(until);
+						results = comadao.findRunsInRange(
+								new Timestamp(st.getTime()),
+								new Timestamp(ut.getTime()));
+						if (results.size() > 0) {
+							Long run = results.get(0).getRunNumber()
+									.longValue();
+							_since = CoolIov
+									.getCoolRunLumi(run.toString(), "0");
+							Long endrun = run + 1L;
+							_until = CoolIov.getCoolRunLumi(endrun.toString(),
+									"0");
+							if (results.size() > 1) {
+								endrun = results.get(results.size() - 1)
+										.getRunNumber().longValue();
+								endrun += 1L;
+								_until = CoolIov.getCoolRunLumi(
+										endrun.toString(), "0");
+							}
+							outputformat="run-lumi";
+						}
+					} catch (ComaQueryException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				} else if (timespan.equals("timerunlb")) {
+					// Convert run request into time range given by start of
+					// since run
+					// and end of until run
+					List<CrViewRuninfo> results = null;
+					try {
+						Date st = new Date(new BigDecimal(since).longValue()/CoolIov.TO_NANOSECONDS);
+						Date ut = new Date(new BigDecimal(until).longValue()/CoolIov.TO_NANOSECONDS);
+						results = comadao.findRunsInRange(
+								new Timestamp(st.getTime()),
+								new Timestamp(ut.getTime()));
+						if (results.size() > 0) {
+							Long run = results.get(0).getRunNumber()
+									.longValue();
+							_since = CoolIov
+									.getCoolRunLumi(run.toString(), "0");
+							Long endrun = run + 1L;
+							_until = CoolIov.getCoolRunLumi(endrun.toString(),
+									"0");
+							if (results.size() > 1) {
+								endrun = results.get(results.size() - 1)
+										.getRunNumber().longValue();
+								endrun += 1L;
+								_until = CoolIov.getCoolRunLumi(
+										endrun.toString(), "0");
+							}
+							outputformat="run-lumi";
+						}
+					} catch (ComaQueryException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				} else {
+					throw new CoolIOException("Cannot search using timespan "
+							+ timespan);
+				}
+			}
+			if (_since.longValue()>_until.longValue()) {
+				log.log(Level.SEVERE, "Until time preceeds Since time...!!!!");
+				throw new CoolIOException("Cannot query DB with this range...");
+			}
+			timerangeMap.put("since", _since);
+			timerangeMap.put("until", _until);
+			timerangeMap.put("iovbase", outputformat);
+			log.info("Converted "+since+" to "+_since+" and "+until+" to "+_until+" output "+outputformat);
+		} catch (ParseException e) {
+			throw new CoolIOException(e.getMessage());
+		} catch (Exception e) {
+			throw new CoolIOException(e.getMessage());
+		}
+		return timerangeMap;
 	}
 
 }

@@ -54,7 +54,7 @@ public class CoolRESTImpl {
 	@Inject
 	protected Logger log;
 
-	protected SimpleDateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
+//	protected SimpleDateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
 
 	public CoolRESTImpl() {
 		super();
@@ -139,9 +139,9 @@ public class CoolRESTImpl {
 		NodeType selnode = null;
 		try {
 			// Time selection
-			Map<String, BigDecimal> trmap = getTimeRange(since, until, timespan);
-			BigDecimal _since = trmap.get("since");
-			BigDecimal _until = trmap.get("until");
+			Map<String, Object> trmap = coolutilsdao.getTimeRange(since, until, timespan);
+			BigDecimal _since =  (BigDecimal)trmap.get("since");
+			BigDecimal _until =  (BigDecimal)trmap.get("until");
 
 			String chan = channel;
 			// Channel Selection
@@ -217,9 +217,9 @@ public class CoolRESTImpl {
 		NodeType selnode = null;
 		try {
 			// Time selection
-			Map<String, BigDecimal> trmap = getTimeRange(since, until, timespan);
-			BigDecimal _since = trmap.get("since");
-			BigDecimal _until = trmap.get("until");
+			Map<String, Object> trmap = coolutilsdao.getTimeRange(since, until, timespan);
+			BigDecimal _since =  (BigDecimal)trmap.get("since");
+			BigDecimal _until =  (BigDecimal)trmap.get("until");
 
 			String chan = channel;
 			// Channel Selection
@@ -297,9 +297,9 @@ public class CoolRESTImpl {
 		Collection<CoolIovSummary> summarylist = null;
 		try {
 			// Time selection
-			Map<String, BigDecimal> trmap = getTimeRange(since, until, timespan);
-			BigDecimal _since = trmap.get("since");
-			BigDecimal _until = trmap.get("until");
+			Map<String, Object> trmap = coolutilsdao.getTimeRange(since, until, timespan);
+			BigDecimal _since =  (BigDecimal)trmap.get("since");
+			BigDecimal _until =  (BigDecimal)trmap.get("until");
 			if (_since == null || _until == null) {
 				CoolIovSummary iovsumm = new CoolIovSummary();
 				iovsumm.setSummary("Wrong time interval has been used: since or until times are null");
@@ -318,151 +318,151 @@ public class CoolRESTImpl {
 		return summarylist;
 	}
 
-	/**
-	 * <p>
-	 * This method is used to parse the timespan string in the URL. Several
-	 * format options are then available when asking for input time range. Users
-	 * should know in advance, nevertheless, the format of the folder their are
-	 * asking for data: time or run-lumi based.
-	 * </p>
-	 * <p>
-	 * List of format depending on timespan field, in bold the type of folder
-	 * for which they should be used:
-	 * </p>
-	 * <p>
-	 * <ul>
-	 * <li>time : give since and until times in Cool time format (nanoseconds
-	 * from Epoch) <b>time</b></li>
-	 * <li>date : give since and until times in date format yyyyMMddhhmmss
-	 * <b>time</b></li>
-	 * <li>runlb : give since and until times in run and lumi bloc as [run]-[lb]
-	 * <b>run-lumi</b></li>
-	 * <li>runtime: give since and until times in run number, will be converted
-	 * in time using start and end of selected runs <b>time</b></li>
-	 * <li>daterun: give since and until times in date format yyyyMMddhhmmss,
-	 * will be converted in run range <b>run-lumi</b></li>
-	 * </ul>
-	 * </p>
-	 * 
-	 * @param since
-	 * @param until
-	 * @param timespan
-	 * @return
-	 * @throws CoolIOException
-	 */
-	protected Map<String, BigDecimal> getTimeRange(String since, String until,
-			String timespan) throws CoolIOException {
-		// Time selection
-		Map<String, BigDecimal> timerangeMap = new HashMap<String, BigDecimal>();
-		BigDecimal _since = null;
-		BigDecimal _until = null;
-		try {
-			if (since.equals("0") && until.equals("Inf")) {
-				// Select full range of COOL IOVs
-				_since = new BigDecimal(0L);
-				_until = new BigDecimal(CoolIov.COOL_MAX_DATE);
-			} else {
-				if (timespan.equals("time")) {
-					// Interpret field as BigDecimal
-					_since = new BigDecimal(since);
-					_until = new BigDecimal(until);
-				} else if (timespan.equals("date")) {
-					// Interpret fields as dates in the yyyyMMddhhmmss format
-					Date st = df.parse(since);
-					Date ut = df.parse(until);
-					_since = new BigDecimal(st.getTime()
-							* CoolIov.TO_NANOSECONDS);
-					_until = new BigDecimal(ut.getTime()
-							* CoolIov.TO_NANOSECONDS);
-				} else if (timespan.equals("runlb")) {
-					String[] sinceargs = since.split("-");
-					String[] untilargs = until.split("-");
-
-					String lbstr = null;
-					if (sinceargs.length > 0 && !sinceargs[1].isEmpty()) {
-						lbstr = sinceargs[1];
-					}
-					_since = CoolIov.getCoolRunLumi(sinceargs[0], lbstr);
-
-					lbstr = null;
-					if (untilargs.length > 0 && !untilargs[1].isEmpty()) {
-						lbstr = untilargs[1];
-					}
-					_until = CoolIov.getCoolRunLumi(untilargs[0], lbstr);
-				} else if (timespan.equals("runtime")) {
-					// Convert run request into time range given by start of
-					// since run
-					// and end of until run
-					List<CrViewRuninfo> results = null;
-					try {
-						BigDecimal runstart = new BigDecimal(since);
-						BigDecimal runend = new BigDecimal(until);
-						results = comadao.findRunsInRange(runstart, runend);
-						if (results.size() > 0) {
-							Timestamp runsince = results.get(0).getStartTime();
-							Timestamp rununtil = results.get(0).getEndTime();
-							if (results.size() > 1)
-								rununtil = results.get(results.size() - 1)
-										.getEndTime();
-							_since = new BigDecimal(runsince.getTime()
-									* CoolIov.TO_NANOSECONDS);
-							_until = new BigDecimal(rununtil.getTime()
-									* CoolIov.TO_NANOSECONDS);
-						}
-					} catch (ComaQueryException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-				} else if (timespan.equals("daterun")) {
-					// Convert run request into time range given by start of
-					// since run
-					// and end of until run
-					List<CrViewRuninfo> results = null;
-					try {
-						Date st = df.parse(since);
-						Date ut = df.parse(until);
-						results = comadao.findRunsInRange(
-								new Timestamp(st.getTime()),
-								new Timestamp(ut.getTime()));
-						if (results.size() > 0) {
-							Long run = results.get(0).getRunNumber()
-									.longValue();
-							_since = CoolIov
-									.getCoolRunLumi(run.toString(), "0");
-							Long endrun = run + 1L;
-							_until = CoolIov.getCoolRunLumi(endrun.toString(),
-									"0");
-							if (results.size() > 1) {
-								endrun = results.get(results.size() - 1)
-										.getRunNumber().longValue();
-								endrun += 1L;
-								_until = CoolIov.getCoolRunLumi(
-										endrun.toString(), "0");
-							}
-						}
-					} catch (ComaQueryException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
-				} else {
-					throw new CoolIOException("Cannot search using timespan "
-							+ timespan);
-				}
-			}
-			if (_since.longValue()>_until.longValue()) {
-				log.log(Level.SEVERE, "Until time preceeds Since time...!!!!");
-				throw new CoolIOException("Cannot query DB with this range...");
-			}
-			timerangeMap.put("since", _since);
-			timerangeMap.put("until", _until);
-			log.info("Converted "+since+" to "+_since+" and "+until+" to "+_until);
-		} catch (ParseException e) {
-			throw new CoolIOException(e.getMessage());
-		} catch (Exception e) {
-			throw new CoolIOException(e.getMessage());
-		}
-		return timerangeMap;
-	}
+//	/**
+//	 * <p>
+//	 * This method is used to parse the timespan string in the URL. Several
+//	 * format options are then available when asking for input time range. Users
+//	 * should know in advance, nevertheless, the format of the folder their are
+//	 * asking for data: time or run-lumi based.
+//	 * </p>
+//	 * <p>
+//	 * List of format depending on timespan field, in bold the type of folder
+//	 * for which they should be used:
+//	 * </p>
+//	 * <p>
+//	 * <ul>
+//	 * <li>time : give since and until times in Cool time format (nanoseconds
+//	 * from Epoch) <b>time</b></li>
+//	 * <li>date : give since and until times in date format yyyyMMddhhmmss
+//	 * <b>time</b></li>
+//	 * <li>runlb : give since and until times in run and lumi bloc as [run]-[lb]
+//	 * <b>run-lumi</b></li>
+//	 * <li>runtime: give since and until times in run number, will be converted
+//	 * in time using start and end of selected runs <b>time</b></li>
+//	 * <li>daterun: give since and until times in date format yyyyMMddhhmmss,
+//	 * will be converted in run range <b>run-lumi</b></li>
+//	 * </ul>
+//	 * </p>
+//	 * 
+//	 * @param since
+//	 * @param until
+//	 * @param timespan
+//	 * @return
+//	 * @throws CoolIOException
+//	 */
+//	protected Map<String, BigDecimal> getTimeRange(String since, String until,
+//			String timespan) throws CoolIOException {
+//		// Time selection
+//		Map<String, BigDecimal> timerangeMap = new HashMap<String, BigDecimal>();
+//		BigDecimal _since = null;
+//		BigDecimal _until = null;
+//		try {
+//			if (since.equals("0") && until.equals("Inf")) {
+//				// Select full range of COOL IOVs
+//				_since = new BigDecimal(0L);
+//				_until = new BigDecimal(CoolIov.COOL_MAX_DATE);
+//			} else {
+//				if (timespan.equals("time")) {
+//					// Interpret field as BigDecimal
+//					_since = new BigDecimal(since);
+//					_until = new BigDecimal(until);
+//				} else if (timespan.equals("date")) {
+//					// Interpret fields as dates in the yyyyMMddhhmmss format
+//					Date st = df.parse(since);
+//					Date ut = df.parse(until);
+//					_since = new BigDecimal(st.getTime()
+//							* CoolIov.TO_NANOSECONDS);
+//					_until = new BigDecimal(ut.getTime()
+//							* CoolIov.TO_NANOSECONDS);
+//				} else if (timespan.equals("runlb")) {
+//					String[] sinceargs = since.split("-");
+//					String[] untilargs = until.split("-");
+//
+//					String lbstr = null;
+//					if (sinceargs.length > 0 && !sinceargs[1].isEmpty()) {
+//						lbstr = sinceargs[1];
+//					}
+//					_since = CoolIov.getCoolRunLumi(sinceargs[0], lbstr);
+//
+//					lbstr = null;
+//					if (untilargs.length > 0 && !untilargs[1].isEmpty()) {
+//						lbstr = untilargs[1];
+//					}
+//					_until = CoolIov.getCoolRunLumi(untilargs[0], lbstr);
+//				} else if (timespan.equals("runtime")) {
+//					// Convert run request into time range given by start of
+//					// since run
+//					// and end of until run
+//					List<CrViewRuninfo> results = null;
+//					try {
+//						BigDecimal runstart = new BigDecimal(since);
+//						BigDecimal runend = new BigDecimal(until);
+//						results = comadao.findRunsInRange(runstart, runend);
+//						if (results.size() > 0) {
+//							Timestamp runsince = results.get(0).getStartTime();
+//							Timestamp rununtil = results.get(0).getEndTime();
+//							if (results.size() > 1)
+//								rununtil = results.get(results.size() - 1)
+//										.getEndTime();
+//							_since = new BigDecimal(runsince.getTime()
+//									* CoolIov.TO_NANOSECONDS);
+//							_until = new BigDecimal(rununtil.getTime()
+//									* CoolIov.TO_NANOSECONDS);
+//						}
+//					} catch (ComaQueryException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//
+//				} else if (timespan.equals("daterun")) {
+//					// Convert run request into time range given by start of
+//					// since run
+//					// and end of until run
+//					List<CrViewRuninfo> results = null;
+//					try {
+//						Date st = df.parse(since);
+//						Date ut = df.parse(until);
+//						results = comadao.findRunsInRange(
+//								new Timestamp(st.getTime()),
+//								new Timestamp(ut.getTime()));
+//						if (results.size() > 0) {
+//							Long run = results.get(0).getRunNumber()
+//									.longValue();
+//							_since = CoolIov
+//									.getCoolRunLumi(run.toString(), "0");
+//							Long endrun = run + 1L;
+//							_until = CoolIov.getCoolRunLumi(endrun.toString(),
+//									"0");
+//							if (results.size() > 1) {
+//								endrun = results.get(results.size() - 1)
+//										.getRunNumber().longValue();
+//								endrun += 1L;
+//								_until = CoolIov.getCoolRunLumi(
+//										endrun.toString(), "0");
+//							}
+//						}
+//					} catch (ComaQueryException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//
+//				} else {
+//					throw new CoolIOException("Cannot search using timespan "
+//							+ timespan);
+//				}
+//			}
+//			if (_since.longValue()>_until.longValue()) {
+//				log.log(Level.SEVERE, "Until time preceeds Since time...!!!!");
+//				throw new CoolIOException("Cannot query DB with this range...");
+//			}
+//			timerangeMap.put("since", _since);
+//			timerangeMap.put("until", _until);
+//			log.info("Converted "+since+" to "+_since+" and "+until+" to "+_until);
+//		} catch (ParseException e) {
+//			throw new CoolIOException(e.getMessage());
+//		} catch (Exception e) {
+//			throw new CoolIOException(e.getMessage());
+//		}
+//		return timerangeMap;
+//	}
 }

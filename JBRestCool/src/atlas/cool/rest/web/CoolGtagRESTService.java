@@ -397,6 +397,111 @@ public class CoolGtagRESTService {
 	}
 
 	@GET
+	@Produces("text/html")
+	@Path("/{schema}/{db}/{gtag}/{since}/{until}/{timespan}/{type}/summary")
+	public String listIovsSummaryInNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("gtag") String gtag, 
+			@PathParam("since") String since, @PathParam("until") String until,
+			@PathParam("timespan") String timespan,
+			@PathParam("type") String type) {
+
+		log.info("Calling listIovsSummaryInNodesSchema..." + schema + " " + db);
+		StringBuffer results = new StringBuffer();
+		List<NodeGtagTagType> nodeingtagList = null;
+		try {
+			results.append("<body>");
+			results.append("<h1>List of NODEs and TAGs iovs statistic associated to "
+					+ gtag + "</h1><hr>");
+			nodeingtagList = cooldao.retrieveGtagTagsFromSchemaAndDb(schema
+					+ "%", db, gtag);
+
+			// Time selection...use timespan from URL then check what kind of time the folder wants
+			Map<String, Object> trmap = coolutilsdao.getTimeRange(since, until, timespan);
+			BigDecimal _since = (BigDecimal)trmap.get("since");
+			BigDecimal _until = (BigDecimal)trmap.get("until");
+			String outputformat = (String)trmap.get("iovbase");
+			if (_since == null || _until == null) {
+				results.append("<p>Timespan cannot be determined using arguments "
+						+ since+" "+until+" "+timespan + "</p>");
+				results.append("</body>");
+				return results.toString();
+			}
+
+			for (NodeGtagTagType nodeGtagTagType : nodeingtagList) {
+				results.append("<br><hr>");
+				String node = nodeGtagTagType.getNodeFullpath();
+
+				String seltag = nodeGtagTagType.getTagName();
+
+				// Convert time range using iov_base
+				List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(
+						schema, db, node);
+				NodeType selnode = null;
+				if (nodes != null && nodes.size() > 0) {
+					for (NodeType anode : nodes) {
+						log.info("Found " + anode.getNodeFullpath()
+								+ " of type " + anode.getNodeIovType());
+						selnode = anode;
+					}
+				}
+				if (!outputformat.equals("fullspan") && !selnode.getNodeIovBase().equals(outputformat)) {
+					// the format is not good for this folder
+					if (outputformat.equals("time")) {
+						// convert it into run
+						Map<String, Object> trmapnew = coolutilsdao.getTimeRange(_since.toString(), _until.toString(), "timerunlb");
+						_since = (BigDecimal)trmapnew.get("since");
+						_until = (BigDecimal)trmapnew.get("until");
+						outputformat = "run-lumi";
+					} else if (outputformat.equals("run-lumi")) {
+						Map<String, Object> trmapnew = coolutilsdao.getTimeRange(_since.toString(), _until.toString(), "runlbtime");
+						_since = (BigDecimal)trmapnew.get("since");
+						_until = (BigDecimal)trmapnew.get("until");
+						outputformat = "time";
+					}
+				}
+
+				results.append("<p>Setting the time span to "
+						+ _since + " "+_until+"</p>");
+
+				Collection<CoolIovSummary> iovsummaryColl = coolutilsdao
+						.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db,
+								node, seltag, new BigDecimal(0L), new BigDecimal(CoolIov.COOL_MAX_DATE));
+				if (iovsummaryColl == null) {
+					results.append("Empty list of cool iov summary");
+					results.append("</body>");
+					return results.toString();
+				}
+				int channels = iovsummaryColl.size();
+				String resultsDefault = "Empty result string...retrieved list of "+channels+" channels ";
+				if (type.equals("text")) {
+					log.info("Dumping list as text html");
+					results.append(coolutilsdao.dumpIovSummaryAsText(iovsummaryColl,_since,_until));
+				} else if (type.equals("svg")){
+					log.info("Dumping list as svg and html");
+					results.append(coolutilsdao.dumpIovSummaryAsSvg(iovsummaryColl,_since,_until));			
+				} else {
+					results.append(resultsDefault);
+				}
+				String coverage = "<p>All important runs are covered</p>";
+				try {
+					coverage = coolutilsdao.checkHoles(iovsummaryColl);
+				} catch (ComaQueryException e) {
+					e.printStackTrace();
+					coverage = "<p>Error in coverage checking...</p>";
+				}
+				results.append(coverage);
+			}
+			results.append("</body>");
+
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return results.toString();
+	}
+
+	@GET
 	@Produces("text/ascii")
 	@Path("/{schema}/{db}/{gtag}/iovsummary/gpl")
 	public String listIovsSummaryInNodesSchemaGpl(
