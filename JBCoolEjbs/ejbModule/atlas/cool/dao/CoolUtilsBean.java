@@ -290,9 +290,11 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 				+ fld + " " + tag);
 		List<IovType> results = null;
 
-		String seltag = tag;
+		String seltag = "%"+tag+"%";
 		if (tag.equals("none")) {
 			seltag = null;
+		} else if (tag.equals("all")) {
+			seltag = "%";
 		}
 		String node = fld;
 		if (!fld.startsWith("/")) {
@@ -311,6 +313,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		results = cooldao.retrieveIovStatPerChannelFromNodeSchemaAndDb(schema,
 				db, node, seltag);
 		for (IovType aniov : results) {
+			//log.info("Found iovtype "+aniov.getTagName()+" "+aniov.getChannelId());
 			aniov.setIovBase(selnode.getNodeIovBase());
 		}
 
