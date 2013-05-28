@@ -947,7 +947,8 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 						+ colortagend + "</h2>" + "<br>");
 			}
 		}
-
+		List<CrViewRuninfo> runlist = null;
+		Map<String, List<CrViewRuninfo>> runMap = new HashMap<String, List<CrViewRuninfo>>();
 		Boolean ishole = false;
 		Boolean coverageerror = true;
 		for (CoolIovSummary iovsummary : iovsummaryColl) {
@@ -964,7 +965,6 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 					if (ivr.getIshole()) {
 						ishole = true;
 						colortagstart = colorbadtagstart;
-						List<CrViewRuninfo> runlist = null;
 						long timespan = ivr.getUntil() - ivr.getSince();
 						if (iovsummary.getIovbase().equals("time")) {
 							timespan = timespan / 1000L;
@@ -973,7 +973,13 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 									/ CoolIov.TO_NANOSECONDS);
 							Timestamp _until = new Timestamp(ivr.getUntil()
 									/ CoolIov.TO_NANOSECONDS);
-							runlist = comadao.findRunsInRange(_since, _until);
+							String timekey = (_since.toString()+"/"+_until.toString());
+							if (runMap.containsKey(timekey)) {
+								runlist = runMap.get(timekey);
+							} else {
+								runlist = comadao.findRunsInRange(_since, _until);
+								runMap.put(timekey, runlist);
+							}
 
 						} else if (iovsummary.getIovbase().equals("run-lumi")) {
 							Long runsince = CoolIov.getRun(ivr.getSince());
@@ -1002,7 +1008,13 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 							BigDecimal _since = new BigDecimal(runsince);
 							BigDecimal _until = new BigDecimal(rununtil);
 							// Verify holes with run ranges
-							runlist = comadao.findRunsInRange(_since, _until);
+							String runkey = (_since.toString()+"/"+_until.toString());
+							if (runMap.containsKey(runkey)) {
+								runlist = runMap.get(runkey);
+							} else {
+								runlist = comadao.findRunsInRange(_since, _until);
+								runMap.put(runkey, runlist);
+							}
 						}
 						if (iiov == 0) {
 							results.append("<p class=\"small\">"

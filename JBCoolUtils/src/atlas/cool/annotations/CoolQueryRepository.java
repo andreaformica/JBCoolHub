@@ -106,7 +106,7 @@ public class CoolQueryRepository {
 			
 		findAnnotatedClasses("atlas");
 		//findAnnotatedClasses("atlas.coma.model");
-		System.out.println("Address for coolqueryrepository "+this.toString());		
+		// System.out.println("Address for coolqueryrepository "+this.toString());		
 	} catch (CoolQueryException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -122,7 +122,7 @@ public class CoolQueryRepository {
 	 */
 	public synchronized QueryParams getQueryParams(final String qryname) throws CoolQueryException {
 		try {
-			System.out.println("Searching for "+qryname+" in map "+queryMap+" inside coolqueryrep "+this.toString());
+			//System.out.println("Searching for "+qryname+" in map "+queryMap+" inside coolqueryrep "+this.toString());
 			QueryParams query = queryMap.get(qryname);
 			return query;
 		} catch (Exception e) {
@@ -140,7 +140,7 @@ public class CoolQueryRepository {
 	private void findAnnotatedClasses(final String pckgname)
 			throws CoolQueryException {
 
-		System.out.println("Fill annotation for "+pckgname+" from query repository "+this.toString());
+		//System.out.println("Fill annotation for "+pckgname+" from query repository "+this.toString());
 //		log.info("Package name for reflections "+pckgname);
 //		Set<URL> packageurls = ClasspathHelper.forPackage("atlas");
 //		for (URL url : packageurls) {

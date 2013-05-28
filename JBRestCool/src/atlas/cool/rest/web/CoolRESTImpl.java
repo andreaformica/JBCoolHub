@@ -2,17 +2,11 @@ package atlas.cool.rest.web;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -20,13 +14,10 @@ import javax.inject.Inject;
 import javax.ws.rs.PathParam;
 
 import atlas.coma.dao.ComaCbDAO;
-import atlas.coma.exceptions.ComaQueryException;
-import atlas.coma.model.CrViewRuninfo;
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.exceptions.CoolQueryException;
-import atlas.cool.meta.CoolIov;
 import atlas.cool.query.tools.QueryTools;
 import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.CoolIovType;

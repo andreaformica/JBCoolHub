@@ -40,7 +40,7 @@ public class CoolRepository implements CoolRepositoryDAO {
 	@Inject
 	private CoolQueryRepository coolqry;
 
-	private final int maxFetchResults = 20000;
+	private final int maxFetchResults = 50000;
 
 	/**
 	 * 
@@ -166,15 +166,15 @@ public class CoolRepository implements CoolRepositoryDAO {
 			throws CoolIOException {
 		// log.info("Build query "+qry+" with N parameters "+params.length);
 		try {
-			log.info("Search query in " + coolqry);
+			log.fine("Search query in " + coolqry);
 			QueryParams annparams = coolqry.getQueryParams(qry);
 			String[] paramnames = annparams.getParams();
-			log.info("Creating named query " + qry);
+			log.fine("Creating named query " + qry);
 			Query q = em.createNamedQuery(qry);
 			for (int i = 0; i < paramnames.length; i++) {
 				String key = paramnames[i];
 				Object val = params[i];
-				log.info("setting query parameter " + key + " value " + val);
+				log.fine("setting query parameter " + key + " value " + val);
 				if (val == null && paramnames[i].equals("node")) {
 					val = "%";
 				} else if (val == null && paramnames[i].equals("tag")) {
