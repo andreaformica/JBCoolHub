@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import atlas.cool.exceptions.CoolIOException;
+import atlas.query.pagination.HibernateQueryList;
 
 public interface CoolRepositoryDAO {
 
@@ -22,4 +23,7 @@ public interface CoolRepositoryDAO {
 			throws CoolIOException;
 
 	public abstract <T> T findObj(Class<T> clazz, Object pk) throws CoolIOException;
+	
+	public abstract <T> HibernateQueryList<T> findCoolList(Class<T> clazz, String qryname, Object[] params) throws CoolIOException;
+
 }
