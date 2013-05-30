@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
@@ -59,6 +60,32 @@ public interface ICoolREST {
 	public abstract List<SchemaNodeTagType> listTagsInNodesSchema(
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("node") String node);
+
+	/**
+	 * <p>
+	 * Method : /{schema}/{db}/{node}/fld/{channel}/channels
+	 * </p>
+	 * <p>
+	 * It retrieves a list of tags in XML format.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param node
+	 *            The node name : a search string like MDT, in this case we do
+	 *            not use full folder name
+	 * @param channame
+	 * 			  The channel name search string, null argument means every channel, in URL put "all".
+	 * @return A list of channels for the given node.
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{node:.*}/fld/{channel}/channels")
+	public abstract List<ChannelType> listChannelsInNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("node") String node, @PathParam("channel") String channame);
 
 	/**
 	 * <p>

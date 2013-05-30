@@ -68,6 +68,7 @@ public interface CoolUtilsDAO {
 	public List<SchemaNodeTagType> listTagsInNodesSchema(String schema,
 			String db, String node) throws CoolIOException;
 
+
 	/**
 	 * @param schema
 	 * @param db

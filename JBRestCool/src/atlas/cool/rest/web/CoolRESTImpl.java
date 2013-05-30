@@ -19,6 +19,7 @@ import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.exceptions.CoolQueryException;
 import atlas.cool.query.tools.QueryTools;
+import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.CoolIovType;
 import atlas.cool.rest.model.IovType;
@@ -34,7 +35,7 @@ import atlas.cool.rest.model.SchemaNodeTagType;
  * 
  */
 @RequestScoped
-public class CoolRESTImpl {
+public class CoolRESTImpl implements ICoolREST {
 
 	@Inject
 	protected CoolDAO cooldao;
@@ -80,6 +81,39 @@ public class CoolRESTImpl {
 		List<SchemaNodeTagType> results = null;
 		try {
 			results = coolutilsdao.listTagsInNodesSchema(schema, db, node);
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return results;
+	}
+
+	/**
+	 * @param schema
+	 * @param db
+	 * @param node
+	 * @param channame
+	 * @return
+	 */
+	public List<ChannelType> listChannelsInNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("node") String fld,
+			@PathParam("channel") String channame) {
+
+		log.info("Calling listChannelsInNodesSchema..." + schema + " "
+				+ db + " "+fld+" "+channame);
+		List<ChannelType> results = null;
+		try {
+			String chan = channame;
+			if (channame.equals("all")) {
+				chan = "%";
+			}
+			String node = fld;
+			if (!fld.startsWith("/")) {
+				node = "/" + fld;
+			}
+
+			results = cooldao.retrieveChannelsFromNodeSchemaAndDb(schema, db, node, chan);
 		} catch (CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

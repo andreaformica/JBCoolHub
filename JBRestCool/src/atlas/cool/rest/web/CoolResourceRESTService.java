@@ -8,11 +8,8 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -24,18 +21,15 @@ import javax.ws.rs.Produces;
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
 import atlas.coma.exceptions.ComaQueryException;
-import atlas.coma.model.CrViewRuninfo;
 import atlas.cool.dao.CoolResultSetDAO;
 import atlas.cool.exceptions.CoolIOException;
-import atlas.cool.meta.CoolIov;
 import atlas.cool.payload.model.CoolPayload;
+import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovSummary;
-import atlas.cool.rest.model.IovRange;
 import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
-import atlas.cool.rest.utils.SvgRestUtils;
 
 /**
  * JAX-RS Example
@@ -109,6 +103,22 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 			@PathParam("node") String node) {
 		// TODO Auto-generated method stub
 		return super.listTagsInNodesSchema(schema, db, node);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listChannelsInNodesSchema(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{node:.*}/fld/{channel}/channels")
+	public List<ChannelType> listChannelsInNodesSchema(@PathParam("schema") String schema, 
+			@PathParam("db") String db,
+			@PathParam("node") String node,
+			@PathParam("channel") String channame) {
+		// TODO Auto-generated method stub
+		return super.listChannelsInNodesSchema(schema, db, node, channame);
 	}
 
 	/*

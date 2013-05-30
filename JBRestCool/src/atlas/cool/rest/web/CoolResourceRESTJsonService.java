@@ -13,6 +13,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
@@ -77,6 +78,21 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	public List<SchemaNodeTagType> listTagsInNodesSchema(@PathParam("schema") String schema, @PathParam("db") String db, @PathParam("node") String node) {
 		// TODO Auto-generated method stub
 		return super.listTagsInNodesSchema(schema, db, node);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listChannelsInNodesSchema(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{node:.*}/fld/{channel}/channels")
+	public List<ChannelType> listChannelsInNodesSchema(@PathParam("schema") String schema, 
+			@PathParam("db") String db,
+			@PathParam("node") String node,
+			@PathParam("channel") String channame) {
+		// TODO Auto-generated method stub
+		return super.listChannelsInNodesSchema(schema, db, node, channame);
 	}
 
 	/* (non-Javadoc)
