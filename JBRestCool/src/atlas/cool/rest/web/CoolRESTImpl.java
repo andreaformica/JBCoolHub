@@ -104,7 +104,7 @@ public class CoolRESTImpl implements ICoolREST {
 				+ db + " "+fld+" "+channame);
 		List<ChannelType> results = null;
 		try {
-			String chan = channame;
+			String chan = "%"+channame+"%";
 			if (channame.equals("all")) {
 				chan = "%";
 			}
