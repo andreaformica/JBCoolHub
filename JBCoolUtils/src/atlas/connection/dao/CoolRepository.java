@@ -21,7 +21,6 @@ import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.exceptions.CoolQueryException;
 import atlas.cool.query.tools.QueryTools;
 import atlas.query.pagination.HibernateQueryList;
-import atlas.query.pagination.PageIterator;
 import atlas.query.pagination.QueryListIterator;
 
 ///////@////RequestScoped
