@@ -4,6 +4,7 @@
 package atlas.cool.dao;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -344,6 +345,8 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 		params[6] = until;
 		log.info("Using query "+CoolIovType.QUERY_FINDIOVS_INRANGE_BYCHAN+" with "+schema+" "+db+" "+node+" "+tag+" "+channel+" "+since+" "+until);
 		List<CoolIovType> iovlist = (List<CoolIovType>) coolrep.findCoolList(CoolIovType.QUERY_FINDIOVS_INRANGE_BYCHAN,params);
+		// TODO: use this as an example for future need in pagination (2013/06/04)
+		//		List<CoolIovType> iovlist = coolrep.findCoolList(CoolIovType.class,CoolIovType.QUERY_FINDIOVS_INRANGE_BYCHAN,params);
 		return iovlist;
 	}
 

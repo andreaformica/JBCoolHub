@@ -20,6 +20,9 @@ import atlas.cool.annotations.QueryParams;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.exceptions.CoolQueryException;
 import atlas.cool.query.tools.QueryTools;
+import atlas.query.pagination.HibernateQueryList;
+import atlas.query.pagination.PageIterator;
+import atlas.query.pagination.QueryListIterator;
 
 ///////@////RequestScoped
 //TODO Investigate is this could be SessionScoped...
@@ -160,6 +163,17 @@ public class CoolRepository implements CoolRepositoryDAO {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see atlas.connection.dao.CoolRepositoryDAO#findCoolList(java.lang.Class, java.lang.String, java.lang.Object[])
+	 */
+	@Override
+	public <T> HibernateQueryList<T> findCoolList(Class<T> clazz, String qryname,
+			Object[] params) throws CoolIOException {
+		return new HibernateQueryList<T>(new QueryListIterator<T>(this,
+				qryname, params));
 	}
 
 	protected synchronized Query getQuery(String qry, Object[] params)
