@@ -1,16 +1,17 @@
-/*
- * Created on Aug 21, 2006 by formica
- *
+/**
+ * 
  */
 package atlas.query.pagination;
 
-import java.util.AbstractCollection;
 import java.util.AbstractList;
 import java.util.Iterator;
 
 /**
+ * This class can be used as a List for retrieval of very long datasets
+ * It uses an iterator which is loading data using findCoolList range queries.
+ * 
  * @author formica
- * Aug 21, 2006
+ * @since  Jun 04, 2013
  */
 public class HibernateQueryList<T> extends AbstractList<T> implements Iterable<T> {
 
@@ -25,14 +26,14 @@ public class HibernateQueryList<T> extends AbstractList<T> implements Iterable<T
 	}
 	
 	public int size() {
-		if (pageIterator instanceof PageIterator<?>) {
-			return ((PageIterator<T>)pageIterator).totalElements;
+		if (pageIterator instanceof QueryListIterator<?>) {
+			return ((QueryListIterator<T>)pageIterator).size;
 		} else
 			return 0;
 	}
 
 	@Override
 	public T get(int index) {
-		return ((PageIterator<T>)pageIterator).getNextUntilIndex(index);
+		return ((QueryListIterator<T>)pageIterator).getNextUntilIndex(index);
 	}
 }

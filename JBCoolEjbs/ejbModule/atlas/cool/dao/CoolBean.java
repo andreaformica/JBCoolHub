@@ -344,8 +344,9 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 		params[5] = since;
 		params[6] = until;
 		log.info("Using query "+CoolIovType.QUERY_FINDIOVS_INRANGE_BYCHAN+" with "+schema+" "+db+" "+node+" "+tag+" "+channel+" "+since+" "+until);
-//		List<CoolIovType> iovlist = (List<CoolIovType>) coolrep.findCoolList(CoolIovType.QUERY_FINDIOVS_INRANGE_BYCHAN,params);
-		List<CoolIovType> iovlist = coolrep.findCoolList(CoolIovType.class,CoolIovType.QUERY_FINDIOVS_INRANGE_BYCHAN,params);
+		List<CoolIovType> iovlist = (List<CoolIovType>) coolrep.findCoolList(CoolIovType.QUERY_FINDIOVS_INRANGE_BYCHAN,params);
+		// TODO: use this as an example for future need in pagination (2013/06/04)
+		//		List<CoolIovType> iovlist = coolrep.findCoolList(CoolIovType.class,CoolIovType.QUERY_FINDIOVS_INRANGE_BYCHAN,params);
 		return iovlist;
 	}
 
