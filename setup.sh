@@ -1,9 +1,23 @@
 alldirs=`ls -1`
 alldirs=`find . -name "build.xml" -print | awk -F'/' '{print $2}'`
 wdir=$PWD
+
+# Change this variables to point to your local installation
+COMMON_LIBS=$HOME/git/libraries
+EXTERNAL_LIBS=$HOME/MyApp/Library/external
+
+# setup lib and other directories: libraries and external are mandatory for project build
 if [ ! -e lib ]; then
   mkdir lib
 fi
+if [ ! -e libraries ]; then
+   ln -s $COMMON_LIBS .
+fi
+if [ ! -e externals ]; then
+   ln -s $EXTERNALS_LIBS .
+fi
+
+
 for adir in $alldirs; do
 echo "present directory is $wdir: examine $adir"
 echo "linking common and externals"
