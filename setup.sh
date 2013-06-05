@@ -3,8 +3,8 @@ alldirs=`find . -name "build.xml" -print | awk -F'/' '{print $2}'`
 wdir=$PWD
 
 # Change this variables to point to your local installation
-COMMON_LIBS=$HOME/git/libraries
-EXTERNAL_LIBS=$HOME/MyApp/Library/external
+COMMON_LIBS=/Users/formica/git/libraries
+EXTERNAL_LIBS=/Users/formica/MyApp/Library/external
 
 # setup lib and other directories: libraries and external are mandatory for project build
 if [ ! -e lib ]; then
