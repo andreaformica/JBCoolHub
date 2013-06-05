@@ -5,6 +5,8 @@ wdir=$PWD
 # Change this variables to point to your local installation
 #COMMON_LIBS=/Users/formica/git/libraries
 #EXTERNAL_LIBS=/Users/formica/MyApp/Library/external
+COMMON_LIBS=$1
+EXTERNAL_LIBS=$2
 
 # setup lib and other directories: libraries and external are mandatory for project build
 if [ ! -e lib ]; then
