@@ -35,214 +35,253 @@ public class CoolCherryPyResourceRESTService {
 	@Inject
 	private Logger log;
 
+	/**
+	 * @param schema
+	 * @param db
+	 * @return
+	 */
 	@GET
 	@Produces("text/xml")
 	@Path("/{schema}/{db}")
-	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
-			@PathParam("db") String db) {
-		
-		log.info("Calling listNodesInSchema..."+schema+" "+db);
+	public List<NodeType> listNodesInSchema(@PathParam("schema") final String schema,
+			@PathParam("db") final String db) {
+
+		log.info("Calling listNodesInSchema..." + schema + " " + db);
 		List<NodeType> results = null;
 		try {
-			results = cooldao.retrieveNodesFromSchemaAndDb(schema+"%", db, "%");
+			results = cooldao.retrieveNodesFromSchemaAndDb(schema + "%", db, "%");
 			if (results == null) {
 				// create a fake entry
-				NodeType nt = new NodeType();
+				final NodeType nt = new NodeType();
 				nt.setNodeId(1L);
 				nt.setNodeFullpath("this is a fake node");
 				nt.setNodeTinstime(new Timestamp(new Date().getTime()));
-				List<NodeType> _fakes = new ArrayList<NodeType>();
+				final List<NodeType> _fakes = new ArrayList<NodeType>();
 				_fakes.add(nt);
 				results = _fakes;
 			}
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return results;
 	}
-	
+
+	/**
+	 * @param schema
+	 * @param db
+	 * @return
+	 */
 	@GET
 	@Produces("text/plain")
 	@Path("/{schema}/{db}/nodelist")
-	public String listNodesInSchemaString(@PathParam("schema") String schema,
-			@PathParam("db") String db) {
-		
-		log.info("Calling listNodesInSchemaString..."+schema+" "+db);
+	public String listNodesInSchemaString(@PathParam("schema") final String schema,
+			@PathParam("db") final String db) {
+
+		log.info("Calling listNodesInSchemaString..." + schema + " " + db);
 		List<NodeType> results = null;
-		StringBuffer output = new StringBuffer();
+		final StringBuffer output = new StringBuffer();
 		try {
 			output.append("<nodelist>\n");
-			results = cooldao.retrieveNodesFromSchemaAndDb(schema+"%", db, "%");
+			results = cooldao.retrieveNodesFromSchemaAndDb(schema + "%", db, "%");
 			if (results != null) {
-				for (NodeType anode : results) {
-					output.append("<node>"+anode.getNodeFullpath()+"</node>\n");
+				for (final NodeType anode : results) {
+					output.append("<node>" + anode.getNodeFullpath() + "</node>\n");
 				}
 			}
 			output.append("</nodelist>\n");
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return output.toString();
 	}
 
+	/**
+	 * @param schema
+	 * @param db
+	 * @param node
+	 * @return
+	 */
 	@GET
 	@Produces("text/plain")
 	@Path("/{schema}/{db}/{node:.*}/length")
-	public String countChannelsInSchemaNodeString(@PathParam("schema") String schema,
-			@PathParam("db") String db,
-			@PathParam("node") String node) {
-		
-		log.info("Calling countChannelsInSchemaNodeString..."+schema+" "+db);
+	public String countChannelsInSchemaNodeString(
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("node") final String node) {
+
+		log.info("Calling countChannelsInSchemaNodeString..." + schema + " " + db);
 		List<ChannelType> results = null;
-		StringBuffer output = new StringBuffer();
+		final StringBuffer output = new StringBuffer();
 		try {
-			String _node = node;
-			if (!_node.startsWith("/")) {
-				_node = "/"+node;
+			String lnode = node;
+			if (!lnode.startsWith("/")) {
+				lnode = "/" + node;
 			}
-			results = cooldao.retrieveChannelsFromNodeSchemaAndDb(schema, db, _node, null);
+			results = cooldao
+					.retrieveChannelsFromNodeSchemaAndDb(schema, db, lnode, null);
 			if (results != null) {
 				output.append(results.size());
 			}
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return output.toString();
 	}
 
+	/**
+	 * @param schema
+	 * @param db
+	 * @param node
+	 * @return
+	 */
 	@GET
 	@Produces("text/plain")
 	@Path("/{schema}/{db}/{node:.*}/list")
-	public String listChannelsInSchemaNodeString(@PathParam("schema") String schema,
-			@PathParam("db") String db,
-			@PathParam("node") String node) {
-		
-		log.info("Calling listChannelsInSchemaNodeString..."+schema+" "+db);
+	public String listChannelsInSchemaNodeString(
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("node") final String node) {
+
+		log.info("Calling listChannelsInSchemaNodeString..." + schema + " " + db);
 		List<ChannelType> results = null;
-		StringBuffer output = new StringBuffer();
+		final StringBuffer output = new StringBuffer();
 		try {
-			String _node = node;
-			if (!_node.startsWith("/")) {
-				_node = "/"+node;
+			String lnode = node;
+			if (!lnode.startsWith("/")) {
+				lnode = "/" + node;
 			}
-			results = cooldao.retrieveChannelsFromNodeSchemaAndDb(schema, db, _node, null);
+			results = cooldao
+					.retrieveChannelsFromNodeSchemaAndDb(schema, db, lnode, null);
 			if (results != null) {
-				for (ChannelType achan : results) {
-					output.append(achan.getChannelId()+" ");	
+				for (final ChannelType achan : results) {
+					output.append(achan.getChannelId() + " ");
 				}
 				output.append("\n");
 			}
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return output.toString();
 	}
 
+	/**
+	 * @param schema
+	 * @param db
+	 * @param node
+	 * @return
+	 */
 	@GET
 	@Produces("text/plain")
 	@Path("/{schema}/{db}/{node:.*}/names")
-	public String namesChannelsInSchemaNodeString(@PathParam("schema") String schema,
-			@PathParam("db") String db,
-			@PathParam("node") String node) {
-		
-		log.info("Calling namesChannelsInSchemaNodeString..."+schema+" "+db);
+	public String namesChannelsInSchemaNodeString(
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("node") final String node) {
+
+		log.info("Calling namesChannelsInSchemaNodeString..." + schema + " " + db);
 		List<ChannelType> results = null;
-		StringBuffer output = new StringBuffer();
+		final StringBuffer output = new StringBuffer();
 		try {
-			String _node = node;
-			if (!_node.startsWith("/")) {
-				_node = "/"+node;
+			String lnode = node;
+			if (!lnode.startsWith("/")) {
+				lnode = "/" + node;
 			}
 			output.append("<channelNames>\n");
-			results = cooldao.retrieveChannelsFromNodeSchemaAndDb(schema, db, _node, null);
+			results = cooldao
+					.retrieveChannelsFromNodeSchemaAndDb(schema, db, lnode, null);
 			if (results != null) {
-				for (ChannelType achan : results) {
-					output.append("<name id=\""+achan.getChannelId()+"\">"
-							+achan.getChannelName()
-							+"</name>\n");	
+				for (final ChannelType achan : results) {
+					output.append("<name id=\"" + achan.getChannelId() + "\">"
+							+ achan.getChannelName() + "</name>\n");
 				}
 			}
 			output.append("</channelNames>\n");
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return output.toString();
 	}
 
+	/**
+	 * @param schema
+	 * @param db
+	 * @param node
+	 * @return
+	 */
 	@GET
 	@Produces("text/plain")
 	@Path("/{schema}/{db}/{node:.*}/tags")
-	public String listTagsInSchemaNodeString(@PathParam("schema") String schema,
-			@PathParam("db") String db,
-			@PathParam("node") String node) {
-		
-		log.info("Calling listTagsInSchemaNodeString..."+schema+" "+db);
+	public String listTagsInSchemaNodeString(@PathParam("schema") final String schema,
+			@PathParam("db") final String db, @PathParam("node") final String node) {
+
+		log.info("Calling listTagsInSchemaNodeString..." + schema + " " + db);
 		List<SchemaNodeTagType> results = null;
-		StringBuffer output = new StringBuffer();
+		final StringBuffer output = new StringBuffer();
 		try {
-			String _node = node;
-			if (!_node.startsWith("/")) {
-				_node = "/"+node;
+			String lnode = node;
+			if (!lnode.startsWith("/")) {
+				lnode = "/" + node;
 			}
 			output.append("<tagList>\n");
-			results = cooldao.retrieveTagsFromNodesSchemaAndDb(schema, db, _node, "%");
+			results = cooldao.retrieveTagsFromNodesSchemaAndDb(schema, db, lnode, "%");
 			if (results != null) {
-				for (SchemaNodeTagType atag : results) {
-					String lock = (atag.getTagLockStatus()>0) ? "locked" : "unlocked";
-					String description = atag.getTagDescription();
-					String inserttime = atag.getSysInstime();
-					output.append("<tag lock=\""+lock+"\" "
-							+"description=\""+description+"\" "
-							+"insertionTime=\""+inserttime+"\">"
-							+atag.getTagName()
-							+"</tag>\n");	
+				for (final SchemaNodeTagType atag : results) {
+					final String lock = atag.getTagLockStatus() > 0 ? "locked"
+							: "unlocked";
+					final String description = atag.getTagDescription();
+					final String inserttime = atag.getSysInstime();
+					output.append("<tag lock=\"" + lock + "\" " + "description=\""
+							+ description + "\" " + "insertionTime=\"" + inserttime
+							+ "\">" + atag.getTagName() + "</tag>\n");
 				}
 			}
 			output.append("</tagList>\n");
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return output.toString();
 	}
 
+	/**
+	 * @param schema
+	 * @param db
+	 * @param gtag
+	 * @return
+	 */
 	@GET
 	@Produces("text/plain")
 	@Path("/{schema}/{db}/tags/{gtag}")
-	public String listAssociatedTagsInSchemaNodeString(@PathParam("schema") String schema,
-			@PathParam("db") String db,
-			@PathParam("gtag") String gtag) {
-		
-		log.info("Calling listTagsInSchemaNodeString..."+schema+" "+db);
+	public String listAssociatedTagsInSchemaNodeString(
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("gtag") final String gtag) {
+
+		log.info("Calling listTagsInSchemaNodeString..." + schema + " " + db);
 		List<NodeGtagTagType> results = null;
-		StringBuffer output = new StringBuffer();
+		final StringBuffer output = new StringBuffer();
 		try {
 			output.append("<tagList>\n");
-			results = cooldao.retrieveGtagTagsFromSchemaAndDb(schema+"%", db, "%"+gtag+"%");
+			results = cooldao.retrieveGtagTagsFromSchemaAndDb(schema + "%", db, "%"
+					+ gtag + "%");
 			if (results != null) {
-				for (NodeGtagTagType atag : results) {
-					String lock = (atag.getTagLockStatus()>0) ? "locked" : "unlocked";
-					String description = atag.getTagDescription();
-					String inserttime = atag.getSysInstime();
-					String coolschema = atag.getSchemaName();
-					String fld = atag.getNodeFullpath();
-					output.append("<tag lock=\""+lock+"\" "
-							+"schema=\""+coolschema+"\" "
-							+"globaltag=\""+atag.getGtagName()+"\" "
-							+"folder=\""+fld+"\" "
-							+"description=\""+description+"\" "
-							+"insertionTime=\""+inserttime+"\">"
-							+atag.getTagName()
-							+"</tag>\n");	
+				for (final NodeGtagTagType atag : results) {
+					final String lock = atag.getTagLockStatus() > 0 ? "locked"
+							: "unlocked";
+					final String description = atag.getTagDescription();
+					final String inserttime = atag.getSysInstime();
+					final String coolschema = atag.getSchemaName();
+					final String fld = atag.getNodeFullpath();
+					output.append("<tag lock=\"" + lock + "\" " + "schema=\""
+							+ coolschema + "\" " + "globaltag=\"" + atag.getGtagName()
+							+ "\" " + "folder=\"" + fld + "\" " + "description=\""
+							+ description + "\" " + "insertionTime=\"" + inserttime
+							+ "\">" + atag.getTagName() + "</tag>\n");
 				}
 			}
 			output.append("</tagList>\n");
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

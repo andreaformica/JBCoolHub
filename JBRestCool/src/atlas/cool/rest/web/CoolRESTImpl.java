@@ -46,65 +46,72 @@ public class CoolRESTImpl implements ICoolREST {
 	@Inject
 	protected Logger log;
 
-//	protected SimpleDateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
+	// protected SimpleDateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
 
 	public CoolRESTImpl() {
 		super();
 	}
 
-	protected void setSort(String orderByName) {
-		atlas.cool.interceptors.WebRestContextHolder
-				.put("OrderBy", orderByName);
+	/**
+	 * @param orderByName
+	 */
+	protected void setSort(final String orderByName) {
+		atlas.cool.interceptors.WebRestContextHolder.put("OrderBy", orderByName);
 		if (orderByName == null || orderByName.isEmpty()) {
 			atlas.cool.interceptors.WebRestContextHolder.cleanupThread();
 		}
 	}
 
-	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
-			@PathParam("db") String db) {
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolREST#listNodesInSchema(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<NodeType> listNodesInSchema(@PathParam("schema") final String schema,
+			@PathParam("db") final String db) {
 
 		log.info("Calling listNodesInSchema..." + schema + " " + db);
 		List<NodeType> results = null;
 		try {
 			results = coolutilsdao.listNodesInSchema(schema, db);
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return results;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolREST#listTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public List<SchemaNodeTagType> listTagsInNodesSchema(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("node") String node) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("node") final String node) {
 
 		List<SchemaNodeTagType> results = null;
 		try {
 			results = coolutilsdao.listTagsInNodesSchema(schema, db, node);
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return results;
 	}
 
-	/**
-	 * @param schema
-	 * @param db
-	 * @param node
-	 * @param channame
-	 * @return
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolREST#listChannelsInNodesSchema(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public List<ChannelType> listChannelsInNodesSchema(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("node") String fld,
-			@PathParam("channel") String channame) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("node") final String fld,
+			@PathParam("channel") final String channame) {
 
-		log.info("Calling listChannelsInNodesSchema..." + schema + " "
-				+ db + " "+fld+" "+channame);
+		log.info("Calling listChannelsInNodesSchema..." + schema + " " + db + " " + fld
+				+ " " + channame);
 		List<ChannelType> results = null;
 		try {
-			String chan = "%"+channame+"%";
+			String chan = "%" + channame + "%";
 			if (channame.equals("all")) {
 				chan = "%";
 			}
@@ -114,380 +121,414 @@ public class CoolRESTImpl implements ICoolREST {
 			}
 
 			results = cooldao.retrieveChannelsFromNodeSchemaAndDb(schema, db, node, chan);
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return results;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolREST#listGlobalTagsTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("gtag") String gtag) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("gtag") final String gtag) {
 
-		log.info("Calling listGlobalTagsTagsInNodesSchema..." + schema + " "
-				+ db);
+		log.info("Calling listGlobalTagsTagsInNodesSchema..." + schema + " " + db);
 		List<NodeGtagTagType> results = null;
 		try {
-			results = cooldao.retrieveGtagTagsFromSchemaAndDb(schema + "%", db,
-					"%" + gtag + "%");
-		} catch (CoolIOException e) {
+			results = cooldao.retrieveGtagTagsFromSchemaAndDb(schema + "%", db, "%"
+					+ gtag + "%");
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return results;
 	}
 
-	public List<IovType> getIovStatPerChannel(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag) {
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolREST#getIovStatPerChannel(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<IovType> getIovStatPerChannel(@PathParam("schema") final String schema,
+			@PathParam("db") final String db, @PathParam("fld") final String fld,
+			@PathParam("tag") final String tag) {
 
-		log.info("Calling getIovStatPerChannel..." + schema + " " + db + " "
-				+ fld + " " + tag);
+		log.info("Calling getIovStatPerChannel..." + schema + " " + db + " " + fld + " "
+				+ tag);
 		List<IovType> results = null;
 		try {
 			results = coolutilsdao.getIovStatPerChannel(schema, db, fld, tag);
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			e.printStackTrace();
 		}
 		return results;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolREST#listIovsInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public NodeType listIovsInNodesSchemaTagRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("channel") String channel,
-			@PathParam("chansel") String chansel,
-			@PathParam("since") String since, @PathParam("until") String until,
-			@PathParam("timespan") String timespan) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
+			@PathParam("channel") final String channel,
+			@PathParam("chansel") final String chansel,
+			@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan) {
 
 		NodeType selnode = null;
 		try {
 			// Time selection
-			Map<String, Object> trmap = coolutilsdao.getTimeRange(since, until, timespan);
-			BigDecimal _since =  (BigDecimal)trmap.get("since");
-			BigDecimal _until =  (BigDecimal)trmap.get("until");
+			final Map<String, Object> trmap = coolutilsdao.getTimeRange(since, until,
+					timespan);
+			final BigDecimal lsince = (BigDecimal) trmap.get("since");
+			final BigDecimal luntil = (BigDecimal) trmap.get("until");
 
-			String chan = channel;
+			final String chan = channel;
 			// Channel Selection
 			if (chansel.equals("chanid")) {
 				// Treat the channel in input as a Long
-				Long chanid = new Long(channel);
-				selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(
-						schema, db, fld, tag, chanid, _since, _until);
+				final Long chanid = new Long(channel);
+				selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema, db,
+						fld, tag, chanid, lsince, luntil);
 
 			} else if (chansel.equals("channel")) {
-				selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(
-						schema, db, fld, tag, chan, _since, _until);
+				selnode = coolutilsdao.listIovsInNodesSchemaTagRangeAsList(schema, db,
+						fld, tag, chan, lsince, luntil);
 			} else {
-				throw new CoolIOException(
-						"Wrong REST syntax...refer to documentation");
+				throw new CoolIOException("Wrong REST syntax...refer to documentation");
 			}
 
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return selnode;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolREST#listIovsInNodesSchemaTagRangeSortedAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public NodeType listIovsInNodesSchemaTagRangeSortedAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("sort") String sort,
-			@PathParam("channel") String channel,
-			@PathParam("chansel") String chansel,
-			@PathParam("since") String since, @PathParam("until") String until,
-			@PathParam("timespan") String timespan) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
+			@PathParam("sort") final String sort,
+			@PathParam("channel") final String channel,
+			@PathParam("chansel") final String chansel,
+			@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan) {
 
 		NodeType selnode = null;
 		try {
 			String orderByName = "";
-			String[] sortcolumns = sort.split("/");
+			final String[] sortcolumns = sort.split("/");
 			if (sortcolumns.length >= 0) {
-				Map<String, Boolean> colmap = new LinkedHashMap<String, Boolean>();
+				final Map<String, Boolean> colmap = new LinkedHashMap<String, Boolean>();
 				for (int i = 0; i < sortcolumns.length; i++) {
-					String[] colsort = sortcolumns[i].split("-");
-					String colname = colsort[0];
-					String sortkey = (colsort[1] != null) ? colsort[1] : "ASC";
+					final String[] colsort = sortcolumns[i].split("-");
+					final String colname = colsort[0];
+					final String sortkey = colsort[1] != null ? colsort[1] : "ASC";
 					Boolean sortflag = true;
-					if (sortkey.equals("DESC"))
+					if (sortkey.equals("DESC")) {
 						sortflag = false;
+					}
 					colmap.put(colname, sortflag);
 				}
-				orderByName = QueryTools
-						.getOrderedBy(new CoolIovType(), colmap);
+				orderByName = QueryTools.getOrderedBy(new CoolIovType(), colmap);
 			}
 			setSort(orderByName);
-			selnode = listIovsInNodesSchemaTagRangeAsList(schema, db, fld, tag,
-					channel, chansel, since, until, timespan);
+			selnode = listIovsInNodesSchemaTagRangeAsList(schema, db, fld, tag, channel,
+					chansel, since, until, timespan);
 			setSort(null);
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (CoolQueryException e) {
+		} catch (final CoolQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return selnode;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolREST#listPayloadInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public NodeType listPayloadInNodesSchemaTagRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("channel") String channel,
-			@PathParam("chansel") String chansel,
-			@PathParam("since") String since, @PathParam("until") String until,
-			@PathParam("timespan") String timespan) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
+			@PathParam("channel") final String channel,
+			@PathParam("chansel") final String chansel,
+			@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan) {
 		NodeType selnode = null;
 		try {
 			// Time selection
-			Map<String, Object> trmap = coolutilsdao.getTimeRange(since, until, timespan);
-			BigDecimal _since =  (BigDecimal)trmap.get("since");
-			BigDecimal _until =  (BigDecimal)trmap.get("until");
+			final Map<String, Object> trmap = coolutilsdao.getTimeRange(since, until,
+					timespan);
+			final BigDecimal lsince = (BigDecimal) trmap.get("since");
+			final BigDecimal luntil = (BigDecimal) trmap.get("until");
 
-			String chan = channel;
+			final String chan = channel;
 			// Channel Selection
 			if (chansel.equals("chanid")) {
 				// Treat the channel in input as a Long
-				Long chanid = new Long(channel);
-				selnode = coolutilsdao.listPayloadInNodesSchemaTagRangeAsList(
-						schema, db, fld, tag, chanid, _since, _until);
+				final Long chanid = new Long(channel);
+				selnode = coolutilsdao.listPayloadInNodesSchemaTagRangeAsList(schema, db,
+						fld, tag, chanid, lsince, luntil);
 
 			} else if (chansel.equals("channel")) {
-				selnode = coolutilsdao.listPayloadInNodesSchemaTagRangeAsList(
-						schema, db, fld, tag, chan, _since, _until);
+				selnode = coolutilsdao.listPayloadInNodesSchemaTagRangeAsList(schema, db,
+						fld, tag, chan, lsince, luntil);
 			} else {
-				throw new CoolIOException(
-						"Wrong REST syntax...refer to documentation");
+				throw new CoolIOException("Wrong REST syntax...refer to documentation");
 			}
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return selnode;
 	}
 
+	@Override
 	public NodeType listPayloadInNodesSchemaTagRangeSortedAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("sort") String sort,
-			@PathParam("channel") String channel,
-			@PathParam("chansel") String chansel,
-			@PathParam("since") String since, @PathParam("until") String until,
-			@PathParam("timespan") String timespan) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
+			@PathParam("sort") final String sort,
+			@PathParam("channel") final String channel,
+			@PathParam("chansel") final String chansel,
+			@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan) {
 
 		NodeType selnode = null;
 		try {
 			String orderByName = "";
-			String[] sortcolumns = sort.split("/");
+			final String[] sortcolumns = sort.split("/");
 			if (sortcolumns.length >= 0) {
-				Map<String, Boolean> colmap = new LinkedHashMap<String, Boolean>();
+				final Map<String, Boolean> colmap = new LinkedHashMap<String, Boolean>();
 				for (int i = 0; i < sortcolumns.length; i++) {
-					String[] colsort = sortcolumns[i].split("-");
-					String colname = colsort[0];
-					String sortkey = (colsort[1] != null) ? colsort[1] : "ASC";
+					final String[] colsort = sortcolumns[i].split("-");
+					final String colname = colsort[0];
+					final String sortkey = colsort[1] != null ? colsort[1] : "ASC";
 					Boolean sortflag = true;
-					if (sortkey.equals("DESC"))
+					if (sortkey.equals("DESC")) {
 						sortflag = false;
+					}
 					colmap.put(colname, sortflag);
 				}
-				orderByName = QueryTools
-						.getOrderedBy(new CoolIovType(), colmap);
+				orderByName = QueryTools.getOrderedBy(new CoolIovType(), colmap);
 			}
 			setSort(orderByName);
-			selnode = listPayloadInNodesSchemaTagRangeAsList(schema, db, fld,
-					tag, channel, chansel, since, until, timespan);
+			selnode = listPayloadInNodesSchemaTagRangeAsList(schema, db, fld, tag,
+					channel, chansel, since, until, timespan);
 			setSort(null);
 			// InNodesSchemaTagDateTimeRangeAsList(schema, db, fld, tag,
 			// channel, chansel, since, until, timespan);
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (CoolQueryException e) {
+		} catch (final CoolQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return selnode;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolREST#listIovsSummaryInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("since") String since, @PathParam("until") String until,
-			@PathParam("timespan") String timespan) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
+			@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan) {
 
-		log.info("Calling listIovsSummaryInNodesSchemaTagRangeAsList..."
-				+ schema + " " + db + " folder " + fld + " tag " + tag);
+		log.info("Calling listIovsSummaryInNodesSchemaTagRangeAsList..." + schema + " "
+				+ db + " folder " + fld + " tag " + tag);
 		Collection<CoolIovSummary> summarylist = null;
 		try {
 			// Time selection
-			Map<String, Object> trmap = coolutilsdao.getTimeRange(since, until, timespan);
-			BigDecimal _since =  (BigDecimal)trmap.get("since");
-			BigDecimal _until =  (BigDecimal)trmap.get("until");
-			if (_since == null || _until == null) {
-				CoolIovSummary iovsumm = new CoolIovSummary();
+			final Map<String, Object> trmap = coolutilsdao.getTimeRange(since, until,
+					timespan);
+			final BigDecimal lsince = (BigDecimal) trmap.get("since");
+			final BigDecimal luntil = (BigDecimal) trmap.get("until");
+			if (lsince == null || luntil == null) {
+				final CoolIovSummary iovsumm = new CoolIovSummary();
 				iovsumm.setSummary("Wrong time interval has been used: since or until times are null");
 				summarylist = new ArrayList<CoolIovSummary>();
 				summarylist.add(iovsumm);
 				return summarylist;
 			}
-			summarylist = coolutilsdao
-					.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db,
-							fld, tag, _since, _until);
+			summarylist = coolutilsdao.listIovsSummaryInNodesSchemaTagRangeAsList(schema,
+					db, fld, tag, lsince, luntil);
 
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return summarylist;
 	}
 
-//	/**
-//	 * <p>
-//	 * This method is used to parse the timespan string in the URL. Several
-//	 * format options are then available when asking for input time range. Users
-//	 * should know in advance, nevertheless, the format of the folder their are
-//	 * asking for data: time or run-lumi based.
-//	 * </p>
-//	 * <p>
-//	 * List of format depending on timespan field, in bold the type of folder
-//	 * for which they should be used:
-//	 * </p>
-//	 * <p>
-//	 * <ul>
-//	 * <li>time : give since and until times in Cool time format (nanoseconds
-//	 * from Epoch) <b>time</b></li>
-//	 * <li>date : give since and until times in date format yyyyMMddhhmmss
-//	 * <b>time</b></li>
-//	 * <li>runlb : give since and until times in run and lumi bloc as [run]-[lb]
-//	 * <b>run-lumi</b></li>
-//	 * <li>runtime: give since and until times in run number, will be converted
-//	 * in time using start and end of selected runs <b>time</b></li>
-//	 * <li>daterun: give since and until times in date format yyyyMMddhhmmss,
-//	 * will be converted in run range <b>run-lumi</b></li>
-//	 * </ul>
-//	 * </p>
-//	 * 
-//	 * @param since
-//	 * @param until
-//	 * @param timespan
-//	 * @return
-//	 * @throws CoolIOException
-//	 */
-//	protected Map<String, BigDecimal> getTimeRange(String since, String until,
-//			String timespan) throws CoolIOException {
-//		// Time selection
-//		Map<String, BigDecimal> timerangeMap = new HashMap<String, BigDecimal>();
-//		BigDecimal _since = null;
-//		BigDecimal _until = null;
-//		try {
-//			if (since.equals("0") && until.equals("Inf")) {
-//				// Select full range of COOL IOVs
-//				_since = new BigDecimal(0L);
-//				_until = new BigDecimal(CoolIov.COOL_MAX_DATE);
-//			} else {
-//				if (timespan.equals("time")) {
-//					// Interpret field as BigDecimal
-//					_since = new BigDecimal(since);
-//					_until = new BigDecimal(until);
-//				} else if (timespan.equals("date")) {
-//					// Interpret fields as dates in the yyyyMMddhhmmss format
-//					Date st = df.parse(since);
-//					Date ut = df.parse(until);
-//					_since = new BigDecimal(st.getTime()
-//							* CoolIov.TO_NANOSECONDS);
-//					_until = new BigDecimal(ut.getTime()
-//							* CoolIov.TO_NANOSECONDS);
-//				} else if (timespan.equals("runlb")) {
-//					String[] sinceargs = since.split("-");
-//					String[] untilargs = until.split("-");
-//
-//					String lbstr = null;
-//					if (sinceargs.length > 0 && !sinceargs[1].isEmpty()) {
-//						lbstr = sinceargs[1];
-//					}
-//					_since = CoolIov.getCoolRunLumi(sinceargs[0], lbstr);
-//
-//					lbstr = null;
-//					if (untilargs.length > 0 && !untilargs[1].isEmpty()) {
-//						lbstr = untilargs[1];
-//					}
-//					_until = CoolIov.getCoolRunLumi(untilargs[0], lbstr);
-//				} else if (timespan.equals("runtime")) {
-//					// Convert run request into time range given by start of
-//					// since run
-//					// and end of until run
-//					List<CrViewRuninfo> results = null;
-//					try {
-//						BigDecimal runstart = new BigDecimal(since);
-//						BigDecimal runend = new BigDecimal(until);
-//						results = comadao.findRunsInRange(runstart, runend);
-//						if (results.size() > 0) {
-//							Timestamp runsince = results.get(0).getStartTime();
-//							Timestamp rununtil = results.get(0).getEndTime();
-//							if (results.size() > 1)
-//								rununtil = results.get(results.size() - 1)
-//										.getEndTime();
-//							_since = new BigDecimal(runsince.getTime()
-//									* CoolIov.TO_NANOSECONDS);
-//							_until = new BigDecimal(rununtil.getTime()
-//									* CoolIov.TO_NANOSECONDS);
-//						}
-//					} catch (ComaQueryException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//
-//				} else if (timespan.equals("daterun")) {
-//					// Convert run request into time range given by start of
-//					// since run
-//					// and end of until run
-//					List<CrViewRuninfo> results = null;
-//					try {
-//						Date st = df.parse(since);
-//						Date ut = df.parse(until);
-//						results = comadao.findRunsInRange(
-//								new Timestamp(st.getTime()),
-//								new Timestamp(ut.getTime()));
-//						if (results.size() > 0) {
-//							Long run = results.get(0).getRunNumber()
-//									.longValue();
-//							_since = CoolIov
-//									.getCoolRunLumi(run.toString(), "0");
-//							Long endrun = run + 1L;
-//							_until = CoolIov.getCoolRunLumi(endrun.toString(),
-//									"0");
-//							if (results.size() > 1) {
-//								endrun = results.get(results.size() - 1)
-//										.getRunNumber().longValue();
-//								endrun += 1L;
-//								_until = CoolIov.getCoolRunLumi(
-//										endrun.toString(), "0");
-//							}
-//						}
-//					} catch (ComaQueryException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//
-//				} else {
-//					throw new CoolIOException("Cannot search using timespan "
-//							+ timespan);
-//				}
-//			}
-//			if (_since.longValue()>_until.longValue()) {
-//				log.log(Level.SEVERE, "Until time preceeds Since time...!!!!");
-//				throw new CoolIOException("Cannot query DB with this range...");
-//			}
-//			timerangeMap.put("since", _since);
-//			timerangeMap.put("until", _until);
-//			log.info("Converted "+since+" to "+_since+" and "+until+" to "+_until);
-//		} catch (ParseException e) {
-//			throw new CoolIOException(e.getMessage());
-//		} catch (Exception e) {
-//			throw new CoolIOException(e.getMessage());
-//		}
-//		return timerangeMap;
-//	}
+	// /**
+	// * <p>
+	// * This method is used to parse the timespan string in the URL. Several
+	// * format options are then available when asking for input time range.
+	// Users
+	// * should know in advance, nevertheless, the format of the folder their
+	// are
+	// * asking for data: time or run-lumi based.
+	// * </p>
+	// * <p>
+	// * List of format depending on timespan field, in bold the type of folder
+	// * for which they should be used:
+	// * </p>
+	// * <p>
+	// * <ul>
+	// * <li>time : give since and until times in Cool time format (nanoseconds
+	// * from Epoch) <b>time</b></li>
+	// * <li>date : give since and until times in date format yyyyMMddhhmmss
+	// * <b>time</b></li>
+	// * <li>runlb : give since and until times in run and lumi bloc as
+	// [run]-[lb]
+	// * <b>run-lumi</b></li>
+	// * <li>runtime: give since and until times in run number, will be
+	// converted
+	// * in time using start and end of selected runs <b>time</b></li>
+	// * <li>daterun: give since and until times in date format yyyyMMddhhmmss,
+	// * will be converted in run range <b>run-lumi</b></li>
+	// * </ul>
+	// * </p>
+	// *
+	// * @param since
+	// * @param until
+	// * @param timespan
+	// * @return
+	// * @throws CoolIOException
+	// */
+	// protected Map<String, BigDecimal> getTimeRange(String since, String
+	// until,
+	// String timespan) throws CoolIOException {
+	// // Time selection
+	// Map<String, BigDecimal> timerangeMap = new HashMap<String, BigDecimal>();
+	// BigDecimal _since = null;
+	// BigDecimal _until = null;
+	// try {
+	// if (since.equals("0") && until.equals("Inf")) {
+	// // Select full range of COOL IOVs
+	// _since = new BigDecimal(0L);
+	// _until = new BigDecimal(CoolIov.COOL_MAX_DATE);
+	// } else {
+	// if (timespan.equals("time")) {
+	// // Interpret field as BigDecimal
+	// _since = new BigDecimal(since);
+	// _until = new BigDecimal(until);
+	// } else if (timespan.equals("date")) {
+	// // Interpret fields as dates in the yyyyMMddhhmmss format
+	// Date st = df.parse(since);
+	// Date ut = df.parse(until);
+	// _since = new BigDecimal(st.getTime()
+	// * CoolIov.TO_NANOSECONDS);
+	// _until = new BigDecimal(ut.getTime()
+	// * CoolIov.TO_NANOSECONDS);
+	// } else if (timespan.equals("runlb")) {
+	// String[] sinceargs = since.split("-");
+	// String[] untilargs = until.split("-");
+	//
+	// String lbstr = null;
+	// if (sinceargs.length > 0 && !sinceargs[1].isEmpty()) {
+	// lbstr = sinceargs[1];
+	// }
+	// _since = CoolIov.getCoolRunLumi(sinceargs[0], lbstr);
+	//
+	// lbstr = null;
+	// if (untilargs.length > 0 && !untilargs[1].isEmpty()) {
+	// lbstr = untilargs[1];
+	// }
+	// _until = CoolIov.getCoolRunLumi(untilargs[0], lbstr);
+	// } else if (timespan.equals("runtime")) {
+	// // Convert run request into time range given by start of
+	// // since run
+	// // and end of until run
+	// List<CrViewRuninfo> results = null;
+	// try {
+	// BigDecimal runstart = new BigDecimal(since);
+	// BigDecimal runend = new BigDecimal(until);
+	// results = comadao.findRunsInRange(runstart, runend);
+	// if (results.size() > 0) {
+	// Timestamp runsince = results.get(0).getStartTime();
+	// Timestamp rununtil = results.get(0).getEndTime();
+	// if (results.size() > 1)
+	// rununtil = results.get(results.size() - 1)
+	// .getEndTime();
+	// _since = new BigDecimal(runsince.getTime()
+	// * CoolIov.TO_NANOSECONDS);
+	// _until = new BigDecimal(rununtil.getTime()
+	// * CoolIov.TO_NANOSECONDS);
+	// }
+	// } catch (ComaQueryException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// }
+	//
+	// } else if (timespan.equals("daterun")) {
+	// // Convert run request into time range given by start of
+	// // since run
+	// // and end of until run
+	// List<CrViewRuninfo> results = null;
+	// try {
+	// Date st = df.parse(since);
+	// Date ut = df.parse(until);
+	// results = comadao.findRunsInRange(
+	// new Timestamp(st.getTime()),
+	// new Timestamp(ut.getTime()));
+	// if (results.size() > 0) {
+	// Long run = results.get(0).getRunNumber()
+	// .longValue();
+	// _since = CoolIov
+	// .getCoolRunLumi(run.toString(), "0");
+	// Long endrun = run + 1L;
+	// _until = CoolIov.getCoolRunLumi(endrun.toString(),
+	// "0");
+	// if (results.size() > 1) {
+	// endrun = results.get(results.size() - 1)
+	// .getRunNumber().longValue();
+	// endrun += 1L;
+	// _until = CoolIov.getCoolRunLumi(
+	// endrun.toString(), "0");
+	// }
+	// }
+	// } catch (ComaQueryException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// }
+	//
+	// } else {
+	// throw new CoolIOException("Cannot search using timespan "
+	// + timespan);
+	// }
+	// }
+	// if (_since.longValue()>_until.longValue()) {
+	// log.log(Level.SEVERE, "Until time preceeds Since time...!!!!");
+	// throw new CoolIOException("Cannot query DB with this range...");
+	// }
+	// timerangeMap.put("since", _since);
+	// timerangeMap.put("until", _until);
+	// log.info("Converted "+since+" to "+_since+" and "+until+" to "+_until);
+	// } catch (ParseException e) {
+	// throw new CoolIOException(e.getMessage());
+	// } catch (Exception e) {
+	// throw new CoolIOException(e.getMessage());
+	// }
+	// return timerangeMap;
+	// }
 }
