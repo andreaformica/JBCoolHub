@@ -18,7 +18,7 @@ import atlas.connection.dao.CoolRepositoryDAO;
 import atlas.cool.exceptions.CoolIOException;
 
 /**
- * Session Bean implementation class ComaCbBean
+ * Session Bean implementation class ComaCbBean.
  */
 @Named
 @Stateless(mappedName = "comacb")
@@ -28,88 +28,102 @@ public class ComaCbBean implements ComaCbDAO {
 
 	@Inject
 	private CoolRepositoryDAO coolrep;
-	
+
 	@Inject
 	private Logger log;
 
-    /**
-     * Default constructor. 
-     */
-    public ComaCbBean() {
-        // TODO Auto-generated constructor stub
-    }
+	/**
+	 * Default constructor.
+	 */
+	public ComaCbBean() {
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
-     * @see ComaCbDAO#findGtagUsageInAmi(String)
-     */
-    public List<ComaCbamiGtags> findGtagUsageInAmi(String gtagname) throws ComaQueryException {
+	 * @see ComaCbDAO#findGtagUsageInAmi(String)
+	 */
+	@Override
+	public final List<ComaCbamiGtags> findGtagUsageInAmi(final String gtagname)
+			throws ComaQueryException {
 
-		Object[] params = new Object[1];
+		final Object[] params = new Object[1];
 		params[0] = gtagname;
-		log.info("Using query "+ComaCbamiGtags.QUERY_AMI_GTAGS+" with "+gtagname);
+		log.info("Using query " + ComaCbamiGtags.QUERY_AMI_GTAGS + " with " + gtagname);
 		List<ComaCbamiGtags> comalist = null;
 		try {
-			comalist = (List<ComaCbamiGtags>) coolrep.findCoolList(ComaCbamiGtags.QUERY_AMI_GTAGS,params);
-		} catch (CoolIOException e) {
+			comalist = (List<ComaCbamiGtags>) coolrep.findCoolList(
+					ComaCbamiGtags.QUERY_AMI_GTAGS, params);
+		} catch (final CoolIOException e) {
 			throw new ComaQueryException(e.getMessage());
 		}
-//		log.info("Retrieved a list of "+nodelist.size()+" nodes");
+		// log.info("Retrieved a list of "+nodelist.size()+" nodes");
 		return comalist;
 
-    }
+	}
 
-	/* (non-Javadoc)
-	 * @see atlas.coma.dao.ComaCbDAO#findRunsInRange(java.math.BigDecimal, java.math.BigDecimal)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.coma.dao.ComaCbDAO#findRunsInRange(java.math.BigDecimal,
+	 * java.math.BigDecimal)
 	 */
 	@Override
-	public List<CrViewRuninfo> findRunsInRange(BigDecimal runstart,
-			BigDecimal runend) throws ComaQueryException {
-		Object[] params = new Object[2];
+	public final List<CrViewRuninfo> findRunsInRange(final BigDecimal runstart,
+			final BigDecimal runend) throws ComaQueryException {
+		final Object[] params = new Object[2];
 		params[0] = runstart;
 		params[1] = runend;
-		log.info("Using query "+CrViewRuninfo.QUERY_FINDRUNS+" with "+runstart+" "+runend);
+		log.info("Using query " + CrViewRuninfo.QUERY_FINDRUNS + " with " + runstart
+				+ " " + runend);
 		List<CrViewRuninfo> runlist = null;
 		try {
-			runlist = (List<CrViewRuninfo>) coolrep.findCoolList(CrViewRuninfo.QUERY_FINDRUNS,params);
-		} catch (CoolIOException e) {
+			runlist = (List<CrViewRuninfo>) coolrep.findCoolList(
+					CrViewRuninfo.QUERY_FINDRUNS, params);
+		} catch (final CoolIOException e) {
 			throw new ComaQueryException(e.getMessage());
 		}
 		return runlist;
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.coma.dao.ComaCbDAO#findRunsInRange(java.sql.Timestamp, java.sql.Timestamp)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.coma.dao.ComaCbDAO#findRunsInRange(java.sql.Timestamp,
+	 * java.sql.Timestamp)
 	 */
 	@Override
-	public List<CrViewRuninfo> findRunsInRange(Timestamp since, Timestamp until)
-			throws ComaQueryException {
-		Object[] params = new Object[2];
+	public final List<CrViewRuninfo> findRunsInRange(final Timestamp since,
+			final Timestamp until) throws ComaQueryException {
+		final Object[] params = new Object[2];
 		params[0] = since;
 		params[1] = until;
-		log.info("Using query "+CrViewRuninfo.QUERY_FINDRUNS_BYTIME+" with "+since+" "+until);
+		log.info("Using query " + CrViewRuninfo.QUERY_FINDRUNS_BYTIME + " with " + since
+				+ " " + until);
 		List<CrViewRuninfo> runlist = null;
 		try {
-			runlist = (List<CrViewRuninfo>) coolrep.findCoolList(CrViewRuninfo.QUERY_FINDRUNS_BYTIME,params);
-		} catch (CoolIOException e) {
+			runlist = (List<CrViewRuninfo>) coolrep.findCoolList(
+					CrViewRuninfo.QUERY_FINDRUNS_BYTIME, params);
+		} catch (final CoolIOException e) {
 			throw new ComaQueryException(e.getMessage());
 		}
 		return runlist;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see atlas.coma.dao.ComaCbDAO#findRun(java.math.BigDecimal)
 	 */
 	@Override
-	public CrViewRuninfo findRun(BigDecimal run) throws ComaQueryException {
+	public final CrViewRuninfo findRun(final BigDecimal run) throws ComaQueryException {
 		CrViewRuninfo therun = null;
 		try {
 			therun = coolrep.findObj(CrViewRuninfo.class, run);
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return therun;
 	}
 
-    
 }

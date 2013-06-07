@@ -13,12 +13,39 @@ import atlas.coma.model.CrViewRuninfo;
 
 /**
  * @author formica
- *
+ * 
  */
 public interface ComaCbDAO {
 
+	/**
+	 * @param gtagname
+	 * @return
+	 * @throws ComaQueryException
+	 */
 	List<ComaCbamiGtags> findGtagUsageInAmi(String gtagname) throws ComaQueryException;
-	List<CrViewRuninfo> findRunsInRange(BigDecimal runstart, BigDecimal runend) throws ComaQueryException;
-	List<CrViewRuninfo> findRunsInRange(Timestamp since, Timestamp until) throws ComaQueryException;
+
+	/**
+	 * @param runstart
+	 * @param runend
+	 * @return
+	 * @throws ComaQueryException
+	 */
+	List<CrViewRuninfo> findRunsInRange(BigDecimal runstart, BigDecimal runend)
+			throws ComaQueryException;
+
+	/**
+	 * @param since
+	 * @param until
+	 * @return
+	 * @throws ComaQueryException
+	 */
+	List<CrViewRuninfo> findRunsInRange(Timestamp since, Timestamp until)
+			throws ComaQueryException;
+
+	/**
+	 * @param run
+	 * @return
+	 * @throws ComaQueryException
+	 */
 	CrViewRuninfo findRun(BigDecimal run) throws ComaQueryException;
 }
