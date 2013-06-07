@@ -14,15 +14,11 @@
 			<attribute name="owner.project.facets" value="jst.web;#system#"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 6 (MacOS X Default)">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="var" path="EXTERNALS_LIB/share/java/db/sqlite-jdbc-3.7.2.jar"/>
-	<classpathentry kind="var" path="JALIGN_LIB_DIR/commons-io-2.4.jar"/>
 	<classpathentry kind="var" path="EXTERNALS_LIB/share/java/db/ojdbc6.jar"/>
 	<classpathentry kind="src" path="/JBCoolUtils"/>
 	<classpathentry kind="src" path="/JBComaEjbs"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="EXTERNALS_LIB/share/java/apache/commons-io-2.4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

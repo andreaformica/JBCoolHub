@@ -3,7 +3,8 @@
 	
   <dirname property="dependencies.basedir" file="setup.sh"/>
 
-  <property name="build.doc.dir" value="${basedir}/doc" />
+	  <property name="build.doc.dir" value="${basedir}/doc" />
+	  <property name="build.checkstyle.dir" value="${basedir}/checkstyle" />
 
 
   <!-- The dependencies between the various projects -->
@@ -33,8 +34,10 @@
 	
   <target name="depend.all" depends="depend.JBCoolEAR"/>	
 
-  <target name="depend.doc" depends="depend.JBCoolUtils, depend.JBCoolEjbs,depend.JBComaEjbs, depend.JBRestCool">  
-  </target>
+	  <target name="depend.doc" depends="depend.JBCoolUtils, depend.JBCoolEjbs,depend.JBComaEjbs, depend.JBRestCool">  
+	  </target>
+	  <target name="depend.checkstyle" depends="depend.JBCoolUtils, depend.JBCoolEjbs,depend.JBComaEjbs, depend.JBRestCool">  
+	  </target>
 	
 
   <!-- The global targets -->
@@ -51,7 +54,14 @@
     </antcall>
   </target>
 
-  <target name="clean">
+	  <target name="checkstyle">
+	    <antcall target="depend.checkstyle">
+	        <param name="dependency.target" value="checkstyle"/>
+	        <param name="build.checkstyle.dir" value="${basedir}/checkstyle"/>
+	    </antcall>
+	  </target>
+
+	<target name="clean">
     <antcall target="depend.all">
       <param name="dependency.target" value="clean"/>
     </antcall>
