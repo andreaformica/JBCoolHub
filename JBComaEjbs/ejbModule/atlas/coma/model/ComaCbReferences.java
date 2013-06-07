@@ -88,81 +88,81 @@ public class ComaCbReferences implements java.io.Serializable {
 		return cbfIndex;
 	}
 
-	public final  void setCbfIndex(final BigDecimal cbfIndex) {
+	public void setCbfIndex(final BigDecimal cbfIndex) {
 		this.cbfIndex = cbfIndex;
 	}
 
 	@OneToOne(fetch = FetchType.LAZY)
-	public final  ComaCbNodes getComaCbNodes() {
+	public ComaCbNodes getComaCbNodes() {
 		return comaCbNodes;
 	}
 
-	public final  void setComaCbNodes(final ComaCbNodes comaCbNodes) {
+	public void setComaCbNodes(final ComaCbNodes comaCbNodes) {
 		this.comaCbNodes = comaCbNodes;
 	}
 
 	@Column(name = "FOLDER_IOVTABLENAME")
-	public final  String getFolderIovtablename() {
+	public String getFolderIovtablename() {
 		return folderIovtablename;
 	}
 
-	public final  void setFolderIovtablename(final String folderIovtablename) {
+	public void setFolderIovtablename(final String folderIovtablename) {
 		this.folderIovtablename = folderIovtablename;
 	}
 
 	@Column(name = "FOLDER_TAGTABLENAME")
-	public final  String getFolderTagtablename() {
+	public String getFolderTagtablename() {
 		return folderTagtablename;
 	}
 
-	public final  void setFolderTagtablename(final String folderTagtablename) {
+	public void setFolderTagtablename(final String folderTagtablename) {
 		this.folderTagtablename = folderTagtablename;
 	}
 
 	@Column(name = "FOLDER_IOV2TAGTABLENAME")
-	public final  String getFolderIov2tagtablename() {
+	public String getFolderIov2tagtablename() {
 		return folderIov2tagtablename;
 	}
 
-	public final  void setFolderIov2tagtablename(final String folderIov2tagtablename) {
+	public void setFolderIov2tagtablename(final String folderIov2tagtablename) {
 		this.folderIov2tagtablename = folderIov2tagtablename;
 	}
 
 	@Column(name = "FOLDER_CHANNELTABLENAME")
-	public final  String getFolderChanneltablename() {
+	public String getFolderChanneltablename() {
 		return folderChanneltablename;
 	}
 
-	public final  void setFolderChanneltablename(final String folderChanneltablename) {
+	public void setFolderChanneltablename(final String folderChanneltablename) {
 		this.folderChanneltablename = folderChanneltablename;
 	}
 
 	@Column(name = "FOLDER_PAYLOAD_EXTREF")
-	public final  String getFolderPayloadExtref() {
+	public String getFolderPayloadExtref() {
 		return folderPayloadExtref;
 	}
 
-	public final  void setFolderPayloadExtref(final String folderPayloadExtref) {
+	public void setFolderPayloadExtref(final String folderPayloadExtref) {
 		this.folderPayloadExtref = folderPayloadExtref;
 	}
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "COMA_INS_DATE", length = 7)
-	public final  Date getComaInsDate() {
+	public Date getComaInsDate() {
 		return comaInsDate;
 	}
 
-	public final  void setComaInsDate(final Date comaInsDate) {
+	public void setComaInsDate(final Date comaInsDate) {
 		this.comaInsDate = comaInsDate;
 	}
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "COMA_UPD_DATE", length = 7)
-	public final  Date getComaUpdDate() {
+	public Date getComaUpdDate() {
 		return comaUpdDate;
 	}
 
-	public final  void setComaUpdDate(final Date comaUpdDate) {
+	public void setComaUpdDate(final Date comaUpdDate) {
 		this.comaUpdDate = comaUpdDate;
 	}
 

@@ -75,7 +75,7 @@ public class CoolResultSet implements CoolResultSetDAO {
 	 * java.lang.String, java.lang.String, java.math.BigDecimal, java.lang.Long)
 	 */
 	@Override
-	public final ResultSet getPayload(final String schemaname, final String dbname,
+	public ResultSet getPayload(final String schemaname, final String dbname,
 			final String folder, final String tagname, final BigDecimal time,
 			final Long channelId) throws CoolIOException {
 		try {
@@ -97,7 +97,7 @@ public class CoolResultSet implements CoolResultSetDAO {
 	 * java.lang.Long)
 	 */
 	@Override
-	public final ResultSet getPayloads(final String schemaname, final String dbname,
+	public ResultSet getPayloads(final String schemaname, final String dbname,
 			final String folder, final String tagname, final BigDecimal stime,
 			final BigDecimal etime, final Long channelId) throws CoolIOException {
 		try {
@@ -123,7 +123,7 @@ public class CoolResultSet implements CoolResultSetDAO {
 	 * java.lang.String, java.lang.String, java.math.BigDecimal, java.lang.String)
 	 */
 	@Override
-	public final ResultSet getPayload(final String schemaname, final String dbname,
+	public ResultSet getPayload(final String schemaname, final String dbname,
 			final String folder, final String tagname, final BigDecimal time,
 			final String channelName) throws CoolIOException {
 		try {
@@ -145,7 +145,7 @@ public class CoolResultSet implements CoolResultSetDAO {
 	 * java.lang.String)
 	 */
 	@Override
-	public final ResultSet getPayloads(final String schemaname, final String dbname,
+	public ResultSet getPayloads(final String schemaname, final String dbname,
 			final String folder, final String tagname, final BigDecimal stime,
 			final BigDecimal etime, final String channelName) throws CoolIOException {
 		try {
@@ -174,7 +174,7 @@ public class CoolResultSet implements CoolResultSetDAO {
 	 */
 	@Override
 	@Remove
-	public final void closeConnection() {
+	public void closeConnection() {
 		// TODO Auto-generated method stub
 		try {
 			if (cstmt != null) {
@@ -202,8 +202,7 @@ public class CoolResultSet implements CoolResultSetDAO {
 			final String folder, final String tagname, final BigDecimal time,
 			final Long channelId) {
 
-		final String stmt = 
-				"select cool_select_pkg.f_get_payloadiov(?,?,?,?,?,?) from dual";
+		final String stmt = "select cool_select_pkg.f_get_payloadiov(?,?,?,?,?,?) from dual";
 		ResultSet rset = null;
 		ResultSet rs = null;
 		// PreparedStatement pstmt = null;
@@ -265,8 +264,7 @@ public class CoolResultSet implements CoolResultSetDAO {
 			final String folder, final String tagname, final BigDecimal stime,
 			final BigDecimal etime, final Long channelId) {
 
-		final String stmt = 
-				"select cool_select_pkg.f_get_payloadiovs(?,?,?,?,?,?,?) from dual";
+		final String stmt = "select cool_select_pkg.f_get_payloadiovs(?,?,?,?,?,?,?) from dual";
 		ResultSet rset = null;
 		ResultSet rs = null;
 		// PreparedStatement pstmt = null;
@@ -336,8 +334,7 @@ public class CoolResultSet implements CoolResultSetDAO {
 			final String folder, final String tagname, final BigDecimal time,
 			final String channelName) {
 
-		final String stmt = 
-			"select cool_select_pkg.f_get_payloadiovbychanname(?,?,?,?,?,?) from dual";
+		final String stmt = "select cool_select_pkg.f_get_payloadiovbychanname(?,?,?,?,?,?) from dual";
 		ResultSet rset = null;
 		ResultSet rs = null;
 		// PreparedStatement pstmt = null;
@@ -399,8 +396,7 @@ public class CoolResultSet implements CoolResultSetDAO {
 			final String folder, final String tagname, final BigDecimal stime,
 			final BigDecimal etime, final String channelName) {
 
-		final String stmt = 
-			"select cool_select_pkg.f_get_payloadiovsbychanname(?,?,?,?,?,?,?) from dual";
+		final String stmt = "select cool_select_pkg.f_get_payloadiovsbychanname(?,?,?,?,?,?,?) from dual";
 		ResultSet rset = null;
 		ResultSet rs = null;
 		// PreparedStatement pstmt = null;
@@ -463,16 +459,16 @@ public class CoolResultSet implements CoolResultSetDAO {
 	 * @throws SQLException
 	 */
 	protected final String dumpResultSet(final ResultSet rs) throws SQLException {
-		final ResultSetMetaData rsmd_rs = rs.getMetaData();
-		for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-			log.info("col " + i + " name = " + rsmd_rs.getColumnName(i));
+		final ResultSetMetaData rsmdRs = rs.getMetaData();
+		for (int i = 1; i <= rsmdRs.getColumnCount(); i++) {
+			log.info("col " + i + " name = " + rsmdRs.getColumnName(i));
 		}
 		log.info(" rs is on first row " + rs.isFirst());
 		final StringBuffer buf = new StringBuffer();
-		final int ncol = rsmd_rs.getColumnCount();
+		final int ncol = rsmdRs.getColumnCount();
 		while (rs.next()) {
 			for (int i = 1; i <= ncol; i++) {
-				final String colname = rsmd_rs.getColumnName(i);
+				final String colname = rsmdRs.getColumnName(i);
 				final Object colval = rs.getObject(i);
 				// payload.addColumn(i, colname);
 				// payload.addData(i, colval);

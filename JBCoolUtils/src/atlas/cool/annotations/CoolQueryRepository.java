@@ -52,8 +52,7 @@ public class CoolQueryRepository {
 	/**
 	 * 
 	 */
-	private final Map<String, QueryParams> queryMap 
-		= new HashMap<String, QueryParams>();
+	private Map<String, QueryParams> queryMap = new HashMap<String, QueryParams>();
 
 	// private final Map<String, Query> queryEmMap = new HashMap<String,
 	// Query>();
@@ -69,7 +68,7 @@ public class CoolQueryRepository {
 	 * 
 	 */
 	@PostConstruct
-	protected final void init() {
+	protected void init() {
 		try {
 
 			// log.info("Init CoolQueryRepository for package atlas.cool.rest.model");
@@ -96,12 +95,14 @@ public class CoolQueryRepository {
 								.getName()));
 					} catch (IOException e) {
 						// no actions.
+						;
 					}
 					if (dir == null) {
 						try {
 							dir = createDir(content.getPhysicalFile());
 						} catch (IOException e) {
 							// no actions.
+							;
 						}
 					}
 					return dir;
@@ -135,7 +136,7 @@ public class CoolQueryRepository {
 	 * @return QueryParams The object which contains all the parameters needed
 	 *         for the query.
 	 */
-	public final synchronized QueryParams getQueryParams(final String qryname)
+	public synchronized QueryParams getQueryParams(final String qryname)
 			throws CoolQueryException {
 		try {
 			// System.out.println("Searching for "+qryname+" in map "+queryMap+" inside coolqueryrep "+this.toString());
@@ -147,7 +148,8 @@ public class CoolQueryRepository {
 	}
 
 	/**
-	 * Jar files URLs [ vfs:/content/JBCoolEjbs.jar vfs:/content/JBComaEjbs.jar] .
+	 * Jar files URLs [ vfs:/content/JBCoolEjbs.jar vfs:/content/JBComaEjbs.jar]
+	 * .
 	 * 
 	 * @param pckgname
 	 * @throws CoolQueryException
@@ -192,14 +194,13 @@ public class CoolQueryRepository {
 
 	/**
 	 * @param pckgname
-	 * 	The package name.
-	 * @return
-	 * 	List of classes.
+	 *            The package name.
+	 * @return List of classes.
 	 * @throws ClassNotFoundException
-	 * 	Class not found.
+	 *             Class not found.
 	 */
 	@SuppressWarnings("rawtypes")
-	public final List<Class> getClassesForPackage(final String pckgname)
+	public List<Class> getClassesForPackage(final String pckgname)
 			throws ClassNotFoundException {
 		// This will hold a list of directories matching the pckgname.
 		// There may be more than one if a package is split over multiple
@@ -297,14 +298,13 @@ public class CoolQueryRepository {
 
 	/**
 	 * @param thePackage
-	 * 	The package name.
+	 *            The package name.
 	 * @param theInterface
-	 * 	The interface.
-	 * @return
-	 * 	List of classes implementing the interface.
+	 *            The interface.
+	 * @return List of classes implementing the interface.
 	 */
 	@SuppressWarnings("rawtypes")
-	public final List<Class> getClassessOfInterface(final String thePackage,
+	public List<Class> getClassessOfInterface(final String thePackage,
 			final Class theInterface) {
 		List<Class> classList = new ArrayList<Class>();
 		try {
@@ -323,9 +323,9 @@ public class CoolQueryRepository {
 
 	/**
 	 * @param key
-	 * 	A key.
+	 *            A key.
 	 * @param value
-	 * 	A value.
+	 *            A value.
 	 */
 	public static void setDefaultSystemProperty(final String key,
 			final String value) {
@@ -336,7 +336,7 @@ public class CoolQueryRepository {
 
 	/**
 	 * @param args
-	 * 	Input arguments.
+	 *            Input arguments.
 	 */
 	public static void main(final String[] args) {
 

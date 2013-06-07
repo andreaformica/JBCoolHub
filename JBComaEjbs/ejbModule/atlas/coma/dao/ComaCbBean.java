@@ -42,8 +42,9 @@ public class ComaCbBean implements ComaCbDAO {
 	/**
 	 * @see ComaCbDAO#findGtagUsageInAmi(String)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public final List<ComaCbamiGtags> findGtagUsageInAmi(final String gtagname)
+	public List<ComaCbamiGtags> findGtagUsageInAmi(final String gtagname)
 			throws ComaQueryException {
 
 		final Object[] params = new Object[1];
@@ -67,8 +68,9 @@ public class ComaCbBean implements ComaCbDAO {
 	 * @see atlas.coma.dao.ComaCbDAO#findRunsInRange(java.math.BigDecimal,
 	 * java.math.BigDecimal)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public final List<CrViewRuninfo> findRunsInRange(final BigDecimal runstart,
+	public List<CrViewRuninfo> findRunsInRange(final BigDecimal runstart,
 			final BigDecimal runend) throws ComaQueryException {
 		final Object[] params = new Object[2];
 		params[0] = runstart;
@@ -92,7 +94,7 @@ public class ComaCbBean implements ComaCbDAO {
 	 * java.sql.Timestamp)
 	 */
 	@Override
-	public final List<CrViewRuninfo> findRunsInRange(final Timestamp since,
+	public List<CrViewRuninfo> findRunsInRange(final Timestamp since,
 			final Timestamp until) throws ComaQueryException {
 		final Object[] params = new Object[2];
 		params[0] = since;
@@ -115,7 +117,7 @@ public class ComaCbBean implements ComaCbDAO {
 	 * @see atlas.coma.dao.ComaCbDAO#findRun(java.math.BigDecimal)
 	 */
 	@Override
-	public final CrViewRuninfo findRun(final BigDecimal run) throws ComaQueryException {
+	public CrViewRuninfo findRun(final BigDecimal run) throws ComaQueryException {
 		CrViewRuninfo therun = null;
 		try {
 			therun = coolrep.findObj(CrViewRuninfo.class, run);

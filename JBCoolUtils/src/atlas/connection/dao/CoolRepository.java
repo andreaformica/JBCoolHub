@@ -70,7 +70,7 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * java.lang.Object)
 	 */
 	@Override
-	public final <T> T findObj(final Class<T> clazz, final Object pk) 
+	public <T> T findObj(final Class<T> clazz, final Object pk)
 			throws CoolIOException {
 		try {
 			T obj = em.find(clazz, pk);
@@ -88,9 +88,9 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * java.lang.String, java.lang.Object[], java.util.Map)
 	 */
 	@Override
-	public final List<?> findCoolList(final Object domain, 
-			final String qryname, final Object[] params,
-			final Map<String, Boolean> orderbyParams) throws CoolIOException {
+	public List<?> findCoolList(final Object domain, final String qryname,
+			final Object[] params, final Map<String, Boolean> orderbyParams)
+			throws CoolIOException {
 		try {
 			return findCoolListByRange(domain, qryname, params, 0, 0,
 					orderbyParams);
@@ -108,10 +108,10 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * java.lang.String, java.lang.Object[], int, int, java.util.Map)
 	 */
 	@Override
-	public final List<?> findCoolListByRange(
-			final Object domain, final String qryname,
-			final Object[] params, final int firstResult, final int maxResults,
-			final Map<String, Boolean> orderbyParams) throws CoolIOException {
+	public List<?> findCoolListByRange(final Object domain,
+			final String qryname, final Object[] params, final int firstResult,
+			final int maxResults, final Map<String, Boolean> orderbyParams)
+			throws CoolIOException {
 		try {
 			Query q = null;
 			if (domain != null && orderbyParams != null) {
@@ -148,9 +148,8 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * java.lang.Object[])
 	 */
 	@Override
-	public final synchronized List<?> findCoolList(
-			final String qryname, final Object[] params)
-			throws CoolIOException {
+	public synchronized List<?> findCoolList(final String qryname,
+			final Object[] params) throws CoolIOException {
 		try {
 			return findCoolListByRange(qryname, params, 0, 0);
 		} catch (NoResultException e) {
@@ -167,10 +166,8 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * java.lang.Object[], int, int)
 	 */
 	@Override
-	public final synchronized List<?> findCoolListByRange(
-			final String qryname,
-			final Object[] params, 
-			final int firstResult, final int maxResults)
+	public synchronized List<?> findCoolListByRange(final String qryname,
+			final Object[] params, final int firstResult, final int maxResults)
 			throws CoolIOException {
 		try {
 			Query q = getQuery(qryname, params);
@@ -196,27 +193,23 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * java.lang.String, java.lang.Object[])
 	 */
 	@Override
-	public final <T> HibernateQueryList<T> findCoolList(
-			final Class<T> clazz,
-			final String qryname, final Object[] params) 
-					throws CoolIOException {
+	public <T> HibernateQueryList<T> findCoolList(final Class<T> clazz,
+			final String qryname, final Object[] params) throws CoolIOException {
 		return new HibernateQueryList<T>(new QueryListIterator<T>(this,
 				qryname, params));
 	}
 
 	/**
 	 * @param qry
-	 * 	The query name.
+	 *            The query name.
 	 * @param params
-	 * 	The parameters.
-	 * @return
-	 * 	A Query object. 
+	 *            The parameters.
+	 * @return A Query object.
 	 * @throws CoolIOException
-	 * 	Cool exception.
+	 *             Cool exception.
 	 */
-	protected final synchronized Query getQuery(
-			final String qry, final Object[] params)
-			throws CoolIOException {
+	protected final synchronized Query getQuery(final String qry,
+			final Object[] params) throws CoolIOException {
 		// log.info("Build query "+qry+" with N parameters "+params.length);
 		try {
 			log.fine("Search query in " + coolqry);

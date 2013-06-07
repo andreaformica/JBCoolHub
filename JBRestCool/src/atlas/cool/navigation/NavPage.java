@@ -6,7 +6,7 @@ package atlas.cool.navigation;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.SessionScoped;
@@ -17,20 +17,25 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 
-
-@Named("navPage")
-@SessionScoped
 /**
  * @author formica
- *
+ * 
  */
+@Named("navPage")
+@SessionScoped
 public class NavPage implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4016006216716263505L;
+	/**
+	 * 
+	 */
 	private String page = "mainPage";
+	/**
+	 * 
+	 */
 	private final String defaultpage = "mainPage";
 
 	@Inject
@@ -38,7 +43,7 @@ public class NavPage implements Serializable {
 
 	@Inject
 	private Logger log;
-	
+
 	@Inject
 	private Event<String> selectedPage;
 
@@ -49,49 +54,61 @@ public class NavPage implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * @return
+	 */
 	public String getLocal() {
 		String hostname = "localhost";
 		try {
-			java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+			final java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
 			log.info("Hostname of local machine: " + localMachine.getHostName());
 			hostname = localMachine.getHostName();
-			}
-			catch (java.net.UnknownHostException uhe) { // [beware typo in code sample -dmw]
+		} catch (final java.net.UnknownHostException uhe) {
+			log.log(Level.SEVERE, "Error in navigation " + uhe.getMessage());
+			// [beware typo in
+			// code
+			// sample -dmw]
 			// handle exception
-			}
-
-		Properties props = System.getProperties();
-		for (Object key : props.keySet()) {
-			log.info("Found property key "+key+" with value "+props.get(key));
 		}
-		return hostname+":8080";
+		// final Properties props = System.getProperties();
+		// for (final Object key : props.keySet()) {
+		// log.info("Found property key " + key + " with value " +
+		// props.get(key));
+		// }
+		return hostname + ":8080";
 	}
-	
+
+	/**
+	 * 
+	 */
 	public void doNav() {
 		log.info("Navigation ....");
-		String str = facesContext.getExternalContext().getRequestParameterMap()
+		final String str = facesContext.getExternalContext().getRequestParameterMap()
 				.get("coolpage");
 		addMessage("Navigating to " + str);
-		//this.page = str;
+		// this.page = str;
 		checkPage(str);
 		selectedPage.fire(page);
 	}
 
-	protected void checkPage(String page) {
-        try {
-			URL _urlpage = FacesContext.getCurrentInstance().getExternalContext()
-			            .getResource("/"+page+".xhtml");
-			if (_urlpage == null) {
-				log.info("Cannot acces page "+page);
-				this.page = this.defaultpage;
+	/**
+	 * @param ppage
+	 */
+	protected void checkPage(final String ppage) {
+		try {
+			final URL lurlpage = FacesContext.getCurrentInstance().getExternalContext()
+					.getResource("/" + ppage + ".xhtml");
+			if (lurlpage == null) {
+				log.info("Cannot acces page " + ppage);
+				this.page = defaultpage;
 			} else {
-				log.info("page is "+page);
-				this.page = page;
+				log.info("page is " + ppage);
+				this.page = ppage;
 			}
-		} catch (MalformedURLException e) {
+		} catch (final MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			this.page = this.defaultpage;
+			this.page = defaultpage;
 		}
 	}
 
@@ -106,7 +123,7 @@ public class NavPage implements Serializable {
 	 * @param page
 	 *            the page to set
 	 */
-	public void setPage(String page) {
+	public void setPage(final String page) {
 		this.page = page;
 	}
 
@@ -117,8 +134,11 @@ public class NavPage implements Serializable {
 		return defaultpage;
 	}
 
-	public void addMessage(String summary) {
-		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+	/**
+	 * @param summary
+	 */
+	public void addMessage(final String summary) {
+		final FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
 				summary, null);
 		FacesContext.getCurrentInstance().addMessage(null, message);
 	}

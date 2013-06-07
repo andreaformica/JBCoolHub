@@ -52,7 +52,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 * @see atlas.cool.rest.web.CoolRESTImpl#setSort(java.lang.String)
 	 */
 	@Override
-	protected final void setSort(final String orderByName) {
+	protected void setSort(final String orderByName) {
 		// TODO Auto-generated method stub
 		super.setSort(orderByName);
 	}
@@ -67,7 +67,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/nodes")
-	public final List<NodeType> listNodesInSchema(@PathParam("schema") final String schema,
+	public List<NodeType> listNodesInSchema(@PathParam("schema") final String schema,
 			@PathParam("db") final String db) {
 		// TODO Auto-generated method stub
 		return super.listNodesInSchema(schema, db);
@@ -84,7 +84,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{node:.*}/tags")
-	public final List<SchemaNodeTagType> listTagsInNodesSchema(
+	public List<SchemaNodeTagType> listTagsInNodesSchema(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
 			@PathParam("node") final String node) {
 		// TODO Auto-generated method stub
@@ -102,7 +102,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{node:.*}/fld/{channel}/channels")
-	public final List<ChannelType> listChannelsInNodesSchema(
+	public List<ChannelType> listChannelsInNodesSchema(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
 			@PathParam("node") final String node,
 			@PathParam("channel") final String channame) {
@@ -121,7 +121,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{gtag}/trace")
-	public final List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
+	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
 			@PathParam("gtag") final String gtag) {
 		// TODO Auto-generated method stub
@@ -139,7 +139,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsperchan")
-	public final List<IovType> getIovStatPerChannel(@PathParam("schema") final String schema,
+	public List<IovType> getIovStatPerChannel(@PathParam("schema") final String schema,
 			@PathParam("db") final String db, @PathParam("fld") final String fld,
 			@PathParam("tag") final String tag) {
 		// TODO Auto-generated method stub
@@ -159,7 +159,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
-	public final  NodeType listIovsInNodesSchemaTagRangeAsList(
+	public NodeType listIovsInNodesSchemaTagRangeAsList(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
 			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
 			@PathParam("channel") final String channel,
@@ -185,7 +185,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
-	public final  NodeType listIovsInNodesSchemaTagRangeSortedAsList(
+	public NodeType listIovsInNodesSchemaTagRangeSortedAsList(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
 			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
 			@PathParam("sort") final String sort,
@@ -212,7 +212,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/data/list")
-	public final  NodeType listPayloadInNodesSchemaTagRangeAsList(
+	public NodeType listPayloadInNodesSchemaTagRangeAsList(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
 			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
 			@PathParam("channel") final String channel,
@@ -237,7 +237,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{channel}/{chansel}/{since}/{until}/{timespan}/data/list")
-	public final  NodeType listPayloadInNodesSchemaTagRangeSortedAsList(
+	public NodeType listPayloadInNodesSchemaTagRangeSortedAsList(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
 			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
 			@PathParam("sort") final String sort,
@@ -263,7 +263,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/{timespan}/rangesummary/list")
-	public final  Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(
+	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
 			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
 			@PathParam("since") final String since,

@@ -70,7 +70,7 @@ public class CoolParamsBean implements Serializable {
 		}
 	}
 
-	public final  void retrieveGtagsData() {
+	public  void retrieveGtagsData() {
 		try {
 			log.info("Retrieving gtags for :" + schemaName + " " + dbName + " "
 					+ gtagName + "!");
@@ -83,7 +83,7 @@ public class CoolParamsBean implements Serializable {
 		}
 	}
 
-	public final  void retrieveNodeGtagTagsData() {
+	public  void retrieveNodeGtagTagsData() {
 		try {
 			log.info("Retrieving node tags for :" + schemaName + " " + dbName + " "
 					+ selGtag.getGtagName() + "!");
@@ -96,7 +96,7 @@ public class CoolParamsBean implements Serializable {
 		}
 	}
 
-	public final  void retrieveNodeGtagDoubleFldData() {
+	public  void retrieveNodeGtagDoubleFldData() {
 		try {
 			log.info("Retrieving node tags for :" + schemaName + " " + dbName + " "
 					+ selGtag.getGtagName() + "!");
@@ -109,7 +109,7 @@ public class CoolParamsBean implements Serializable {
 		}
 	}
 
-	public final  void loadSchemas() {
+	public  void loadSchemas() {
 		try {
 			log.info("Retrieving schemas for :" + schemaName + " " + dbName);
 			schemaList = cooldao.retrieveSchemasFromNodeSchemaAndDb("ATLAS_COOL%",
@@ -124,7 +124,7 @@ public class CoolParamsBean implements Serializable {
 	/**
 	 * @return the schemaName
 	 */
-	public final  String getSchemaName() {
+	public  String getSchemaName() {
 		return schemaName;
 	}
 
@@ -132,7 +132,7 @@ public class CoolParamsBean implements Serializable {
 	 * @param schemaName
 	 *            the schemaName to set
 	 */
-	public final  void setSchemaName(final String schemaName) {
+	public  void setSchemaName(final String schemaName) {
 		String dbn = schemaName;
 		if (schemaName.contains("%")) {
 			dbn = schemaName.replaceAll("%", "");
@@ -143,7 +143,7 @@ public class CoolParamsBean implements Serializable {
 	/**
 	 * @return the dbName
 	 */
-	public final  String getDbName() {
+	public  String getDbName() {
 		return dbName;
 	}
 
@@ -151,7 +151,7 @@ public class CoolParamsBean implements Serializable {
 	 * @param dbName
 	 *            the dbName to set
 	 */
-	public final  void setDbName(final String dbName) {
+	public  void setDbName(final String dbName) {
 		String dbn = dbName;
 		if (dbName.contains("%")) {
 			dbn = dbName.replaceAll("%", "");
@@ -165,7 +165,7 @@ public class CoolParamsBean implements Serializable {
 	/**
 	 * @return the gtagName
 	 */
-	public final  String getGtagName() {
+	public  String getGtagName() {
 		return gtagName;
 	}
 
@@ -173,7 +173,7 @@ public class CoolParamsBean implements Serializable {
 	 * @param gtagName
 	 *            the gtagName to set
 	 */
-	public final  void setGtagName(final String gtagName) {
+	public  void setGtagName(final String gtagName) {
 		String dbn = gtagName;
 		if (gtagName.contains("%")) {
 			dbn = gtagName.replaceAll("%", "");
@@ -185,21 +185,21 @@ public class CoolParamsBean implements Serializable {
 	/**
 	 * @return the dbList
 	 */
-	public final  List<String> getDbList() {
+	public  List<String> getDbList() {
 		return dbList;
 	}
 
 	/**
 	 * @return the gtagList
 	 */
-	public final  List<GtagType> getGtagList() {
+	public  List<GtagType> getGtagList() {
 		return gtagList;
 	}
 
 	/**
 	 * @return the selGtag
 	 */
-	public final  GtagType getSelGtag() {
+	public  GtagType getSelGtag() {
 		return selGtag;
 	}
 
@@ -207,7 +207,7 @@ public class CoolParamsBean implements Serializable {
 	 * @param selGtag
 	 *            the selGtag to set
 	 */
-	public final  void setSelGtag(final GtagType selGtag) {
+	public  void setSelGtag(final GtagType selGtag) {
 		boolean changeselection = false;
 		if (this.selGtag != null && this.selGtag.equals(selGtag)) {
 			log.info("Ignoring changes of selection if node tags data are loaded");
@@ -232,14 +232,14 @@ public class CoolParamsBean implements Serializable {
 	/**
 	 * @return the nodegtagtagList
 	 */
-	public final  List<NodeGtagTagType> getNodegtagtagList() {
+	public  List<NodeGtagTagType> getNodegtagtagList() {
 		return nodegtagtagList;
 	}
 
 	/**
 	 * @return the nodegtagtagListFiltered
 	 */
-	public final  List<NodeGtagTagType> getNodegtagtagListFiltered() {
+	public  List<NodeGtagTagType> getNodegtagtagListFiltered() {
 		return nodegtagtagListFiltered;
 	}
 
@@ -247,7 +247,7 @@ public class CoolParamsBean implements Serializable {
 	 * @param nodegtagtagListFiltered
 	 *            the nodegtagtagListFiltered to set
 	 */
-	public final  void setNodegtagtagListFiltered(
+	public  void setNodegtagtagListFiltered(
 			final List<NodeGtagTagType> nodegtagtagListFiltered) {
 		this.nodegtagtagListFiltered = nodegtagtagListFiltered;
 	}
@@ -255,7 +255,7 @@ public class CoolParamsBean implements Serializable {
 	/**
 	 * @return the nodegtagdblfldList
 	 */
-	public final  List<NodeGtagTagType> getNodegtagdblfldList() {
+	public List<NodeGtagTagType> getNodegtagdblfldList() {
 		return nodegtagdblfldList;
 	}
 

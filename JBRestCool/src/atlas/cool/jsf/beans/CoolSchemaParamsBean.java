@@ -134,7 +134,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * 
 	 */
-	protected final void initDbs() {
+	protected  void initDbs() {
 
 		if (dbList == null) {
 			dbList = new ArrayList<String>();
@@ -147,7 +147,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * 
 	 */
-	protected final void initChannels() {
+	protected  void initChannels() {
 		if (defaultChannel == null) {
 			defaultChannel = new ChannelType();
 			defaultChannel.setChannelId(new BigDecimal(-1));
@@ -158,7 +158,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * 
 	 */
-	public final void retrieveNodeData() {
+	public  void retrieveNodeData() {
 		try {
 			log.info("Retrieving nodes for :" + schemaName + " " + dbName + " " + "!");
 			nodeList = cooldao
@@ -282,7 +282,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the payloadFile
 	 */
-	public final StreamedContent getPayloadFile() {
+	public  StreamedContent getPayloadFile() {
 		final String[] path = pyldFileName.split("/");
 		if (path.length <= 1) {
 			return null;
@@ -301,7 +301,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * 
 	 */
-	public final void loadSchemas() {
+	public  void loadSchemas() {
 		try {
 			log.info("Retrieving schemas for :" + schemaName + " " + dbName);
 			schemaList = cooldao.retrieveSchemasFromNodeSchemaAndDb("ATLAS_COOL%",
@@ -316,7 +316,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * 
 	 */
-	public final void loadPayload() {
+	public  void loadPayload() {
 		try {
 			log.info("Calling loadPayload....");
 			BigDecimal stime = null;
@@ -389,7 +389,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the payloadData
 	 */
-	public final  List<Map<String, Object>> getPayloadData() {
+	public List<Map<String, Object>> getPayloadData() {
 		// log.info("Retrieving list of size "+payloadData.size());
 		return payloadData;
 	}
@@ -397,7 +397,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the filteredPayloadData
 	 */
-	public final  List<Map<String, Object>> getFilteredPayloadData() {
+	public List<Map<String, Object>> getFilteredPayloadData() {
 		return filteredPayloadData;
 	}
 
@@ -405,28 +405,28 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param filteredPayloadData
 	 *            the filteredPayloadData to set
 	 */
-	public final  void setFilteredPayloadData(final List<Map<String, Object>> filteredPayloadData) {
+	public void setFilteredPayloadData(final List<Map<String, Object>> filteredPayloadData) {
 		this.filteredPayloadData = filteredPayloadData;
 	}
 
 	/**
 	 * @return the payloadColumns
 	 */
-	public final  List<String> getPayloadColumns() {
+	public List<String> getPayloadColumns() {
 		return payloadColumns;
 	}
 
 	/**
 	 * @return the payloadNumberColumns
 	 */
-	public final  List<String> getPayloadNumberColumns() {
+	public List<String> getPayloadNumberColumns() {
 		return payloadNumberColumns;
 	}
 
 	/**
 	 * @return the payloadColumns
 	 */
-	public final  List<String> getPayloadChartColumns() {
+	public List<String> getPayloadChartColumns() {
 		if (payload != null) {
 			log.info("Retrieve columns from payload...");
 			return payload.getNumberColumns();
@@ -438,7 +438,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the selColumn
 	 */
-	public final  String getSelColumn() {
+	public String getSelColumn() {
 		return selColumn;
 	}
 
@@ -446,14 +446,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param selColumn
 	 *            the selColumn to set
 	 */
-	public final  void setSelColumn(final String selColumn) {
+	public void setSelColumn(final String selColumn) {
 		this.selColumn = selColumn;
 	}
 
 	/**
 	 * @return the dbName
 	 */
-	public final  String getDbName() {
+	public String getDbName() {
 		return dbName;
 	}
 
@@ -461,7 +461,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param dbName
 	 *            the dbName to set
 	 */
-	public final  void setDbName(final String dbName) {
+	public void setDbName(final String dbName) {
 		String dbn = dbName;
 		if (dbName.contains("%")) {
 			dbn = dbName.replaceAll("%", "");
@@ -475,14 +475,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the dbList
 	 */
-	public final  List<String> getDbList() {
+	public List<String> getDbList() {
 		return dbList;
 	}
 
 	/**
 	 * @return the schemaList
 	 */
-	public final  List<SchemaType> getSchemaList() {
+	public List<SchemaType> getSchemaList() {
 		return schemaList;
 	}
 
@@ -490,14 +490,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param schemaList
 	 *            the schemaList to set
 	 */
-	public final  void setSchemaList(final List<SchemaType> schemaList) {
+	public void setSchemaList(final List<SchemaType> schemaList) {
 		this.schemaList = schemaList;
 	}
 
 	/**
 	 * @return the nodeList
 	 */
-	public final  List<NodeType> getNodeList() {
+	public List<NodeType> getNodeList() {
 		return nodeList;
 	}
 
@@ -505,14 +505,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param nodeList
 	 *            the nodeList to set
 	 */
-	public final  void setNodeList(final List<NodeType> nodeList) {
+	public void setNodeList(final List<NodeType> nodeList) {
 		this.nodeList = nodeList;
 	}
 
 	/**
 	 * @return the nodetagList
 	 */
-	public final  List<SchemaNodeTagType> getNodetagList() {
+	public List<SchemaNodeTagType> getNodetagList() {
 		return nodetagList;
 	}
 
@@ -520,14 +520,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param nodetagList
 	 *            the nodetagList to set
 	 */
-	public final  void setNodetagList(final List<SchemaNodeTagType> nodetagList) {
+	public void setNodetagList(final List<SchemaNodeTagType> nodetagList) {
 		this.nodetagList = nodetagList;
 	}
 
 	/**
 	 * @return the nodeiovstatList
 	 */
-	public final  List<IovStatType> getNodeiovstatList() {
+	public List<IovStatType> getNodeiovstatList() {
 		return nodeiovstatList;
 	}
 
@@ -535,7 +535,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param nodeiovstatList
 	 *            the nodeiovstatList to set
 	 */
-	public final  void setNodeiovstatList(final List<IovStatType> nodeiovstatList) {
+	public void setNodeiovstatList(final List<IovStatType> nodeiovstatList) {
 		this.nodeiovstatList = nodeiovstatList;
 	}
 
@@ -543,14 +543,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param dbList
 	 *            the dbList to set
 	 */
-	public final  void setDbList(final List<String> dbList) {
+	public void setDbList(final List<String> dbList) {
 		this.dbList = dbList;
 	}
 
 	/**
 	 * @return the selNode
 	 */
-	public final  NodeType getSelNode() {
+	public NodeType getSelNode() {
 		return selNode;
 	}
 
@@ -558,7 +558,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param selNode
 	 *            the selNode to set
 	 */
-	public final  void setSelNode(final NodeType selNode) {
+	public void setSelNode(final NodeType selNode) {
 		boolean changeselection = false;
 		if (this.selNode != null && this.selNode.equals(selNode)) {
 			log.info("Ignoring changes of selection if node tags data are loaded");
@@ -592,20 +592,20 @@ public class CoolSchemaParamsBean implements Serializable {
 		channelList = null;
 	}
 
-	public final  void onSelSchemaChanged(
+	public void onSelSchemaChanged(
 			@Observes(notifyObserver = Reception.IF_EXISTS) final SchemaType schema) {
 		log.info("Schema selection changed...");
 		// retrieveNodeData();
 	}
 
-	public final  void onSelNodeTagChanged(
+	public void onSelNodeTagChanged(
 			@Observes(notifyObserver = Reception.IF_EXISTS) final SchemaNodeTagType schema) {
 		log.info("Node tag selection changed...");
 		// retrieveIovStatData();
 		retrieveNodeGtagForTag();
 	}
 
-	public final  void onSelNodeChanged(
+	public void onSelNodeChanged(
 			@Observes(notifyObserver = Reception.IF_EXISTS) final NodeType node) {
 		try {
 
@@ -663,7 +663,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the selNodeTag
 	 */
-	public final  SchemaNodeTagType getSelNodeTag() {
+	public SchemaNodeTagType getSelNodeTag() {
 		return selNodeTag;
 	}
 
@@ -671,7 +671,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param selNodeTag
 	 *            the selNodeTag to set
 	 */
-	public final  void setSelNodeTag(final SchemaNodeTagType selNodeTag) {
+	public void setSelNodeTag(final SchemaNodeTagType selNodeTag) {
 		log.info("Selecting nodetag " + selNodeTag);
 		if (selNodeTag != null && !selNodeTag.equals(this.selNodeTag)) {
 			log.info("Selecting tag " + selNodeTag.getTagName());
@@ -683,7 +683,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the nodeListFiltered
 	 */
-	public final  List<NodeType> getNodeListFiltered() {
+	public List<NodeType> getNodeListFiltered() {
 		return nodeListFiltered;
 	}
 
@@ -691,14 +691,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param nodeListFiltered
 	 *            the nodeListFiltered to set
 	 */
-	public final  void setNodeListFiltered(final List<NodeType> nodeListFiltered) {
+	public void setNodeListFiltered(final List<NodeType> nodeListFiltered) {
 		this.nodeListFiltered = nodeListFiltered;
 	}
 
 	/**
 	 * @return the nodetagListFiltered
 	 */
-	public final  List<SchemaNodeTagType> getNodetagListFiltered() {
+	public List<SchemaNodeTagType> getNodetagListFiltered() {
 		return nodetagListFiltered;
 	}
 
@@ -706,14 +706,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param nodetagListFiltered
 	 *            the nodetagListFiltered to set
 	 */
-	public final  void setNodetagListFiltered(final List<SchemaNodeTagType> nodetagListFiltered) {
+	public void setNodetagListFiltered(final List<SchemaNodeTagType> nodetagListFiltered) {
 		this.nodetagListFiltered = nodetagListFiltered;
 	}
 
 	/**
 	 * @return the channelList
 	 */
-	public final  List<ChannelType> getChannelList() {
+	public List<ChannelType> getChannelList() {
 		return channelList;
 	}
 
@@ -721,14 +721,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param channelList
 	 *            the channelList to set
 	 */
-	public final  void setChannelList(final List<ChannelType> channelList) {
+	public void setChannelList(final List<ChannelType> channelList) {
 		this.channelList = channelList;
 	}
 
 	/**
 	 * @return the selChannel
 	 */
-	public final  ChannelType getSelChannel() {
+	public ChannelType getSelChannel() {
 		return selChannel;
 	}
 
@@ -736,7 +736,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param selChannel
 	 *            the selChannel to set
 	 */
-	public final  void setSelChannel(final ChannelType selChannel) {
+	public void setSelChannel(final ChannelType selChannel) {
 		log.info("Setting channel selection to " + selChannel);
 		if (selChannel != null) {
 			this.selChannel = selChannel;
@@ -746,7 +746,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the selSchema
 	 */
-	public final  SchemaType getSelSchema() {
+	public SchemaType getSelSchema() {
 		log.info("Selected schema from " + this + " is " + selSchema);
 		return selSchema;
 	}
@@ -755,7 +755,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param selSchema
 	 *            the selSchema to set
 	 */
-	public final  void setSelSchema(final SchemaType selSchema) {
+	public void setSelSchema(final SchemaType selSchema) {
 		log.info("Schema selection is setting " + selSchema + " replacing old "
 				+ this.selSchema);
 		if (selSchema != null) {
@@ -771,21 +771,21 @@ public class CoolSchemaParamsBean implements Serializable {
 		}
 	}
 
-	public final  String getSelSchemaName() {
+	public String getSelSchemaName() {
 		if (selSchema != null) {
 			return selSchema.getSchemaName();
 		}
 		return "none";
 	}
 
-	public final  String getSelNodeName() {
+	public String getSelNodeName() {
 		if (selNode != null) {
 			return selNode.getNodeFullpath();
 		}
 		return "none";
 	}
 
-	public final  String getSelNodeTagName() {
+	public String getSelNodeTagName() {
 		if (selNodeTag != null) {
 			return selNodeTag.getTagName();
 		}
@@ -795,14 +795,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the nodegtagfortagList
 	 */
-	public final  List<NodeGtagTagType> getNodegtagfortagList() {
+	public List<NodeGtagTagType> getNodegtagfortagList() {
 		return nodegtagfortagList;
 	}
 
 	/**
 	 * @return the pyldFileName
 	 */
-	public final  String getPyldFileName() {
+	public String getPyldFileName() {
 		final ExternalContext externalContext = FacesContext.getCurrentInstance()
 				.getExternalContext();
 		log.info("Path info is " + externalContext.getRequestPathInfo());
@@ -818,7 +818,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the tabIndex
 	 */
-	public final  Integer getTabIndex() {
+	public Integer getTabIndex() {
 		return tabIndex;
 	}
 
@@ -826,27 +826,27 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param tabIndex
 	 *            the tabIndex to set
 	 */
-	public final  void setTabIndex(final Integer tabIndex) {
+	public void setTabIndex(final Integer tabIndex) {
 		this.tabIndex = tabIndex;
 	}
 
 	/**
 	 * @return the viewrunlumi
 	 */
-	public final  Boolean getViewrunlumi() {
+	public Boolean getViewrunlumi() {
 		return viewrunlumi;
 	}
 
 	/**
 	 * @return the viewtime
 	 */
-	public final  Boolean getViewtime() {
+	public Boolean getViewtime() {
 		return viewtime;
 	}
 
 	// Methods to handle charts
 
-	public final  void initModel() {
+	public void initModel() {
 		try {
 			log.info("Using selected column " + selColumn);
 			chart.setPayload(payload);
@@ -863,11 +863,11 @@ public class CoolSchemaParamsBean implements Serializable {
 		}
 	}
 
-	public final  void resetChart() {
+	public void resetChart() {
 		chart.resetChart();
 	}
 
-	public final  CartesianChartModel getLinearModel() {
+	public CartesianChartModel getLinearModel() {
 		log.info("Get linear model...");
 		if (linearModel == null) {
 			linearModel = chart.getLinearModel();
@@ -875,7 +875,7 @@ public class CoolSchemaParamsBean implements Serializable {
 		return linearModel;
 	}
 
-	public final  boolean getChartHasData() {
+	public boolean getChartHasData() {
 		log.info("Evaluate has data ");
 		if (linearModel != null && linearModel.getSeries() != null) {
 			if (linearModel.getSeries().size() > 0) {
@@ -886,33 +886,33 @@ public class CoolSchemaParamsBean implements Serializable {
 		return false;
 	}
 
-	public final  double getMinY() {
+	public double getMinY() {
 		return chart.getMinY().doubleValue();
 	}
 
-	public final  double getMaxY() {
+	public double getMaxY() {
 		return chart.getMaxY().doubleValue();
 	}
 
-	public final  Long getMaxX() {
+	public Long getMaxX() {
 		return chart.getMaxX().getTime();
 	}
 
-	public final  Long getMinX() {
+	public Long getMinX() {
 		return chart.getMinX().getTime();
 	}
 
 	/**
 	 * @return the chartTitle
 	 */
-	public final  String getChartTitle() {
+	public String getChartTitle() {
 		return chartTitle;
 	}
 
 	/**
 	 * @return the chartLegend
 	 */
-	public final  String getChartLegend() {
+	public String getChartLegend() {
 		return chart.getLegend();
 	}
 
