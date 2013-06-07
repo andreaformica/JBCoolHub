@@ -3,8 +3,8 @@
 	
   <dirname property="dependencies.basedir" file="setup.sh"/>
 
-	  <property name="build.doc.dir" value="${basedir}/doc" />
-	  <property name="build.checkstyle.dir" value="${basedir}/checkstyle" />
+  <property name="build.doc.dir" value="${basedir}/doc" />
+  <property name="build.checkstyle.dir" value="${basedir}/checkstyle" />
 
 
   <!-- The dependencies between the various projects -->
@@ -48,6 +48,8 @@
   </target>
 
   <target name="doc">
+	<delete dir="${build.doc.dir}" />
+	<mkdir dir="${build.doc.dir}" />
     <antcall target="depend.doc">
         <param name="dependency.target" value="doc"/>
         <param name="build.doc.dir" value="${basedir}/doc"/>
@@ -55,6 +57,9 @@
   </target>
 
 	  <target name="checkstyle">
+		<delete dir="${build.checkstyle.dir}" />
+		<mkdir dir="${build.checkstyle.dir}" />
+
 	    <antcall target="depend.checkstyle">
 	        <param name="dependency.target" value="checkstyle"/>
 	        <param name="build.checkstyle.dir" value="${basedir}/checkstyle"/>
