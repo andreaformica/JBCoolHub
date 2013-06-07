@@ -5,12 +5,10 @@ package atlas.cool.jsf.beans;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.SessionScoped;
@@ -40,14 +38,13 @@ import atlas.cool.rest.model.SchemaType;
 import atlas.cool.rest.utils.WarResources;
 import atlas.cool.web.FileDownloadController;
 
-@Named("coolschemaparams")
-@SessionScoped
 /**
  * @author formica
  *
  */
+@Named("coolschemaparams")
+@SessionScoped
 public class CoolSchemaParamsBean implements Serializable {
-
 
 	/**
 	 * 
@@ -79,7 +76,6 @@ public class CoolSchemaParamsBean implements Serializable {
 	@Inject
 	private PayloadChartBean chart;
 
-	
 	String schemaName = "";
 	String dbName = "";
 	// String nodeName = "";
@@ -104,21 +100,21 @@ public class CoolSchemaParamsBean implements Serializable {
 	ChannelType selChannel = null;
 	String pyldFileName = "none";
 	String selColumn = "";
-	
+
 	Integer tabIndex = 0;
 	Boolean viewrunlumi = false;
 	Boolean viewtime = false;
 
 	CoolPayload payload = null;
-	
+
 	private List<String> payloadColumns;
 
 	private List<Map<String, Object>> payloadData;
-	
+
 	private List<Map<String, Object>> filteredPayloadData;
 
 	private FileDownloadController dwn;
-	
+
 	private StreamedContent payloadFile = null;
 
 	private CartesianChartModel linearModel = null;
@@ -135,7 +131,10 @@ public class CoolSchemaParamsBean implements Serializable {
 		initDbs();
 	}
 
-	protected void initDbs() {
+	/**
+	 * 
+	 */
+	protected final void initDbs() {
 
 		if (dbList == null) {
 			dbList = new ArrayList<String>();
@@ -145,7 +144,10 @@ public class CoolSchemaParamsBean implements Serializable {
 		}
 	}
 
-	protected void initChannels() {
+	/**
+	 * 
+	 */
+	protected final void initChannels() {
 		if (defaultChannel == null) {
 			defaultChannel = new ChannelType();
 			defaultChannel.setChannelId(new BigDecimal(-1));
@@ -153,145 +155,173 @@ public class CoolSchemaParamsBean implements Serializable {
 		}
 	}
 
-	public void retrieveNodeData() {
+	/**
+	 * 
+	 */
+	public final void retrieveNodeData() {
 		try {
-			log.info("Retrieving nodes for :" + schemaName + " " + dbName + " "
-					+ "!");
-			nodeList = cooldao.retrieveNodesFromSchemaAndDb(schemaName + "%",
-					dbName, "%");
+			log.info("Retrieving nodes for :" + schemaName + " " + dbName + " " + "!");
+			nodeList = cooldao
+					.retrieveNodesFromSchemaAndDb(schemaName + "%", dbName, "%");
 			log.info("Retrieved nodes of size :" + nodeList.size());
-			if (nodeListFiltered != null)
+			if (nodeListFiltered != null) {
 				nodeListFiltered.clear();
-			if (nodetagList != null)
+			}
+			if (nodetagList != null) {
 				nodetagList.clear();
-			if (nodetagListFiltered != null)
+			}
+			if (nodetagListFiltered != null) {
 				nodetagListFiltered.clear();
-			if (channelList != null)
+			}
+			if (channelList != null) {
 				channelList.clear();
-			if (filteredPayloadData != null)
+			}
+			if (filteredPayloadData != null) {
 				filteredPayloadData.clear();
+			}
 			selChannel = null;
 			selNode = null;
 			selNodeTag = null;
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public void retrieveNodeTagsData() {
 		try {
-			log.info("Retrieving node tags for :" + schemaName + " " + dbName
-					+ " " + selNode.getNodeFullpath() + "!");
-			if (selNode.getFolderVersioning()==0) {
+			log.info("Retrieving node tags for :" + schemaName + " " + dbName + " "
+					+ selNode.getNodeFullpath() + "!");
+			if (selNode.getFolderVersioning() == 0) {
 				// this is a single version with no tags
 				log.info("Single version folder selected...");
-			} else{
-			nodetagList = cooldao.retrieveTagsFromNodesSchemaAndDb(schemaName,
-					dbName, selNode.getNodeFullpath(), "%");
-			log.info("Retrieved nodegtagtag of size :" + nodetagList.size());
+			} else {
+				nodetagList = cooldao.retrieveTagsFromNodesSchemaAndDb(schemaName,
+						dbName, selNode.getNodeFullpath(), "%");
+				log.info("Retrieved nodegtagtag of size :" + nodetagList.size());
 			}
-			if (nodetagListFiltered != null)
+			if (nodetagListFiltered != null) {
 				nodetagListFiltered.clear();
+			}
 			selNodeTag = null;
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * 
+	 */
 	public void retrieveNodeGtagForTag() {
 		try {
-		if (selNodeTag != null) {
-			log.info("Retrieving gtags for selected node and tag "+selNodeTag.getTagName());
-			nodegtagfortagList = cooldao.retrieveGtagFromSchemaDbNodeTag(schemaName, dbName, "%", 
-					selNode.getNodeFullpath(), selNodeTag.getTagName());
-		}
-		} catch (CoolIOException e) {
+			if (selNodeTag != null) {
+				log.info("Retrieving gtags for selected node and tag "
+						+ selNodeTag.getTagName());
+				nodegtagfortagList = cooldao.retrieveGtagFromSchemaDbNodeTag(schemaName,
+						dbName, "%", selNode.getNodeFullpath(), selNodeTag.getTagName());
+			}
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
+	/**
+	 * 
+	 */
 	public void retrieveIovStatData() {
 		try {
-			String tagname = (selNode.getFolderVersioning() > 0) ? selNodeTag.getTagName()
-					: "SINGLE_VERSION";
-			log.info("Retrieving iov stats for :" + schemaName + " " + dbName
-					+ " " + selNode.getNodeFullpath() + " " + tagname + "!");
-			nodeiovstatList = cooldao.retrieveIovStatFromNodeSchemaAndDb(
-					schemaName, dbName, getSelNodeName(), tagname);
-			for (IovStatType iovstat : nodeiovstatList) {
+			final String tagname = selNode.getFolderVersioning() > 0 ? selNodeTag
+					.getTagName() : "SINGLE_VERSION";
+			log.info("Retrieving iov stats for :" + schemaName + " " + dbName + " "
+					+ selNode.getNodeFullpath() + " " + tagname + "!");
+			nodeiovstatList = cooldao.retrieveIovStatFromNodeSchemaAndDb(schemaName,
+					dbName, getSelNodeName(), tagname);
+			for (final IovStatType iovstat : nodeiovstatList) {
 				log.info("statistic is " + iovstat.getCoolIovMinSince() + " "
 						+ iovstat.getCoolIovMaxSince());
 			}
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public void savePayload() {
 		try {
 			if (payload != null) {
-				String tagname = (selNodeTag != null) ? selNodeTag.getTagName()
+				final String tagname = selNodeTag != null ? selNodeTag.getTagName()
 						: "SINGLE_VERSION";
 
-				String fld = selNode.getNodeFullpath();
-				String fldname = fld.replaceAll("/", "_");
+				final String fld = selNode.getNodeFullpath();
+				final String fldname = fld.replaceAll("/", "_");
 				pyldFileName = pyldHelper.dump2FileCoolPayload(payload,
-						WarResources.externalwebdir + "/", schemaName + fldname
-								+ "_" + tagname);
+						WarResources.externalwebdir + "/", schemaName + fldname + "_"
+								+ tagname);
 
 				dwn = new FileDownloadController(schemaName + fldname + "_" + tagname);
-				if (dwn != null)
-					payloadFile =  dwn.getFile();
+				if (dwn != null) {
+					payloadFile = dwn.getFile();
+				}
 
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	
 	/**
 	 * @return the payloadFile
 	 */
-	public StreamedContent getPayloadFile() {
-		String[] path = pyldFileName.split("/");
-		if (path.length <=1) {
+	public final StreamedContent getPayloadFile() {
+		final String[] path = pyldFileName.split("/");
+		if (path.length <= 1) {
 			return null;
 		}
-		String fname = path[1];
-		log.info("using fname "+fname+" from payload file "+pyldFileName);
+		final String fname = path[1];
+		log.info("using fname " + fname + " from payload file " + pyldFileName);
 		dwn = new FileDownloadController(fname);
-		if (dwn != null)
-			payloadFile =  dwn.getFile();
-		log.info("payload file is "+payloadFile.getContentType()+" "+payloadFile.toString());
+		if (dwn != null) {
+			payloadFile = dwn.getFile();
+		}
+		log.info("payload file is " + payloadFile.getContentType() + " "
+				+ payloadFile.toString());
 		return payloadFile;
 	}
 
-
-	public void loadSchemas() {
+	/**
+	 * 
+	 */
+	public final void loadSchemas() {
 		try {
 			log.info("Retrieving schemas for :" + schemaName + " " + dbName);
-			schemaList = cooldao.retrieveSchemasFromNodeSchemaAndDb(
-					"ATLAS_COOL%", dbName, "%");
+			schemaList = cooldao.retrieveSchemasFromNodeSchemaAndDb("ATLAS_COOL%",
+					dbName, "%");
 			log.info("Retrieved schemas of size :" + schemaList.size());
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void loadPayload() {
+	/**
+	 * 
+	 */
+	public final void loadPayload() {
 		try {
 			log.info("Calling loadPayload....");
 			BigDecimal stime = null;
 			BigDecimal etime = null;
-			
+
 			if (payloadData != null) {
 				payloadData.clear();
 				payloadData = null;
@@ -301,7 +331,6 @@ public class CoolSchemaParamsBean implements Serializable {
 				filteredPayloadData = null;
 			}
 
-			
 			if (viewrunlumi) {
 				stime = calendar.getCoolRunSince();
 				etime = calendar.getCoolRunUntil();
@@ -311,55 +340,56 @@ public class CoolSchemaParamsBean implements Serializable {
 				etime = calendar.getCoolTimeUntil();
 				log.info("time based iov....");
 			}
-			
+
 			if (selNode == null) {
 				log.info("Cannot retrieve payload since no node is selected...");
 				return;
 			}
-//			String channelId = selChannel.getChannelId().toString();
-			String channelId = selChannel.getChannelName();
-			log.info("Retrieving payload for :" + schemaName + " " + dbName
-					+ " " + selNode.getNodeFullpath() + " " + channelId + " "
-					+ stime + " " + etime);
+			// String channelId = selChannel.getChannelId().toString();
+			final String channelId = selChannel.getChannelName();
+			log.info("Retrieving payload for :" + schemaName + " " + dbName + " "
+					+ selNode.getNodeFullpath() + " " + channelId + " " + stime + " "
+					+ etime);
 
 			Long chId = null;
 
-//			if (channelId.equals("") || channelId.equals("all")) {
+			// if (channelId.equals("") || channelId.equals("all")) {
 			if (channelId != null && channelId.equals("all")) {
 				log.info("no cut on channel ID...");
 			} else {
 				chId = selChannel.getChannelId().longValue();
 			}
-//				chId = new Integer(channelId);
+			// chId = new Integer(channelId);
 
-//			String tagname = (selNodeTag != null) ? selNodeTag.getTagName()
-//					: "SINGLE_VERSION";
-			String tagname = (selNode.getFolderVersioning() > 0) ? selNodeTag.getTagName()
-					: "SINGLE_VERSION";
-//			ResultSet pyld = coolpylddao.getPayloads(schemaName, dbName,
-//					selNode.getNodeFullpath(), tagname, stime, etime, chId);
-//			if (pyld != null) {
+			// String tagname = (selNodeTag != null) ? selNodeTag.getTagName()
+			// : "SINGLE_VERSION";
+			final String tagname = selNode.getFolderVersioning() > 0 ? selNodeTag
+					.getTagName() : "SINGLE_VERSION";
+			// ResultSet pyld = coolpylddao.getPayloads(schemaName, dbName,
+			// selNode.getNodeFullpath(), tagname, stime, etime, chId);
+			// if (pyld != null) {
 
-//				payload = pyldHelper.resultSetToPayload(pyld);
-			payload = coolpylddao.getPayloadsObj(schemaName, dbName, selNode.getNodeFullpath(), tagname, stime, etime, chId);
+			// payload = pyldHelper.resultSetToPayload(pyld);
+			payload = coolpylddao.getPayloadsObj(schemaName, dbName,
+					selNode.getNodeFullpath(), tagname, stime, etime, chId);
 			if (payload != null) {
 				payloadColumns = payload.getColumns();
 				payloadNumberColumns = payload.getNumberColumns();
 				payloadData = payload.getDataList();
 			}
-			//tabIndex = 2;
-		} catch (CoolIOException e) {
+			// tabIndex = 2;
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			//coolpylddao.remove();
+			// coolpylddao.remove();
 		}
 	}
 
 	/**
 	 * @return the payloadData
 	 */
-	public List<Map<String, Object>> getPayloadData() {
+	public final  List<Map<String, Object>> getPayloadData() {
 		// log.info("Retrieving list of size "+payloadData.size());
 		return payloadData;
 	}
@@ -367,61 +397,63 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the filteredPayloadData
 	 */
-	public List<Map<String, Object>> getFilteredPayloadData() {
+	public final  List<Map<String, Object>> getFilteredPayloadData() {
 		return filteredPayloadData;
 	}
 
 	/**
-	 * @param filteredPayloadData the filteredPayloadData to set
+	 * @param filteredPayloadData
+	 *            the filteredPayloadData to set
 	 */
-	public void setFilteredPayloadData(List<Map<String, Object>> filteredPayloadData) {
+	public final  void setFilteredPayloadData(final List<Map<String, Object>> filteredPayloadData) {
 		this.filteredPayloadData = filteredPayloadData;
 	}
 
 	/**
 	 * @return the payloadColumns
 	 */
-	public List<String> getPayloadColumns() {
+	public final  List<String> getPayloadColumns() {
 		return payloadColumns;
 	}
 
-	
 	/**
 	 * @return the payloadNumberColumns
 	 */
-	public List<String> getPayloadNumberColumns() {
+	public final  List<String> getPayloadNumberColumns() {
 		return payloadNumberColumns;
 	}
 
 	/**
 	 * @return the payloadColumns
 	 */
-	public List<String> getPayloadChartColumns() {
+	public final  List<String> getPayloadChartColumns() {
 		if (payload != null) {
 			log.info("Retrieve columns from payload...");
 			return payload.getNumberColumns();
-		} else
+		} else {
 			return new ArrayList<String>();
+		}
 	}
 
 	/**
 	 * @return the selColumn
 	 */
-	public String getSelColumn() {
+	public final  String getSelColumn() {
 		return selColumn;
 	}
 
 	/**
-	 * @param selColumn the selColumn to set
+	 * @param selColumn
+	 *            the selColumn to set
 	 */
-	public void setSelColumn(String selColumn) {
+	public final  void setSelColumn(final String selColumn) {
 		this.selColumn = selColumn;
 	}
 
 	/**
 	 * @return the dbName
 	 */
-	public String getDbName() {
+	public final  String getDbName() {
 		return dbName;
 	}
 
@@ -429,7 +461,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param dbName
 	 *            the dbName to set
 	 */
-	public void setDbName(String dbName) {
+	public final  void setDbName(final String dbName) {
 		String dbn = dbName;
 		if (dbName.contains("%")) {
 			dbn = dbName.replaceAll("%", "");
@@ -443,14 +475,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the dbList
 	 */
-	public List<String> getDbList() {
+	public final  List<String> getDbList() {
 		return dbList;
 	}
 
 	/**
 	 * @return the schemaList
 	 */
-	public List<SchemaType> getSchemaList() {
+	public final  List<SchemaType> getSchemaList() {
 		return schemaList;
 	}
 
@@ -458,14 +490,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param schemaList
 	 *            the schemaList to set
 	 */
-	public void setSchemaList(List<SchemaType> schemaList) {
+	public final  void setSchemaList(final List<SchemaType> schemaList) {
 		this.schemaList = schemaList;
 	}
 
 	/**
 	 * @return the nodeList
 	 */
-	public List<NodeType> getNodeList() {
+	public final  List<NodeType> getNodeList() {
 		return nodeList;
 	}
 
@@ -473,14 +505,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param nodeList
 	 *            the nodeList to set
 	 */
-	public void setNodeList(List<NodeType> nodeList) {
+	public final  void setNodeList(final List<NodeType> nodeList) {
 		this.nodeList = nodeList;
 	}
 
 	/**
 	 * @return the nodetagList
 	 */
-	public List<SchemaNodeTagType> getNodetagList() {
+	public final  List<SchemaNodeTagType> getNodetagList() {
 		return nodetagList;
 	}
 
@@ -488,14 +520,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param nodetagList
 	 *            the nodetagList to set
 	 */
-	public void setNodetagList(List<SchemaNodeTagType> nodetagList) {
+	public final  void setNodetagList(final List<SchemaNodeTagType> nodetagList) {
 		this.nodetagList = nodetagList;
 	}
 
 	/**
 	 * @return the nodeiovstatList
 	 */
-	public List<IovStatType> getNodeiovstatList() {
+	public final  List<IovStatType> getNodeiovstatList() {
 		return nodeiovstatList;
 	}
 
@@ -503,7 +535,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param nodeiovstatList
 	 *            the nodeiovstatList to set
 	 */
-	public void setNodeiovstatList(List<IovStatType> nodeiovstatList) {
+	public final  void setNodeiovstatList(final List<IovStatType> nodeiovstatList) {
 		this.nodeiovstatList = nodeiovstatList;
 	}
 
@@ -511,14 +543,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param dbList
 	 *            the dbList to set
 	 */
-	public void setDbList(List<String> dbList) {
+	public final  void setDbList(final List<String> dbList) {
 		this.dbList = dbList;
 	}
 
 	/**
 	 * @return the selNode
 	 */
-	public NodeType getSelNode() {
+	public final  NodeType getSelNode() {
 		return selNode;
 	}
 
@@ -526,11 +558,11 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param selNode
 	 *            the selNode to set
 	 */
-	public void setSelNode(NodeType selNode) {
+	public final  void setSelNode(final NodeType selNode) {
 		boolean changeselection = false;
 		if (this.selNode != null && this.selNode.equals(selNode)) {
 			log.info("Ignoring changes of selection if node tags data are loaded");
-			if (this.nodetagList != null && this.nodetagList.size() > 0) {
+			if (nodetagList != null && nodetagList.size() > 0) {
 				log.info("Node tags data are loaded");
 			} else {
 				changeselection = true;
@@ -547,7 +579,7 @@ public class CoolSchemaParamsBean implements Serializable {
 		log.info("After fire changes...selected node is" + selNode);
 		this.selNode = selNode;
 	}
-	
+
 	protected void cleanAllLists() {
 		nodegtagfortagList = null;
 		selNode = null;
@@ -560,20 +592,20 @@ public class CoolSchemaParamsBean implements Serializable {
 		channelList = null;
 	}
 
-	public void onSelSchemaChanged(
+	public final  void onSelSchemaChanged(
 			@Observes(notifyObserver = Reception.IF_EXISTS) final SchemaType schema) {
 		log.info("Schema selection changed...");
-		//retrieveNodeData();
+		// retrieveNodeData();
 	}
 
-	public void onSelNodeTagChanged(
+	public final  void onSelNodeTagChanged(
 			@Observes(notifyObserver = Reception.IF_EXISTS) final SchemaNodeTagType schema) {
 		log.info("Node tag selection changed...");
-//		retrieveIovStatData();
+		// retrieveIovStatData();
 		retrieveNodeGtagForTag();
 	}
 
-	public void onSelNodeChanged(
+	public final  void onSelNodeChanged(
 			@Observes(notifyObserver = Reception.IF_EXISTS) final NodeType node) {
 		try {
 
@@ -588,26 +620,27 @@ public class CoolSchemaParamsBean implements Serializable {
 			retrieveNodeTagsData();
 			initChannels();
 
-			if (nodeiovstatList != null) 
+			if (nodeiovstatList != null) {
 				nodeiovstatList.clear();
+			}
 
-//			if (selNode.getFolderVersioning() == 0) {
-//				retrieveIovStatData();
-//			}
-			
-			if (channelList != null)
+			// if (selNode.getFolderVersioning() == 0) {
+			// retrieveIovStatData();
+			// }
+
+			if (channelList != null) {
 				channelList.clear();
-			channelList = cooldao.retrieveChannelsFromNodeSchemaAndDb(
-					schemaName, dbName, node.getNodeFullpath(), chanName);
+			}
+			channelList = cooldao.retrieveChannelsFromNodeSchemaAndDb(schemaName, dbName,
+					node.getNodeFullpath(), chanName);
 			log.info("Loaded list of " + channelList.size() + " channels ");
-			for (ChannelType chan : channelList) {
-				log.info("channel " + chan.getChannelId() + " "
-						+ chan.getChannelName());
+			for (final ChannelType chan : channelList) {
+				log.info("channel " + chan.getChannelId() + " " + chan.getChannelName());
 			}
 			if (channelList != null) {
 				channelList.add(defaultChannel);
 			}
-			//tabIndex = 1;
+			// tabIndex = 1;
 
 			if (node.getNodeIovBase().equals("run-lumi")) {
 				viewrunlumi = true;
@@ -621,7 +654,7 @@ public class CoolSchemaParamsBean implements Serializable {
 			}
 
 			// channelList.add(0,defaultChannel);
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -630,7 +663,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the selNodeTag
 	 */
-	public SchemaNodeTagType getSelNodeTag() {
+	public final  SchemaNodeTagType getSelNodeTag() {
 		return selNodeTag;
 	}
 
@@ -638,8 +671,8 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param selNodeTag
 	 *            the selNodeTag to set
 	 */
-	public void setSelNodeTag(SchemaNodeTagType selNodeTag) {
-		log.info("Selecting nodetag "+selNodeTag);
+	public final  void setSelNodeTag(final SchemaNodeTagType selNodeTag) {
+		log.info("Selecting nodetag " + selNodeTag);
 		if (selNodeTag != null && !selNodeTag.equals(this.selNodeTag)) {
 			log.info("Selecting tag " + selNodeTag.getTagName());
 			this.selNodeTag = selNodeTag;
@@ -650,7 +683,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the nodeListFiltered
 	 */
-	public List<NodeType> getNodeListFiltered() {
+	public final  List<NodeType> getNodeListFiltered() {
 		return nodeListFiltered;
 	}
 
@@ -658,14 +691,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param nodeListFiltered
 	 *            the nodeListFiltered to set
 	 */
-	public void setNodeListFiltered(List<NodeType> nodeListFiltered) {
+	public final  void setNodeListFiltered(final List<NodeType> nodeListFiltered) {
 		this.nodeListFiltered = nodeListFiltered;
 	}
 
 	/**
 	 * @return the nodetagListFiltered
 	 */
-	public List<SchemaNodeTagType> getNodetagListFiltered() {
+	public final  List<SchemaNodeTagType> getNodetagListFiltered() {
 		return nodetagListFiltered;
 	}
 
@@ -673,15 +706,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param nodetagListFiltered
 	 *            the nodetagListFiltered to set
 	 */
-	public void setNodetagListFiltered(
-			List<SchemaNodeTagType> nodetagListFiltered) {
+	public final  void setNodetagListFiltered(final List<SchemaNodeTagType> nodetagListFiltered) {
 		this.nodetagListFiltered = nodetagListFiltered;
 	}
 
 	/**
 	 * @return the channelList
 	 */
-	public List<ChannelType> getChannelList() {
+	public final  List<ChannelType> getChannelList() {
 		return channelList;
 	}
 
@@ -689,14 +721,14 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param channelList
 	 *            the channelList to set
 	 */
-	public void setChannelList(List<ChannelType> channelList) {
+	public final  void setChannelList(final List<ChannelType> channelList) {
 		this.channelList = channelList;
 	}
 
 	/**
 	 * @return the selChannel
 	 */
-	public ChannelType getSelChannel() {
+	public final  ChannelType getSelChannel() {
 		return selChannel;
 	}
 
@@ -704,17 +736,18 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param selChannel
 	 *            the selChannel to set
 	 */
-	public void setSelChannel(ChannelType selChannel) {
+	public final  void setSelChannel(final ChannelType selChannel) {
 		log.info("Setting channel selection to " + selChannel);
-		if (selChannel != null)
+		if (selChannel != null) {
 			this.selChannel = selChannel;
+		}
 	}
 
 	/**
 	 * @return the selSchema
 	 */
-	public SchemaType getSelSchema() {
-		log.info("Selected schema from "+this+" is "+selSchema);
+	public final  SchemaType getSelSchema() {
+		log.info("Selected schema from " + this + " is " + selSchema);
 		return selSchema;
 	}
 
@@ -722,14 +755,15 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param selSchema
 	 *            the selSchema to set
 	 */
-	public void setSelSchema(SchemaType selSchema) {
-		log.info("Schema selection is setting "+selSchema+" replacing old "+this.selSchema);
+	public final  void setSelSchema(final SchemaType selSchema) {
+		log.info("Schema selection is setting " + selSchema + " replacing old "
+				+ this.selSchema);
 		if (selSchema != null) {
 			if (this.selSchema != null && this.selSchema.equals(selSchema)) {
 				log.info("Ignore schema changes...it is the same schema "
 						+ selSchema.getSchemaName());
 			} else {
-				log.info("setting schema name..."+selSchema.getSchemaName());
+				log.info("setting schema name..." + selSchema.getSchemaName());
 				this.selSchema = selSchema;
 				schemaName = selSchema.getSchemaName();
 				changeSchemaselection.fire(selSchema);
@@ -737,52 +771,54 @@ public class CoolSchemaParamsBean implements Serializable {
 		}
 	}
 
-	public String getSelSchemaName() {
-		if (selSchema != null)
+	public final  String getSelSchemaName() {
+		if (selSchema != null) {
 			return selSchema.getSchemaName();
+		}
 		return "none";
 	}
 
-	public String getSelNodeName() {
-		if (selNode != null)
+	public final  String getSelNodeName() {
+		if (selNode != null) {
 			return selNode.getNodeFullpath();
+		}
 		return "none";
 	}
 
-	public String getSelNodeTagName() {
-		if (selNodeTag != null)
+	public final  String getSelNodeTagName() {
+		if (selNodeTag != null) {
 			return selNodeTag.getTagName();
+		}
 		return "none";
 	}
 
 	/**
 	 * @return the nodegtagfortagList
 	 */
-	public List<NodeGtagTagType> getNodegtagfortagList() {
+	public final  List<NodeGtagTagType> getNodegtagfortagList() {
 		return nodegtagfortagList;
 	}
 
 	/**
 	 * @return the pyldFileName
 	 */
-	public String getPyldFileName() {
-		ExternalContext externalContext = FacesContext.getCurrentInstance()
+	public final  String getPyldFileName() {
+		final ExternalContext externalContext = FacesContext.getCurrentInstance()
 				.getExternalContext();
 		log.info("Path info is " + externalContext.getRequestPathInfo());
-		HttpServletRequest req = (HttpServletRequest) externalContext
-				.getRequest();
+		final HttpServletRequest req = (HttpServletRequest) externalContext.getRequest();
 		log.info("Request URI is " + req.getRequestURI());
 		log.info("Request Protocol is " + req.getProtocol());
 		log.info("Request Server is " + req.getServerName());
 		log.info("Request Port is " + req.getServerPort());
-		return "http://" + req.getServerName() + ":" + req.getServerPort()
-				+ "/" + pyldFileName;
+		return "http://" + req.getServerName() + ":" + req.getServerPort() + "/"
+				+ pyldFileName;
 	}
 
 	/**
 	 * @return the tabIndex
 	 */
-	public Integer getTabIndex() {
+	public final  Integer getTabIndex() {
 		return tabIndex;
 	}
 
@@ -790,58 +826,59 @@ public class CoolSchemaParamsBean implements Serializable {
 	 * @param tabIndex
 	 *            the tabIndex to set
 	 */
-	public void setTabIndex(Integer tabIndex) {
+	public final  void setTabIndex(final Integer tabIndex) {
 		this.tabIndex = tabIndex;
 	}
 
 	/**
 	 * @return the viewrunlumi
 	 */
-	public Boolean getViewrunlumi() {
+	public final  Boolean getViewrunlumi() {
 		return viewrunlumi;
 	}
 
 	/**
 	 * @return the viewtime
 	 */
-	public Boolean getViewtime() {
+	public final  Boolean getViewtime() {
 		return viewtime;
 	}
 
 	// Methods to handle charts
-	
-	public void initModel() {
+
+	public final  void initModel() {
 		try {
-			log.info("Using selected column "+selColumn);
+			log.info("Using selected column " + selColumn);
 			chart.setPayload(payload);
-			if (filteredPayloadData==null) {
+			if (filteredPayloadData == null) {
 				filteredPayloadData = payloadData;
 			}
 			chart.setPayloadMap(filteredPayloadData);
 			chart.initModelByMap(selColumn);
 			linearModel = chart.getLinearModel();
-			chartTitle = "Plot "+selColumn+" VS Time";
-		} catch (CoolIOException e) {
+			chartTitle = "Plot " + selColumn + " VS Time";
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void resetChart() {
+	public final  void resetChart() {
 		chart.resetChart();
 	}
 
-	public CartesianChartModel getLinearModel() {
+	public final  CartesianChartModel getLinearModel() {
 		log.info("Get linear model...");
-		if (linearModel==null)
+		if (linearModel == null) {
 			linearModel = chart.getLinearModel();
+		}
 		return linearModel;
 	}
-	
-	public boolean getChartHasData() {
+
+	public final  boolean getChartHasData() {
 		log.info("Evaluate has data ");
 		if (linearModel != null && linearModel.getSeries() != null) {
-			if (linearModel.getSeries().size()>0) {
+			if (linearModel.getSeries().size() > 0) {
 				log.info("returning true ");
 				return true;
 			}
@@ -849,30 +886,33 @@ public class CoolSchemaParamsBean implements Serializable {
 		return false;
 	}
 
-	public double getMinY() {
+	public final  double getMinY() {
 		return chart.getMinY().doubleValue();
 	}
-	public double getMaxY() {
+
+	public final  double getMaxY() {
 		return chart.getMaxY().doubleValue();
 	}
-	public Long getMaxX() {
+
+	public final  Long getMaxX() {
 		return chart.getMaxX().getTime();
 	}
-	public Long getMinX() {
+
+	public final  Long getMinX() {
 		return chart.getMinX().getTime();
 	}
-	
+
 	/**
 	 * @return the chartTitle
 	 */
-	public String getChartTitle() {
+	public final  String getChartTitle() {
 		return chartTitle;
 	}
 
 	/**
 	 * @return the chartLegend
 	 */
-	public String getChartLegend() {
+	public final  String getChartLegend() {
 		return chart.getLegend();
 	}
 

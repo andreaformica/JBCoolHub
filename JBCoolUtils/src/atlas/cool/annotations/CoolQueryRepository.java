@@ -69,7 +69,7 @@ public class CoolQueryRepository {
 	 * 
 	 */
 	@PostConstruct
-	protected void init() {
+	protected final void init() {
 		try {
 
 			// log.info("Init CoolQueryRepository for package atlas.cool.rest.model");
@@ -95,13 +95,13 @@ public class CoolQueryRepository {
 								.getPhysicalFile().getParentFile(), content
 								.getName()));
 					} catch (IOException e) {
-						;
+						// no actions.
 					}
 					if (dir == null) {
 						try {
 							dir = createDir(content.getPhysicalFile());
 						} catch (IOException e) {
-							;
+							// no actions.
 						}
 					}
 					return dir;

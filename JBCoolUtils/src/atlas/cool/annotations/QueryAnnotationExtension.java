@@ -33,7 +33,7 @@ public class QueryAnnotationExtension implements Extension {
 	/**
 	 * @param pat
 	 */
-	<X> void processAnnotatedType(@Observes ProcessAnnotatedType<X> pat) {
+	final <X> void processAnnotatedType(@Observes final ProcessAnnotatedType<X> pat) {
 
 		// wrap this to override the annotations of the class
 
