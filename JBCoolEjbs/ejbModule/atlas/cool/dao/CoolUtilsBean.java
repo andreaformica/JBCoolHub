@@ -73,7 +73,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	/**
 	 * 
 	 */
-	protected SimpleDateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
+	private SimpleDateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
 
 	/**
 	 * 

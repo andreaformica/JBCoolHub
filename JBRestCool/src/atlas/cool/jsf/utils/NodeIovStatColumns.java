@@ -12,17 +12,15 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import atlas.cool.rest.model.IovStatType;
-import atlas.cool.rest.model.NodeType;
 
-
-@Named("iovstatcolums")
-@RequestScoped
 /**
  * @author formica
  *
  */
-public class NodeIovStatColumns extends AbstractColumnHelper<IovStatType> implements Serializable {
-
+@Named("iovstatcolums")
+@RequestScoped
+public class NodeIovStatColumns extends AbstractColumnHelper<IovStatType> implements
+		Serializable {
 
 	/**
 	 * 
@@ -39,16 +37,19 @@ public class NodeIovStatColumns extends AbstractColumnHelper<IovStatType> implem
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * 
+	 */
 	@PostConstruct
 	public void initColumns() {
 		log.info("Init node columns....");
 		generator = new ColumnsGenerator<IovStatType>(IovStatType.class);
-		generator.addMethod("coolIovMinSince","getCoolIovMinSince");
-		generator.addMethod("coolIovMaxSince","getCoolIovMaxSince");
-		
+		generator.addMethod("coolIovMinSince", "getCoolIovMinSince");
+		generator.addMethod("coolIovMaxSince", "getCoolIovMaxSince");
+
 		initAllColumns();
-		log.info("Initialized list of node columns for selection...."+allcolumns.size());
-		exclusionPattern="^node.*|^tag.*|dbName|schemaName";
+		log.info("Initialized list of node columns for selection...." + allcolumns.size());
+		exclusionPattern = "^node.*|^tag.*|dbName|schemaName";
 		applyExclusionPattern();
 	}
 }

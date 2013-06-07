@@ -23,13 +23,12 @@ import oracle.sql.BLOB;
 import oracle.sql.CLOB;
 import atlas.cool.payload.model.CoolPayload;
 
-
-@Named("pyldhelper")
-@SessionScoped
 /**
  * @author formica
  *
  */
+@Named("pyldhelper")
+@SessionScoped
 public class PayloadHelperBean implements Serializable {
 
 	/**
@@ -37,7 +36,6 @@ public class PayloadHelperBean implements Serializable {
 	 */
 	private static final long serialVersionUID = -8876014275731405370L;
 
-	
 	@Inject
 	private Logger log;
 
@@ -48,138 +46,167 @@ public class PayloadHelperBean implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-	public String dump2FileResultSet(ResultSet rs, String path, String fname) throws SQLException {
+	/**
+	 * @param rs
+	 * @param path
+	 * @param fname
+	 * @return
+	 * @throws SQLException
+	 */
+	public String dump2FileResultSet(final ResultSet rs, final String path,
+			final String fname) throws SQLException {
 		FileWriter fw = null;
-		CoolPayload pyld = new CoolPayload();
-		List<String> masked = pyld.getMasked(); 
-		String outurl = "web/"+fname;
+		final CoolPayload pyld = new CoolPayload();
+		final List<String> masked = pyld.getMasked();
+		final String outurl = "web/" + fname;
 		try {
-			fw = new FileWriter(path+fname);
-			ResultSetMetaData rsmd_rs = rs.getMetaData();
-			StringBuffer bufheader = new StringBuffer();
-			for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-				String colname = rsmd_rs.getColumnName(i);
+			fw = new FileWriter(path + fname);
+			final ResultSetMetaData rsmdRs = rs.getMetaData();
+			final StringBuffer bufheader = new StringBuffer();
+			for (int i = 1; i <= rsmdRs.getColumnCount(); i++) {
+				final String colname = rsmdRs.getColumnName(i);
 				log.info("col " + i + " name = " + colname);
 				if (masked.contains(colname)) {
-					log.fine("Ignore column "+colname+" in the output file ");
-				} else
-					bufheader.append(colname+"  ");
+					log.fine("Ignore column " + colname + " in the output file ");
+				} else {
+					bufheader.append(colname + "  ");
+				}
 			}
-			fw.write(bufheader.toString()+"\n");
+			fw.write(bufheader.toString() + "\n");
 			if (!rs.isFirst()) {
+				fw.close();
 				return "ResultSet already parsed";
 			}
-			log.info(" rs is on first row "+rs.isFirst());
-			int ncol = rsmd_rs.getColumnCount();
+			log.info(" rs is on first row " + rs.isFirst());
+			final int ncol = rsmdRs.getColumnCount();
 			while (rs.next()) {
-				StringBuffer bufline = new StringBuffer();
+				final StringBuffer bufline = new StringBuffer();
 				for (int i = 1; i <= ncol; i++) {
-					String colname = rsmd_rs.getColumnName(i);
-					Object colval = rs.getObject(i);
+					final String colname = rsmdRs.getColumnName(i);
+					final Object colval = rs.getObject(i);
 					if (masked.contains(colname)) {
-						log.fine("Ignore column "+colname+" in the output file ");
-					} else
+						log.fine("Ignore column " + colname + " in the output file ");
+					} else {
 						bufline.append(dumpObject(colval) + " ; ");
-					
+					}
+
 				}
-				fw.write(bufline.toString()+"\n");
+				fw.write(bufline.toString() + "\n");
 				fw.flush();
 			}
 			fw.flush();
 			fw.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return outurl;
 	}
 
-	public String dump2FileCoolPayload(CoolPayload pyld, String path, String fname) throws SQLException {
+	/**
+	 * @param pyld
+	 * @param path
+	 * @param fname
+	 * @return
+	 * @throws SQLException
+	 */
+	public String dump2FileCoolPayload(final CoolPayload pyld, final String path,
+			final String fname) throws SQLException {
 		FileWriter fw = null;
-		String outurl = "web/"+fname;
+		final String outurl = "web/" + fname;
 		try {
-			fw = new FileWriter(path+fname);
-			StringBuffer bufheader = new StringBuffer();
-			for (String colname : pyld.getColumns()) {
-				bufheader.append(colname+"  ");
-			}			
-			fw.write(bufheader.toString()+"\n");
-			for (int irow=0; irow<pyld.getRows();irow++ ) {
-				StringBuffer bufline = new StringBuffer();
-				Map<String,Object> rowmap = pyld.getDataRow(irow);
-				for (String colname : rowmap.keySet()) {
-					Object colval = rowmap.get(colname);
+			fw = new FileWriter(path + fname);
+			final StringBuffer bufheader = new StringBuffer();
+			for (final String colname : pyld.getColumns()) {
+				bufheader.append(colname + "  ");
+			}
+			fw.write(bufheader.toString() + "\n");
+			for (int irow = 0; irow < pyld.getRows(); irow++) {
+				final StringBuffer bufline = new StringBuffer();
+				final Map<String, Object> rowmap = pyld.getDataRow(irow);
+				for (final String colname : rowmap.keySet()) {
+					final Object colval = rowmap.get(colname);
 					bufline.append(dumpObject(colval) + " ; ");
 				}
-				fw.write(bufline.toString()+"\n");
+				fw.write(bufline.toString() + "\n");
 				fw.flush();
 			}
 			fw.flush();
 			fw.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return outurl;
 	}
 
-	public CoolPayload resultSetToPayload(ResultSet rs) {
+	/**
+	 * @param rs
+	 * @return
+	 */
+	public CoolPayload resultSetToPayload(final ResultSet rs) {
 
-		CoolPayload pyld = new CoolPayload();
-		List<String> masked = pyld.getMasked(); 
+		final CoolPayload pyld = new CoolPayload();
+		final List<String> masked = pyld.getMasked();
 		try {
-			ResultSetMetaData rsmd_rs = rs.getMetaData();
+			final ResultSetMetaData rsmdRs = rs.getMetaData();
 			// get payload columns
-			for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-				String colname = rsmd_rs.getColumnName(i);
+			for (int i = 1; i <= rsmdRs.getColumnCount(); i++) {
+				final String colname = rsmdRs.getColumnName(i);
 				log.info("col " + i + " name = " + colname);
 				if (masked.contains(colname)) {
-					log.info("Ignore column "+colname+" in the output class ");
-				} else
+					log.info("Ignore column " + colname + " in the output class ");
+				} else {
 					pyld.addColumn(i, colname);
+				}
 			}
-		
+
 			if (!rs.isFirst()) {
 				log.info("ResultSet already parsed...returning null");
 			}
-			log.fine(" rs is on first row "+rs.isFirst());
-			int ncol = rsmd_rs.getColumnCount();
+			log.fine(" rs is on first row " + rs.isFirst());
+			final int ncol = rsmdRs.getColumnCount();
 			while (rs.next()) {
 				for (int i = 1; i <= ncol; i++) {
-					String colname = rsmd_rs.getColumnName(i);
-					Object colval = rs.getObject(i);
+					final String colname = rsmdRs.getColumnName(i);
+					final Object colval = rs.getObject(i);
 					if (masked.contains(colname)) {
-						log.fine("Ignore column "+colname+" in the output class ");
+						log.fine("Ignore column " + colname + " in the output class ");
 					} else {
-//						log.info("Adding data "+colval+" to column "+colname+" index "+i);
+						// log.info("Adding data "+colval+" to column "+colname+" index "+i);
 						if (pyld.getColumn(i) != null) {
-							log.fine("Adding data "+colval+" to column "+colname+" index "+i);
+							log.fine("Adding data " + colval + " to column " + colname
+									+ " index " + i);
 							pyld.addData(i, colval);
 						}
 					}
 				}
 			}
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return pyld;
 	}
-	
 
-	
-	protected String dumpObject(Object val) throws SQLException {
+	/**
+	 * @param val
+	 * @return
+	 * @throws SQLException
+	 */
+	protected String dumpObject(final Object val) throws SQLException {
 		String buf = "null";
-		if (val ==null)
+		if (val == null) {
 			return buf;
+		}
 		if (val instanceof oracle.sql.CLOB) {
-			CLOB clob = (CLOB)val;
+			final CLOB clob = (CLOB) val;
 			buf = clob.stringValue();
 		} else if (val instanceof oracle.sql.BLOB) {
-			BLOB blob = (BLOB)val;
+			final BLOB blob = (BLOB) val;
 			try {
 				buf = lobtoString(blob);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -189,13 +216,21 @@ public class PayloadHelperBean implements Serializable {
 		return buf;
 	}
 
-	protected String lobtoString(BLOB dat) throws IOException, SQLException {
-		 StringBuffer strOut = new StringBuffer();
-	     String aux;
-		   BufferedReader br = new BufferedReader(new InputStreamReader(dat.asciiStreamValue()));
-		    while ((aux=br.readLine())!=null)
-		             	strOut.append(aux);
-		    return strOut.toString();
+	/**
+	 * @param dat
+	 * @return
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	protected String lobtoString(final BLOB dat) throws IOException, SQLException {
+		final StringBuffer strOut = new StringBuffer();
+		String aux;
+		final BufferedReader br = new BufferedReader(new InputStreamReader(
+				dat.asciiStreamValue()));
+		while ((aux = br.readLine()) != null) {
+			strOut.append(aux);
+		}
+		return strOut.toString();
 	}
 
 }
