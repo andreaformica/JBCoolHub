@@ -66,7 +66,7 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 * @see atlas.cool.rest.web.CoolRESTImpl#setSort(java.lang.String)
 	 */
 	@Override
-	protected void setSort(String orderByName) {
+	protected void setSort(final String orderByName) {
 		// TODO Auto-generated method stub
 		super.setSort(orderByName);
 	}
@@ -81,8 +81,8 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/nodes")
-	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
-			@PathParam("db") String db) {
+	public List<NodeType> listNodesInSchema(@PathParam("schema") final String schema,
+			@PathParam("db") final String db) {
 		// TODO Auto-generated method stub
 		return super.listNodesInSchema(schema, db);
 	}
@@ -99,24 +99,27 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{node:.*}/tags")
 	public List<SchemaNodeTagType> listTagsInNodesSchema(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("node") String node) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("node") final String node) {
 		// TODO Auto-generated method stub
 		return super.listTagsInNodesSchema(schema, db, node);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.CoolRESTImpl#listChannelsInNodesSchema(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.CoolRESTImpl#listChannelsInNodesSchema(java.lang.
+	 * String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{node:.*}/fld/{channel}/channels")
-	public List<ChannelType> listChannelsInNodesSchema(@PathParam("schema") String schema, 
-			@PathParam("db") String db,
-			@PathParam("node") String node,
-			@PathParam("channel") String channame) {
+	public List<ChannelType> listChannelsInNodesSchema(
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("node") final String node,
+			@PathParam("channel") final String channame) {
 		// TODO Auto-generated method stub
 		return super.listChannelsInNodesSchema(schema, db, node, channame);
 	}
@@ -133,8 +136,8 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{gtag}/trace")
 	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("gtag") String gtag) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("gtag") final String gtag) {
 		// TODO Auto-generated method stub
 		return super.listGlobalTagsTagsInNodesSchema(schema, db, gtag);
 	}
@@ -150,9 +153,9 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsperchan")
-	public List<IovType> getIovStatPerChannel(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag) {
+	public List<IovType> getIovStatPerChannel(@PathParam("schema") final String schema,
+			@PathParam("db") final String db, @PathParam("fld") final String fld,
+			@PathParam("tag") final String tag) {
 		// TODO Auto-generated method stub
 		return super.getIovStatPerChannel(schema, db, fld, tag);
 	}
@@ -171,15 +174,16 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
 	public NodeType listIovsInNodesSchemaTagRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("channel") String channel,
-			@PathParam("chansel") String chansel,
-			@PathParam("since") String since, @PathParam("until") String until,
-			@PathParam("timespan") String timespan) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
+			@PathParam("channel") final String channel,
+			@PathParam("chansel") final String chansel,
+			@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan) {
 
-		return super.listIovsInNodesSchemaTagRangeAsList(schema, db, fld, tag,
-				channel, chansel, since, until, timespan);
+		return super.listIovsInNodesSchemaTagRangeAsList(schema, db, fld, tag, channel,
+				chansel, since, until, timespan);
 	}
 
 	/*
@@ -196,16 +200,17 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
 	public NodeType listIovsInNodesSchemaTagRangeSortedAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("sort") String sort,
-			@PathParam("channel") String channel,
-			@PathParam("chansel") String chansel,
-			@PathParam("since") String since, @PathParam("until") String until,
-			@PathParam("timespan") String timespan) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
+			@PathParam("sort") final String sort,
+			@PathParam("channel") final String channel,
+			@PathParam("chansel") final String chansel,
+			@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan) {
 
-		return super.listIovsInNodesSchemaTagRangeSortedAsList(schema, db, fld,
-				tag, sort, channel, chansel, since, until, timespan);
+		return super.listIovsInNodesSchemaTagRangeSortedAsList(schema, db, fld, tag,
+				sort, channel, chansel, since, until, timespan);
 	}
 
 	/*
@@ -222,14 +227,15 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/data/list")
 	public NodeType listPayloadInNodesSchemaTagRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("channel") String channel,
-			@PathParam("chansel") String chansel,
-			@PathParam("since") String since, @PathParam("until") String until,
-			@PathParam("timespan") String timespan) {
-		return super.listPayloadInNodesSchemaTagRangeAsList(schema, db, fld,
-				tag, channel, chansel, since, until, timespan);
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
+			@PathParam("channel") final String channel,
+			@PathParam("chansel") final String chansel,
+			@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan) {
+		return super.listPayloadInNodesSchemaTagRangeAsList(schema, db, fld, tag,
+				channel, chansel, since, until, timespan);
 	}
 
 	/*
@@ -246,16 +252,17 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{channel}/{chansel}/{since}/{until}/{timespan}/data/list")
 	public NodeType listPayloadInNodesSchemaTagRangeSortedAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("sort") String sort,
-			@PathParam("channel") String channel,
-			@PathParam("chansel") String chansel,
-			@PathParam("since") String since, @PathParam("until") String until,
-			@PathParam("timespan") String timespan) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
+			@PathParam("sort") final String sort,
+			@PathParam("channel") final String channel,
+			@PathParam("chansel") final String chansel,
+			@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan) {
 
-		return super.listPayloadInNodesSchemaTagRangeSortedAsList(schema, db,
-				fld, tag, sort, channel, chansel, since, until, timespan);
+		return super.listPayloadInNodesSchemaTagRangeSortedAsList(schema, db, fld, tag,
+				sort, channel, chansel, since, until, timespan);
 	}
 
 	/*
@@ -271,13 +278,14 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/{timespan}/rangesummary/list")
 	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("since") String since, @PathParam("until") String until,
-			@PathParam("timespan") String timespan) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
+			@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan) {
 
-		return super.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db,
-				fld, tag, since, until, timespan);
+		return super.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, fld, tag,
+				since, until, timespan);
 	}
 
 	/**
@@ -306,32 +314,32 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	@GET
 	@Produces("text/plain")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{time}/{chan}/payload")
-	public String getPayload(@PathParam("schema") String schema,
-			@PathParam("db") String db, @PathParam("fld") String fld,
-			@PathParam("tag") String tag, @PathParam("time") BigDecimal time,
-			@PathParam("chan") Long channel) {
-		log.info("Calling getPayload..." + schema + " " + db + " " + fld + " "
-				+ channel);
+	public String getPayload(@PathParam("schema") final String schema,
+			@PathParam("db") final String db, @PathParam("fld") final String fld,
+			@PathParam("tag") final String tag, @PathParam("time") final BigDecimal time,
+			@PathParam("chan") final Long channel) {
+		log.info("Calling getPayload..." + schema + " " + db + " " + fld + " " + channel);
 		try {
 			Long chid = channel;
-			if (channel < 0)
+			if (channel < 0) {
 				chid = null;
+			}
 			String node = fld;
 			if (!fld.startsWith("/")) {
 				node = "/" + fld;
 			}
 			String output = "";
-			ResultSet pyld = payloaddao.getPayload(schema, db, node, tag, time,
+			final ResultSet pyld = payloaddao.getPayload(schema, db, node, tag, time,
 					chid);
 			if (pyld != null) {
 				output = dumpResultSet(pyld);
 			}
 			payloaddao.closeConnection();
 			return output;
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
@@ -371,11 +379,12 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	// @Path("/payload/{id}")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{stime}/{etime}/{chan}/payloads")
 	// public String getPayload(@PathParam("id") PathSegment id) {
-	public String getPayloads(@PathParam("schema") String schema,
-			@PathParam("db") String db, @PathParam("fld") String fld,
-			@PathParam("tag") String tag, @PathParam("stime") BigDecimal stime,
-			@PathParam("etime") BigDecimal etime,
-			@PathParam("chan") Long channel) {
+	public String getPayloads(@PathParam("schema") final String schema,
+			@PathParam("db") final String db, @PathParam("fld") final String fld,
+			@PathParam("tag") final String tag,
+			@PathParam("stime") final BigDecimal stime,
+			@PathParam("etime") final BigDecimal etime,
+			@PathParam("chan") final Long channel) {
 		/*
 		 * MultivaluedMap<String,String> params = id.getMatrixParameters();
 		 * String schema = params.get("schema").get(0); String db =
@@ -385,22 +394,23 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		 */log.info("Calling getPayload..." + schema + " " + db + " " + fld);
 		try {
 			Long chid = channel;
-			if (channel < 0)
+			if (channel < 0) {
 				chid = null;
-			String fldname = fld.replaceAll("/", "_");
+			}
+			final String fldname = fld.replaceAll("/", "_");
 			String output = "";
-			ResultSet pyld = payloaddao.getPayloads(schema, db, fld, tag,
-					stime, etime, chid);
+			final ResultSet pyld = payloaddao.getPayloads(schema, db, fld, tag, stime,
+					etime, chid);
 			if (pyld != null) {
 				// output = dumpResultSet(pyld);
-				output = dump2FileResultSet(pyld, "/tmp/" + schema + "_"
-						+ fldname + "_" + tag);
+				output = dump2FileResultSet(pyld, "/tmp/" + schema + "_" + fldname + "_"
+						+ tag);
 			}
 			return output;
 			// payloaddao.remove();
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			e.printStackTrace();
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
@@ -434,14 +444,14 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	@GET
 	@Produces("text/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/holes")
-	public List<IovType> getIovHolesPerChannel(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("since") BigDecimal since,
-			@PathParam("until") BigDecimal until) {
+	public List<IovType> getIovHolesPerChannel(@PathParam("schema") final String schema,
+			@PathParam("db") final String db, @PathParam("fld") final String fld,
+			@PathParam("tag") final String tag,
+			@PathParam("since") final BigDecimal since,
+			@PathParam("until") final BigDecimal until) {
 
-		log.info("Calling getIovHolesPerChannel..." + schema + " " + db + " "
-				+ fld + " " + tag + " " + since + " " + until);
+		log.info("Calling getIovHolesPerChannel..." + schema + " " + db + " " + fld + " "
+				+ tag + " " + since + " " + until);
 		List<IovType> results = null;
 		try {
 			String seltag = tag;
@@ -452,94 +462,97 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 			if (!fld.startsWith("/")) {
 				node = "/" + fld;
 			}
-			List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
-					db, node);
+			final List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema, db,
+					node);
 			NodeType selnode = null;
 			if (nodes != null && nodes.size() > 0) {
-				for (NodeType anode : nodes) {
+				for (final NodeType anode : nodes) {
 					log.info("Found " + anode.getNodeFullpath() + " of type "
 							+ anode.getNodeIovType());
 					selnode = anode;
 				}
 			}
-			results = cooldao
-					.retrieveIovSummaryPerChannelFromNodeSchemaAndDbInRange(
-							schema, db, node, seltag, since, until);
-			for (IovType aniov : results) {
+			results = cooldao.retrieveIovSummaryPerChannelFromNodeSchemaAndDbInRange(
+					schema, db, node, seltag, since, until);
+			for (final IovType aniov : results) {
 				aniov.setIovBase(selnode.getNodeIovBase());
 			}
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			e.printStackTrace();
 		}
 		return results;
 	}
 
-
 	@GET
 	@Produces("text/html")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsummary/{type}/dump")
 	public String dumpIovsSummaryInNodesSchemaTag(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag, 
-			@PathParam("type") String type) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
+			@PathParam("type") final String type) {
 
-		log.info("Calling dumpIovsSummaryInNodesSchemaTag..." + schema + " "
-				+ db + " folder " + fld + " tag " + tag);
-		Collection<CoolIovSummary> iovsummaryColl = super.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, fld, tag, "0", "Inf", "time");
+		log.info("Calling dumpIovsSummaryInNodesSchemaTag..." + schema + " " + db
+				+ " folder " + fld + " tag " + tag);
+		final Collection<CoolIovSummary> iovsummaryColl = super
+				.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, fld, tag, "0",
+						"Inf", "time");
 		Integer channels = 0;
 		if (iovsummaryColl != null) {
 			channels = iovsummaryColl.size();
 		}
-		String results = "Empty result string...retrieved list of "+channels;
+		String results = "Empty result string...retrieved list of " + channels;
 		if (type.equals("text")) {
 			results = "";
 			log.info("Dumping list as text html");
 			results = super.coolutilsdao.dumpIovSummaryAsText(iovsummaryColl);
-		} else if (type.equals("svg")){
+		} else if (type.equals("svg")) {
 			results = "";
 			log.info("Dumping list as text html");
-			results = super.coolutilsdao.dumpIovSummaryAsSvg(iovsummaryColl);			
+			results = super.coolutilsdao.dumpIovSummaryAsSvg(iovsummaryColl);
 		}
 		return results;
 	}
-	
+
 	@GET
 	@Produces("text/html")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/{timespan}/rangesummary/{type}/dump")
 	public String dumpIovsSummaryInNodesSchemaTagRange(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag") String tag,
-			@PathParam("since") String since, @PathParam("until") String until,
-			@PathParam("timespan") String timespan,
-			@PathParam("type") String type) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("fld") final String fld, @PathParam("tag") final String tag,
+			@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan,
+			@PathParam("type") final String type) {
 
-		log.info("Calling dumpIovsSummaryInNodesSchemaTagRange..." + schema + " "
-				+ db + " folder " + fld + " tag " + tag+" "+since+" "+until);
-		Collection<CoolIovSummary> iovsummaryColl = super.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, fld, tag, since, until, timespan);
+		log.info("Calling dumpIovsSummaryInNodesSchemaTagRange..." + schema + " " + db
+				+ " folder " + fld + " tag " + tag + " " + since + " " + until);
+		final Collection<CoolIovSummary> iovsummaryColl = super
+				.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, fld, tag, since,
+						until, timespan);
 		Integer channels = 0;
 		if (iovsummaryColl != null) {
 			channels = iovsummaryColl.size();
-		}		
-		StringBuffer results = new StringBuffer();
-		results.append("<head><style>" + "h1 {font-size:25px;} "
-				+ "h2 {font-size:20px;}" + "h3 {font-size:15px;}"
-				+ "hr {color:sienna;}" + "p {font-size:14px;}"
+		}
+		final StringBuffer results = new StringBuffer();
+		results.append("<head><style>" + "h1 {font-size:25px;} " + "h2 {font-size:20px;}"
+				+ "h3 {font-size:15px;}" + "hr {color:sienna;}" + "p {font-size:14px;}"
 				+ "p.small {line-height:80%;}" + "</style></head>");
 		results.append("<body>");
-		String resultsDefault = "Empty result string...retrieved list of "+channels+" channels ";
+		final String resultsDefault = "Empty result string...retrieved list of "
+				+ channels + " channels ";
 		if (type.equals("text")) {
 			log.info("Dumping list as text html");
 			results.append(super.coolutilsdao.dumpIovSummaryAsText(iovsummaryColl));
-		} else if (type.equals("svg")){
+		} else if (type.equals("svg")) {
 			log.info("Dumping list as svg and html");
-			results.append(super.coolutilsdao.dumpIovSummaryAsSvg(iovsummaryColl));			
+			results.append(super.coolutilsdao.dumpIovSummaryAsSvg(iovsummaryColl));
 		} else {
 			results.append(resultsDefault);
 		}
 		String coverage = "<p>All important runs are covered</p>";
 		try {
 			coverage = super.coolutilsdao.checkHoles(iovsummaryColl);
-		} catch (ComaQueryException e) {
+		} catch (final ComaQueryException e) {
 			e.printStackTrace();
 			coverage = "<p>Error in coverage checking...</p>";
 		}
@@ -548,19 +561,18 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		return results.toString();
 	}
 
-
-	protected String dumpResultSet(ResultSet rs) throws SQLException {
-		ResultSetMetaData rsmd_rs = rs.getMetaData();
+	protected String dumpResultSet(final ResultSet rs) throws SQLException {
+		final ResultSetMetaData rsmd_rs = rs.getMetaData();
 		for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
 			log.info("col " + i + " name = " + rsmd_rs.getColumnName(i));
 		}
 		log.info(" rs is on first row " + rs.isFirst());
-		StringBuffer buf = new StringBuffer();
-		int ncol = rsmd_rs.getColumnCount();
+		final StringBuffer buf = new StringBuffer();
+		final int ncol = rsmd_rs.getColumnCount();
 		while (rs.next()) {
 			for (int i = 1; i <= ncol; i++) {
-				String colname = rsmd_rs.getColumnName(i);
-				Object colval = rs.getObject(i);
+				final String colname = rsmd_rs.getColumnName(i);
+				final Object colval = rs.getObject(i);
 				// payload.addColumn(i, colname);
 				// payload.addData(i, colval);
 				// log.info("Retrieved " + colname + " = " + dumpObject(colval)
@@ -571,37 +583,37 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		return buf.toString();
 	}
 
-	protected String dump2FileResultSet(ResultSet rs, String fname)
+	protected String dump2FileResultSet(final ResultSet rs, final String fname)
 			throws SQLException {
 		FileWriter fw = null;
-		CoolPayload pyld = new CoolPayload();
-		List<String> masked = pyld.getMasked();
+		final CoolPayload pyld = new CoolPayload();
+		final List<String> masked = pyld.getMasked();
 		try {
 			fw = new FileWriter(fname);
-			ResultSetMetaData rsmd_rs = rs.getMetaData();
-			StringBuffer bufheader = new StringBuffer();
+			final ResultSetMetaData rsmd_rs = rs.getMetaData();
+			final StringBuffer bufheader = new StringBuffer();
 			for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-				String colname = rsmd_rs.getColumnName(i);
+				final String colname = rsmd_rs.getColumnName(i);
 				log.info("col " + i + " name = " + colname);
 				if (masked.contains(colname)) {
-					log.info("Ignore column " + colname
-							+ " in the output file ");
-				} else
+					log.info("Ignore column " + colname + " in the output file ");
+				} else {
 					bufheader.append(colname + "  ");
+				}
 			}
 			fw.write(bufheader.toString() + "\n");
 			log.info(" rs is on first row " + rs.isFirst());
-			int ncol = rsmd_rs.getColumnCount();
+			final int ncol = rsmd_rs.getColumnCount();
 			while (rs.next()) {
-				StringBuffer bufline = new StringBuffer();
+				final StringBuffer bufline = new StringBuffer();
 				for (int i = 1; i <= ncol; i++) {
-					String colname = rsmd_rs.getColumnName(i);
-					Object colval = rs.getObject(i);
+					final String colname = rsmd_rs.getColumnName(i);
+					final Object colval = rs.getObject(i);
 					if (masked.contains(colname)) {
-						log.info("Ignore column " + colname
-								+ " in the output file ");
-					} else
+						log.info("Ignore column " + colname + " in the output file ");
+					} else {
 						bufline.append(dumpObject(colval) + " ; ");
+					}
 
 				}
 				fw.write(bufline.toString() + "\n");
@@ -609,25 +621,26 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 			}
 			fw.flush();
 			fw.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return fname;
 	}
 
-	protected String dumpObject(Object val) throws SQLException {
+	protected String dumpObject(final Object val) throws SQLException {
 		String buf = "null";
-		if (val == null)
+		if (val == null) {
 			return buf;
+		}
 		if (val instanceof oracle.sql.CLOB) {
-			CLOB clob = (CLOB) val;
+			final CLOB clob = (CLOB) val;
 			buf = clob.stringValue();
 		} else if (val instanceof oracle.sql.BLOB) {
-			BLOB blob = (BLOB) val;
+			final BLOB blob = (BLOB) val;
 			try {
 				buf = lobtoString(blob);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -637,13 +650,14 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		return buf;
 	}
 
-	protected String lobtoString(BLOB dat) throws IOException, SQLException {
-		StringBuffer strOut = new StringBuffer();
+	protected String lobtoString(final BLOB dat) throws IOException, SQLException {
+		final StringBuffer strOut = new StringBuffer();
 		String aux;
-		BufferedReader br = new BufferedReader(new InputStreamReader(
+		final BufferedReader br = new BufferedReader(new InputStreamReader(
 				dat.asciiStreamValue()));
-		while ((aux = br.readLine()) != null)
+		while ((aux = br.readLine()) != null) {
 			strOut.append(aux);
+		}
 		return strOut.toString();
 	}
 
