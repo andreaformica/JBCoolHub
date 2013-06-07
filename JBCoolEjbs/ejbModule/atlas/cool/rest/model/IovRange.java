@@ -24,17 +24,37 @@ public class IovRange implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 5570577920594243136L;
-	Long since;
-	Long until;
-	Long niovs;
-	Boolean ishole;
-	String sinceCoolStr;
-	String untilCoolStr;
+	/**
+	 * 
+	 */
+	private Long since;
+	/**
+	 * 
+	 */
+	private Long until;
+	/**
+	 * 
+	 */
+	private Long niovs;
+	/**
+	 * 
+	 */
+	private Boolean ishole;
+	/**
+	 * 
+	 */
+	private String sinceCoolStr;
+	/**
+	 * 
+	 */
+	private String untilCoolStr;
 
+	/**
+	 * 
+	 */
 	@XmlTransient
-	String iovbase;
-	
-	
+	private String iovbase;
+
 	/**
 	 * 
 	 */
@@ -49,7 +69,8 @@ public class IovRange implements Serializable {
 	 * @param ishole
 	 * @param iovbase
 	 */
-	public IovRange(Long since, Long until, Long niovs, Boolean ishole, String iovbase) {
+	public IovRange(final Long since, final Long until, final Long niovs,
+			final Boolean ishole, final String iovbase) {
 		super();
 		this.since = since;
 		this.until = until;
@@ -64,7 +85,7 @@ public class IovRange implements Serializable {
 	/**
 	 * @return the since
 	 */
-	public Long getSince() {
+	public final  Long getSince() {
 		return since;
 	}
 
@@ -72,14 +93,14 @@ public class IovRange implements Serializable {
 	 * @param since
 	 *            the since to set
 	 */
-	public void setSince(Long since) {
+	public final  void setSince(final Long since) {
 		this.since = since;
 	}
 
 	/**
 	 * @return the until
 	 */
-	public Long getUntil() {
+	public final  Long getUntil() {
 		return until;
 	}
 
@@ -87,14 +108,14 @@ public class IovRange implements Serializable {
 	 * @param until
 	 *            the until to set
 	 */
-	public void setUntil(Long until) {
+	public final  void setUntil(final Long until) {
 		this.until = until;
 	}
 
 	/**
 	 * @return the niovs
 	 */
-	public Long getNiovs() {
+	public final  Long getNiovs() {
 		return niovs;
 	}
 
@@ -102,14 +123,14 @@ public class IovRange implements Serializable {
 	 * @param niovs
 	 *            the niovs to set
 	 */
-	public void setNiovs(Long niovs) {
+	public final  void setNiovs(final Long niovs) {
 		this.niovs = niovs;
 	}
 
 	/**
 	 * @return the ishole
 	 */
-	public Boolean getIshole() {
+	public final  Boolean getIshole() {
 		return ishole;
 	}
 
@@ -117,47 +138,49 @@ public class IovRange implements Serializable {
 	 * @param ishole
 	 *            the ishole to set
 	 */
-	public void setIshole(Boolean ishole) {
+	public final  void setIshole(final Boolean ishole) {
 		this.ishole = ishole;
 	}
 
 	/**
 	 * @return the sinceCoolStr
 	 */
-	public String getSinceCoolStr() {
+	public final  String getSinceCoolStr() {
 		return sinceCoolStr;
 	}
 
 	/**
 	 * @return the untilCoolStr
 	 */
-	public String getUntilCoolStr() {
+	public final  String getUntilCoolStr() {
 		return untilCoolStr;
 	}
 
-	
 	/**
-	 * @param iovbase the iovbase to set
+	 * @param iovbase
+	 *            the iovbase to set
 	 */
-	public void setIovbase(String iovbase) {
+	public final  void setIovbase(final String iovbase) {
 		this.iovbase = iovbase;
 	}
 
 	/**
-	 * @param sinceCoolStr the sinceCoolStr to set
+	 * @param sinceCoolStr
+	 *            the sinceCoolStr to set
 	 */
-	public void setSinceCoolStr(String sinceCoolStr) {
+	public final  void setSinceCoolStr(final String sinceCoolStr) {
 		this.sinceCoolStr = sinceCoolStr;
 	}
 
 	/**
-	 * @param untilCoolStr the untilCoolStr to set
+	 * @param untilCoolStr
+	 *            the untilCoolStr to set
 	 */
-	public void setUntilCoolStr(String untilCoolStr) {
+	public final void setUntilCoolStr(final String untilCoolStr) {
 		this.untilCoolStr = untilCoolStr;
 	}
 
-	public void addNIovs(Long niovs) {
+	public final  void addNIovs(final Long niovs) {
 		this.niovs += niovs;
 	}
 }

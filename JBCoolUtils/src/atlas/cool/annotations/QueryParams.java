@@ -5,42 +5,56 @@ package atlas.cool.annotations;
 
 /**
  * @author formica
- *
+ * 
  */
 public class QueryParams {
 
+	/**
+	 * 
+	 */
 	private String qryname;
+	/**
+	 * 
+	 */
 	private String[] params;
+
 	/**
-	 * @param qryname
-	 * @param params
+	 * @param pqryname
+	 * 	The query name
+	 * @param pparams
+	 * 	The parameters names.
 	 */
-	public QueryParams(String qryname, String[] params) {
+	public QueryParams(final String pqryname, final String[] pparams) {
 		super();
-		this.qryname = qryname;
-		this.params = params;
+		this.qryname = pqryname;
+		this.params = pparams;
 	}
+
 	/**
-	 * @return the qryname
+	 * @return 
+	 * 	the query name.
 	 */
-	public String getQryname() {
+	public final String getQryname() {
 		return qryname;
 	}
+
 	/**
 	 * @return the params
 	 */
-	public String[] getParams() {
+	public final String[] getParams() {
 		return params;
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		// TODO Auto-generated method stub
-		return "Query "+qryname+" has n= "+((params != null) ? params.length : 0) + " parameters";
+		return "Query " + qryname + " has n= "
+				+ ((params != null) ? params.length : 0) + " parameters";
 	}
 
-	
 }

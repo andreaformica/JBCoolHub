@@ -30,7 +30,7 @@ public interface CoolUtilsDAO {
 	 * @return
 	 * @throws CoolIOException
 	 */
-	public Map<Long, CoolIovSummary> computeIovSummaryMap(String schema,
+	Map<Long, CoolIovSummary> computeIovSummaryMap(String schema,
 			String db, String node, String tag, String iovbase)
 			throws CoolIOException;
 
@@ -45,7 +45,7 @@ public interface CoolUtilsDAO {
 	 * @return
 	 * @throws CoolIOException
 	 */
-	public Map<Long, CoolIovSummary> computeIovSummaryRangeMap(String schema,
+	Map<Long, CoolIovSummary> computeIovSummaryRangeMap(String schema,
 			String db, String node, String tag, String iovbase,
 			BigDecimal since, BigDecimal until) throws CoolIOException;
 
@@ -55,7 +55,7 @@ public interface CoolUtilsDAO {
 	 * @return
 	 * @throws CoolIOException
 	 */
-	public List<NodeType> listNodesInSchema(String schema, String db)
+	List<NodeType> listNodesInSchema(String schema, String db)
 			throws CoolIOException;
 
 	/**
@@ -65,7 +65,7 @@ public interface CoolUtilsDAO {
 	 * @return
 	 * @throws CoolIOException
 	 */
-	public List<SchemaNodeTagType> listTagsInNodesSchema(String schema,
+	List<SchemaNodeTagType> listTagsInNodesSchema(String schema,
 			String db, String node) throws CoolIOException;
 
 
@@ -77,7 +77,7 @@ public interface CoolUtilsDAO {
 	 * @return
 	 * @throws CoolIOException
 	 */
-	public List<IovType> getIovStatPerChannel(String schema, String db,
+	List<IovType> getIovStatPerChannel(String schema, String db,
 			String fld, String tag) throws CoolIOException;
 
 	/**
@@ -91,7 +91,7 @@ public interface CoolUtilsDAO {
 	 * @return
 	 * @throws CoolIOException
 	 */
-	public NodeType listIovsInNodesSchemaTagRangeAsList(String schema,
+	NodeType listIovsInNodesSchemaTagRangeAsList(String schema,
 			String db, String fld, String tag, String channel,
 			BigDecimal since, BigDecimal until) throws CoolIOException;
 
@@ -106,7 +106,7 @@ public interface CoolUtilsDAO {
 	 * @return
 	 * @throws CoolIOException
 	 */
-	public NodeType listIovsInNodesSchemaTagRangeAsList(String schema,
+	NodeType listIovsInNodesSchemaTagRangeAsList(String schema,
 			String db, String fld, String tag, Long chanid, BigDecimal since,
 			BigDecimal until) throws CoolIOException;
 
@@ -121,7 +121,7 @@ public interface CoolUtilsDAO {
 	 * @return
 	 * @throws CoolIOException
 	 */
-	public NodeType listPayloadInNodesSchemaTagRangeAsList(String schema,
+	NodeType listPayloadInNodesSchemaTagRangeAsList(String schema,
 			String db, String fld, String tag, String channel,
 			BigDecimal since, BigDecimal until) throws CoolIOException;
 
@@ -136,7 +136,7 @@ public interface CoolUtilsDAO {
 	 * @return
 	 * @throws CoolIOException
 	 */
-	public NodeType listPayloadInNodesSchemaTagRangeAsList(String schema,
+	NodeType listPayloadInNodesSchemaTagRangeAsList(String schema,
 			String db, String fld, String tag, Long chanid, BigDecimal since,
 			BigDecimal until) throws CoolIOException;
 
@@ -150,37 +150,19 @@ public interface CoolUtilsDAO {
 	 * @return
 	 * @throws CoolIOException
 	 */
-	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(
+	Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(
 			String schema, String db, String fld, String tag, BigDecimal since,
 			BigDecimal until) throws CoolIOException;
 
 	/**
-	 * <p>Produces an html output from the list of iov summary</p>
+	 * <p>Produces an html output from the list of iov summary.</p>
 	 * @param iovsummaryColl
 	 * @return
 	 */
-	public String dumpIovSummaryAsText(Collection<CoolIovSummary> iovsummaryColl);
+	String dumpIovSummaryAsText(Collection<CoolIovSummary> iovsummaryColl);
 
 	/**
-	 * <p>Produces an html output from the list of iov summary</p>
-	 * @param iovsummaryColl
-	 * @param since
-	 * 			The since time for which we want to start the checking
-	 * @param until
-	 * 			The until time for which we want to end the checking
-	 * @return
-	 */
-	public String dumpIovSummaryAsText(Collection<CoolIovSummary> iovsummaryColl, BigDecimal since, BigDecimal until);
-
-	/**
-	 * <p>Produces an html output with svg plots from the list of iov summary</p>
-	 * @param iovsummaryColl
-	 * @return
-	 */
-	public String dumpIovSummaryAsSvg(Collection<CoolIovSummary> iovsummaryColl);
-
-	/**
-	 * <p>Produces an html output with svg plots from the list of iov summary</p>
+	 * <p>Produces an html output from the list of iov summary.</p>
 	 * @param iovsummaryColl
 	 * @param since
 	 * 			The since time for which we want to start the checking
@@ -188,16 +170,37 @@ public interface CoolUtilsDAO {
 	 * 			The until time for which we want to end the checking
 	 * @return
 	 */
-	public String dumpIovSummaryAsSvg(Collection<CoolIovSummary> iovsummaryColl, BigDecimal since, BigDecimal until);
+	String dumpIovSummaryAsText(
+			Collection<CoolIovSummary> iovsummaryColl, 
+			BigDecimal since, BigDecimal until);
 
 	/**
-	 * <p>Produces an html output with the coverage check result</p>
+	 * <p>Produces an html output with svg plots from the list of iov summary.</p>
+	 * @param iovsummaryColl
+	 * @return
+	 */
+	String dumpIovSummaryAsSvg(Collection<CoolIovSummary> iovsummaryColl);
+
+	/**
+	 * <p>Produces an html output with svg plots from the list of iov summary.</p>
+	 * @param iovsummaryColl
+	 * @param since
+	 * 			The since time for which we want to start the checking
+	 * @param until
+	 * 			The until time for which we want to end the checking
+	 * @return
+	 */
+	String dumpIovSummaryAsSvg(Collection<CoolIovSummary> iovsummaryColl, 
+			BigDecimal since, BigDecimal until);
+
+	/**
+	 * <p>Produces an html output with the coverage check result.</p>
 	 * <p>Uses COMA tables to gather information on runs</p>
 	 * @param iovsummaryColl
 	 * @return
 	 * @throws ComaQueryException
 	 */
-	public String checkHoles(Collection<CoolIovSummary> iovsummaryColl)
+	String checkHoles(Collection<CoolIovSummary> iovsummaryColl)
 			throws ComaQueryException;
 	
 	/**
@@ -232,7 +235,7 @@ public interface CoolUtilsDAO {
 	 * @return
 	 * @throws CoolIOException
 	 */
-	public Map<String, Object> getTimeRange(String since, String until,
-			String timespan) throws CoolIOException ;
+	Map<String, Object> getTimeRange(String since, String until,
+			String timespan) throws CoolIOException;
 
 }

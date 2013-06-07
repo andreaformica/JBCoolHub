@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.payload.model.CoolPayload;
 
-//import atlas.cool.meta.CoolPayload;
 
 /**
  * @author formica
@@ -28,10 +27,32 @@ public interface CoolPayloadDAO {
 //	public ResultSet getPayloads(String schemaname, String dbname,
 //            String folder, String tagname, BigDecimal stime, BigDecimal etime, String channelName) throws CoolIOException;
 
-    public CoolPayload getPayloadsObj(String schemaname, String dbname,
+     /**
+     * @param schemaname
+     * @param dbname
+     * @param folder
+     * @param tagname
+     * @param stime
+     * @param etime
+     * @param channelId
+     * @return
+     * @throws CoolIOException
+     */
+    CoolPayload getPayloadsObj(String schemaname, String dbname,
             String folder, String tagname, BigDecimal stime, BigDecimal etime, Long channelId) throws CoolIOException;
 
-    public CoolPayload getPayloadsObj(String schemaname, String dbname,
+     /**
+     * @param schemaname
+     * @param dbname
+     * @param folder
+     * @param tagname
+     * @param stime
+     * @param etime
+     * @param channelName
+     * @return
+     * @throws CoolIOException
+     */
+    CoolPayload getPayloadsObj(String schemaname, String dbname,
             String folder, String tagname, BigDecimal stime, BigDecimal etime, String channelName) throws CoolIOException;
 
 }

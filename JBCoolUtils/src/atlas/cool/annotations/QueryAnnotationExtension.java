@@ -24,9 +24,15 @@ import javax.persistence.Entity;
  */
 public class QueryAnnotationExtension implements Extension {
 
+	/**
+	 * 
+	 */
 	@Inject
 	private Logger log;
 
+	/**
+	 * @param pat
+	 */
 	<X> void processAnnotatedType(@Observes ProcessAnnotatedType<X> pat) {
 
 		// wrap this to override the annotations of the class
@@ -63,10 +69,15 @@ public class QueryAnnotationExtension implements Extension {
 
 			}
 
-			public <T extends Annotation> T getAnnotation(final Class<T> annType) {
+			/* (non-Javadoc)
+			 * @see javax.enterprise.inject.spi.Annotated#getAnnotation(java.lang.Class)
+			 */
+			public <T extends Annotation> T getAnnotation(
+					final Class<T> annType) {
 
 				if (Entity.class.equals(annType)) {
-					log.info("Processing annotation "+at.toString()+" type "+annType.getSimpleName());
+					log.info("Processing annotation " + at.toString()
+							+ " type " + annType.getSimpleName());
 				}
 				return at.getAnnotation(annType);
 			}
@@ -91,7 +102,7 @@ public class QueryAnnotationExtension implements Extension {
 
 			@Override
 			public boolean isAnnotationPresent(
-					Class<? extends Annotation> annType) {
+					final Class<? extends Annotation> annType) {
 
 				return at.isAnnotationPresent(annType);
 			}

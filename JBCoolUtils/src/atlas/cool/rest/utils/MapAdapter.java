@@ -15,31 +15,39 @@ import atlas.cool.meta.MapWrapper;
 
 /**
  * @author formica
- *
+ * 
  */
-public class MapAdapter extends XmlAdapter<MapWrapper, Map<String,String>> {
+public class MapAdapter extends XmlAdapter<MapWrapper, Map<String, String>> {
 
-	/* (non-Javadoc)
-	 * @see javax.xml.bind.annotation.adapters.XmlAdapter#marshal(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.xml.bind.annotation.adapters.XmlAdapter#marshal(java.lang.Object)
 	 */
 	@Override
-	public MapWrapper marshal(Map<String, String> amap) throws Exception {
+	public final MapWrapper marshal(final Map<String, String> amap)
+			throws Exception {
 		MapWrapper mrw = new MapWrapper();
 		Set<String> keys = amap.keySet();
 		List<MapEntry> entrylist = new ArrayList<MapEntry>();
 		for (String akey : keys) {
-			MapEntry mpe = new MapEntry(akey,amap.get(akey));
+			MapEntry mpe = new MapEntry(akey, amap.get(akey));
 			entrylist.add(mpe);
 		}
 		mrw.column = entrylist;
 		return mrw;
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.xml.bind.annotation.adapters.XmlAdapter#unmarshal(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.xml.bind.annotation.adapters.XmlAdapter#unmarshal(java.lang.Object)
 	 */
 	@Override
-	public Map<String, String> unmarshal(MapWrapper arg0) throws Exception {
+	public final Map<String, String> unmarshal(
+			final MapWrapper arg0) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -12,11 +12,35 @@ import atlas.cool.rest.model.CmpCoolComaTagType;
 
 /**
  * @author formica
- *
+ * 
  */
 public interface ComaCoolDAO {
 
-	public List<CmpCoolComaNodeType> retrieveNodesStatus(String schema, String db) throws CoolIOException;
-	public List<CmpCoolComaTagType> retrieveTagsStatus(String schema, String db) throws CoolIOException;
-	public List<CmpCoolComaGlobalTagType> retrieveGlobalTagsStatus(String schema, String db, String gtag) throws CoolIOException;
+	/**
+	 * @param schema
+	 * @param db
+	 * @return
+	 * @throws CoolIOException
+	 */
+	List<CmpCoolComaNodeType> retrieveNodesStatus(String schema, String db)
+			throws CoolIOException;
+
+	/**
+	 * @param schema
+	 * @param db
+	 * @return
+	 * @throws CoolIOException
+	 */
+	List<CmpCoolComaTagType> retrieveTagsStatus(String schema, String db)
+			throws CoolIOException;
+
+	/**
+	 * @param schema
+	 * @param db
+	 * @param gtag
+	 * @return
+	 * @throws CoolIOException
+	 */
+	List<CmpCoolComaGlobalTagType> retrieveGlobalTagsStatus(String schema, String db,
+			String gtag) throws CoolIOException;
 }

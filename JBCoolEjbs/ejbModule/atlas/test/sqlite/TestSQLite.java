@@ -6,12 +6,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * @author formica
+ *
+ */
 public class TestSQLite {
 
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		// load the sqlite-JDBC driver using the current class loader
 
 		Connection connection = null;
@@ -42,8 +46,9 @@ public class TestSQLite {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (connection != null)
+				if (connection != null) {
 					connection.close();
+				}
 			} catch (SQLException e) {
 				// connection close failed.
 				System.err.println(e);

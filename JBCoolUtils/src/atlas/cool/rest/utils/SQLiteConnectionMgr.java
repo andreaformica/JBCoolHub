@@ -9,17 +9,22 @@ import java.sql.SQLException;
 
 /**
  * @author formica
- *
+ * 
  */
 public class SQLiteConnectionMgr {
 
-	public static Connection getConnection(String file) {
-	
+	/**
+	 * @param file
+	 *            The file name.
+	 * @return The connection.
+	 */
+	public static Connection getConnection(final String file) {
+
 		Connection connection = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
 			// create a database connection
-			connection = DriverManager.getConnection("jdbc:sqlite:"+file);
+			connection = DriverManager.getConnection("jdbc:sqlite:" + file);
 			return connection;
 		} catch (SQLException e) {
 			// if the error message is "out of memory",
@@ -28,7 +33,7 @@ public class SQLiteConnectionMgr {
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 		return null;
 	}
 }

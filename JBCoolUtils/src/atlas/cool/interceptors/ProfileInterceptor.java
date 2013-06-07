@@ -12,15 +12,24 @@ import javax.interceptor.InvocationContext;
  */
 public class ProfileInterceptor {
 
+	/**
+	 * @param ctx
+	 * 	The context.
+	 * @return
+	 * 	The object.
+	 * @throws Exception
+	 * 	Exception.
+	 */
 	@AroundInvoke
-	public Object log(InvocationContext ctx) throws Exception {
+	public final Object log(final InvocationContext ctx) throws Exception {
 		System.out.println("*** TracingInterceptor intercepting "
 				+ ctx.getMethod().getName());
 		long start = System.currentTimeMillis();
 		String param = (String) ctx.getParameters()[0];
 
-		if (param == null)
+		if (param == null) {
 			ctx.setParameters(new String[] { "default" });
+		}
 
 		try {
 			return ctx.proceed();

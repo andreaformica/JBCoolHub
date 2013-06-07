@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 public class TimestampXmlAdapter extends XmlAdapter<Date, Timestamp> {
 
 	@Override
-	public Date marshal(final Timestamp v) {
+	public final Date marshal(final Timestamp v) {
 		return new Date(v.getTime());
 	}
 

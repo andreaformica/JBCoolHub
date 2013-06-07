@@ -20,23 +20,26 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 
 /**
  * <p>
- * This POJO represents the COOL Global Tag. Cool global tags are defined in the main _TAGS table of
- * a COOL schema. The purpose of this POJO is to gather information on the global tag in order to
- * see how many schemas are using it.</p>
- * <p>
- * The Queries defined for this POJO are:<br> 
- * 		<b>QUERY_FINDTAGS [cool_select_pkg]</b><br>
- * 		This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching global tags;
- * 		it uses internally the function cool_select_pkg.f_GetAll_GlobalTags(.....)
+ * This POJO represents the COOL Global Tag. Cool global tags are defined in the main
+ * _TAGS table of a COOL schema. The purpose of this POJO is to gather information on the
+ * global tag in order to see how many schemas are using it.
  * </p>
  * <p>
- * 		<b>QUERY_COMA_FINDTAGS [coma_select_pkg]</b><br>
- * 		This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching global tags;
- * 		it uses internally the function coma_select_pkg.f_GetAll_GlobalTags(.....).
- * 		The difference respect to previous query is that the source is not COOL, but COMA.
+ * The Queries defined for this POJO are:<br>
+ * <b>QUERY_FINDTAGS [cool_select_pkg]</b><br>
+ * This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching
+ * global tags; it uses internally the function cool_select_pkg.f_GetAll_GlobalTags(.....)
  * </p>
+ * <p>
+ * <b>QUERY_COMA_FINDTAGS [coma_select_pkg]</b><br>
+ * This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching
+ * global tags; it uses internally the function
+ * coma_select_pkg.f_GetAll_GlobalTags(.....). The difference respect to previous query is
+ * that the source is not COOL, but COMA.
+ * </p>
+ * 
  * @author formica
- * @since  2013/04/01
+ * @since 2013/04/01
  * 
  */
 @Entity
@@ -61,26 +64,40 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GtagType implements Serializable {
-	
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2990371156354454615L;
 
+	/**
+	 * 
+	 */
 	@Id
 	@Column(name = "GTAG_NAME", length = 255)
-	String gtagName;
+	private String gtagName;
+	/**
+	 * 
+	 */
 	@Column(name = "GTAG_DESCRIPTION", length = 255)
-	String gtagDescription;
+	private String gtagDescription;
+	/**
+	 * 
+	 */
 	@Column(name = "GTAG_LOCK_STATUS")
-	Integer gtagLockStatus;
+	private Integer gtagLockStatus;
 
+	/**
+	 * 
+	 */
 	@Column(name = "N_SCHEMAS")
-	Integer nschemas;
+	private Integer nschemas;
 
+	/**
+	 * 
+	 */
 	@Column(name = "SYS_INSTIME")
-	Timestamp sysInstime;
+	private Timestamp sysInstime;
 
 	@CoolQuery(name = "cool.findgtags", params = "schema;dbname;gtag")
 	public static final String QUERY_FINDGTAGS = "cool.findgtags";
@@ -90,7 +107,7 @@ public class GtagType implements Serializable {
 	/**
 	 * @return the gtagName
 	 */
-	public String getGtagName() {
+	public final String getGtagName() {
 		return gtagName;
 	}
 
@@ -98,14 +115,14 @@ public class GtagType implements Serializable {
 	 * @param gtagName
 	 *            the gtagName to set
 	 */
-	public void setGtagName(String gtagName) {
+	public final void setGtagName(final String gtagName) {
 		this.gtagName = gtagName;
 	}
 
 	/**
 	 * @return the gtagDescription
 	 */
-	public String getGtagDescription() {
+	public final String getGtagDescription() {
 		return gtagDescription;
 	}
 
@@ -113,14 +130,14 @@ public class GtagType implements Serializable {
 	 * @param gtagDescription
 	 *            the gtagDescription to set
 	 */
-	public void setGtagDescription(String gtagDescription) {
+	public final void setGtagDescription(final String gtagDescription) {
 		this.gtagDescription = gtagDescription;
 	}
 
 	/**
 	 * @return the gtagLockStatus
 	 */
-	public Integer getGtagLockStatus() {
+	public final Integer getGtagLockStatus() {
 		return gtagLockStatus;
 	}
 
@@ -128,14 +145,14 @@ public class GtagType implements Serializable {
 	 * @param gtagLockStatus
 	 *            the gtagLockStatus to set
 	 */
-	public void setGtagLockStatus(Integer gtagLockStatus) {
+	public final void setGtagLockStatus(final Integer gtagLockStatus) {
 		this.gtagLockStatus = gtagLockStatus;
 	}
 
 	/**
 	 * @return the nschemas
 	 */
-	public Integer getNschemas() {
+	public final Integer getNschemas() {
 		return nschemas;
 	}
 
@@ -143,14 +160,14 @@ public class GtagType implements Serializable {
 	 * @param nschemas
 	 *            the nschemas to set
 	 */
-	public void setNschemas(Integer nschemas) {
+	public final void setNschemas(final Integer nschemas) {
 		this.nschemas = nschemas;
 	}
 
 	/**
 	 * @return the sysInstime
 	 */
-	public Timestamp getSysInstime() {
+	public final Timestamp getSysInstime() {
 		return sysInstime;
 	}
 
@@ -158,15 +175,20 @@ public class GtagType implements Serializable {
 	 * @param sysInstime
 	 *            the sysInstime to set
 	 */
-	public void setSysInstime(Timestamp sysInstime) {
+	public final void setSysInstime(final Timestamp sysInstime) {
 		this.sysInstime = sysInstime;
 	}
 
-	public String getSysInstimeStr() {
-		if (sysInstime == null)
+	/**
+	 * @return
+	 */
+	public final String getSysInstimeStr() {
+		if (sysInstime == null) {
 			return "";
-		String ret = TimestampStringFormatter.format("yyyy:MM:dd hh:mm:ss", sysInstime);
-//		return sysInstime.toString();
+		}
+		final String ret = TimestampStringFormatter.format("yyyy:MM:dd hh:mm:ss",
+				sysInstime);
+		// return sysInstime.toString();
 		return ret;
 	}
 

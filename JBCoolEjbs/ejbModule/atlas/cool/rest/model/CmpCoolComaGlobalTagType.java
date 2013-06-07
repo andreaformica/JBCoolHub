@@ -49,38 +49,38 @@ public class CmpCoolComaGlobalTagType implements Serializable {
 	private static final long serialVersionUID = -7061216932390622255L;
 	@Id
 	@Column(name = "ROWNUM")
-	Long rowid;
-	
+	private Long rowid;
+
 	@Column(name = "SCHEMA_NAME", length = 30)
-	String schemaName;
+	private String schemaName;
 	@Column(name = "DB_NAME", length = 30)
-	String dbName;
+	private String dbName;
 
 	@Column(name = "NODE_NAME", length = 255)
-	String nodeName;
+	private String nodeName;
 	@Column(name = "NODE_FULLPATH", length = 255)
-	String nodeFullpath;
+	private String nodeFullpath;
 
-	@Column(name = "GTAG_NAME",  length = 255)
-	String gtagName;
+	@Column(name = "GTAG_NAME", length = 255)
+	private String gtagName;
 	@Column(name = "GTAG_LOCK_STATUS")
-	Integer gtagLockStatus;
+	private Integer gtagLockStatus;
 
 	@Column(name = "TAG_NAME", length = 255)
-	String tagName;
+	private String tagName;
 	@Column(name = "TAG_LOCK_STATUS")
-	Integer tagLockStatus;
+	private Integer tagLockStatus;
 	@Column(name = "SYS_INSTIME", length = 255)
-	String sysInstime;
+	private String sysInstime;
 
 	@Column(name = "COMA_COOL_SCHEMA", length = 255)
-	String comaCoolSchema;
+	private String comaCoolSchema;
 	@Column(name = "COMA_NODE_FULLPATH", length = 255)
-	String comaNodeFullpath;
+	private String comaNodeFullpath;
 	@Column(name = "COMA_TAG_NAME", length = 255)
-	String comaTagName;
+	private String comaTagName;
 	@Column(name = "COMA_TAG_LOCK_STATUS")
-	Integer comaTagLockStatus;
+	private Integer comaTagLockStatus;
 
 	@CoolQuery(name = "cool.cmpgtags", params = "schema;dbname;tag")
 	public static final String QUERY_CMP_GTAGS = "cool.cmpgtags";
@@ -88,7 +88,7 @@ public class CmpCoolComaGlobalTagType implements Serializable {
 	/**
 	 * @return the schemaName
 	 */
-	public String getSchemaName() {
+	public final String getSchemaName() {
 		return schemaName;
 	}
 
@@ -96,14 +96,14 @@ public class CmpCoolComaGlobalTagType implements Serializable {
 	 * @param schemaName
 	 *            the schemaName to set
 	 */
-	public void setSchemaName(String schemaName) {
+	public final void setSchemaName(final String schemaName) {
 		this.schemaName = schemaName;
 	}
 
 	/**
 	 * @return the dbName
 	 */
-	public String getDbName() {
+	public final String getDbName() {
 		return dbName;
 	}
 
@@ -111,14 +111,14 @@ public class CmpCoolComaGlobalTagType implements Serializable {
 	 * @param dbName
 	 *            the dbName to set
 	 */
-	public void setDbName(String dbName) {
+	public final void setDbName(final String dbName) {
 		this.dbName = dbName;
 	}
 
 	/**
 	 * @return the nodeName
 	 */
-	public String getNodeName() {
+	public final String getNodeName() {
 		return nodeName;
 	}
 
@@ -126,14 +126,14 @@ public class CmpCoolComaGlobalTagType implements Serializable {
 	 * @param nodeName
 	 *            the nodeName to set
 	 */
-	public void setNodeName(String nodeName) {
+	public final void setNodeName(final String nodeName) {
 		this.nodeName = nodeName;
 	}
 
 	/**
 	 * @return the nodeFullpath
 	 */
-	public String getNodeFullpath() {
+	public final String getNodeFullpath() {
 		return nodeFullpath;
 	}
 
@@ -141,29 +141,29 @@ public class CmpCoolComaGlobalTagType implements Serializable {
 	 * @param nodeFullpath
 	 *            the nodeFullpath to set
 	 */
-	public void setNodeFullpath(String nodeFullpath) {
+	public final void setNodeFullpath(final String nodeFullpath) {
 		this.nodeFullpath = nodeFullpath;
 	}
-
 
 	/**
 	 * @return the gtagName
 	 */
-	public String getGtagName() {
+	public final String getGtagName() {
 		return gtagName;
 	}
 
 	/**
-	 * @param gtagName the gtagName to set
+	 * @param gtagName
+	 *            the gtagName to set
 	 */
-	public void setGtagName(String gtagName) {
+	public final void setGtagName(final String gtagName) {
 		this.gtagName = gtagName;
 	}
 
 	/**
 	 * @return the tagName
 	 */
-	public String getTagName() {
+	public final String getTagName() {
 		return tagName;
 	}
 
@@ -171,14 +171,14 @@ public class CmpCoolComaGlobalTagType implements Serializable {
 	 * @param tagName
 	 *            the tagName to set
 	 */
-	public void setTagName(String tagName) {
+	public final void setTagName(final String tagName) {
 		this.tagName = tagName;
 	}
 
 	/**
 	 * @return the sysInstime
 	 */
-	public String getSysInstime() {
+	public final String getSysInstime() {
 		return sysInstime;
 	}
 
@@ -186,14 +186,14 @@ public class CmpCoolComaGlobalTagType implements Serializable {
 	 * @param sysInstime
 	 *            the sysInstime to set
 	 */
-	public void setSysInstime(String sysInstime) {
+	public final void setSysInstime(final String sysInstime) {
 		this.sysInstime = sysInstime;
 	}
 
 	/**
 	 * @return the comaTagName
 	 */
-	public String getComaTagName() {
+	public final String getComaTagName() {
 		return comaTagName;
 	}
 
@@ -201,77 +201,82 @@ public class CmpCoolComaGlobalTagType implements Serializable {
 	 * @param comaTagName
 	 *            the comaTagName to set
 	 */
-	public void setComaTagName(String comaTagName) {
+	public final void setComaTagName(final String comaTagName) {
 		this.comaTagName = comaTagName;
 	}
 
 	/**
 	 * @return the comaCoolSchema
 	 */
-	public String getComaCoolSchema() {
+	public final String getComaCoolSchema() {
 		return comaCoolSchema;
 	}
 
 	/**
-	 * @param comaCoolSchema the comaCoolSchema to set
+	 * @param comaCoolSchema
+	 *            the comaCoolSchema to set
 	 */
-	public void setComaCoolSchema(String comaCoolSchema) {
+	public final void setComaCoolSchema(final String comaCoolSchema) {
 		this.comaCoolSchema = comaCoolSchema;
 	}
 
 	/**
 	 * @return the comaNodeFullpath
 	 */
-	public String getComaNodeFullpath() {
+	public final String getComaNodeFullpath() {
 		return comaNodeFullpath;
 	}
 
 	/**
-	 * @param comaNodeFullpath the comaNodeFullpath to set
+	 * @param comaNodeFullpath
+	 *            the comaNodeFullpath to set
 	 */
-	public void setComaNodeFullpath(String comaNodeFullpath) {
+	public final void setComaNodeFullpath(final String comaNodeFullpath) {
 		this.comaNodeFullpath = comaNodeFullpath;
 	}
 
 	/**
 	 * @return the gtagLockStatus
 	 */
-	public Integer getGtagLockStatus() {
+	public final Integer getGtagLockStatus() {
 		return gtagLockStatus;
 	}
 
 	/**
-	 * @param gtagLockStatus the gtagLockStatus to set
+	 * @param gtagLockStatus
+	 *            the gtagLockStatus to set
 	 */
-	public void setGtagLockStatus(Integer gtagLockStatus) {
+	public final void setGtagLockStatus(final Integer gtagLockStatus) {
 		this.gtagLockStatus = gtagLockStatus;
 	}
 
 	/**
 	 * @return the tagLockStatus
 	 */
-	public Integer getTagLockStatus() {
+	public final Integer getTagLockStatus() {
 		return tagLockStatus;
 	}
 
 	/**
-	 * @param tagLockStatus the tagLockStatus to set
+	 * @param tagLockStatus
+	 *            the tagLockStatus to set
 	 */
-	public void setTagLockStatus(Integer tagLockStatus) {
+	public final void setTagLockStatus(final Integer tagLockStatus) {
 		this.tagLockStatus = tagLockStatus;
 	}
 
 	/**
 	 * @return the comaTagLockStatus
 	 */
-	public Integer getComaTagLockStatus() {
+	public final Integer getComaTagLockStatus() {
 		return comaTagLockStatus;
 	}
 
 	/**
-	 * @param comaTagLockStatus the comaTagLockStatus to set
+	 * @param comaTagLockStatus
+	 *            the comaTagLockStatus to set
 	 */
-	public void setComaTagLockStatus(Integer comaTagLockStatus) {
+	public final void setComaTagLockStatus(final Integer comaTagLockStatus) {
 		this.comaTagLockStatus = comaTagLockStatus;
 	}
 

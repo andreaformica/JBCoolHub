@@ -12,32 +12,53 @@ import java.util.Vector;
 /**
  * @author formica
  * 
+ * @param <T>
  */
 public class MyPrinterHandler<T> {
 
-
-	String separator = " | ";
-	T _obj;
-	Map<String, Integer> exclusionMap = new HashMap<String, Integer>();
-	Vector<Method> methods = new Vector<Method>();
+	/**
+	 * 
+	 */
+	private String separator = " | ";
+	/**
+	 * 
+	 */
+	private T objPrint;
+	/**
+	 * 
+	 */
+	private Map<String, Integer> exclusionMap = new HashMap<String, Integer>();
+	/**
+	 * 
+	 */
+	private Vector<Method> methods = new Vector<Method>();
 
 	/**
-	 * @param _obj
+	 * @param obj
+	 *            The object to print.
 	 */
-	public MyPrinterHandler(final T _obj) {
-		this._obj = _obj;
+	public MyPrinterHandler(final T obj) {
+		this.objPrint = obj;
 	}
 
 	/**
-	 * @param _obj
-	 * @param separator
+	 * @param obj
+	 *            The object to print.
+	 * @param pseparator
+	 *            The separator.
 	 */
-	public MyPrinterHandler(final T _obj, final String separator) {
-		this._obj = _obj;
-		this.separator = separator;
+	public MyPrinterHandler(final T obj, final String pseparator) {
+		this.objPrint = obj;
+		this.separator = pseparator;
 	}
 
-	public void exclude(final String methname, final Integer exclusion) {
+	/**
+	 * @param methname
+	 * 	The method name.
+	 * @param exclusion
+	 * 	Exclusion flag.
+	 */
+	public final void exclude(final String methname, final Integer exclusion) {
 		if (exclusionMap.containsKey(methname)) {
 			Integer value = exclusionMap.get(methname);
 			if (value != exclusion) {
@@ -48,21 +69,32 @@ public class MyPrinterHandler<T> {
 		}
 	}
 
-	public void add(final Method meth) {
+	/**
+	 * @param meth
+	 * 	The method to add.
+	 */
+	public final void add(final Method meth) {
 		methods.add(meth);
 	}
 
+	/**
+	 * 
+	 */
 	private void clear() {
 		exclusionMap.clear();
 	}
 
+	/**
+	 * @return String.
+	 */
 	private String printOrdered() {
 		if (methods.size() > 0) {
 			StringBuffer buf = new StringBuffer();
 			for (int i = 0; i < methods.size(); i++) {
 				try {
-					//log.debug("printOrdered: using method "+methods.elementAt(i).getName());
-					Object retfield = methods.elementAt(i).invoke(_obj, (Object[]) null);
+// log.debug("printOrdered: using method "+methods.elementAt(i).getName());
+					Object retfield = methods.elementAt(i).invoke(objPrint,
+							(Object[]) null);
 					if (retfield != null) {
 						buf.append(retfield.toString() + separator);
 					}
@@ -84,15 +116,19 @@ public class MyPrinterHandler<T> {
 		}
 	}
 
-	public String print() {
+	/**
+	 * @return
+	 * 	String.
+	 */
+	public final String print() {
 		StringBuffer buf = new StringBuffer();
 		if (methods.size() > 0) {
 			return printOrdered();
 		}
 		// buf.append(olname);
-		Method[] _gets = _obj.getClass().getDeclaredMethods();
-		for (int i = 0; i < _gets.length; i++) {
-			String methName = _gets[i].getName();
+		Method[] getsMths = objPrint.getClass().getDeclaredMethods();
+		for (int i = 0; i < getsMths.length; i++) {
+			String methName = getsMths[i].getName();
 			if (methName.startsWith("get")) {
 				if (exclusionMap.containsKey(methName)) {
 					if (exclusionMap.get(methName) == 1) {
@@ -100,11 +136,13 @@ public class MyPrinterHandler<T> {
 					}
 				}
 				try {
-					//log.debug("print: using method "+methName);
+					// log.debug("print: using method "+methName);
 					String field = methName.substring(3);
-					Object retfield = _gets[i].invoke(_obj, (Object[]) null);
+					Object retfield = getsMths[i]
+							.invoke(objPrint, (Object[]) null);
 					if (retfield != null) {
-						buf.append(field + "=" + retfield.toString() + separator);
+						buf.append(field + "=" + retfield.toString()
+								+ separator);
 					}
 				} catch (IllegalArgumentException e) {
 					// TODO Auto-generated catch block

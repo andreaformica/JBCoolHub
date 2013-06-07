@@ -23,35 +23,33 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 
 /**
  * <p>
- * This POJO represents some statistics that can be gathered over IOVs. Cool
- * iovs are defined in the _IOVS table of a COOL schema for every folder (node).
- * The purpose of this POJO is to collect information on the amount of iovs are
- * stored for a given node and tag and for every channel, computing also minimum
- * and maximum time intervals. The main usage for this POJO is to explore time
- * coverage for a given node/tag, which is very important when we want to verify
- * the consistency of a GlobalTag.
+ * This POJO represents some statistics that can be gathered over IOVs. Cool iovs are
+ * defined in the _IOVS table of a COOL schema for every folder (node). The purpose of
+ * this POJO is to collect information on the amount of iovs are stored for a given node
+ * and tag and for every channel, computing also minimum and maximum time intervals. The
+ * main usage for this POJO is to explore time coverage for a given node/tag, which is
+ * very important when we want to verify the consistency of a GlobalTag.
  * </p>
  * <p>
  * The Queries defined for this POJO are: <br>
  * <b>QUERY_FINDIOVS [cool_select_pkg]</b><br>
- * This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list
- * of matching nodes/tags; it uses internally the function
- * cool_select_pkg.f_Get_Iovs(.....).<br>
+ * This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list of
+ * matching nodes/tags; it uses internally the function cool_select_pkg.f_Get_Iovs(.....).
+ * <br>
  * For every node/tag/channel there is one line with statistics of iovs.<br>
  * 
  * <b>QUERY_FINDHOLES [cool_select_pkg]</b><br>
- * This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list
- * of matching nodes/tags; it uses internally the function
- * cool_select_pkg.f_Get_Iovs(.....).<br>
- * For every node/tag/channel there is one line with statistics of holes
- * spotted.<br>
+ * This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list of
+ * matching nodes/tags; it uses internally the function cool_select_pkg.f_Get_Iovs(.....).
+ * <br>
+ * For every node/tag/channel there is one line with statistics of holes spotted.<br>
  * 
  * <b>QUERY_FINDIOVSUMMARY [cool_select_pkg]</b><br>
- * This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list
- * of matching nodes/tags; it uses internally the function
- * cool_select_pkg.f_Get_Iovs(.....).<br>
- * For every node/tag/channel there is at least one(+) line(s) with a summary of
- * time ranges covered.<br>
+ * This query takes as arguments the SCHEMA, DB, NODE, TAG and retrieves a list of
+ * matching nodes/tags; it uses internally the function cool_select_pkg.f_Get_Iovs(.....).
+ * <br>
+ * For every node/tag/channel there is at least one(+) line(s) with a summary of time
+ * ranges covered.<br>
  * For example: ch 1 : [0 - Inf] Niovs <br>
  * or ch 1 : [0 - 100] Niovs ; [100 - 110] hole; [110 - Inf] Miovs; <br>
  * </p>
@@ -188,7 +186,7 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 				+ "count(channel_id) as niovs "
 				+ " from ( "
 				+ "select "
-				+ " user_tag_id, tag_name, "				
+				+ " user_tag_id, tag_name, "
 				+ " channel_id, channel_name,iov_since, iov_until, next_since, (case when (next_since-iov_until)>0 then (next_since-iov_until) else 0 end) as hole "
 				+ " from ("
 				+ "select "
@@ -263,7 +261,7 @@ public class IovType implements Serializable {
 	/**
 	 * @return the niovs
 	 */
-	public Long getNiovs() {
+	public final  Long getNiovs() {
 		return niovs;
 	}
 
@@ -271,14 +269,14 @@ public class IovType implements Serializable {
 	 * @param niovs
 	 *            the niovs to set
 	 */
-	public void setNiovs(Long niovs) {
+	public final  void setNiovs(final Long niovs) {
 		this.niovs = niovs;
 	}
 
 	/**
 	 * @return the channelId
 	 */
-	public Long getChannelId() {
+	public final  Long getChannelId() {
 		return channelId;
 	}
 
@@ -286,14 +284,14 @@ public class IovType implements Serializable {
 	 * @param channelId
 	 *            the channelId to set
 	 */
-	public void setChannelId(Long channelId) {
+	public final  void setChannelId(final Long channelId) {
 		this.channelId = channelId;
 	}
 
 	/**
 	 * @return the channelName
 	 */
-	public String getChannelName() {
+	public final  String getChannelName() {
 		return channelName;
 	}
 
@@ -301,14 +299,14 @@ public class IovType implements Serializable {
 	 * @param channelName
 	 *            the channelName to set
 	 */
-	public void setChannelName(String channelName) {
+	public final  void setChannelName(final String channelName) {
 		this.channelName = channelName;
 	}
 
 	/**
 	 * @return the miniovSince
 	 */
-	public BigDecimal getMiniovSince() {
+	public final  BigDecimal getMiniovSince() {
 		return miniovSince;
 	}
 
@@ -316,14 +314,14 @@ public class IovType implements Serializable {
 	 * @param miniovSince
 	 *            the miniovSince to set
 	 */
-	public void setMiniovSince(BigDecimal miniovSince) {
+	public final  void setMiniovSince(final BigDecimal miniovSince) {
 		this.miniovSince = miniovSince;
 	}
 
 	/**
 	 * @return the miniovUntil
 	 */
-	public BigDecimal getMiniovUntil() {
+	public final  BigDecimal getMiniovUntil() {
 		return miniovUntil;
 	}
 
@@ -331,14 +329,14 @@ public class IovType implements Serializable {
 	 * @param miniovUntil
 	 *            the miniovUntil to set
 	 */
-	public void setMiniovUntil(BigDecimal miniovUntil) {
+	public final  void setMiniovUntil(final BigDecimal miniovUntil) {
 		this.miniovUntil = miniovUntil;
 	}
 
 	/**
 	 * @return the maxiovSince
 	 */
-	public BigDecimal getMaxiovSince() {
+	public final  BigDecimal getMaxiovSince() {
 		return maxiovSince;
 	}
 
@@ -346,14 +344,14 @@ public class IovType implements Serializable {
 	 * @param maxiovSince
 	 *            the maxiovSince to set
 	 */
-	public void setMaxiovSince(BigDecimal maxiovSince) {
+	public final  void setMaxiovSince(final BigDecimal maxiovSince) {
 		this.maxiovSince = maxiovSince;
 	}
 
 	/**
 	 * @return the maxiovUntil
 	 */
-	public BigDecimal getMaxiovUntil() {
+	public final  BigDecimal getMaxiovUntil() {
 		return maxiovUntil;
 	}
 
@@ -361,14 +359,14 @@ public class IovType implements Serializable {
 	 * @param maxiovUntil
 	 *            the maxiovUntil to set
 	 */
-	public void setMaxiovUntil(BigDecimal maxiovUntil) {
+	public final  void setMaxiovUntil(final BigDecimal maxiovUntil) {
 		this.maxiovUntil = maxiovUntil;
 	}
 
 	/**
 	 * @return the iovHole
 	 */
-	public BigDecimal getIovHole() {
+	public final  BigDecimal getIovHole() {
 		return iovHole;
 	}
 
@@ -376,14 +374,14 @@ public class IovType implements Serializable {
 	 * @param iovHole
 	 *            the iovHole to set
 	 */
-	public void setIovHole(BigDecimal iovHole) {
+	public final  void setIovHole(final BigDecimal iovHole) {
 		this.iovHole = iovHole;
 	}
 
 	/**
 	 * @return the iovBase
 	 */
-	public String getIovBase() {
+	public final  String getIovBase() {
 		return iovBase;
 	}
 
@@ -391,14 +389,14 @@ public class IovType implements Serializable {
 	 * @param iovBase
 	 *            the iovBase to set
 	 */
-	public void setIovBase(String iovBase) {
+	public final  void setIovBase(final String iovBase) {
 		this.iovBase = iovBase;
 	}
 
 	/**
 	 * @return the holeUntil
 	 */
-	public BigDecimal getHoleUntil() {
+	public final  BigDecimal getHoleUntil() {
 		return holeUntil;
 	}
 
@@ -406,133 +404,161 @@ public class IovType implements Serializable {
 	 * @param holeUntil
 	 *            the holeUntil to set
 	 */
-	public void setHoleUntil(BigDecimal holeUntil) {
+	public final  void setHoleUntil(final BigDecimal holeUntil) {
 		this.holeUntil = holeUntil;
 	}
 
-	
 	/**
 	 * @return the userTagId
 	 */
-	public Long getUserTagId() {
+	public final  Long getUserTagId() {
 		return userTagId;
 	}
 
 	/**
-	 * @param userTagId the userTagId to set
+	 * @param userTagId
+	 *            the userTagId to set
 	 */
-	public void setUserTagId(Long userTagId) {
+	public final  void setUserTagId(final Long userTagId) {
 		this.userTagId = userTagId;
 	}
 
 	/**
 	 * @return the tagName
 	 */
-	public String getTagName() {
+	public final  String getTagName() {
 		return tagName;
 	}
 
 	/**
-	 * @param tagName the tagName to set
+	 * @param tagName
+	 *            the tagName to set
 	 */
-	public void setTagName(String tagName) {
+	public final  void setTagName(final String tagName) {
 		this.tagName = tagName;
 	}
 
-	public String getCoolHoleUntil() {
+	/**
+	 * @return
+	 */
+	public final  String getCoolHoleUntil() {
 		String iovstr = "";
 		if (iovBase.equals("run-lumi")) {
-			Long run = CoolIov.getRun(holeUntil.toBigInteger());
+			final Long run = CoolIov.getRun(holeUntil.toBigInteger());
 			// Long lumi = CoolIov.getLumi(miniovSince.toBigInteger());
 			iovstr = run.toString();
 		} else {
-			if (holeUntil.intValue() == 0)
+			if (holeUntil.intValue() == 0) {
 				return "0";
-			Long time = CoolIov.getTime(holeUntil.toBigInteger());
-			if (time == CoolIov.COOL_MAX_DATE)
+			}
+			final Long time = CoolIov.getTime(holeUntil.toBigInteger());
+			if (time == CoolIov.COOL_MAX_DATE) {
 				return new Long(CoolIov.COOL_MAX_DATE).toString();
-			Date iov = new Date(time);
+			}
+			final Date iov = new Date(time);
 			iovstr = TimestampStringFormatter.format(null, iov);
 		}
 		return iovstr;
 	}
 
-	public String getCoolIovMinSince() {
+	/**
+	 * @return
+	 */
+	public final  String getCoolIovMinSince() {
 		String iovstr = "";
 		if (iovBase.equals("run-lumi")) {
-			Long run = CoolIov.getRun(miniovSince.toBigInteger());
+			final Long run = CoolIov.getRun(miniovSince.toBigInteger());
 			// Long lumi = CoolIov.getLumi(miniovSince.toBigInteger());
 			iovstr = run.toString();
 		} else {
-			if (miniovSince.intValue() == 0)
+			if (miniovSince.intValue() == 0) {
 				return "0";
-			Long time = CoolIov.getTime(miniovSince.toBigInteger());
-			if (time == CoolIov.COOL_MAX_DATE)
+			}
+			final Long time = CoolIov.getTime(miniovSince.toBigInteger());
+			if (time == CoolIov.COOL_MAX_DATE) {
 				return new Long(CoolIov.COOL_MAX_DATE).toString();
-			Date iov = new Date(time);
+			}
+			final Date iov = new Date(time);
 			iovstr = TimestampStringFormatter.format(null, iov);
 		}
 		return iovstr;
 	}
 
-	public String getCoolIovMinUntil() {
+	/**
+	 * @return
+	 */
+	public final  String getCoolIovMinUntil() {
 		String iovstr = "";
 		if (iovBase.equals("run-lumi")) {
-			Long run = CoolIov.getRun(miniovUntil.toBigInteger());
+			final Long run = CoolIov.getRun(miniovUntil.toBigInteger());
 			// Long lumi = CoolIov.getLumi(maxiovUntil.toBigInteger());
 			// iovstr = run + " : " + lumi;
 			iovstr = run.toString();
 		} else {
-			if (miniovUntil.intValue() == 0)
+			if (miniovUntil.intValue() == 0) {
 				return "0";
-			Long time = CoolIov.getTime(miniovUntil.toBigInteger());
-			if (time == CoolIov.COOL_MAX_DATE)
+			}
+			final Long time = CoolIov.getTime(miniovUntil.toBigInteger());
+			if (time == CoolIov.COOL_MAX_DATE) {
 				return new Long(CoolIov.COOL_MAX_DATE).toString();
-			Date iov = new Date(time);
+			}
+			final Date iov = new Date(time);
 			iovstr = TimestampStringFormatter.format(null, iov);
 		}
 		return iovstr;
 	}
 
-	public String getCoolIovMaxSince() {
+	/**
+	 * @return
+	 */
+	public final  String getCoolIovMaxSince() {
 		String iovstr = "";
 		if (iovBase.equals("run-lumi")) {
-			Long run = CoolIov.getRun(maxiovSince.toBigInteger());
+			final Long run = CoolIov.getRun(maxiovSince.toBigInteger());
 			// Long lumi = CoolIov.getLumi(maxiovSince.toBigInteger());
-			if (run == CoolIov.COOL_MAX_DATE)
+			if (run == CoolIov.COOL_MAX_DATE) {
 				return "Inf";
+			}
 			iovstr = run.toString();
 		} else {
-			if (maxiovSince.intValue() == 0)
+			if (maxiovSince.intValue() == 0) {
 				return "0";
-			Long time = CoolIov.getTime(maxiovSince.toBigInteger());
-			if (time == CoolIov.COOL_MAX_DATE)
+			}
+			final Long time = CoolIov.getTime(maxiovSince.toBigInteger());
+			if (time == CoolIov.COOL_MAX_DATE) {
 				return "Inf";
+			}
 			// return new Long(CoolIov.COOL_MAX_DATE).toString();
-			Date iov = new Date(time);
+			final Date iov = new Date(time);
 			iovstr = TimestampStringFormatter.format(null, iov);
 		}
 		return iovstr;
 	}
 
-	public String getCoolIovMaxUntil() {
+	/**
+	 * @return
+	 */
+	public final String getCoolIovMaxUntil() {
 		String iovstr = "";
 		if (iovBase.equals("run-lumi")) {
-			Long run = CoolIov.getRun(maxiovUntil.toBigInteger());
+			final Long run = CoolIov.getRun(maxiovUntil.toBigInteger());
 			// Long lumi = CoolIov.getLumi(maxiovUntil.toBigInteger());
 			// iovstr = run + " : " + lumi;
-			if (run == CoolIov.COOL_MAX_DATE)
+			if (run == CoolIov.COOL_MAX_DATE) {
 				return "Inf";
+			}
 
 			iovstr = run.toString();
 		} else {
-			if (maxiovUntil.intValue() == 0)
+			if (maxiovUntil.intValue() == 0) {
 				return "0";
-			Long time = CoolIov.getTime(maxiovUntil.toBigInteger());
-			if (time == CoolIov.COOL_MAX_DATE)
+			}
+			final Long time = CoolIov.getTime(maxiovUntil.toBigInteger());
+			if (time == CoolIov.COOL_MAX_DATE) {
 				return "Inf";
+			}
 			// return new Long(CoolIov.COOL_MAX_DATE).toString();
-			Date iov = new Date(time);
+			final Date iov = new Date(time);
 			iovstr = TimestampStringFormatter.format(null, iov);
 		}
 		return iovstr;

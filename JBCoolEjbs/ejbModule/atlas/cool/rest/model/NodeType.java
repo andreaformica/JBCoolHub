@@ -1,8 +1,8 @@
 package atlas.cool.rest.model;
+
 /**
  * 
  */
-
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -26,53 +26,31 @@ import org.hibernate.annotations.BatchSize;
 import atlas.cool.annotations.CoolQuery;
 import atlas.cool.rest.utils.TimestampStringFormatter;
 
-
 /**
  * @author formica
- *
+ * 
  */
 @Entity
-@NamedNativeQueries( {
-	@NamedNativeQuery(name = NodeType.QUERY_FINDNODES, query = "select   node_id,"
- + " node_name , "
- + " node_fullpath ," 
- + " node_description ," 
- + " node_isleaf ," 
- + " node_instime ," 
- + " node_tinstime ," 
- + " lastmod_date ," 
- + " folder_versioning ," 
- + " folder_payloadspec ," 
- + " folder_iovtablename ," 
- + " folder_tagtablename ," 
- + " folder_channeltablename, " 
- + " schema_name, "
- + " dbname, "
- + " iov_base, "
- + " iov_type, "
- + " rownum "
- + "from table(cool_select_pkg.f_getall_nodes(:schema,:dbname,:node))", resultClass = NodeType.class),
-	@NamedNativeQuery(name = NodeType.QUERY_FINDALLNODES, query = "select   node_id,"
- + " node_name , "
- + " node_fullpath ," 
- + " node_description ," 
- + " node_isleaf ," 
- + " node_instime ," 
- + " node_tinstime ," 
- + " lastmod_date ," 
- + " folder_versioning ," 
- + " folder_payloadspec ," 
- + " folder_iovtablename ," 
- + " folder_tagtablename ," 
- + " folder_channeltablename, " 
- + " schema_name, "
- + " dbname, "
- + " iov_base, "
- + " iov_type, "
- + " rownum "
- + "from table(cool_select_pkg.f_getall_nodes(:schema,:dbname,:node))", resultClass = NodeType.class)
-})
-@BatchSize(size=5)
+@NamedNativeQueries({
+		@NamedNativeQuery(name = NodeType.QUERY_FINDNODES, query = "select   node_id,"
+				+ " node_name , " + " node_fullpath ," + " node_description ,"
+				+ " node_isleaf ," + " node_instime ," + " node_tinstime ,"
+				+ " lastmod_date ," + " folder_versioning ," + " folder_payloadspec ,"
+				+ " folder_iovtablename ," + " folder_tagtablename ,"
+				+ " folder_channeltablename, " + " schema_name, " + " dbname, "
+				+ " iov_base, " + " iov_type, " + " rownum "
+				+ "from table(cool_select_pkg.f_getall_nodes(:schema,:dbname,:node))", 
+				resultClass = NodeType.class),
+		@NamedNativeQuery(name = NodeType.QUERY_FINDALLNODES, query = "select   node_id,"
+				+ " node_name , " + " node_fullpath ," + " node_description ,"
+				+ " node_isleaf ," + " node_instime ," + " node_tinstime ,"
+				+ " lastmod_date ," + " folder_versioning ," + " folder_payloadspec ,"
+				+ " folder_iovtablename ," + " folder_tagtablename ,"
+				+ " folder_channeltablename, " + " schema_name, " + " dbname, "
+				+ " iov_base, " + " iov_type, " + " rownum "
+				+ "from table(cool_select_pkg.f_getall_nodes(:schema,:dbname,:node))", 
+				resultClass = NodeType.class) })
+@BatchSize(size = 5)
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class NodeType implements Serializable {
@@ -81,280 +59,306 @@ public class NodeType implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 8950148398190695530L;
-	
+
 	@Id
 	@Column(name = "ROWNUM")
-	Long rowid;
+	private Long rowid;
 
 	@Column(name = "SCHEMA_NAME", length = 30)
-	String schemaName;
+	private String schemaName;
 	@Column(name = "DBNAME", length = 30)
-	String dbName;
+	private String dbName;
 
 	@Column(name = "NODE_ID", precision = 10, scale = 0)
-	Long nodeId;
+	private Long nodeId;
 	@Column(name = "NODE_NAME", length = 255)
-	String nodeName;
+	private String nodeName;
 	@Column(name = "NODE_FULLPATH", length = 255)
-	String nodeFullpath;
+	private String nodeFullpath;
 	@Column(name = "NODE_DESCRIPTION", length = 255)
-	String nodeDescription;
+	private String nodeDescription;
 	@Column(name = "NODE_ISLEAF", precision = 5, scale = 0)
-	Integer nodeIsleaf;
+	private Integer nodeIsleaf;
 	@Column(name = "NODE_INSTIME", length = 255)
-	String nodeInstime;
+	private String nodeInstime;
 
 	@Column(name = "IOV_BASE", length = 255)
-	String nodeIovBase;
+	private String nodeIovBase;
 	@Column(name = "IOV_TYPE", length = 255)
-	String nodeIovType;
+	private String nodeIovType;
 
 	@Column(name = "NODE_TINSTIME")
 	@XmlJavaTypeAdapter(atlas.cool.rest.utils.TimestampXmlAdapter.class)
-	Timestamp nodeTinstime;
+	private Timestamp nodeTinstime;
 
 	@Column(name = "LASTMOD_DATE", length = 255)
-	String  lastmodDate; 
+	private String lastmodDate;
 	@Column(name = "FOLDER_VERSIONING", precision = 10, scale = 0)
-	Integer  folderVersioning;
+	private Integer folderVersioning;
 	@Column(name = "FOLDER_PAYLOADSPEC", length = 4000)
-	String  folderPayloadSpec;
+	private String folderPayloadSpec;
 	@Column(name = "FOLDER_IOVTABLENAME", length = 255)
-	String  folderIovtablename;
+	private String folderIovtablename;
 	@Column(name = "FOLDER_TAGTABLENAME", length = 255)
-	String  folderTagtablename; 
+	private String folderTagtablename;
 	@Column(name = "FOLDER_CHANNELTABLENAME", length = 255)
-	String  folderChanneltablename;
-	
-	@CoolQuery(name="cool.findallnodes",params="schema;dbname;node")
+	private String folderChanneltablename;
+
+	@CoolQuery(name = "cool.findallnodes", params = "schema;dbname;node")
 	public static final String QUERY_FINDALLNODES = "cool.findallnodes";
-	@CoolQuery(name="cool.findnodes",params="schema;dbname;node")
+	@CoolQuery(name = "cool.findnodes", params = "schema;dbname;node")
 	public static final String QUERY_FINDNODES = "cool.findnodes";
-	@CoolQuery(name="coma.findnodes",params="schema;dbname;node")
+	@CoolQuery(name = "coma.findnodes", params = "schema;dbname;node")
 	public static final String QUERY_COMA_FINDNODES = "coma.findnodes";
 
+	/**
+	 * 
+	 */
 	@Transient
-	@XmlElement(name="iov", type=CoolIovType.class)
-	List<CoolIovType> iovList = null;
+	@XmlElement(name = "iov", type = CoolIovType.class)
+	private List<CoolIovType> iovList = null;
 
+	/**
+	 * 
+	 */
 	@Transient
-	@XmlElement(name="iovsummary", type=CoolIovSummary.class)
-	Collection<CoolIovSummary> iovSummaryList = null;
+	@XmlElement(name = "iovsummary", type = CoolIovSummary.class)
+	private Collection<CoolIovSummary> iovSummaryList = null;
 
 	/**
 	 * @return the nodeId
 	 */
-	public Long getNodeId() {
+	public final Long getNodeId() {
 		return nodeId;
 	}
 
 	/**
-	 * @param nodeId the nodeId to set
+	 * @param nodeId
+	 *            the nodeId to set
 	 */
-	public void setNodeId(Long nodeId) {
+	public final void setNodeId(final Long nodeId) {
 		this.nodeId = nodeId;
 	}
 
 	/**
 	 * @return the nodeName
 	 */
-	public String getNodeName() {
+	public final String getNodeName() {
 		return nodeName;
 	}
 
 	/**
-	 * @param nodeName the nodeName to set
+	 * @param nodeName
+	 *            the nodeName to set
 	 */
-	public void setNodeName(String nodeName) {
+	public final void setNodeName(final String nodeName) {
 		this.nodeName = nodeName;
 	}
 
 	/**
 	 * @return the nodeFullpath
 	 */
-	public String getNodeFullpath() {
+	public final String getNodeFullpath() {
 		return nodeFullpath;
 	}
 
 	/**
-	 * @param nodeFullpath the nodeFullpath to set
+	 * @param nodeFullpath
+	 *            the nodeFullpath to set
 	 */
-	public void setNodeFullpath(String nodeFullpath) {
+	public final void setNodeFullpath(final String nodeFullpath) {
 		this.nodeFullpath = nodeFullpath;
 	}
 
 	/**
 	 * @return the nodeDescription
 	 */
-	public String getNodeDescription() {
+	public final String getNodeDescription() {
 		return nodeDescription;
 	}
 
 	/**
-	 * @param nodeDescription the nodeDescription to set
+	 * @param nodeDescription
+	 *            the nodeDescription to set
 	 */
-	public void setNodeDescription(String nodeDescription) {
+	public final void setNodeDescription(final String nodeDescription) {
 		this.nodeDescription = nodeDescription;
 	}
 
 	/**
 	 * @return the nodeIsleaf
 	 */
-	public Integer getNodeIsleaf() {
+	public final Integer getNodeIsleaf() {
 		return nodeIsleaf;
 	}
 
 	/**
-	 * @param nodeIsleaf the nodeIsleaf to set
+	 * @param nodeIsleaf
+	 *            the nodeIsleaf to set
 	 */
-	public void setNodeIsleaf(Integer nodeIsleaf) {
+	public final void setNodeIsleaf(final Integer nodeIsleaf) {
 		this.nodeIsleaf = nodeIsleaf;
 	}
 
 	/**
 	 * @return the nodeInstime
 	 */
-	public String getNodeInstime() {
+	public final String getNodeInstime() {
 		return nodeInstime;
 	}
 
 	/**
-	 * @param nodeInstime the nodeInstime to set
+	 * @param nodeInstime
+	 *            the nodeInstime to set
 	 */
-	public void setNodeInstime(String nodeInstime) {
+	public final void setNodeInstime(final String nodeInstime) {
 		this.nodeInstime = nodeInstime;
 	}
 
 	/**
 	 * @return the nodeTinstime
 	 */
-	public Timestamp getNodeTinstime() {
+	public final Timestamp getNodeTinstime() {
 		return nodeTinstime;
 	}
 
 	/**
-	 * @param nodeTinstime the nodeTinstime to set
+	 * @param nodeTinstime
+	 *            the nodeTinstime to set
 	 */
-	public void setNodeTinstime(Timestamp nodeTinstime) {
+	public final void setNodeTinstime(final Timestamp nodeTinstime) {
 		this.nodeTinstime = nodeTinstime;
 	}
 
 	/**
 	 * @return the lastmodDate
 	 */
-	public String getLastmodDate() {
+	public final String getLastmodDate() {
 		return lastmodDate;
 	}
 
 	/**
-	 * @param lastmodDate the lastmodDate to set
+	 * @param lastmodDate
+	 *            the lastmodDate to set
 	 */
-	public void setLastmodDate(String lastmodDate) {
+	public final void setLastmodDate(final String lastmodDate) {
 		this.lastmodDate = lastmodDate;
 	}
 
 	/**
 	 * @return the folderIovtablename
 	 */
-	public String getFolderIovtablename() {
+	public final String getFolderIovtablename() {
 		return folderIovtablename;
 	}
 
 	/**
-	 * @param folderIovtablename the folderIovtablename to set
+	 * @param folderIovtablename
+	 *            the folderIovtablename to set
 	 */
-	public void setFolderIovtablename(String folderIovtablename) {
+	public final void setFolderIovtablename(final String folderIovtablename) {
 		this.folderIovtablename = folderIovtablename;
 	}
 
 	/**
 	 * @return the folderTagtablename
 	 */
-	public String getFolderTagtablename() {
+	public final String getFolderTagtablename() {
 		return folderTagtablename;
 	}
 
 	/**
-	 * @param folderTagtablename the folderTagtablename to set
+	 * @param folderTagtablename
+	 *            the folderTagtablename to set
 	 */
-	public void setFolderTagtablename(String folderTagtablename) {
+	public final void setFolderTagtablename(final String folderTagtablename) {
 		this.folderTagtablename = folderTagtablename;
 	}
 
 	/**
 	 * @return the folderChanneltablename
 	 */
-	public String getFolderChanneltablename() {
+	public final String getFolderChanneltablename() {
 		return folderChanneltablename;
 	}
 
 	/**
-	 * @param folderChanneltablename the folderChanneltablename to set
+	 * @param folderChanneltablename
+	 *            the folderChanneltablename to set
 	 */
-	public void setFolderChanneltablename(String folderChanneltablename) {
+	public final void setFolderChanneltablename(final String folderChanneltablename) {
 		this.folderChanneltablename = folderChanneltablename;
 	}
 
 	/**
 	 * @return the schemaName
 	 */
-	public String getSchemaName() {
+	public final String getSchemaName() {
 		return schemaName;
 	}
 
 	/**
-	 * @param schemaName the schemaName to set
+	 * @param schemaName
+	 *            the schemaName to set
 	 */
-	public void setSchemaName(String schemaName) {
+	public final void setSchemaName(final String schemaName) {
 		this.schemaName = schemaName;
 	}
 
 	/**
 	 * @return the dbName
 	 */
-	public String getDbName() {
+	public final String getDbName() {
 		return dbName;
 	}
 
 	/**
-	 * @param dbName the dbName to set
+	 * @param dbName
+	 *            the dbName to set
 	 */
-	public void setDbName(String dbName) {
+	public final void setDbName(final String dbName) {
 		this.dbName = dbName;
 	}
 
 	/**
 	 * @return the nodeIovBase
 	 */
-	public String getNodeIovBase() {
+	public final String getNodeIovBase() {
 		return nodeIovBase;
 	}
 
 	/**
-	 * @param nodeIovBase the nodeIovBase to set
+	 * @param nodeIovBase
+	 *            the nodeIovBase to set
 	 */
-	public void setNodeIovBase(String nodeIovBase) {
+	public final void setNodeIovBase(final String nodeIovBase) {
 		this.nodeIovBase = nodeIovBase;
 	}
 
 	/**
 	 * @return the nodeIovType
 	 */
-	public String getNodeIovType() {
+	public final String getNodeIovType() {
 		return nodeIovType;
 	}
 
 	/**
-	 * @param nodeIovType the nodeIovType to set
+	 * @param nodeIovType
+	 *            the nodeIovType to set
 	 */
-	public void setNodeIovType(String nodeIovType) {
+	public final void setNodeIovType(final String nodeIovType) {
 		this.nodeIovType = nodeIovType;
 	}
 
-	public String getNodeTinstimeStr() {
-		if (nodeTinstime == null)
+	/**
+	 * @return
+	 */
+	public final String getNodeTinstimeStr() {
+		if (nodeTinstime == null) {
 			return "";
-		String ret = TimestampStringFormatter.format("yyyy:MM:dd hh:mm:ss", nodeTinstime);
+		}
+		final String ret = TimestampStringFormatter.format("yyyy:MM:dd hh:mm:ss",
+				nodeTinstime);
 		return ret;
 
 	}
@@ -362,56 +366,60 @@ public class NodeType implements Serializable {
 	/**
 	 * @return the folderVersioning
 	 */
-	public Integer getFolderVersioning() {
+	public final Integer getFolderVersioning() {
 		return folderVersioning;
 	}
 
 	/**
-	 * @param folderVersioning the folderVersioning to set
+	 * @param folderVersioning
+	 *            the folderVersioning to set
 	 */
-	public void setFolderVersioning(Integer folderVersioning) {
+	public final void setFolderVersioning(final Integer folderVersioning) {
 		this.folderVersioning = folderVersioning;
 	}
 
 	/**
 	 * @return the folderPayloadSpec
 	 */
-	public String getFolderPayloadSpec() {
+	public final String getFolderPayloadSpec() {
 		return folderPayloadSpec;
 	}
 
 	/**
-	 * @param folderPayloadSpec the folderPayloadSpec to set
+	 * @param folderPayloadSpec
+	 *            the folderPayloadSpec to set
 	 */
-	public void setFolderPayloadSpec(String folderPayloadSpec) {
+	public final void setFolderPayloadSpec(final String folderPayloadSpec) {
 		this.folderPayloadSpec = folderPayloadSpec;
 	}
 
 	/**
 	 * @return the iovList
 	 */
-	public List<CoolIovType> getIovList() {
+	public final List<CoolIovType> getIovList() {
 		return iovList;
 	}
 
 	/**
-	 * @param iovList the iovList to set
+	 * @param iovList
+	 *            the iovList to set
 	 */
-	public void setIovList(List<CoolIovType> iovList) {
+	public final void setIovList(final List<CoolIovType> iovList) {
 		this.iovList = iovList;
 	}
 
 	/**
 	 * @return the iovSummaryList
 	 */
-	public Collection<CoolIovSummary> getIovSummaryList() {
+	public final Collection<CoolIovSummary> getIovSummaryList() {
 		return iovSummaryList;
 	}
 
 	/**
-	 * @param iovSummaryList the iovSummaryList to set
+	 * @param iovSummaryList
+	 *            the iovSummaryList to set
 	 */
-	public void setIovSummaryList(Collection<CoolIovSummary> iovSummaryList) {
+	public final void setIovSummaryList(final Collection<CoolIovSummary> iovSummaryList) {
 		this.iovSummaryList = iovSummaryList;
 	}
 

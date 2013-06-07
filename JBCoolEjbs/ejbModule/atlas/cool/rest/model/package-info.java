@@ -14,6 +14,6 @@
  * 
  * @author formica
  * 
-**/
+ **/
 package atlas.cool.rest.model;
 

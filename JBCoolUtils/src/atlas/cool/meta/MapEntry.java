@@ -11,54 +11,70 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author formica
- *
+ * 
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class MapEntry {
 
-	@XmlAttribute(name="name")	
-	String column;
-	@XmlElement 
-	String value;
+	/**
+	 * 
+	 */
+	@XmlAttribute(name = "name")
+	private String column;
+	/**
+	 * 
+	 */
+	@XmlElement
+	private String value;
+
 	/**
 	 * 
 	 */
 	public MapEntry() {
 		// TODO Auto-generated constructor stub
 	}
+
 	/**
-	 * @param column
-	 * @param value
+	 * @param pcolumn
+	 * 	Column name.
+	 * @param pvalue
+	 * 	Column val.
 	 */
-	public MapEntry(String column, String value) {
+	public MapEntry(final String pcolumn, final String pvalue) {
 		super();
-		this.column = column;
-		this.value = value;
+		this.column = pcolumn;
+		this.value = pvalue;
 	}
+
 	/**
 	 * @return the column
 	 */
-	public String getColumn() {
+	public final String getColumn() {
 		return column;
 	}
+
 	/**
-	 * @param column the column to set
+	 * @param pcolumn
+	 *            the column to set
 	 */
-	public void setColumn(String column) {
-		this.column = column;
+	public final void setColumn(final String pcolumn) {
+		this.column = pcolumn;
 	}
+
 	/**
 	 * @return the value
 	 */
-	public String getValue() {
+	public final String getValue() {
 		return value;
 	}
+
 	/**
-	 * @param value the value to set
+	 * @param pvalue
+	 *            the value to set
 	 */
-	public void setValue(String value) {
-		this.value = value;
+	public final void setValue(final String pvalue) {
+		this.value = pvalue;
 	}
-	
+
 }

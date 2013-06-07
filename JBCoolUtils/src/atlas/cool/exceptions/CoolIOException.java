@@ -4,6 +4,7 @@
 package atlas.cool.exceptions;
 
 /**
+ * Generic Exception class for COOL queries.
  * @author formica
  *
  */

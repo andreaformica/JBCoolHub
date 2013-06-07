@@ -6,23 +6,34 @@ package atlas.cool.rest.utils;
 /**
  * @author formica
  *
+ * @param <T>
  */
 public class PrintPojo<T> {
 
-	MyPrinterHandler<T> handler = null;
+	/**
+	 * 
+	 */
+	private MyPrinterHandler<T> handler = null;
 	
-	T _obj;
+	/**
+	 * 
+	 */
+	private T objPrint;
 
 	/**
-	 * @param _obj
+	 * @param obj
+	 * 	The pojo to print.
 	 */
-	public PrintPojo(T _obj) {
+	public PrintPojo(final T obj) {
 		super();
-		this._obj = _obj;
+		this.objPrint = obj;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
-		handler = new MyPrinterHandler<T>(_obj);
+		handler = new MyPrinterHandler<T>(objPrint);
 		return handler.print();
 	}
 }

@@ -19,7 +19,7 @@ import atlas.cool.exceptions.CoolQueryException;
 
 /**
  * @author formica
- *
+ * 
  */
 public class QueryTools {
 
@@ -28,7 +28,6 @@ public class QueryTools {
 
 	private static final String ORDER_BY_CLAUSE_START = " order by ";
 
-
 	/**
 	 * 
 	 */
@@ -36,7 +35,8 @@ public class QueryTools {
 		// TODO Auto-generated constructor stub
 	}
 
-	protected static String getNamedQueryString(EntityManager em, String queryName) throws SQLException {
+	protected static String getNamedQueryString(EntityManager em,
+			String queryName) throws SQLException {
 		Query tmpQuery = em.createNamedQuery(queryName);
 		SQLQuery sqlQuery = tmpQuery.unwrap(SQLQuery.class);
 		String queryString = sqlQuery.getQueryString();
@@ -46,29 +46,51 @@ public class QueryTools {
 		return queryString;
 	}
 
-	public static Query getNamedQueryOrderedBy(EntityManager em, Object domain, String queryName,
-			Object[] params, Map<String, Boolean> columnNames)
+	/**
+	 * @param em
+	 * 	The Entity Manager.
+	 * @param domain
+	 * 	The domain object.
+	 * @param queryName
+	 * 	The query name.
+	 * @param params
+	 * 	The query parameters.
+	 * @param columnNames
+	 * 	The column names.
+	 * @return
+	 * 	A Query.
+	 * @throws SQLException
+	 * 	Sql Exception.
+	 * @throws CoolQueryException
+	 * 	Cool Exception.
+	 */
+	public static Query getNamedQueryOrderedBy(
+			final EntityManager em, final Object domain,
+			final String queryName, final Object[] params, 
+			final Map<String, Boolean> columnNames)
 			throws SQLException, CoolQueryException {
 
 		StringBuilder sb = new StringBuilder();
-		String querySql = getNamedQueryString(em,queryName);
+		String querySql = getNamedQueryString(em, queryName);
 		if (domain != null && columnNames != null) {
 
 			int limit = columnNames.size();
 			int i = 0;
 			if (limit != 0) {
-				//sb.append(ORDER_BY_CLAUSE_START);
+				// sb.append(ORDER_BY_CLAUSE_START);
 
 				for (String columnName : columnNames.keySet()) {
 					String fieldName = isColumnName(domain, columnName);
-					if (fieldName.isEmpty())
+					if (fieldName.isEmpty()) {
 						continue;
+					}
 					sb.append(fieldName);
 
-					if (columnNames.get(columnName))
+					if (columnNames.get(columnName)) {
 						sb.append(" ASC");
-					else
+					} else {
 						sb.append(" DESC");
+					}
 
 					if (i != (limit - 1)) {
 						sb.append(", \n");
@@ -88,8 +110,22 @@ public class QueryTools {
 		return jpaQuery;
 	}
 
-	public static String getOrderedBy(Object domain, Map<String, Boolean> columnNames)
-			throws SQLException, CoolQueryException {
+	/**
+	 * @param domain
+	 * 	The domain object.
+	 * @param columnNames
+	 * 	The columns names.
+	 * @return
+	 * 	The order by clause.
+	 * @throws SQLException
+	 * 	Sql Exception.
+	 * @throws CoolQueryException
+	 * 	Cool query Exception.
+	 */
+	public static String getOrderedBy(
+			final Object domain,
+			final Map<String, Boolean> columnNames) throws SQLException,
+			CoolQueryException {
 
 		StringBuilder sb = new StringBuilder();
 		if (domain != null && columnNames != null) {
@@ -97,18 +133,20 @@ public class QueryTools {
 			int limit = columnNames.size();
 			int i = 0;
 			if (limit != 0) {
-				//sb.append(ORDER_BY_CLAUSE_START);
+				// sb.append(ORDER_BY_CLAUSE_START);
 
 				for (String columnName : columnNames.keySet()) {
 					String fieldName = isColumnName(domain, columnName);
-					if (fieldName.isEmpty())
+					if (fieldName.isEmpty()) {
 						continue;
+					}
 					sb.append(fieldName);
 
-					if (columnNames.get(columnName))
+					if (columnNames.get(columnName)) {
 						sb.append(" ASC");
-					else
+					} else {
 						sb.append(" DESC");
+					}
 
 					if (i != (limit - 1)) {
 						sb.append(", \n");
@@ -120,7 +158,16 @@ public class QueryTools {
 		return sb.toString();
 	}
 
-	protected static String isColumnName(Object domain, String columnName) {
+	/**
+	 * @param domain
+	 * 	The domain object.
+	 * @param columnName
+	 * 	The column name.
+	 * @return
+	 * 	The String with the columns.
+	 */
+	protected static String isColumnName(
+			final Object domain, final String columnName) {
 		Field[] fields = domain.getClass().getDeclaredFields();
 		String fieldColumnName = "";
 		for (Field field : fields) {

@@ -12,53 +12,98 @@ import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.exceptions.CoolQueryException;
 
 /**
- * This iterator loads data from DB using the generic DAO CoolRepository.
- * 
  * @author formica
  * 
+ * @param <E>
  */
 public class QueryListIterator<E> implements Iterator<E> {
 
+	/**
+	 * Logger.
+	 */
 	private Logger log = Logger.getLogger(QueryListIterator.class.getName());
 
+	/**
+	 * Maximum number of pages.
+	 */
 	protected static final int MAX_PAGES = 1000;
 
-	protected int pageSize = 2000;
-
-	protected int pageNumber = 0;
-
-	protected int totalElements = 0;
-
-	protected int size = 0;
-
-	protected int ielement = 0;
-
-	protected int first = 0;
-
-	protected List<?> scrollableResults;
-
-	protected Iterator<?> iresult = null;
-
-	protected E _lastObj = null;
-
-	protected CoolRepositoryDAO _bean;
-
-	protected String query = null;
-
-	protected Object[] methodparams;
+	/**
+	 * Number of rows retrieved per page.
+	 */
+	private static int pageSize = 2000;
 
 	/**
-	 * @param _bean
-	 * @param query
-	 * @param methodparams
+	 * Page counter.
 	 */
-	public QueryListIterator(CoolRepositoryDAO _bean, String query,
-			Object[] methodparams) {
+	private int pageNumber = 0;
+
+	/**
+	 * Element counter.
+	 */
+	private int totalElements = 0;
+
+	/**
+	 * ResultSet size.
+	 */
+	private int size = 0;
+
+	/**
+	 * Iterator counter.
+	 */
+	private int ielement = 0;
+
+	/**
+	 * 
+	 */
+	private int first = 0;
+
+	/**
+	 * Container of the ResultSet.
+	 */
+	private List<?> scrollableResults;
+
+	/**
+	 * 
+	 */
+	private Iterator<?> iresult = null;
+
+	/**
+	 * 
+	 */
+	private E lastObj = null;
+
+	/**
+	 * The DAO for DB access.
+	 */
+	private CoolRepositoryDAO daobean;
+
+	/**
+	 * The query name.
+	 */
+	private String query = null;
+
+	/**
+	 * The method parameters.
+	 */
+	private Object[] methodparams;
+
+	/**
+	 * @param bean
+	 *            The dao bean.
+	 * @param pquery
+	 *            The query string.
+	 * @param pmethodparams
+	 *            The method parameters.
+	 * 
+	 */
+	public QueryListIterator(final CoolRepositoryDAO bean, final String pquery,
+			final Object[] pmethodparams) {
 		super();
-		this._bean = _bean; // This will be a reference to the CoolRepository
-							// session bean
-		this.query = query;
-		this.methodparams = methodparams;
+		this.daobean = bean; // This will be a reference to the CoolRepository
+								// session bean
+		this.query = pquery;
+		this.methodparams = pmethodparams;
 		try {
 			determineElements();
 		} catch (CoolQueryException e) {
@@ -67,16 +112,23 @@ public class QueryListIterator<E> implements Iterator<E> {
 		}
 	}
 
-	protected void determineElements() throws CoolQueryException {
+	/**
+	 * Execute partial query and retrieve data.
+	 * 
+	 * @throws CoolQueryException
+	 *             The Cool query Exception.
+	 */
+	protected final void determineElements() throws CoolQueryException {
 		try {
-			if (pageNumber > MAX_PAGES)
+			if (pageNumber > MAX_PAGES) {
 				throw new CoolQueryException("Page number exceeded "
 						+ pageNumber);
-			log.info("Loading entities from " + _bean.toString());
+			}
+			log.info("Loading entities from " + daobean.toString());
 			log.info("       using first " + first);
 			log.info("       and method  findCoolList ");
 
-			scrollableResults = (List<?>) _bean.findCoolListByRange(query,
+			scrollableResults = (List<?>) daobean.findCoolListByRange(query,
 					methodparams, first, pageSize);
 			if (scrollableResults == null || scrollableResults.size() == 0) {
 				log.info("Retrieved empty list ");
@@ -88,14 +140,14 @@ public class QueryListIterator<E> implements Iterator<E> {
 				// Get the iterator on the list
 				iresult = scrollableResults.iterator();
 			}
-			if (first < size) {
+			if (first < getSize()) {
 				// system is querying an old bunch of data
-				pageNumber = first/pageSize;
+				pageNumber = first / pageSize;
 			} else {
 				// system is querying a new bunch of data
-				size += totalElements;
+				size = (size + totalElements);
 				// Increment the page number
-				pageNumber++;			
+				pageNumber++;
 			}
 		} catch (IllegalArgumentException e) {
 			throw new CoolQueryException(e);
@@ -111,7 +163,7 @@ public class QueryListIterator<E> implements Iterator<E> {
 	 * @see java.util.Iterator#hasNext()
 	 */
 	@Override
-	public boolean hasNext() {
+	public final boolean hasNext() {
 		try {
 			if (ielement > (pageSize * MAX_PAGES)) {
 				return false;
@@ -121,22 +173,26 @@ public class QueryListIterator<E> implements Iterator<E> {
 					// Try to retrieve more data if ielement has reached the
 					// page size
 					if ((ielement % pageSize) > 1) {
-						log.info("Cannot query next: "+ielement+" is less than the total of "+totalElements);
-						//return false;
+						log.info("Cannot query next: " + ielement
+								+ " is less than the total of " + totalElements);
+						// return false;
 					} else {
-						log.info("Perform query next: "+ielement+" is greater than the total of "+totalElements);
+						log.info("Perform query next: " + ielement
+								+ " is greater than the total of "
+								+ totalElements);
 						// Clean scrollable
 						scrollableResults.clear();
 						scrollableResults = null;
-						_lastObj = null;
+						lastObj = null;
 						// get the first result index via ielement counter
 						first += pageSize;
 						// Now determine elements using the new parameter
 						try {
 							// This will change iresult
 							determineElements();
-							if (totalElements == 0)
+							if (totalElements == 0) {
 								return false;
+							}
 						} catch (CoolQueryException e) {
 							log.info("Exception retrieving list");
 							// e.printStackTrace();
@@ -144,8 +200,9 @@ public class QueryListIterator<E> implements Iterator<E> {
 						}
 					}
 				}
-				if (_lastObj != null)
+				if (lastObj != null) {
 					remove();
+				}
 				return iresult.hasNext();
 			}
 		} catch (Exception e) {
@@ -162,35 +219,43 @@ public class QueryListIterator<E> implements Iterator<E> {
 	 * @see java.util.Iterator#next()
 	 */
 	@Override
-	public E next() {
+	public final E next() {
 		try {
-			_lastObj = (E) iresult.next();
-			if ((ielement-1)%1000 == 0) 
-				log.info("select next object..."+_lastObj);
-			return _lastObj;
+			lastObj = (E) iresult.next();
+//			if ((ielement - 1) % 1000 == 0) {
+//				log.info("select next object..." + lastObj);
+//			}
+			return lastObj;
 		} catch (Exception e) {
 			log.fine("next() method catched exception,returning null obj!");
 			return null;
 		}
 	}
 
-	public E getNextUntilIndex(int index) {
+	/**
+	 * @param index
+	 *            The index of the element.
+	 * @return The object from the list.
+	 */
+	public final E getNextUntilIndex(final int index) {
 		E obj = null;
 		try {
 			Integer ipage = index / pageSize; // should give the page number
-			Integer iline = index % pageSize;
+			//Integer iline = index % pageSize;
 			Integer iselpage = ielement / pageSize;
 			if (ipage == iselpage) {
-				log.info("get object at index "+index+" ielement="+ielement);
-				obj = (E) scrollableResults.get(index-first);
+				log.info("get object at index " + index + " ielement="
+						+ ielement);
+				obj = (E) scrollableResults.get(index - first);
 			} else {
 				// query the correct page
 				first = pageSize * ipage;
 				ielement = first;
 				pageNumber = ipage;
 				determineElements();
-				log.info("get object after new query at index "+index+" ielement="+ielement);
-				obj = (E) scrollableResults.get(index-first);
+				log.info("get object after new query at index " + index
+						+ " ielement=" + ielement);
+				obj = (E) scrollableResults.get(index - first);
 			}
 		} catch (CoolQueryException e) {
 			// TODO Auto-generated catch block
@@ -206,7 +271,14 @@ public class QueryListIterator<E> implements Iterator<E> {
 	 */
 	@Override
 	public void remove() {
-		//iresult.remove();
+		// iresult.remove();
+	}
+
+	/**
+	 * @return The size.
+	 */
+	public final int getSize() {
+		return size;
 	}
 
 }

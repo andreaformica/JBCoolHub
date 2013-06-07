@@ -35,7 +35,11 @@ public class ApplyOrderByInterceptor extends EmptyInterceptor {
 		super();
 	}
 
-	protected SessionContext getContext() {
+	/**
+	 * @return
+	 * 	Session Context.
+	 */
+	protected final SessionContext getContext() {
 		try {
 			InitialContext ic = new InitialContext();
 			SessionContext sctxLookup = (SessionContext) ic
@@ -52,7 +56,7 @@ public class ApplyOrderByInterceptor extends EmptyInterceptor {
 	 * @see org.hibernate.EmptyInterceptor#onPrepareStatement(java.lang.String)
 	 */
 	@Override
-	public String onPrepareStatement(String sql) {
+	public final String onPrepareStatement(String sql) {
 		log.log(Level.FINE, "Interceptor received prepared statement : " + sql);
 
 		String orderbyclause = null;
@@ -64,14 +68,15 @@ public class ApplyOrderByInterceptor extends EmptyInterceptor {
 			if (!isOrderByCorrect(sql, orderbyclause)) {
 				orderbyclause = "";
 				log.log(Level.FINE,
-						"Interceptor is removing orderby clause...wrong columns...");
+						"Interceptor is removing orderby clause"
+						+ "...wrong columns!");
 			} else {
 				// remove previous order by
-//				if (sql.contains("order by")) {
-//					int endIndex = sql.indexOf("order by");
-//					String newquerySql = sql.substring(0, endIndex);
-//					sql = newquerySql;
-//				}
+				// if (sql.contains("order by")) {
+				// int endIndex = sql.indexOf("order by");
+				// String newquerySql = sql.substring(0, endIndex);
+				// sql = newquerySql;
+				// }
 				sql = sql + (" order by " + orderbyclause);
 			}
 			log.log(Level.INFO, "Interceptor returning prepared statement : "
@@ -80,28 +85,38 @@ public class ApplyOrderByInterceptor extends EmptyInterceptor {
 		return super.onPrepareStatement(sql);
 	}
 
-	protected Boolean isOrderByCorrect(String sql, String orderby) {
-		log.log(Level.FINE,
-				"Interceptor is checking orderby clause "+orderby);
-		
-		String[] orderbylist = orderby.split(",");
-		if (orderbylist.length==0) {
-			orderbylist[0] = new String(orderby);
+	/**
+	 * @param sql
+	 * 	The sql statement.
+	 * @param porderby
+	 * 	The order by clause.
+	 * @return
+	 * 	boolean.
+	 */
+	protected final Boolean isOrderByCorrect(
+			final String sql, final String porderby) {
+		log.log(Level.FINE, 
+				"Interceptor is checking orderby clause " + porderby);
+
+		String[] orderbylist = porderby.split(",");
+		if (orderbylist.length == 0) {
+			orderbylist[0] = new String(porderby);
 		}
-		log.log(Level.FINE,
-				"Interceptor found order by list of  "+orderbylist.length);
+		log.log(Level.FINE, "Interceptor found order by list of  "
+				+ orderbylist.length);
 		Boolean retval = true;
 		for (int i = 0; i < orderbylist.length; i++) {
 			String colname = (orderbylist[i] != null) ? orderbylist[i]
 					.split(" ")[0] : "none";
 			if (!colname.equals("none")) {
-				if (sql.contains(colname) || sql.contains(colname.toLowerCase())) {
-					log.log(Level.FINE,
-							"Interceptor found column  "+colname+" in "+sql);
+				if (sql.contains(colname)
+						|| sql.contains(colname.toLowerCase())) {
+					log.log(Level.FINE, "Interceptor found column  " + colname
+							+ " in " + sql);
 					retval = (retval & true);
 				} else {
-					log.log(Level.FINE,
-							"Interceptor did NOT find column  "+colname+" in "+sql);
+					log.log(Level.FINE, "Interceptor did NOT find column  "
+							+ colname + " in " + sql);
 					retval = (retval & false);
 				}
 			}

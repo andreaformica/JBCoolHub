@@ -26,75 +26,127 @@ import atlas.cool.meta.CoolIov;
 
 /**
  * @author formica
- *
+ * 
  */
 @Entity
-@NamedNativeQueries( {
-	@NamedNativeQuery(name = CoolIovType.QUERY_FINDIOVS_INRANGE, query = "select   object_id,"
- + " channel_name , "
- + " channel_id ," 
- + " iov_since ," 
- + " iov_until ," 
- + " user_tag_id ," 
- + " tag_name ," 
- + " sys_instime ," 
- + " lastmod_date ," 
- + " new_head_id, " 
- + " iov_base "
- + " from table(cool_select_pkg.f_Get_IovsRangeForChannel(:schema,:db,:node,:tag,:chanid,:since,:until))", resultClass = CoolIovType.class),
-@NamedNativeQuery(name = CoolIovType.QUERY_FINDIOVS_INRANGE_BYCHAN, query = "select   object_id,"
-+ " channel_name , "
-+ " channel_id ," 
-+ " iov_since ," 
-+ " iov_until ," 
-+ " user_tag_id ," 
-+ " tag_name ," 
-+ " sys_instime ," 
-+ " lastmod_date ," 
-+ " new_head_id, "
-+ " iov_base "
-+ " from table(cool_select_pkg.f_Get_IovsRangeForChannelName(:schema,:db,:node,:tag,:channame,:since,:until)) "
-+ " order by channel_id, iov_since asc", resultClass = CoolIovType.class)
-})
+@NamedNativeQueries({
+		@NamedNativeQuery(name = CoolIovType.QUERY_FINDIOVS_INRANGE, query = "select   object_id,"
+				+ " channel_name , "
+				+ " channel_id ,"
+				+ " iov_since ,"
+				+ " iov_until ,"
+				+ " user_tag_id ,"
+				+ " tag_name ,"
+				+ " sys_instime ,"
+				+ " lastmod_date ,"
+				+ " new_head_id, "
+				+ " iov_base "
+				+ " from table(cool_select_pkg.f_Get_IovsRangeForChannel("
+				+ " :schema,:db,:node,:tag,:chanid,:since,:until))", resultClass = CoolIovType.class),
+		@NamedNativeQuery(name = CoolIovType.QUERY_FINDIOVS_INRANGE_BYCHAN, query = "select   object_id,"
+				+ " channel_name , "
+				+ " channel_id ,"
+				+ " iov_since ,"
+				+ " iov_until ,"
+				+ " user_tag_id ,"
+				+ " tag_name ,"
+				+ " sys_instime ,"
+				+ " lastmod_date ,"
+				+ " new_head_id, "
+				+ " iov_base "
+				+ " from table(cool_select_pkg.f_Get_IovsRangeForChannelName("
+				+ " :schema,:db,:node,:tag,:channame,:since,:until)) "
+				+ " order by channel_id, iov_since asc", resultClass = CoolIovType.class) })
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class CoolIovType implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6890975317475240932L;
+	/**
+	 * 
+	 */
 	@Id
 	@Column(name = "OBJECT_ID", precision = 20, scale = 0)
-	BigDecimal objectId; 
+	private BigDecimal objectId;
+	/**
+	 * 
+	 */
 	@Column(name = "CHANNEL_ID", precision = 10, scale = 0)
-	Long channelId;
+	private Long channelId;
+	/**
+	 * 
+	 */
 	@Column(name = "CHANNEL_NAME", length = 255)
-	String channelName;
+	private String channelName;
+	/**
+	 * 
+	 */
 	@Column(name = "IOV_SINCE", precision = 20, scale = 0)
-	BigDecimal iovSince;
+	private BigDecimal iovSince;
+	/**
+	 * 
+	 */
 	@Column(name = "IOV_UNTIL", precision = 20, scale = 0)
-	BigDecimal iovUntil;
+	private BigDecimal iovUntil;
+	/**
+	 * 
+	 */
 	@Column(name = "USER_TAG_ID", precision = 10, scale = 0)
-	Long tagId;
+	private Long tagId;
+	/**
+	 * 
+	 */
 	@Column(name = "SYS_INSTIME")
-	Timestamp sysInstime;
+	private Timestamp sysInstime;
+	/**
+	 * 
+	 */
 	@Column(name = "LASTMOD_DATE")
-	Timestamp  lastmodDate; 
+	private Timestamp lastmodDate;
+	/**
+	 * 
+	 */
 	@Column(name = "NEW_HEAD_ID", length = 255)
-	BigDecimal newHeadId;
+	private BigDecimal newHeadId;
+	/**
+	 * 
+	 */
 	@Column(name = "TAG_NAME", length = 255)
-	String tagName;
+	private String tagName;
+	/**
+	 * 
+	 */
 	@Column(name = "IOV_BASE", length = 30)
-	String iovBase;
+	private String iovBase;
 
+	/**
+	 * 
+	 */
 	@Transient
-	String sinceCoolStr="";
+	private String sinceCoolStr = "";
+	/**
+	 * 
+	 */
 	@Transient
-	String untilCoolStr="";
+	private String untilCoolStr = "";
 
+	/**
+	 * 
+	 */
 	@Transient
-	Map<String,String> payload = new LinkedHashMap<String, String>();
-	
+	private Map<String, String> payload = new LinkedHashMap<String, String>();
 
+	/**
+	 * 
+	 */
 	@CoolQuery(name = "cool.findiovsinrange", params = "schema;db;node;tag;chanid;since;until")
 	public static final String QUERY_FINDIOVS_INRANGE = "cool.findiovsinrange";
+	/**
+	 * 
+	 */
 	@CoolQuery(name = "cool.findiovsinrangebychan", params = "schema;db;node;tag;channame;since;until")
 	public static final String QUERY_FINDIOVS_INRANGE_BYCHAN = "cool.findiovsinrangebychan";
 
@@ -120,10 +172,16 @@ public class CoolIovType implements Serializable {
 	 * @param tagName
 	 * @param iovBase
 	 */
-	public CoolIovType(BigDecimal objectId, Long channelId, String channelName,
-			BigDecimal iovSince, BigDecimal iovUntil, Long tagId,
-			Timestamp sysInstime, Timestamp lastmodDate, BigDecimal newHeadId,
-			String tagName, String iovBase) {
+	public CoolIovType(final BigDecimal objectId, 
+			final Long channelId,
+			final String channelName, 
+			final BigDecimal iovSince,
+			final BigDecimal iovUntil, 
+			final Long tagId, 
+			final Timestamp sysInstime,
+			final Timestamp lastmodDate, 
+			final BigDecimal newHeadId,
+			final String tagName, final String iovBase) {
 		super();
 		this.objectId = objectId;
 		this.channelId = channelId;
@@ -136,114 +194,50 @@ public class CoolIovType implements Serializable {
 		this.newHeadId = newHeadId;
 		this.tagName = tagName;
 		this.iovBase = iovBase;
-		untilCoolStr = CoolIov.getCoolTimeRunLumiString(iovUntil.longValueExact(), iovBase);
-		sinceCoolStr = CoolIov.getCoolTimeRunLumiString(iovSince.longValueExact(), iovBase);
-	}
-
-	/**
-	 * @return the objectId
-	 */
-	@XmlElement
-	public BigDecimal getObjectId() {
-		return objectId;
-	}
-
-	/**
-	 * @param objectId the objectId to set
-	 */
-	public void setObjectId(BigDecimal objectId) {
-		this.objectId = objectId;
+		untilCoolStr = CoolIov.getCoolTimeRunLumiString(iovUntil.longValueExact(),
+				iovBase);
+		sinceCoolStr = CoolIov.getCoolTimeRunLumiString(iovSince.longValueExact(),
+				iovBase);
 	}
 
 	/**
 	 * @return the channelId
 	 */
 	@XmlElement
-	public Long getChannelId() {
+	public final Long getChannelId() {
 		return channelId;
-	}
-
-	/**
-	 * @param channelId the channelId to set
-	 */
-	public void setChannelId(Long channelId) {
-		this.channelId = channelId;
 	}
 
 	/**
 	 * @return the channelName
 	 */
 	@XmlElement
-	public String getChannelName() {
+	public final String getChannelName() {
 		return channelName;
 	}
 
 	/**
-	 * @param channelName the channelName to set
+	 * @return the iovBase
 	 */
-	public void setChannelName(String channelName) {
-		this.channelName = channelName;
+	@XmlElement
+	public final String getIovBase() {
+		return iovBase;
 	}
 
 	/**
 	 * @return the iovSince
 	 */
 	@XmlElement
-	public BigDecimal getIovSince() {
+	public final BigDecimal getIovSince() {
 		return iovSince;
-	}
-
-	/**
-	 * @param iovSince the iovSince to set
-	 */
-	public void setIovSince(BigDecimal iovSince) {
-		this.iovSince = iovSince;
 	}
 
 	/**
 	 * @return the iovUntil
 	 */
 	@XmlElement
-	public BigDecimal getIovUntil() {
+	public final BigDecimal getIovUntil() {
 		return iovUntil;
-	}
-
-	/**
-	 * @param iovUntil the iovUntil to set
-	 */
-	public void setIovUntil(BigDecimal iovUntil) {
-		this.iovUntil = iovUntil;
-	}
-
-	/**
-	 * @return the tagId
-	 */
-	@XmlElement
-	public Long getTagId() {
-		return tagId;
-	}
-
-	/**
-	 * @param tagId the tagId to set
-	 */
-	public void setTagId(Long tagId) {
-		this.tagId = tagId;
-	}
-
-	/**
-	 * @return the sysInstime
-	 */
-	@XmlElement
-	@XmlJavaTypeAdapter(atlas.cool.rest.utils.TimestampXmlAdapter.class)
-	public Timestamp getSysInstime() {
-		return sysInstime;
-	}
-
-	/**
-	 * @param sysInstime the sysInstime to set
-	 */
-	public void setSysInstime(Timestamp sysInstime) {
-		this.sysInstime = sysInstime;
 	}
 
 	/**
@@ -251,94 +245,24 @@ public class CoolIovType implements Serializable {
 	 */
 	@XmlElement
 	@XmlJavaTypeAdapter(atlas.cool.rest.utils.TimestampXmlAdapter.class)
-	public Timestamp getLastmodDate() {
+	public final Timestamp getLastmodDate() {
 		return lastmodDate;
-	}
-
-	/**
-	 * @param lastmodDate the lastmodDate to set
-	 */
-	public void setLastmodDate(Timestamp lastmodDate) {
-		this.lastmodDate = lastmodDate;
 	}
 
 	/**
 	 * @return the newHeadId
 	 */
 	@XmlElement
-	public BigDecimal getNewHeadId() {
+	public final BigDecimal getNewHeadId() {
 		return newHeadId;
 	}
 
 	/**
-	 * @param newHeadId the newHeadId to set
-	 */
-	public void setNewHeadId(BigDecimal newHeadId) {
-		this.newHeadId = newHeadId;
-	}
-
-	/**
-	 * @return the tagName
+	 * @return the objectId
 	 */
 	@XmlElement
-	public String getTagName() {
-		return tagName;
-	}
-
-	/**
-	 * @param tagName the tagName to set
-	 */
-	public void setTagName(String tagName) {
-		this.tagName = tagName;
-	}
-
-	/**
-	 * @return the iovBase
-	 */
-	@XmlElement
-	public String getIovBase() {
-		return iovBase;
-	}
-
-	/**
-	 * @param iovBase the iovBase to set
-	 */
-	public void setIovBase(String iovBase) {
-		this.iovBase = iovBase;
-	}
-
-	/**
-	 * @return the sinceCoolStr
-	 */
-	@XmlElement
-	public String getSinceCoolStr() {
-		if (sinceCoolStr==null || sinceCoolStr.isEmpty())
-			sinceCoolStr = CoolIov.getCoolTimeRunLumiString(iovSince.longValueExact(), iovBase);
-		return sinceCoolStr;
-	}
-
-	/**
-	 * @param sinceCoolStr the sinceCoolStr to set
-	 */
-	public void setSinceCoolStr(String sinceCoolStr) {
-		this.sinceCoolStr = sinceCoolStr;
-	}
-
-	/**
-	 * @return the untilCoolStr
-	 */
-	@XmlElement
-	public String getUntilCoolStr() {
-		if (untilCoolStr==null || untilCoolStr.isEmpty())
-			untilCoolStr = CoolIov.getCoolTimeRunLumiString(iovUntil.longValueExact(), iovBase);
-		return untilCoolStr;
-	}
-
-	/**
-	 * @param untilCoolStr the untilCoolStr to set
-	 */
-	public void setUntilCoolStr(String untilCoolStr) {
-		this.untilCoolStr = untilCoolStr;
+	public final BigDecimal getObjectId() {
+		return objectId;
 	}
 
 	/**
@@ -346,15 +270,169 @@ public class CoolIovType implements Serializable {
 	 */
 	@XmlElement
 	@XmlJavaTypeAdapter(atlas.cool.rest.utils.MapAdapter.class)
-	public Map<String, String> getPayload() {
+	public final Map<String, String> getPayload() {
 		return payload;
 	}
 
 	/**
-	 * @param payload the payload to set
+	 * @return the sinceCoolStr
 	 */
-	public void setPayload(Map<String, String> payload) {
+	@XmlElement
+	public final String getSinceCoolStr() {
+		if (sinceCoolStr == null || sinceCoolStr.isEmpty()) {
+			sinceCoolStr = CoolIov.getCoolTimeRunLumiString(iovSince.longValueExact(),
+					iovBase);
+		}
+		return sinceCoolStr;
+	}
+
+	/**
+	 * @return the sysInstime
+	 */
+	@XmlElement
+	@XmlJavaTypeAdapter(atlas.cool.rest.utils.TimestampXmlAdapter.class)
+	public final Timestamp getSysInstime() {
+		return sysInstime;
+	}
+
+	/**
+	 * @return the tagId
+	 */
+	@XmlElement
+	public final Long getTagId() {
+		return tagId;
+	}
+
+	/**
+	 * @return the tagName
+	 */
+	@XmlElement
+	public final String getTagName() {
+		return tagName;
+	}
+
+	/**
+	 * @return the untilCoolStr
+	 */
+	@XmlElement
+	public final String getUntilCoolStr() {
+		if (untilCoolStr == null || untilCoolStr.isEmpty()) {
+			untilCoolStr = CoolIov.getCoolTimeRunLumiString(iovUntil.longValueExact(),
+					iovBase);
+		}
+		return untilCoolStr;
+	}
+
+	/**
+	 * @param channelId
+	 *            the channelId to set
+	 */
+	public final void setChannelId(final Long channelId) {
+		this.channelId = channelId;
+	}
+
+	/**
+	 * @param channelName
+	 *            the channelName to set
+	 */
+	public final void setChannelName(final String channelName) {
+		this.channelName = channelName;
+	}
+
+	/**
+	 * @param iovBase
+	 *            the iovBase to set
+	 */
+	public final void setIovBase(final String iovBase) {
+		this.iovBase = iovBase;
+	}
+
+	/**
+	 * @param iovSince
+	 *            the iovSince to set
+	 */
+	public final void setIovSince(final BigDecimal iovSince) {
+		this.iovSince = iovSince;
+	}
+
+	/**
+	 * @param iovUntil
+	 *            the iovUntil to set
+	 */
+	public final void setIovUntil(final BigDecimal iovUntil) {
+		this.iovUntil = iovUntil;
+	}
+
+	/**
+	 * @param lastmodDate
+	 *            the lastmodDate to set
+	 */
+	public final void setLastmodDate(final Timestamp lastmodDate) {
+		this.lastmodDate = lastmodDate;
+	}
+
+	/**
+	 * @param newHeadId
+	 *            the newHeadId to set
+	 */
+	public final void setNewHeadId(final BigDecimal newHeadId) {
+		this.newHeadId = newHeadId;
+	}
+
+	/**
+	 * @param objectId
+	 *            the objectId to set
+	 */
+	public final void setObjectId(final BigDecimal objectId) {
+		this.objectId = objectId;
+	}
+
+	/**
+	 * @param payload
+	 *            the payload to set
+	 */
+	public final void setPayload(final Map<String, String> payload) {
 		this.payload = payload;
+	}
+
+	/**
+	 * @param sinceCoolStr
+	 *            the sinceCoolStr to set
+	 */
+	public final void setSinceCoolStr(final String sinceCoolStr) {
+		this.sinceCoolStr = sinceCoolStr;
+	}
+
+	/**
+	 * @param sysInstime
+	 *            the sysInstime to set
+	 */
+	public final void setSysInstime(final Timestamp sysInstime) {
+		this.sysInstime = sysInstime;
+	}
+
+	/**
+	 * @param tagId
+	 *            the tagId to set
+	 */
+	public final void setTagId(final Long tagId) {
+		this.tagId = tagId;
+	}
+
+	/**
+	 * @param tagName
+	 *            the tagName to set
+	 */
+	public final void setTagName(final String tagName) {
+		this.tagName = tagName;
+	}
+
+	/**
+	 * @param untilCoolStr
+	 *            the untilCoolStr to set
+	 */
+	public final void setUntilCoolStr(final String untilCoolStr) {
+		this.untilCoolStr = untilCoolStr;
 	}
 
 }

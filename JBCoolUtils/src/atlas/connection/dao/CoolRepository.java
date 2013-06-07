@@ -33,15 +33,27 @@ import atlas.query.pagination.QueryListIterator;
 @Local(CoolRepositoryDAO.class)
 public class CoolRepository implements CoolRepositoryDAO {
 
+	/**
+	 * 
+	 */
 	@Inject
 	private EntityManager em;
 
+	/**
+	 * 
+	 */
 	@Inject
 	private Logger log;
 
+	/**
+	 * 
+	 */
 	@Inject
 	private CoolQueryRepository coolqry;
 
+	/**
+	 * 
+	 */
 	private final int maxFetchResults = 50000;
 
 	/**
@@ -51,11 +63,15 @@ public class CoolRepository implements CoolRepositoryDAO {
 		// TODO Auto-generated constructor stub
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.dao.CoolRepositoryDAO#findObj(java.lang.Class, java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.dao.CoolRepositoryDAO#findObj(java.lang.Class,
+	 * java.lang.Object)
 	 */
 	@Override
-	public <T> T findObj(Class<T> clazz, Object pk) throws CoolIOException {
+	public final <T> T findObj(final Class<T> clazz, final Object pk) 
+			throws CoolIOException {
 		try {
 			T obj = em.find(clazz, pk);
 			return obj;
@@ -72,8 +88,9 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * java.lang.String, java.lang.Object[], java.util.Map)
 	 */
 	@Override
-	public List<?> findCoolList(Object domain, String qryname, Object[] params,
-			Map<String, Boolean> orderbyParams) throws CoolIOException {
+	public final List<?> findCoolList(final Object domain, 
+			final String qryname, final Object[] params,
+			final Map<String, Boolean> orderbyParams) throws CoolIOException {
 		try {
 			return findCoolListByRange(domain, qryname, params, 0, 0,
 					orderbyParams);
@@ -91,23 +108,26 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * java.lang.String, java.lang.Object[], int, int, java.util.Map)
 	 */
 	@Override
-	public List<?> findCoolListByRange(Object domain, String qryname,
-			Object[] params, int firstResult, int maxResults,
-			Map<String, Boolean> orderbyParams) throws CoolIOException {
+	public final List<?> findCoolListByRange(
+			final Object domain, final String qryname,
+			final Object[] params, final int firstResult, final int maxResults,
+			final Map<String, Boolean> orderbyParams) throws CoolIOException {
 		try {
 			Query q = null;
 			if (domain != null && orderbyParams != null) {
-				q = QueryTools.getNamedQueryOrderedBy(em,domain, qryname, params,
-						orderbyParams);
+				q = QueryTools.getNamedQueryOrderedBy(em, domain, qryname,
+						params, orderbyParams);
 			} else {
 				q = getQuery(qryname, params);
 			}
-			if (firstResult > 0)
+			if (firstResult > 0) {
 				q.setFirstResult(firstResult);
-			if (maxResults > 0)
+			}
+			if (maxResults > 0) {
 				q.setMaxResults(maxResults);
-			else
+			} else {
 				q.setMaxResults(maxFetchResults);
+			}
 			return q.getResultList();
 		} catch (NoResultException e) {
 			e.printStackTrace();
@@ -128,7 +148,8 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * java.lang.Object[])
 	 */
 	@Override
-	public synchronized List<?> findCoolList(String qryname, Object[] params)
+	public final synchronized List<?> findCoolList(
+			final String qryname, final Object[] params)
 			throws CoolIOException {
 		try {
 			return findCoolListByRange(qryname, params, 0, 0);
@@ -146,36 +167,55 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * java.lang.Object[], int, int)
 	 */
 	@Override
-	public synchronized List<?> findCoolListByRange(String qryname,
-			Object[] params, int firstResult, int maxResults)
+	public final synchronized List<?> findCoolListByRange(
+			final String qryname,
+			final Object[] params, 
+			final int firstResult, final int maxResults)
 			throws CoolIOException {
 		try {
 			Query q = getQuery(qryname, params);
-			if (firstResult > 0)
+			if (firstResult > 0) {
 				q.setFirstResult(firstResult);
-			if (maxResults > 0)
+			}
+			if (maxResults > 0) {
 				q.setMaxResults(maxResults);
-			else
+			} else {
 				q.setMaxResults(maxFetchResults);
+			}
 			return q.getResultList();
 		} catch (NoResultException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see atlas.connection.dao.CoolRepositoryDAO#findCoolList(java.lang.Class, java.lang.String, java.lang.Object[])
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.connection.dao.CoolRepositoryDAO#findCoolList(java.lang.Class,
+	 * java.lang.String, java.lang.Object[])
 	 */
 	@Override
-	public <T> HibernateQueryList<T> findCoolList(Class<T> clazz, String qryname,
-			Object[] params) throws CoolIOException {
+	public final <T> HibernateQueryList<T> findCoolList(
+			final Class<T> clazz,
+			final String qryname, final Object[] params) 
+					throws CoolIOException {
 		return new HibernateQueryList<T>(new QueryListIterator<T>(this,
 				qryname, params));
 	}
 
-	protected synchronized Query getQuery(String qry, Object[] params)
+	/**
+	 * @param qry
+	 * 	The query name.
+	 * @param params
+	 * 	The parameters.
+	 * @return
+	 * 	A Query object. 
+	 * @throws CoolIOException
+	 * 	Cool exception.
+	 */
+	protected final synchronized Query getQuery(
+			final String qry, final Object[] params)
 			throws CoolIOException {
 		// log.info("Build query "+qry+" with N parameters "+params.length);
 		try {

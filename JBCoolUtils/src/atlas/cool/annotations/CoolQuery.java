@@ -12,6 +12,12 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CoolQuery {
+	/**
+	 * @return
+	 */
 	String name() default "";
+	/**
+	 * @return
+	 */
 	String params() default "";
 }

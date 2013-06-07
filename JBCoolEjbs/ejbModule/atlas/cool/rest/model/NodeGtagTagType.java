@@ -18,34 +18,38 @@ import atlas.cool.annotations.CoolQuery;
 
 /**
  * <p>
- * This POJO represents the association between a global tag and a leaf tag in a given node. 
- * Cool tags are defined in the _TAGS table of a COOL schema for every folder (node), as well as inside the
- * main _TAGS table, where global tags are stored. 
+ * This POJO represents the association between a global tag and a leaf tag in a given
+ * node. Cool tags are defined in the _TAGS table of a COOL schema for every folder
+ * (node), as well as inside the main _TAGS table, where global tags are stored.
  * </p>
  * <p>
- * The Queries defined for this POJO are:<br> 
- *   
- * 		<b>QUERY_FINDGTAGS_TAGS_TRACE [cool_select_pkg]</b><br>
- * 		This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching nodes/tags;
- * 		it uses internally the function cool_select_pkg.f_getall_tagsforgtag(.....).<br>
- * 		For every node/tag associated with the given gtag, there is one line with information on schema
- * 		and db, gtag informations, tag informations, and node informations.<br>
+ * The Queries defined for this POJO are:<br>
  * 
- * 		<b>QUERY_FINDGTAGS_FORTAG [cool_select_pkg]</b><br>
- * 		This query takes as arguments the SCHEMA, DB, GTAG, TAG, NODE and retrieves a list of matching nodes/tags/gtags;
- * 		it uses internally the function cool_select_pkg.f_getall_tagsforgtag(.....).<br>
- * 		For every node/tag associated with the given gtag, there is one line with information on schema
- * 		and db, gtag informations, tag informations, and node informations.<br>
+ * <b>QUERY_FINDGTAGS_TAGS_TRACE [cool_select_pkg]</b><br>
+ * This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching
+ * nodes/tags; it uses internally the function
+ * cool_select_pkg.f_getall_tagsforgtag(.....).<br>
+ * For every node/tag associated with the given gtag, there is one line with information
+ * on schema and db, gtag informations, tag informations, and node informations.<br>
  * 
- * 		<b>QUERY_FINDGTAG_DOUBLEFLD [cool_select_pkg]</b><br>
- * 		This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching nodes/tags/gtags;
- * 		it uses internally the function cool_select_pkg.f_getall_doubletagsforgtag(.....).<br>
- * 		It is used to search for folders which are associated twice to a given global tag.
+ * <b>QUERY_FINDGTAGS_FORTAG [cool_select_pkg]</b><br>
+ * This query takes as arguments the SCHEMA, DB, GTAG, TAG, NODE and retrieves a list of
+ * matching nodes/tags/gtags; it uses internally the function
+ * cool_select_pkg.f_getall_tagsforgtag(.....).<br>
+ * For every node/tag associated with the given gtag, there is one line with information
+ * on schema and db, gtag informations, tag informations, and node informations.<br>
  * 
- * 		<b>QUERY_COMA_FINDGTAGS_TAGS_TRACE [coma_select_pkg]</b><br>
- * 		This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching nodes/tags/gtags;
- * 		it uses internally the function cool_select_pkg.f_getall_tagsforgtag(.....).<br>
- * 		It is the same as the first query described, but the info is retrieved from COMA.
+ * <b>QUERY_FINDGTAG_DOUBLEFLD [cool_select_pkg]</b><br>
+ * This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching
+ * nodes/tags/gtags; it uses internally the function
+ * cool_select_pkg.f_getall_doubletagsforgtag(.....).<br>
+ * It is used to search for folders which are associated twice to a given global tag.
+ * 
+ * <b>QUERY_COMA_FINDGTAGS_TAGS_TRACE [coma_select_pkg]</b><br>
+ * This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching
+ * nodes/tags/gtags; it uses internally the function
+ * cool_select_pkg.f_getall_tagsforgtag(.....).<br>
+ * It is the same as the first query described, but the info is retrieved from COMA.
  * </p>
  * 
  * @author formica
@@ -137,39 +141,39 @@ public class NodeGtagTagType implements Serializable {
 
 	@Id
 	@Column(name = "ROWNUM")
-	Long rowid;
+	private Long rowid;
 
 	@Column(name = "GTAG_ID", precision = 10, scale = 0)
-	Long gtagId;
+	private Long gtagId;
 	@Column(name = "GTAG_NAME", length = 255)
-	String gtagName;
+	private String gtagName;
 	@Column(name = "GTAG_DESCRIPTION", length = 255)
-	String gtagDescription;
+	private String gtagDescription;
 	@Column(name = "GTAG_LOCK_STATUS")
-	Integer gtagLockStatus;
+	private Integer gtagLockStatus;
 
 	@Column(name = "SCHEMA_NAME", length = 30)
-	String schemaName;
+	private String schemaName;
 	@Column(name = "DB_NAME", length = 30)
-	String dbName;
+	private String dbName;
 
 	@Column(name = "TAG_ID", precision = 10, scale = 0)
-	Long tagId;
+	private Long tagId;
 	@Column(name = "TAG_NAME", length = 255)
-	String tagName;
+	private String tagName;
 	@Column(name = "TAG_DESCRIPTION", length = 255)
-	String tagDescription;
+	private String tagDescription;
 	@Column(name = "TAG_LOCK_STATUS")
-	Integer tagLockStatus;
+	private Integer tagLockStatus;
 	@Column(name = "SYS_INSTIME", length = 255)
-	String sysInstime;
+	private String sysInstime;
 
 	@Column(name = "NODE_ID", precision = 10, scale = 0)
-	Long nodeId;
+	private Long nodeId;
 	@Column(name = "NODE_NAME", length = 255)
-	String nodeName;
+	private String nodeName;
 	@Column(name = "NODE_FULLPATH", length = 255)
-	String nodeFullpath;
+	private String nodeFullpath;
 
 	@CoolQuery(name = "cool.findgtagstagstrace", params = "schema;dbname;gtag")
 	public static final String QUERY_FINDGTAGS_TAGS_TRACE = "cool.findgtagstagstrace";
@@ -183,7 +187,7 @@ public class NodeGtagTagType implements Serializable {
 	/**
 	 * @return the gtagId
 	 */
-	public Long getGtagId() {
+	public final Long getGtagId() {
 		return gtagId;
 	}
 
@@ -191,14 +195,14 @@ public class NodeGtagTagType implements Serializable {
 	 * @param gtagId
 	 *            the gtagId to set
 	 */
-	public void setGtagId(Long gtagId) {
+	public final void setGtagId(final Long gtagId) {
 		this.gtagId = gtagId;
 	}
 
 	/**
 	 * @return the gtagName
 	 */
-	public String getGtagName() {
+	public final String getGtagName() {
 		return gtagName;
 	}
 
@@ -206,14 +210,14 @@ public class NodeGtagTagType implements Serializable {
 	 * @param gtagName
 	 *            the gtagName to set
 	 */
-	public void setGtagName(String gtagName) {
+	public final void setGtagName(final String gtagName) {
 		this.gtagName = gtagName;
 	}
 
 	/**
 	 * @return the gtagDescription
 	 */
-	public String getGtagDescription() {
+	public final String getGtagDescription() {
 		return gtagDescription;
 	}
 
@@ -221,14 +225,14 @@ public class NodeGtagTagType implements Serializable {
 	 * @param gtagDescription
 	 *            the gtagDescription to set
 	 */
-	public void setGtagDescription(String gtagDescription) {
+	public final void setGtagDescription(final String gtagDescription) {
 		this.gtagDescription = gtagDescription;
 	}
 
 	/**
 	 * @return the gtagLockStatus
 	 */
-	public Integer getGtagLockStatus() {
+	public final Integer getGtagLockStatus() {
 		return gtagLockStatus;
 	}
 
@@ -236,14 +240,14 @@ public class NodeGtagTagType implements Serializable {
 	 * @param gtagLockStatus
 	 *            the gtagLockStatus to set
 	 */
-	public void setGtagLockStatus(Integer gtagLockStatus) {
+	public final void setGtagLockStatus(final Integer gtagLockStatus) {
 		this.gtagLockStatus = gtagLockStatus;
 	}
 
 	/**
 	 * @return the schemaName
 	 */
-	public String getSchemaName() {
+	public final String getSchemaName() {
 		return schemaName;
 	}
 
@@ -251,14 +255,14 @@ public class NodeGtagTagType implements Serializable {
 	 * @param schemaName
 	 *            the schemaName to set
 	 */
-	public void setSchemaName(String schemaName) {
+	public final void setSchemaName(final String schemaName) {
 		this.schemaName = schemaName;
 	}
 
 	/**
 	 * @return the dbName
 	 */
-	public String getDbName() {
+	public final String getDbName() {
 		return dbName;
 	}
 
@@ -266,14 +270,14 @@ public class NodeGtagTagType implements Serializable {
 	 * @param dbName
 	 *            the dbName to set
 	 */
-	public void setDbName(String dbName) {
+	public final void setDbName(final String dbName) {
 		this.dbName = dbName;
 	}
 
 	/**
 	 * @return the tagId
 	 */
-	public Long getTagId() {
+	public final Long getTagId() {
 		return tagId;
 	}
 
@@ -281,14 +285,14 @@ public class NodeGtagTagType implements Serializable {
 	 * @param tagId
 	 *            the tagId to set
 	 */
-	public void setTagId(Long tagId) {
+	public final void setTagId(final Long tagId) {
 		this.tagId = tagId;
 	}
 
 	/**
 	 * @return the tagName
 	 */
-	public String getTagName() {
+	public final String getTagName() {
 		return tagName;
 	}
 
@@ -296,21 +300,21 @@ public class NodeGtagTagType implements Serializable {
 	 * @param tagName
 	 *            the tagName to set
 	 */
-	public void setTagName(String tagName) {
+	public final void setTagName(final String tagName) {
 		this.tagName = tagName;
 	}
 
 	/**
 	 * @return the tagDescription
 	 */
-	public String getTagDescription() {
+	public final String getTagDescription() {
 		return tagDescription;
 	}
 
 	/**
 	 * @return the tagLockStatus
 	 */
-	public Integer getTagLockStatus() {
+	public final Integer getTagLockStatus() {
 		return tagLockStatus;
 	}
 
@@ -318,7 +322,7 @@ public class NodeGtagTagType implements Serializable {
 	 * @param tagLockStatus
 	 *            the tagLockStatus to set
 	 */
-	public void setTagLockStatus(Integer tagLockStatus) {
+	public final void setTagLockStatus(final Integer tagLockStatus) {
 		this.tagLockStatus = tagLockStatus;
 	}
 
@@ -326,14 +330,14 @@ public class NodeGtagTagType implements Serializable {
 	 * @param tagDescription
 	 *            the tagDescription to set
 	 */
-	public void setTagDescription(String tagDescription) {
+	public final void setTagDescription(final String tagDescription) {
 		this.tagDescription = tagDescription;
 	}
 
 	/**
 	 * @return the sysInstime
 	 */
-	public String getSysInstime() {
+	public final String getSysInstime() {
 		return sysInstime;
 	}
 
@@ -341,14 +345,14 @@ public class NodeGtagTagType implements Serializable {
 	 * @param sysInstime
 	 *            the sysInstime to set
 	 */
-	public void setSysInstime(String sysInstime) {
+	public final void setSysInstime(final String sysInstime) {
 		this.sysInstime = sysInstime;
 	}
 
 	/**
 	 * @return the nodeId
 	 */
-	public Long getNodeId() {
+	public final Long getNodeId() {
 		return nodeId;
 	}
 
@@ -356,14 +360,14 @@ public class NodeGtagTagType implements Serializable {
 	 * @param nodeId
 	 *            the nodeId to set
 	 */
-	public void setNodeId(Long nodeId) {
+	public final void setNodeId(final Long nodeId) {
 		this.nodeId = nodeId;
 	}
 
 	/**
 	 * @return the nodeName
 	 */
-	public String getNodeName() {
+	public final String getNodeName() {
 		return nodeName;
 	}
 
@@ -371,14 +375,14 @@ public class NodeGtagTagType implements Serializable {
 	 * @param nodeName
 	 *            the nodeName to set
 	 */
-	public void setNodeName(String nodeName) {
+	public final void setNodeName(final String nodeName) {
 		this.nodeName = nodeName;
 	}
 
 	/**
 	 * @return the nodeFullpath
 	 */
-	public String getNodeFullpath() {
+	public final String getNodeFullpath() {
 		return nodeFullpath;
 	}
 
@@ -386,7 +390,7 @@ public class NodeGtagTagType implements Serializable {
 	 * @param nodeFullpath
 	 *            the nodeFullpath to set
 	 */
-	public void setNodeFullpath(String nodeFullpath) {
+	public final void setNodeFullpath(final String nodeFullpath) {
 		this.nodeFullpath = nodeFullpath;
 	}
 

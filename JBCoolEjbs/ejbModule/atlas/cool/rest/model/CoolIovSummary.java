@@ -31,26 +31,71 @@ public class CoolIovSummary implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 6861013465081549944L;
-	
-	Long   chanId;
-	String channelName;
-	String schema;
-	String db;
-	String node;
-	String tag;
-	String summary;
-	String iovbase;
-	Long totalIovs = 0L;
-	Long minsince = CoolIov.COOL_MAX_DATE;
-	Long maxsince = 0L;
-	Long minuntil = CoolIov.COOL_MAX_DATE;
-	Long maxuntil = 0L;
 
-	@XmlElement(name="iovrange", type=IovRange.class)
-	Collection<IovRange> iovlist = null; 
+	/**
+	 * 
+	 */
+	private Long chanId;
+	/**
+	 * 
+	 */
+	private String channelName;
+	/**
+	 * 
+	 */
+	private String schema;
+	/**
+	 * 
+	 */
+	private String db;
+	/**
+	 * 
+	 */
+	private String node;
+	/**
+	 * 
+	 */
+	private String tag;
+	/**
+	 * 
+	 */
+	private String summary;
+	/**
+	 * 
+	 */
+	private String iovbase;
+	/**
+	 * 
+	 */
+	private Long totalIovs = 0L;
+	/**
+	 * 
+	 */
+	private Long minsince = CoolIov.COOL_MAX_DATE;
+	/**
+	 * 
+	 */
+	private Long maxsince = 0L;
+	/**
+	 * 
+	 */
+	private Long minuntil = CoolIov.COOL_MAX_DATE;
+	/**
+	 * 
+	 */
+	private Long maxuntil = 0L;
 
+	/**
+	 * 
+	 */
+	@XmlElement(name = "iovrange", type = IovRange.class)
+	private Collection<IovRange> iovlist = null;
+
+	/**
+	 * 
+	 */
 	@XmlTransient
-	Map<Long, IovRange> iovs = new TreeMap<Long, IovRange>();
+	private Map<Long, IovRange> iovs = new TreeMap<Long, IovRange>();
 
 	/**
 	 * 
@@ -62,7 +107,7 @@ public class CoolIovSummary implements Serializable {
 	/**
 	 * 
 	 */
-	public CoolIovSummary(Long chanId) {
+	public CoolIovSummary(final Long chanId) {
 		// TODO Auto-generated constructor stub
 		this.chanId = chanId;
 	}
@@ -70,7 +115,7 @@ public class CoolIovSummary implements Serializable {
 	/**
 	 * @return the chanId
 	 */
-	public Long getChanId() {
+	public final Long getChanId() {
 		return chanId;
 	}
 
@@ -78,25 +123,41 @@ public class CoolIovSummary implements Serializable {
 	 * @param chanId
 	 *            the chanId to set
 	 */
-	public void setChanId(Long chanId) {
+	public final void setChanId(Long chanId) {
 		this.chanId = chanId;
 	}
 
-	public void appendIov(Long since, Long until, Long niovs, Boolean ishole)
+	/**
+	 * @param since
+	 * 	The since time.
+	 * @param until
+	 * 	The until time.
+	 * @param niovs
+	 * 	The number of iovs.
+	 * @param ishole
+	 * 	Is it a hole ?
+	 * @throws Exception
+	 */
+	public final void appendIov(final Long since, 
+			final Long until, 
+			final Long niovs, 
+			final Boolean ishole)
 			throws Exception {
-		
+
 		if (iovs.containsKey(since)) {
 			// modify existing iov if it is of the same type
 			IovRange iov = iovs.get(since);
-			if ((!(iov.getIshole()) && !(ishole)) && iov.getUntil().compareTo(until) < 0) {
+			if ((!(iov.getIshole()) && !(ishole)) 
+						&& iov.getUntil().compareTo(until) < 0) {
 				iov.setUntil(until);
 				iov.addNIovs(niovs);
 			} else {
 				throw new Exception(
 						"Cannot append an iov of different type for the same since:\n"
-								+"new iov: "+since+" "+until+" "+niovs+" "+ishole+" \n"
-								+"old iov: "+iov.getSince()+" "+iov.getUntil()+" "+iov.getNiovs()+" "+iov.getIshole()+" \n"
-						);
+								+ "new iov: " + since + " " + until + " " + niovs + " "
+								+ ishole + " \n" + "old iov: " + iov.getSince() + " "
+								+ iov.getUntil() + " " + iov.getNiovs() + " "
+								+ iov.getIshole() + " \n");
 			}
 		} else {
 			//
@@ -106,71 +167,85 @@ public class CoolIovSummary implements Serializable {
 			for (Long asince : sincetimes) {
 				IovRange aniov = iovs.get(asince);
 				if (aniov.getUntil().compareTo(since) == 0) {
-					if (!(aniov.ishole) && !(ishole)) {
+					if (!(aniov.getIshole()) && !(ishole)) {
 						aniov.setUntil(until);
 						aniov.addNIovs(niovs);
-						aniov.setUntilCoolStr(CoolIov.getCoolTimeRunLumiString(until, iovbase));
-						if (aniov.getSince().compareTo(minsince) == 0)
+						aniov.setUntilCoolStr(CoolIov.getCoolTimeRunLumiString(until,
+								iovbase));
+						if (aniov.getSince().compareTo(minsince) == 0) {
 							minuntil = until;
+						}
 						updatediov = true;
-//						System.out.println("Update old iovrange "+since+" "+until+" "+aniov.getSinceCoolStr()+" "+aniov.getUntilCoolStr()+" "+aniov.getIshole());
+						// System.out.println("Update old iovrange "+since+" "+until+" "+aniov.getSinceCoolStr()+" "+aniov.getUntilCoolStr()+" "+aniov.getIshole());
 					}
-				} 
+				}
 			}
 			if (!updatediov) {
 				// store a new iov
-				IovRange iov = new IovRange(since,until,niovs,ishole,iovbase);
-//				iov.setIovbase(iovbase);
+				IovRange iov = new IovRange(since, until, niovs, ishole, iovbase);
+				// iov.setIovbase(iovbase);
 				iovs.put(since, iov);
-//				log.info("Store new iovrange "+since+" "+until+" "+iov.getSinceCoolStr()+" "+iov.getUntilCoolStr()+" "+iov.getIshole());
+				// log.info("Store new iovrange "+since+" "+until+" "+iov.getSinceCoolStr()+" "+iov.getUntilCoolStr()+" "+iov.getIshole());
 			}
 		}
 		setIovlist(iovs.values());
-		
+
 		totalIovs += niovs;
 		if (!ishole) {
-			if (since.longValue() < minsince.longValue())
+			if (since.longValue() < minsince.longValue()) {
 				minsince = since;
-			if (since.longValue() > maxsince.longValue())
+			}
+			if (since.longValue() > maxsince.longValue()) {
 				maxsince = since;
+			}
 
-			if (until.longValue() < minuntil.longValue())
+			if (until.longValue() < minuntil.longValue()) {
 				minuntil = until;
-			if (until.longValue() > maxuntil.longValue())
+			}
+			if (until.longValue() > maxuntil.longValue()) {
 				maxuntil = until;
+			}
 		}
-		
+
 	}
 
-
+	/**
+	 * @return
+	 */
 	public Map<Long, IovRange> getIovRanges() {
 		return iovs;
 	}
 
-	public Long getMinTime() {
-		Long minsince = CoolIov.COOL_MAX_DATE;
+	/**
+	 * @return
+	 */
+	public final Long getMinTime() {
+		Long lminsince = CoolIov.COOL_MAX_DATE;
 		for (Long since : iovs.keySet()) {
-			if (since < minsince) {
-				minsince = since;
+			if (since < lminsince) {
+				lminsince = since;
 			}
 		}
-		return minsince;
+		return lminsince;
 	}
 
-	public Long getMaxTime() {
-		Long maxsince = 0L;
+	/**
+	 * @return
+	 */
+	public final Long getMaxTime() {
+		Long lmaxsince = 0L;
 		for (Long since : iovs.keySet()) {
-			if (since > maxsince) {
-				maxsince = since;
+			if (since > lmaxsince) {
+				lmaxsince = since;
 			}
 		}
-		return maxsince;
+		return lmaxsince;
 	}
 
 	/**
 	 * @return the summary
 	 */
-	public String getSummary() {
+	public final String getSummary() {
 		return summary;
 	}
 
@@ -178,14 +253,14 @@ public class CoolIovSummary implements Serializable {
 	 * @param summary
 	 *            the summary to set
 	 */
-	public void setSummary(String summary) {
+	public final void setSummary(final String summary) {
 		this.summary = summary;
 	}
 
 	/**
 	 * @return the iovbase
 	 */
-	public String getIovbase() {
+	public final String getIovbase() {
 		return iovbase;
 	}
 
@@ -193,128 +268,133 @@ public class CoolIovSummary implements Serializable {
 	 * @param iovbase
 	 *            the iovbase to set
 	 */
-	public void setIovbase(String iovbase) {
+	public final void setIovbase(final String iovbase) {
 		this.iovbase = iovbase;
 	}
 
 	/**
 	 * @return the totalIovs
 	 */
-	public Long getTotalIovs() {
+	public final Long getTotalIovs() {
 		return totalIovs;
 	}
 
 	/**
 	 * @return the minsince
 	 */
-	public Long getMinsince() {
+	public final Long getMinsince() {
 		return minsince;
 	}
 
 	/**
 	 * @return the maxsince
 	 */
-	public Long getMaxsince() {
+	public final Long getMaxsince() {
 		return maxsince;
 	}
 
 	/**
 	 * @return the minuntil
 	 */
-	public Long getMinuntil() {
+	public final Long getMinuntil() {
 		return minuntil;
 	}
 
 	/**
 	 * @return the maxuntil
 	 */
-	public Long getMaxuntil() {
+	public final Long getMaxuntil() {
 		return maxuntil;
 	}
 
 	/**
 	 * @return the channelName
 	 */
-	public String getChannelName() {
+	public final String getChannelName() {
 		return channelName;
 	}
 
 	/**
-	 * @param channelName the channelName to set
+	 * @param channelName
+	 *            the channelName to set
 	 */
-	public void setChannelName(String channelName) {
+	public final void setChannelName(final String channelName) {
 		this.channelName = channelName;
 	}
 
 	/**
 	 * @return the schema
 	 */
-	public String getSchema() {
+	public final String getSchema() {
 		return schema;
 	}
 
 	/**
-	 * @param schema the schema to set
+	 * @param schema
+	 *            the schema to set
 	 */
-	public void setSchema(String schema) {
+	public final void setSchema(final String schema) {
 		this.schema = schema;
 	}
 
 	/**
 	 * @return the db
 	 */
-	public String getDb() {
+	public final String getDb() {
 		return db;
 	}
 
 	/**
-	 * @param db the db to set
+	 * @param db
+	 *            the db to set
 	 */
-	public void setDb(String db) {
+	public final void setDb(final String db) {
 		this.db = db;
 	}
 
 	/**
 	 * @return the node
 	 */
-	public String getNode() {
+	public final String getNode() {
 		return node;
 	}
 
 	/**
-	 * @param node the node to set
+	 * @param node
+	 *            the node to set
 	 */
-	public void setNode(String node) {
+	public final void setNode(final String node) {
 		this.node = node;
 	}
 
 	/**
 	 * @return the tag
 	 */
-	public String getTag() {
+	public final String getTag() {
 		return tag;
 	}
 
 	/**
-	 * @param tag the tag to set
+	 * @param tag
+	 *            the tag to set
 	 */
-	public void setTag(String tag) {
+	public final void setTag(final String tag) {
 		this.tag = tag;
 	}
 
 	/**
 	 * @return the iovlist
 	 */
-	public Collection<IovRange> getIovlist() {
+	public final Collection<IovRange> getIovlist() {
 		return iovlist;
 	}
 
 	/**
-	 * @param iovlist the iovlist to set
+	 * @param iovlist
+	 *            the iovlist to set
 	 */
-	public void setIovlist(Collection<IovRange> iovlist) {
+	public final void setIovlist(final Collection<IovRange> iovlist) {
 		this.iovlist = iovlist;
 	}
 
-	
 }

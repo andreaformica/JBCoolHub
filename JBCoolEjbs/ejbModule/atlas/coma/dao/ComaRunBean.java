@@ -32,249 +32,289 @@ import atlas.cool.rest.utils.PrintPojo;
 @Local(ComaRunDAO.class)
 public class ComaRunBean implements ComaRunDAO {
 
+	/**
+	 * 
+	 */
 	@Inject
 	private EntityManager em;
-	
+
+	/**
+	 * 
+	 */
 	@Inject
 	private Logger log;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.coma.dao.ComaRunDAO#getRunSummaryRangeByRunNumber(java.lang.Integer,
+	 * java.lang.Integer)
+	 */
+	@Override
+	public final List<RunSummary> getRunSummaryRangeByRunNumber(final Integer runstart,
+			final Integer runend) {
 
-	public List<RunSummary> getRunSummaryRangeByRunNumber(final Integer runstart, final Integer runend) {
-		
-		String qry = "select run_number, start_time, end_time, data_source, run_type, run_type_desc, "
+		final String qry = "select run_number, start_time, end_time, data_source, run_type, "
+				+ " run_type_desc, "
 				+ " p_project, p_desc, start_lbn, end_lbn, p_period, "
-				+ " l1_events, l2_events, ef_events, recorded_events, partition_name, integ_lumi "
+				+ " l1_events, l2_events, ef_events, recorded_events, "
+				+ " partition_name, integ_lumi "
 				+ "from CR_VIEW_RUNINFO "
 				+ " where "
 				+ " (run_number>=:rs and run_number<=:re) order by run_number asc";
-		Query q = em.createNativeQuery(qry);
+		final Query q = em.createNativeQuery(qry);
 		q.setParameter("rs", runstart);
 		q.setParameter("re", runend);
 		log.info("Execute query " + q.toString());
-		
+
 		try {
-			List<RunSummary> rlist = getRuns(q);
+			final List<RunSummary> rlist = getRuns(q);
 			return rlist;
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 		return null;
 	}
 
-	public List<RunSummary> getRunSummaryRangeByTime(final Date since, final Date until) {
-		
-		String qry = "select run_number, start_time, end_time, data_source, run_type, run_type_desc, "
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.coma.dao.ComaRunDAO#getRunSummaryRangeByTime(java.util.Date,
+	 * java.util.Date)
+	 */
+	@Override
+	public final List<RunSummary> getRunSummaryRangeByTime(final Date since,
+			final Date until) {
+
+		final String qry = "select run_number, start_time, end_time, data_source, "
+				+ " run_type, run_type_desc, "
 				+ " p_project, p_desc, start_lbn, end_lbn, p_period, "
-				+ " l1_events, l2_events, ef_events, recorded_events, partition_name, integ_lumi "
-				+ "from CR_VIEW_RUNINFO "
-				+ " where "
+				+ " l1_events, l2_events, ef_events, recorded_events, "
+				+ " partition_name, integ_lumi " + "from CR_VIEW_RUNINFO " + " where "
 				+ " (start_time>=:rs and start_time<=:re) order by run_number asc";
-		Query q = em.createNativeQuery(qry);
+		final Query q = em.createNativeQuery(qry);
 		q.setParameter("rs", since);
 		q.setParameter("re", until);
 		log.info("Execute query " + q.toString());
-		
+
 		try {
-			List<RunSummary> rlist = getRuns(q);
+			final List<RunSummary> rlist = getRuns(q);
 			return rlist;
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see cool.coma.dao.ComaRunDAO#getRunInfo(java.lang.Integer,
-	 * java.lang.Integer)
+	/**
+	 * @param qry
+	 * @return
+	 * @throws CoolIOException
 	 */
-	public List<RunSummary> getRuns(final Query qry)
-			throws CoolIOException {
+	public final List<RunSummary> getRuns(final Query qry) throws CoolIOException {
 		try {
-			
+
 			log.info("Execute query " + qry.toString());
-			List<?> results = qry.getResultList();
+			final List<?> results = qry.getResultList();
 			log.info("Retrieved list of " + results.size() + " rows");
-			Iterator<?> it = results.iterator();
-			List<RunSummary> runlist = new ArrayList<RunSummary>();
+			final Iterator<?> it = results.iterator();
+			final List<RunSummary> runlist = new ArrayList<RunSummary>();
 			while (it.hasNext()) {
-				Object[] line = (Object[]) it.next();
+				final Object[] line = (Object[]) it.next();
 				log.info("retrieved run " + line[0]);
-				Long runnum = (line[0] != null) ? ((BigDecimal) line[0]).longValue() : null ;
-				Timestamp runs = (line[1] != null) ?(Timestamp) line[1]: null;
-				Timestamp rune = (line[2] != null) ?(Timestamp) line[2]: null;
-				String datasource = (line[3] != null) ?(String) line[3]: null;
-				String runtype = (line[4] != null) ?(String) line[4]: null;
-				String runtypedesc = (line[5] != null) ?(String) line[5]: null;
-				String project = (line[6] != null) ?(String) line[6]: null;
-				String projdesc = (line[7] != null) ?(String) line[7]: null;
-				Long startlbn = (line[8] != null) ?((BigDecimal) line[8]).longValue(): null;
-				Long endlbn = (line[9] != null) ?((BigDecimal) line[9]).longValue(): null;
+				final Long runnum = line[0] != null ? ((BigDecimal) line[0]).longValue()
+						: null;
+				final Timestamp runs = line[1] != null ? (Timestamp) line[1] : null;
+				final Timestamp rune = line[2] != null ? (Timestamp) line[2] : null;
+				final String datasource = line[3] != null ? (String) line[3] : null;
+				final String runtype = line[4] != null ? (String) line[4] : null;
+				final String runtypedesc = line[5] != null ? (String) line[5] : null;
+				final String project = line[6] != null ? (String) line[6] : null;
+				final String projdesc = line[7] != null ? (String) line[7] : null;
+				final Long startlbn = line[8] != null ? ((BigDecimal) line[8])
+						.longValue() : null;
+				final Long endlbn = line[9] != null ? ((BigDecimal) line[9]).longValue()
+						: null;
 				// Float duration = ((BigDecimal) line[10]).floatValue();
-				String period = (line[10] != null) ?(String) line[10]: null;
-				Long l1evts = (line[11] != null) ?((BigDecimal) line[11]).longValue(): null;
-				Long l2evts = (line[12] != null) ?((BigDecimal) line[12]).longValue(): null;
-				Long efevts = (line[13] != null) ?((BigDecimal) line[13]).longValue(): null;
-				Long recevts = (line[14] != null) ?((BigDecimal) line[14]).longValue(): null;
-				String partition_name = (line[15] != null) ?(String) line[15]: null;
-				BigDecimal runlumi = (line[16] != null) ?((BigDecimal) line[16]): null;
-				RunSummary rsum = new RunSummary(runnum, new Date(runs.getTime()), new Date(
-						rune.getTime()), runtype, runtypedesc, datasource, projdesc,
-						partition_name, project, period, null, l1evts, l2evts, efevts, recevts,
-						startlbn, endlbn, null,runlumi);
+				final String period = line[10] != null ? (String) line[10] : null;
+				final Long l1evts = line[11] != null ? ((BigDecimal) line[11])
+						.longValue() : null;
+				final Long l2evts = line[12] != null ? ((BigDecimal) line[12])
+						.longValue() : null;
+				final Long efevts = line[13] != null ? ((BigDecimal) line[13])
+						.longValue() : null;
+				final Long recevts = line[14] != null ? ((BigDecimal) line[14])
+						.longValue() : null;
+				final String partition_name = line[15] != null ? (String) line[15] : null;
+				final BigDecimal runlumi = line[16] != null ? (BigDecimal) line[16]
+						: null;
+				final RunSummary rsum = new RunSummary(runnum, new Date(runs.getTime()),
+						new Date(rune.getTime()), runtype, runtypedesc, datasource,
+						projdesc, partition_name, project, period, null, l1evts, l2evts,
+						efevts, recevts, startlbn, endlbn, null, runlumi);
 
 				runlist.add(rsum);
-				log.info("Adding object "+new PrintPojo<RunSummary>(rsum).toString());
+				log.info("Adding object " + new PrintPojo<RunSummary>(rsum).toString());
 			}
 			return runlist;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new CoolIOException(e);
 		}
 	}
-	
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see cool.coma.dao.ComaRunDAO#getRunInfo(java.lang.Integer,
-	 * java.lang.Integer)
+	 * @see cool.coma.dao.ComaRunDAO#getRunInfo(java.lang.Integer, java.lang.Integer)
 	 */
-//	public List<RunSummary> getRunInfo(final Integer runstart, final Integer runend)
-//			throws CoolIOException {
-//		try {
-//			String qry = "select run_number, start_time, end_time, data_source, run_type, run_type_desc, "
-//					+ " p_project, p_desc, start_lbn, end_lbn, p_period, "
-//					+ " l1_events, l2_events, ef_events, recorded_events, partition_name, integ_lumi "
-//					+ "from CR_VIEW_RUNINFO "
-//					+ " where "
-//					+ " (run_number>=:rs and run_number<=:re) order by run_number asc";
-//			Query q = em.createNativeQuery(qry);
-//			q.setParameter("rs", runstart);
-//			q.setParameter("re", runend);
-//			log.info("Execute query " + q.toString());
-//			List<?> results = q.getResultList();
-//			log.info("Retrieved list of " + results.size() + " rows");
-//			Iterator<?> it = results.iterator();
-//			List<RunSummary> runlist = new ArrayList<RunSummary>();
-//			while (it.hasNext()) {
-//				Object[] line = (Object[]) it.next();
-//				log.info("retrieved run " + line[0]);
-//				Long runnum = (line[0] != null) ? ((BigDecimal) line[0]).longValue() : null ;
-//				Timestamp runs = (line[1] != null) ?(Timestamp) line[1]: null;
-//				Timestamp rune = (line[2] != null) ?(Timestamp) line[2]: null;
-//				String datasource = (line[3] != null) ?(String) line[3]: null;
-//				String runtype = (line[4] != null) ?(String) line[4]: null;
-//				String runtypedesc = (line[5] != null) ?(String) line[5]: null;
-//				String project = (line[6] != null) ?(String) line[6]: null;
-//				String projdesc = (line[7] != null) ?(String) line[7]: null;
-//				Long startlbn = (line[8] != null) ?((BigDecimal) line[8]).longValue(): null;
-//				Long endlbn = (line[9] != null) ?((BigDecimal) line[9]).longValue(): null;
-//				// Float duration = ((BigDecimal) line[10]).floatValue();
-//				String period = (line[10] != null) ?(String) line[10]: null;
-//				Long l1evts = (line[11] != null) ?((BigDecimal) line[11]).longValue(): null;
-//				Long l2evts = (line[12] != null) ?((BigDecimal) line[12]).longValue(): null;
-//				Long efevts = (line[13] != null) ?((BigDecimal) line[13]).longValue(): null;
-//				Long recevts = (line[14] != null) ?((BigDecimal) line[14]).longValue(): null;
-//				String partition_name = (line[15] != null) ?(String) line[15]: null;
-//				BigDecimal runlumi = (line[16] != null) ?((BigDecimal) line[16]): null;
-//				RunSummary rsum = new RunSummary(runnum, new Date(runs.getTime()), new Date(
-//						rune.getTime()), runtype, runtypedesc, datasource, projdesc,
-//						partition_name, project, period, null, l1evts, l2evts, efevts, recevts,
-//						startlbn, endlbn, null,runlumi);
-//
-//				runlist.add(rsum);
-//
-//			}
-//			return runlist;
-//		} catch (Exception e) {
-//			throw new CoolIOException(e);
-//		}
-//	}
-//
+	// public List<RunSummary> getRunInfo(final Integer runstart, final Integer runend)
+	// throws CoolIOException {
+	// try {
+	// String qry =
+	// "select run_number, start_time, end_time, data_source, run_type, run_type_desc, "
+	// + " p_project, p_desc, start_lbn, end_lbn, p_period, "
+	// + " l1_events, l2_events, ef_events, recorded_events, partition_name, integ_lumi "
+	// + "from CR_VIEW_RUNINFO "
+	// + " where "
+	// + " (run_number>=:rs and run_number<=:re) order by run_number asc";
+	// Query q = em.createNativeQuery(qry);
+	// q.setParameter("rs", runstart);
+	// q.setParameter("re", runend);
+	// log.info("Execute query " + q.toString());
+	// List<?> results = q.getResultList();
+	// log.info("Retrieved list of " + results.size() + " rows");
+	// Iterator<?> it = results.iterator();
+	// List<RunSummary> runlist = new ArrayList<RunSummary>();
+	// while (it.hasNext()) {
+	// Object[] line = (Object[]) it.next();
+	// log.info("retrieved run " + line[0]);
+	// Long runnum = (line[0] != null) ? ((BigDecimal) line[0]).longValue() : null ;
+	// Timestamp runs = (line[1] != null) ?(Timestamp) line[1]: null;
+	// Timestamp rune = (line[2] != null) ?(Timestamp) line[2]: null;
+	// String datasource = (line[3] != null) ?(String) line[3]: null;
+	// String runtype = (line[4] != null) ?(String) line[4]: null;
+	// String runtypedesc = (line[5] != null) ?(String) line[5]: null;
+	// String project = (line[6] != null) ?(String) line[6]: null;
+	// String projdesc = (line[7] != null) ?(String) line[7]: null;
+	// Long startlbn = (line[8] != null) ?((BigDecimal) line[8]).longValue(): null;
+	// Long endlbn = (line[9] != null) ?((BigDecimal) line[9]).longValue(): null;
+	// // Float duration = ((BigDecimal) line[10]).floatValue();
+	// String period = (line[10] != null) ?(String) line[10]: null;
+	// Long l1evts = (line[11] != null) ?((BigDecimal) line[11]).longValue(): null;
+	// Long l2evts = (line[12] != null) ?((BigDecimal) line[12]).longValue(): null;
+	// Long efevts = (line[13] != null) ?((BigDecimal) line[13]).longValue(): null;
+	// Long recevts = (line[14] != null) ?((BigDecimal) line[14]).longValue(): null;
+	// String partition_name = (line[15] != null) ?(String) line[15]: null;
+	// BigDecimal runlumi = (line[16] != null) ?((BigDecimal) line[16]): null;
+	// RunSummary rsum = new RunSummary(runnum, new Date(runs.getTime()), new Date(
+	// rune.getTime()), runtype, runtypedesc, datasource, projdesc,
+	// partition_name, project, period, null, l1evts, l2evts, efevts, recevts,
+	// startlbn, endlbn, null,runlumi);
+	//
+	// runlist.add(rsum);
+	//
+	// }
+	// return runlist;
+	// } catch (Exception e) {
+	// throw new CoolIOException(e);
+	// }
+	// }
+	//
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see cool.coma.dao.ComaRunDAO#getRunInfo(java.lang.Integer)
 	 */
-	public RunSummary getRunInfo(final Integer runnumber) throws CoolIOException {
+	@Override
+	public final RunSummary getRunInfo(final Integer runnumber) throws CoolIOException {
 		try {
-			List<RunSummary> runlist = getRunSummaryRangeByRunNumber(runnumber, runnumber);
-			if ((runlist == null) || (runlist.size() == 0)) {
+			final List<RunSummary> runlist = getRunSummaryRangeByRunNumber(runnumber,
+					runnumber);
+			if (runlist == null || runlist.size() == 0) {
 				return null;
 			}
-			RunSummary rs = runlist.get(0);
-			
+			final RunSummary rs = runlist.get(0);
+
 			return rs;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new CoolIOException(e);
 		}
 	}
 
-	public List<PeriodSummary> getPeriods() throws CoolIOException {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.coma.dao.ComaRunDAO#getPeriods()
+	 */
+	@Override
+	public final List<PeriodSummary> getPeriods() throws CoolIOException {
 		try {
-			String qry = "select "
-					+ " p_project, p_period, delivered_lumi "
-					+ "from CB_VIEW_PARENT_PERIODS_LUMI "
-					+ " where "
-					+ " (p_project like :proj and p_period like :prd) order by p_period asc";
-			Query q = em.createNativeQuery(qry);
+			final String qry = "select " + " p_project, p_period, delivered_lumi "
+					+ "from CB_VIEW_PARENT_PERIODS_LUMI " + " where "
+					+ " (p_project like :proj and p_period like :prd) "
+					+ " order by p_period asc";
+			final Query q = em.createNativeQuery(qry);
 			q.setParameter("proj", "%");
 			q.setParameter("prd", "%");
 			log.info("Execute query " + q.toString());
-			List<?> results = q.getResultList();
+			final List<?> results = q.getResultList();
 			log.info("Retrieved list of " + results.size() + " rows");
-			Iterator<?> it = results.iterator();
-			List<PeriodSummary> plist = new ArrayList<PeriodSummary>();
+			final Iterator<?> it = results.iterator();
+			final List<PeriodSummary> plist = new ArrayList<PeriodSummary>();
 			while (it.hasNext()) {
-				Object[] line = (Object[]) it.next();
+				final Object[] line = (Object[]) it.next();
 				log.info("retrieved project " + line[0]);
-				String period = (line[1] != null) ? (String)line[1] : null ;
-				String project = (line[0] != null) ? (String)line[0] : null ;
-				BigDecimal dellumi = (line[2] != null) ?(BigDecimal) line[2]: null;
-				
-				PeriodSummary psum = new PeriodSummary(period,project,dellumi);
+				final String period = line[1] != null ? (String) line[1] : null;
+				final String project = line[0] != null ? (String) line[0] : null;
+				final BigDecimal dellumi = line[2] != null ? (BigDecimal) line[2] : null;
+
+				final PeriodSummary psum = new PeriodSummary(period, project, dellumi);
 
 				plist.add(psum);
 
 			}
 			return plist;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new CoolIOException(e);
 		}
 	}
 
-	public List<PeriodSummary> getSubPeriodsByProject(String project)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.coma.dao.ComaRunDAO#getSubPeriodsByProject(java.lang.String)
+	 */
+	@Override
+	public final List<PeriodSummary> getSubPeriodsByProject(final String project)
 			throws CoolIOException {
 		try {
-			String qry = "select "
-					+ " p_project, p_period, delivered_lumi "
-					+ "from CB_VIEW_PERIODS_LUMI "
-					+ " where "
-					+ " (p_project like :proj and p_period like :prd) order by p_period asc";
-			Query q = em.createNativeQuery(qry);
+			final String qry = "select " + " p_project, p_period, delivered_lumi "
+					+ "from CB_VIEW_PERIODS_LUMI " + " where "
+					+ " (p_project like :proj and p_period like :prd) "
+					+ " order by p_period asc";
+			final Query q = em.createNativeQuery(qry);
 			q.setParameter("proj", project);
 			q.setParameter("prd", "%");
 			log.info("Execute query " + q.toString());
-			List<?> results = q.getResultList();
+			final List<?> results = q.getResultList();
 			log.info("Retrieved list of " + results.size() + " rows");
-			Iterator<?> it = results.iterator();
-			List<PeriodSummary> plist = new ArrayList<PeriodSummary>();
+			final Iterator<?> it = results.iterator();
+			final List<PeriodSummary> plist = new ArrayList<PeriodSummary>();
 			while (it.hasNext()) {
-				Object[] line = (Object[]) it.next();
+				final Object[] line = (Object[]) it.next();
 				log.info("retrieved project " + line[0]);
-				String period = (line[1] != null) ? (String)line[1] : null ;
-				String prj = (line[0] != null) ? (String)line[0] : null ;
-				BigDecimal dellumi = (line[2] != null) ?(BigDecimal) line[2]: null;
-				
-				PeriodSummary psum = new PeriodSummary(period,prj,dellumi);
+				final String period = line[1] != null ? (String) line[1] : null;
+				final String prj = line[0] != null ? (String) line[0] : null;
+				final BigDecimal dellumi = line[2] != null ? (BigDecimal) line[2] : null;
+
+				final PeriodSummary psum = new PeriodSummary(period, prj, dellumi);
 
 				plist.add(psum);
 			}
 			return plist;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new CoolIOException(e);
 		}
 	}

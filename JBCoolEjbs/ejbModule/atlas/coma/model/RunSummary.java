@@ -13,25 +13,82 @@ public class RunSummary implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -6038490075674366239L;
-	
+
+	/**
+	 * 
+	 */
 	private Long runNumber = null;
+	/**
+	 * 
+	 */
 	private Date since = null;
+	/**
+	 * 
+	 */
 	private Date till = null;
+	/**
+	 * 
+	 */
 	private String type = null;
+	/**
+	 * 
+	 */
 	private String typename = null;
+	/**
+	 * 
+	 */
 	private String dataSource = null;
+	/**
+	 * 
+	 */
 	private String configSource = null;
+	/**
+	 * 
+	 */
 	private String partition = null;
+	/**
+	 * 
+	 */
 	private String filenameTag = null;
-	private String period_name = null;
+	/**
+	 * 
+	 */
+	private String periodName = null;
+	/**
+	 * 
+	 */
 	private Long detectorMask = null;
+	/**
+	 * 
+	 */
 	private Long l1Events = null;
+	/**
+	 * 
+	 */
 	private Long l2Events = null;
+	/**
+	 * 
+	 */
 	private Long efEvents = null;
+	/**
+	 * 
+	 */
 	private BigDecimal runlumi = null;
+	/**
+	 * 
+	 */
 	private Long recordedEvents = null;
+	/**
+	 * 
+	 */
 	private Long slb = null;
+	/**
+	 * 
+	 */
 	private Long elb = null;
+	/**
+	 * 
+	 */
 	private Integer nlb = null;
 
 	/**
@@ -68,10 +125,10 @@ public class RunSummary implements Serializable {
 	 * @param eFEvents
 	 * @param recordedEvents
 	 */
-	public RunSummary(final Long runNumber, final Date since, final Date till, final String type,
-			final String dataSource, final String partition, final String filenameTag,
-			final Long detectorMask, final Long l1Events, final Long l2Events, final Long eFEvents,
-			final Long recordedEvents) {
+	public RunSummary(final Long runNumber, final Date since, final Date till,
+			final String type, final String dataSource, final String partition,
+			final String filenameTag, final Long detectorMask, final Long l1Events,
+			final Long l2Events, final Long eFEvents, final Long recordedEvents) {
 		super();
 		this.runNumber = runNumber;
 		this.since = since;
@@ -83,7 +140,7 @@ public class RunSummary implements Serializable {
 		this.detectorMask = detectorMask;
 		this.l1Events = l1Events;
 		this.l2Events = l2Events;
-		this.efEvents = eFEvents;
+		efEvents = eFEvents;
 		this.recordedEvents = recordedEvents;
 	}
 
@@ -97,7 +154,7 @@ public class RunSummary implements Serializable {
 	 * @param configSource
 	 * @param partition
 	 * @param filenameTag
-	 * @param period_name
+	 * @param periodname
 	 * @param detectorMask
 	 * @param l1Events
 	 * @param l2Events
@@ -107,12 +164,12 @@ public class RunSummary implements Serializable {
 	 * @param elb
 	 * @param nlb
 	 */
-	public RunSummary(final Long runNumber, final Date since, final Date till, final String type,
-			final String typename, final String dataSource, final String configSource,
-			final String partition, final String filenameTag, final String period_name,
-			final Long detectorMask, final Long l1Events, final Long l2Events, final Long eFEvents,
-			final Long recordedEvents, final Long slb,
-			final Long elb, final Integer nlb,final BigDecimal integ_lumi) {
+	public RunSummary(final Long runNumber, final Date since, final Date till,
+			final String type, final String typename, final String dataSource,
+			final String configSource, final String partition, final String filenameTag,
+			final String periodname, final Long detectorMask, final Long l1Events,
+			final Long l2Events, final Long eFEvents, final Long recordedEvents,
+			final Long slb, final Long elb, final Integer nlb, final BigDecimal integlumi) {
 		this.runNumber = runNumber;
 		this.since = since;
 		this.till = till;
@@ -122,12 +179,12 @@ public class RunSummary implements Serializable {
 		this.configSource = configSource;
 		this.partition = partition;
 		this.filenameTag = filenameTag;
-		this.period_name = period_name;
+		this.periodName = periodname;
 		this.detectorMask = detectorMask;
 		this.l1Events = l1Events;
 		this.l2Events = l2Events;
-		this.efEvents = eFEvents;
-		this.runlumi = integ_lumi;
+		efEvents = eFEvents;
+		runlumi = integlumi;
 		this.recordedEvents = recordedEvents;
 		this.slb = slb;
 		this.elb = elb;
@@ -175,14 +232,14 @@ public class RunSummary implements Serializable {
 	 * @param till
 	 *            the till to set
 	 */
-	public void setTill(final Date till) {
+	public final void setTill(final Date till) {
 		this.till = till;
 	}
 
 	/**
 	 * @return the type
 	 */
-	public String getType() {
+	public final String getType() {
 		return type;
 	}
 
@@ -190,14 +247,14 @@ public class RunSummary implements Serializable {
 	 * @param type
 	 *            the type to set
 	 */
-	public void setType(final String type) {
+	public final void setType(final String type) {
 		this.type = type;
 	}
 
 	/**
 	 * @return the dataSource
 	 */
-	public String getDataSource() {
+	public final String getDataSource() {
 		return dataSource;
 	}
 
@@ -205,14 +262,14 @@ public class RunSummary implements Serializable {
 	 * @param dataSource
 	 *            the dataSource to set
 	 */
-	public void setDataSource(final String dataSource) {
+	public final void setDataSource(final String dataSource) {
 		this.dataSource = dataSource;
 	}
 
 	/**
 	 * @return the partition
 	 */
-	public String getPartition() {
+	public final String getPartition() {
 		return partition;
 	}
 
@@ -220,14 +277,14 @@ public class RunSummary implements Serializable {
 	 * @param partition
 	 *            the partition to set
 	 */
-	public void setPartition(final String partition) {
+	public final void setPartition(final String partition) {
 		this.partition = partition;
 	}
 
 	/**
 	 * @return the detectorMask
 	 */
-	public Long getDetectorMask() {
+	public final Long getDetectorMask() {
 		return detectorMask;
 	}
 
@@ -235,14 +292,14 @@ public class RunSummary implements Serializable {
 	 * @param detectorMask
 	 *            the detectorMask to set
 	 */
-	public void setDetectorMask(final Long detectorMask) {
+	public final void setDetectorMask(final Long detectorMask) {
 		this.detectorMask = detectorMask;
 	}
 
 	/**
 	 * @return the l1Events
 	 */
-	public Long getL1Events() {
+	public final Long getL1Events() {
 		return l1Events;
 	}
 
@@ -250,14 +307,14 @@ public class RunSummary implements Serializable {
 	 * @param l1Events
 	 *            the l1Events to set
 	 */
-	public void setL1Events(final Long l1Events) {
+	public final void setL1Events(final Long l1Events) {
 		this.l1Events = l1Events;
 	}
 
 	/**
 	 * @return the l2Events
 	 */
-	public Long getL2Events() {
+	public final Long getL2Events() {
 		return l2Events;
 	}
 
@@ -265,14 +322,14 @@ public class RunSummary implements Serializable {
 	 * @param l2Events
 	 *            the l2Events to set
 	 */
-	public void setL2Events(final Long l2Events) {
+	public final void setL2Events(final Long l2Events) {
 		this.l2Events = l2Events;
 	}
 
 	/**
 	 * @return the eFEvents
 	 */
-	public Long getEfEvents() {
+	public final Long getEfEvents() {
 		return efEvents;
 	}
 
@@ -280,29 +337,29 @@ public class RunSummary implements Serializable {
 	 * @param eFEvents
 	 *            the eFEvents to set
 	 */
-	public void setEfEvents(final Long eFEvents) {
-		this.efEvents = eFEvents;
+	public final void setEfEvents(final Long eFEvents) {
+		efEvents = eFEvents;
 	}
 
 	/**
 	 * @return the recordedEvent
 	 */
-	public Long getRecordedEvents() {
+	public final Long getRecordedEvents() {
 		return recordedEvents;
 	}
 
 	/**
-	 * @param recordedEvent
+	 * @param recordedEvents
 	 *            the recordedEvent to set
 	 */
-	public void setRecordedEvents(final Long recordedEvents) {
+	public final void setRecordedEvents(final Long recordedEvents) {
 		this.recordedEvents = recordedEvents;
 	}
 
 	/**
 	 * @return the filenameTag
 	 */
-	public String getFilenameTag() {
+	public final String getFilenameTag() {
 		return filenameTag;
 	}
 
@@ -310,23 +367,23 @@ public class RunSummary implements Serializable {
 	 * @param filenameTag
 	 *            the filenameTag to set
 	 */
-	public void setFilenameTag(final String filenameTag) {
+	public final void setFilenameTag(final String filenameTag) {
 		this.filenameTag = filenameTag;
 	}
 
 	/**
-	 * @return the period_name
+	 * @return the periodName
 	 */
-	public final String getPeriod_name() {
-		return period_name;
+	public final String getPeriodName() {
+		return periodName;
 	}
 
 	/**
-	 * @param period_name
-	 *            the period_name to set
+	 * @param periodName 
+	 *            the periodName  to set
 	 */
-	public final void setPeriod_name(final String period_name) {
-		this.period_name = period_name;
+	public final void setPeriodName(final String periodName) {
+		this.periodName = periodName;
 	}
 
 	/**
@@ -404,12 +461,11 @@ public class RunSummary implements Serializable {
 		this.nlb = nlb;
 	}
 
-	
-	public BigDecimal getRunlumi() {
+	public final BigDecimal getRunlumi() {
 		return runlumi;
 	}
 
-	public void setRunlumi(BigDecimal runlumi) {
+	public final void setRunlumi(final BigDecimal runlumi) {
 		this.runlumi = runlumi;
 	}
 
@@ -419,7 +475,7 @@ public class RunSummary implements Serializable {
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		return "Run " + runNumber + " : " + since + " - " + till + " " + l1Events;
 	}
 

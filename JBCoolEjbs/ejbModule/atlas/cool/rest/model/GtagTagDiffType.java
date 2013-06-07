@@ -46,24 +46,24 @@ public class GtagTagDiffType implements Serializable {
 
 	@Id
 	@Column(name = "ROWNUM")
-	Long rowid;
+	private Long rowid;
 
 	@Column(name = "SCHEMA_NAME", length = 30)
-	String schemaName;
+	private String schemaName;
 	@Column(name = "DB_NAME", length = 30)
-	String dbName;
+	private String dbName;
 	@Column(name = "NODE_FULLPATH", length = 255)
-	String nodeFullpath;
+	private String nodeFullpath;
 
 	@Column(name = "GTAGA", length = 255)
-	String gtagNameA;
+	private String gtagNameA;
 	@Column(name = "GTAGB", length = 255)
-	String gtagNameB;
+	private String gtagNameB;
 
 	@Column(name = "TAG_NAME_A", length = 255)
-	String tagNameA;
+	private String tagNameA;
 	@Column(name = "TAG_NAME_B", length = 255)
-	String tagNameB;
+	private String tagNameB;
 
 	@CoolQuery(name = "cool.findgtagstagsdiff", params = "schema;db;gtaga;gtagb")
 	public static final String QUERY_FINDGTAGS_TAGS_DIFF = "cool.findgtagstagsdiff";
@@ -71,100 +71,106 @@ public class GtagTagDiffType implements Serializable {
 	/**
 	 * @return the schemaName
 	 */
-	public String getSchemaName() {
+	public final  String getSchemaName() {
 		return schemaName;
 	}
 
 	/**
-	 * @param schemaName the schemaName to set
+	 * @param schemaName
+	 *            the schemaName to set
 	 */
-	public void setSchemaName(String schemaName) {
+	public final  void setSchemaName(final String schemaName) {
 		this.schemaName = schemaName;
 	}
 
 	/**
 	 * @return the dbName
 	 */
-	public String getDbName() {
+	public final  String getDbName() {
 		return dbName;
 	}
 
 	/**
-	 * @param dbName the dbName to set
+	 * @param dbName
+	 *            the dbName to set
 	 */
-	public void setDbName(String dbName) {
+	public final  void setDbName(final String dbName) {
 		this.dbName = dbName;
 	}
 
 	/**
 	 * @return the nodeFullpath
 	 */
-	public String getNodeFullpath() {
+	public final  String getNodeFullpath() {
 		return nodeFullpath;
 	}
 
 	/**
-	 * @param nodeFullpath the nodeFullpath to set
+	 * @param nodeFullpath
+	 *            the nodeFullpath to set
 	 */
-	public void setNodeFullpath(String nodeFullpath) {
+	public final  void setNodeFullpath(final String nodeFullpath) {
 		this.nodeFullpath = nodeFullpath;
 	}
 
 	/**
 	 * @return the gtagNameA
 	 */
-	public String getGtagNameA() {
+	public final  String getGtagNameA() {
 		return gtagNameA;
 	}
 
 	/**
-	 * @param gtagNameA the gtagNameA to set
+	 * @param gtagNameA
+	 *            the gtagNameA to set
 	 */
-	public void setGtagNameA(String gtagNameA) {
+	public final  void setGtagNameA(final String gtagNameA) {
 		this.gtagNameA = gtagNameA;
 	}
 
 	/**
 	 * @return the gtagNameB
 	 */
-	public String getGtagNameB() {
+	public final  String getGtagNameB() {
 		return gtagNameB;
 	}
 
 	/**
-	 * @param gtagNameB the gtagNameB to set
+	 * @param gtagNameB
+	 *            the gtagNameB to set
 	 */
-	public void setGtagNameB(String gtagNameB) {
+	public final  void setGtagNameB(final String gtagNameB) {
 		this.gtagNameB = gtagNameB;
 	}
 
 	/**
 	 * @return the tagNameA
 	 */
-	public String getTagNameA() {
+	public final  String getTagNameA() {
 		return tagNameA;
 	}
 
 	/**
-	 * @param tagNameA the tagNameA to set
+	 * @param tagNameA
+	 *            the tagNameA to set
 	 */
-	public void setTagNameA(String tagNameA) {
+	public final  void setTagNameA(final String tagNameA) {
 		this.tagNameA = tagNameA;
 	}
 
 	/**
 	 * @return the tagNameB
 	 */
-	public String getTagNameB() {
+	public final  String getTagNameB() {
 		return tagNameB;
 	}
 
 	/**
-	 * @param tagNameB the tagNameB to set
+	 * @param tagNameB
+	 *            the tagNameB to set
 	 */
-	public void setTagNameB(String tagNameB) {
+	public final  void setTagNameB(final String tagNameB) {
 		this.tagNameB = tagNameB;
 	}
 
-	
 }
