@@ -40,7 +40,7 @@ import atlas.cool.web.FileDownloadController;
 
 /**
  * @author formica
- *
+ * 
  */
 @Named("coolschemaparams")
 @SessionScoped
@@ -76,36 +76,36 @@ public class CoolSchemaParamsBean implements Serializable {
 	@Inject
 	private PayloadChartBean chart;
 
-	String schemaName = "";
-	String dbName = "";
+	private String schemaName = "";
+	private String dbName = "";
 	// String nodeName = "";
 	// String tagName = "";
-	String chanName = "";
+	private final String chanName = "";
 
-	List<String> dbList = null;
-	List<SchemaType> schemaList = null;
-	List<NodeType> nodeList = null;
-	List<NodeType> nodeListFiltered = null;
-	List<SchemaNodeTagType> nodetagList = null;
-	List<IovStatType> nodeiovstatList = null;
-	List<SchemaNodeTagType> nodetagListFiltered = null;
-	List<ChannelType> channelList = null;
-	List<NodeGtagTagType> nodegtagfortagList = null;
+	private List<String> dbList = null;
+	private List<SchemaType> schemaList = null;
+	private List<NodeType> nodeList = null;
+	private List<NodeType> nodeListFiltered = null;
+	private List<SchemaNodeTagType> nodetagList = null;
+	private List<IovStatType> nodeiovstatList = null;
+	private List<SchemaNodeTagType> nodetagListFiltered = null;
+	private List<ChannelType> channelList = null;
+	private List<NodeGtagTagType> nodegtagfortagList = null;
 
-	ChannelType defaultChannel = null;
-	SchemaType selSchema = null;
-	NodeType selNode = null;
-	SchemaNodeTagType selNodeTag = null;
+	private ChannelType defaultChannel = null;
+	private SchemaType selSchema = null;
+	private NodeType selNode = null;
+	private SchemaNodeTagType selNodeTag = null;
 
-	ChannelType selChannel = null;
-	String pyldFileName = "none";
-	String selColumn = "";
+	private ChannelType selChannel = null;
+	private String pyldFileName = "none";
+	private String selColumn = "";
 
-	Integer tabIndex = 0;
-	Boolean viewrunlumi = false;
-	Boolean viewtime = false;
+	private Integer tabIndex = 0;
+	private Boolean viewrunlumi = false;
+	private Boolean viewtime = false;
 
-	CoolPayload payload = null;
+	private CoolPayload payload = null;
 
 	private List<String> payloadColumns;
 
@@ -134,7 +134,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * 
 	 */
-	protected  void initDbs() {
+	protected void initDbs() {
 
 		if (dbList == null) {
 			dbList = new ArrayList<String>();
@@ -147,7 +147,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * 
 	 */
-	protected  void initChannels() {
+	protected void initChannels() {
 		if (defaultChannel == null) {
 			defaultChannel = new ChannelType();
 			defaultChannel.setChannelId(new BigDecimal(-1));
@@ -158,7 +158,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * 
 	 */
-	public  void retrieveNodeData() {
+	public void retrieveNodeData() {
 		try {
 			log.info("Retrieving nodes for :" + schemaName + " " + dbName + " " + "!");
 			nodeList = cooldao
@@ -282,7 +282,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the payloadFile
 	 */
-	public  StreamedContent getPayloadFile() {
+	public StreamedContent getPayloadFile() {
 		final String[] path = pyldFileName.split("/");
 		if (path.length <= 1) {
 			return null;
@@ -301,7 +301,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * 
 	 */
-	public  void loadSchemas() {
+	public void loadSchemas() {
 		try {
 			log.info("Retrieving schemas for :" + schemaName + " " + dbName);
 			schemaList = cooldao.retrieveSchemasFromNodeSchemaAndDb("ATLAS_COOL%",
@@ -316,7 +316,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * 
 	 */
-	public  void loadPayload() {
+	public void loadPayload() {
 		try {
 			log.info("Calling loadPayload....");
 			BigDecimal stime = null;
@@ -592,12 +592,18 @@ public class CoolSchemaParamsBean implements Serializable {
 		channelList = null;
 	}
 
+	/**
+	 * @param schema
+	 */
 	public void onSelSchemaChanged(
 			@Observes(notifyObserver = Reception.IF_EXISTS) final SchemaType schema) {
 		log.info("Schema selection changed...");
 		// retrieveNodeData();
 	}
 
+	/**
+	 * @param schema
+	 */
 	public void onSelNodeTagChanged(
 			@Observes(notifyObserver = Reception.IF_EXISTS) final SchemaNodeTagType schema) {
 		log.info("Node tag selection changed...");
@@ -605,6 +611,9 @@ public class CoolSchemaParamsBean implements Serializable {
 		retrieveNodeGtagForTag();
 	}
 
+	/**
+	 * @param node
+	 */
 	public void onSelNodeChanged(
 			@Observes(notifyObserver = Reception.IF_EXISTS) final NodeType node) {
 		try {
@@ -771,6 +780,9 @@ public class CoolSchemaParamsBean implements Serializable {
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public String getSelSchemaName() {
 		if (selSchema != null) {
 			return selSchema.getSchemaName();
@@ -778,6 +790,9 @@ public class CoolSchemaParamsBean implements Serializable {
 		return "none";
 	}
 
+	/**
+	 * @return
+	 */
 	public String getSelNodeName() {
 		if (selNode != null) {
 			return selNode.getNodeFullpath();
@@ -785,6 +800,9 @@ public class CoolSchemaParamsBean implements Serializable {
 		return "none";
 	}
 
+	/**
+	 * @return
+	 */
 	public String getSelNodeTagName() {
 		if (selNodeTag != null) {
 			return selNodeTag.getTagName();
@@ -846,6 +864,9 @@ public class CoolSchemaParamsBean implements Serializable {
 
 	// Methods to handle charts
 
+	/**
+	 * 
+	 */
 	public void initModel() {
 		try {
 			log.info("Using selected column " + selColumn);
@@ -863,10 +884,16 @@ public class CoolSchemaParamsBean implements Serializable {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public void resetChart() {
 		chart.resetChart();
 	}
 
+	/**
+	 * @return
+	 */
 	public CartesianChartModel getLinearModel() {
 		log.info("Get linear model...");
 		if (linearModel == null) {
@@ -875,6 +902,9 @@ public class CoolSchemaParamsBean implements Serializable {
 		return linearModel;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean getChartHasData() {
 		log.info("Evaluate has data ");
 		if (linearModel != null && linearModel.getSeries() != null) {
@@ -886,10 +916,16 @@ public class CoolSchemaParamsBean implements Serializable {
 		return false;
 	}
 
+	/**
+	 * @return
+	 */
 	public double getMinY() {
 		return chart.getMinY().doubleValue();
 	}
 
+	/**
+	 * @return
+	 */
 	public double getMaxY() {
 		return chart.getMaxY().doubleValue();
 	}
@@ -898,6 +934,9 @@ public class CoolSchemaParamsBean implements Serializable {
 		return chart.getMaxX().getTime();
 	}
 
+	/**
+	 * @return
+	 */
 	public Long getMinX() {
 		return chart.getMinX().getTime();
 	}
@@ -905,12 +944,18 @@ public class CoolSchemaParamsBean implements Serializable {
 	/**
 	 * @return the chartTitle
 	 */
+	/**
+	 * @return
+	 */
 	public String getChartTitle() {
 		return chartTitle;
 	}
 
 	/**
 	 * @return the chartLegend
+	 */
+	/**
+	 * @return
 	 */
 	public String getChartLegend() {
 		return chart.getLegend();
