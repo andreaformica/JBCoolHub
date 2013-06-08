@@ -1,6 +1,5 @@
 package atlas.cool.rest.web;
 
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,78 +37,96 @@ public class CoolResourceFrontierRESTService {
 	@Inject
 	private Logger log;
 
+	/**
+	 * @param schema
+	 * @param db
+	 * @return
+	 */
 	@FrontierResponse
 	@GET
 	@Produces("text/xml;charset=US-ASCII")
 	@Path("/{schema}/{db}/nodes")
-	public FrontierData listNodesInSchema(@PathParam("schema") String schema,
-			@PathParam("db") String db) {
-		
-		log.info("Calling listNodesInSchema..."+schema+" "+db);
+	public FrontierData listNodesInSchema(@PathParam("schema") final String schema,
+			@PathParam("db") final String db) {
+
+		log.info("Calling listNodesInSchema..." + schema + " " + db);
 		FrontierData fntRes = null;
 		List<NodeType> results = null;
 		try {
-			results = cooldao.retrieveNodesFromSchemaAndDb(schema+"%", db, "%");
+			results = cooldao.retrieveNodesFromSchemaAndDb(schema + "%", db, "%");
 			if (results == null) {
 				// create a fake entry
-				NodeType nt = new NodeType();
+				final NodeType nt = new NodeType();
 				nt.setNodeId(1L);
 				nt.setNodeFullpath("this is a fake node");
 				nt.setNodeTinstime(new Timestamp(new Date().getTime()));
-				List<NodeType> _fakes = new ArrayList<NodeType>();
+				final List<NodeType> _fakes = new ArrayList<NodeType>();
 				_fakes.add(nt);
 				results = _fakes;
 			} else {
 				fntRes = new FrontierData(results);
 			}
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return fntRes;
 	}
-	
 
-	
+	/**
+	 * @param schema
+	 * @param db
+	 * @param node
+	 * @return
+	 */
 	@FrontierResponse
 	@GET
 	@Produces("text/xml")
 	@Path("/{schema}/{db}/{node}/tags")
-	public FrontierData listTagsInNodesSchema(@PathParam("schema") String schema,
-			@PathParam("db") String db,@PathParam("node")String node) {
-		
-		log.info("Calling listTagsInNodeSchema..."+schema+" "+db+" "+node);
+	public FrontierData listTagsInNodesSchema(@PathParam("schema") final String schema,
+			@PathParam("db") final String db, @PathParam("node") String node) {
+
+		log.info("Calling listTagsInNodeSchema..." + schema + " " + db + " " + node);
 		FrontierData fntRes = null;
 		List<SchemaNodeTagType> results = null;
 		try {
 			if (node.equals("all")) {
-				node="%";
+				node = "%";
 			} else {
-				node = "%"+node+"%";
+				node = "%" + node + "%";
 			}
-			results = cooldao.retrieveTagsFromNodesSchemaAndDb(schema+"%", db, node, null);
+			results = cooldao.retrieveTagsFromNodesSchemaAndDb(schema + "%", db, node,
+					null);
 			fntRes = new FrontierData(results);
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return fntRes;
 	}
 
+	/**
+	 * @param schema
+	 * @param db
+	 * @param gtag
+	 * @return
+	 */
 	@FrontierResponse
 	@GET
 	@Produces("text/xml")
 	@Path("/{schema}/{db}/{gtag}/trace")
-	public FrontierData listGlobalTagsTagsInNodesSchema(@PathParam("schema") String schema,
-			@PathParam("db") String db,@PathParam("gtag") String gtag) {
-		
-		log.info("Calling listGlobalTagsTagsInNodesSchema..."+schema+" "+db);
+	public FrontierData listGlobalTagsTagsInNodesSchema(
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("gtag") final String gtag) {
+
+		log.info("Calling listGlobalTagsTagsInNodesSchema..." + schema + " " + db);
 		FrontierData fntRes = null;
 		List<NodeGtagTagType> results = null;
 		try {
-			results = cooldao.retrieveGtagTagsFromSchemaAndDb(schema+"%", db, "%"+gtag+"%");
+			results = cooldao.retrieveGtagTagsFromSchemaAndDb(schema + "%", db, "%"
+					+ gtag + "%");
 			fntRes = new FrontierData(results);
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

@@ -18,12 +18,12 @@ import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
 
-@Named("coolnodeparams")
-@SessionScoped
 /**
  * @author formica
  *
  */
+@Named("coolnodeparams")
+@SessionScoped
 public class CoolNodeParamsBean implements Serializable {
 
 	@Inject
@@ -35,18 +35,16 @@ public class CoolNodeParamsBean implements Serializable {
 	@Inject
 	private CoolDAO cooldao;
 
-
-	String schemaName = "ATLAS_COOL";
-	String dbName = "COMP200";
-	String nodeName = "";
-	String tagName = "";
+	private String schemaName = "ATLAS_COOL";
+	private String dbName = "COMP200";
+	private String nodeName = "";
+	private String tagName = "";
 
 	List<String> dbList = null;
 	List<NodeType> nodeList = null;
 	List<SchemaNodeTagType> tagList = null;
-	List<NodeType> nodeListFiltered = null;
-	List<SchemaNodeTagType> tagListFiltered = null;
-
+	private List<NodeType> nodeListFiltered = null;
+	private List<SchemaNodeTagType> tagListFiltered = null;
 
 	/**
 	 * 
@@ -56,6 +54,9 @@ public class CoolNodeParamsBean implements Serializable {
 		initDbs();
 	}
 
+	/**
+	 * 
+	 */
 	protected void initDbs() {
 		if (dbList == null) {
 			dbList = new ArrayList<String>();
@@ -65,27 +66,33 @@ public class CoolNodeParamsBean implements Serializable {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public void retrieveNodesData() {
 		try {
-			log.info("Retrieving nodes for :"+schemaName+ " "+ dbName
-					+" "+nodeName+"!");
-			nodeList = cooldao.retrieveNodesFromSchemaAndDb(schemaName+"%", dbName,
-					"%"+nodeName+"%");
-			log.info("Retrieved nodes of size :"+nodeList.size());
-		} catch (CoolIOException e) {
+			log.info("Retrieving nodes for :" + schemaName + " " + dbName + " "
+					+ nodeName + "!");
+			nodeList = cooldao.retrieveNodesFromSchemaAndDb(schemaName + "%", dbName, "%"
+					+ nodeName + "%");
+			log.info("Retrieved nodes of size :" + nodeList.size());
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public void retrieveTagsData() {
 		try {
-			log.info("Retrieving tags for :"+schemaName+ " "+ dbName
-					+" "+nodeName+" "+tagName+"!");
-			tagList = cooldao.retrieveTagsFromNodesSchemaAndDb(schemaName+"%", dbName,
-					"%"+nodeName+"%", "%"+tagName+"%");
-			log.info("Retrieved tags of size :"+tagList.size());
-		} catch (CoolIOException e) {
+			log.info("Retrieving tags for :" + schemaName + " " + dbName + " " + nodeName
+					+ " " + tagName + "!");
+			tagList = cooldao.retrieveTagsFromNodesSchemaAndDb(schemaName + "%", dbName,
+					"%" + nodeName + "%", "%" + tagName + "%");
+			log.info("Retrieved tags of size :" + tagList.size());
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -102,7 +109,7 @@ public class CoolNodeParamsBean implements Serializable {
 	 * @param schemaName
 	 *            the schemaName to set
 	 */
-	public void setSchemaName(String schemaName) {
+	public void setSchemaName(final String schemaName) {
 		String dbn = schemaName;
 		if (schemaName.contains("%")) {
 			dbn = schemaName.replaceAll("%", "");
@@ -121,7 +128,7 @@ public class CoolNodeParamsBean implements Serializable {
 	 * @param dbName
 	 *            the dbName to set
 	 */
-	public void setDbName(String dbName) {
+	public void setDbName(final String dbName) {
 		String dbn = dbName;
 		if (dbName.contains("%")) {
 			dbn = dbName.replaceAll("%", "");
@@ -139,9 +146,10 @@ public class CoolNodeParamsBean implements Serializable {
 	}
 
 	/**
-	 * @param nodeName the nodeName to set
+	 * @param nodeName
+	 *            the nodeName to set
 	 */
-	public void setNodeName(String nodeName) {
+	public void setNodeName(final String nodeName) {
 		String dbn = nodeName;
 		if (nodeName.contains("%")) {
 			dbn = nodeName.replaceAll("%", "");
@@ -159,9 +167,10 @@ public class CoolNodeParamsBean implements Serializable {
 	}
 
 	/**
-	 * @param tagName the tagName to set
+	 * @param tagName
+	 *            the tagName to set
 	 */
-	public void setTagName(String tagName) {
+	public void setTagName(final String tagName) {
 		String dbn = tagName;
 		if (tagName.contains("%")) {
 			dbn = tagName.replaceAll("%", "");
@@ -186,9 +195,10 @@ public class CoolNodeParamsBean implements Serializable {
 	}
 
 	/**
-	 * @param nodeList the nodeList to set
+	 * @param nodeList
+	 *            the nodeList to set
 	 */
-	public void setNodeList(List<NodeType> nodeList) {
+	public void setNodeList(final List<NodeType> nodeList) {
 		this.nodeList = nodeList;
 	}
 
@@ -200,9 +210,10 @@ public class CoolNodeParamsBean implements Serializable {
 	}
 
 	/**
-	 * @param tagList the tagList to set
+	 * @param tagList
+	 *            the tagList to set
 	 */
-	public void setTagList(List<SchemaNodeTagType> tagList) {
+	public void setTagList(final List<SchemaNodeTagType> tagList) {
 		this.tagList = tagList;
 	}
 
@@ -214,9 +225,10 @@ public class CoolNodeParamsBean implements Serializable {
 	}
 
 	/**
-	 * @param nodeListFiltered the nodeListFiltered to set
+	 * @param nodeListFiltered
+	 *            the nodeListFiltered to set
 	 */
-	public void setNodeListFiltered(List<NodeType> nodeListFiltered) {
+	public void setNodeListFiltered(final List<NodeType> nodeListFiltered) {
 		this.nodeListFiltered = nodeListFiltered;
 	}
 
@@ -228,11 +240,11 @@ public class CoolNodeParamsBean implements Serializable {
 	}
 
 	/**
-	 * @param tagListFiltered the tagListFiltered to set
+	 * @param tagListFiltered
+	 *            the tagListFiltered to set
 	 */
-	public void setTagListFiltered(List<SchemaNodeTagType> tagListFiltered) {
+	public void setTagListFiltered(final List<SchemaNodeTagType> tagListFiltered) {
 		this.tagListFiltered = tagListFiltered;
 	}
 
-	
 }

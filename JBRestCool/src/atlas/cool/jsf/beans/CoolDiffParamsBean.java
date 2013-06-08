@@ -47,11 +47,10 @@ public class CoolDiffParamsBean implements Serializable {
 	@Inject
 	private Event<GtagType> changeGtagBselection;
 
-	
-	String selGtagA = null;
-	String selGtagB = null;
-	
-	List<GtagTagDiffType> gtagDiffs = null;
+	private String selGtagA = null;
+	private String selGtagB = null;
+
+	private List<GtagTagDiffType> gtagDiffs = null;
 
 	/**
 	 * 
@@ -60,20 +59,23 @@ public class CoolDiffParamsBean implements Serializable {
 		// TODO Auto-generated constructor stub
 	}
 
-
+	/**
+	 * 
+	 */
 	public void retrieveGtagsDiffData() {
 		try {
-			log.info("Retrieving gtags differences for :"+coolparams.getSchemaName()+ " "+ coolparams.getDbName()
-					+" "+selGtagA+" "+selGtagB+"!");
-			gtagDiffs = cooldao.retrieveGtagsDiffFromSchemaAndDb(coolparams.getSchemaName()+"%", 
-					coolparams.getDbName(), selGtagA, selGtagB);
-			log.info("Retrieved gtags diffs of size :"+gtagDiffs.size());
-		} catch (CoolIOException e) {
-//			// TODO Auto-generated catch block
+			log.info("Retrieving gtags differences for :" + coolparams.getSchemaName()
+					+ " " + coolparams.getDbName() + " " + selGtagA + " " + selGtagB
+					+ "!");
+			gtagDiffs = cooldao.retrieveGtagsDiffFromSchemaAndDb(
+					coolparams.getSchemaName() + "%", coolparams.getDbName(), selGtagA,
+					selGtagB);
+			log.info("Retrieved gtags diffs of size :" + gtagDiffs.size());
+		} catch (final CoolIOException e) {
+			// // TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
 
 	/**
 	 * @return the selGtagA
@@ -82,15 +84,14 @@ public class CoolDiffParamsBean implements Serializable {
 		return selGtagA;
 	}
 
-
 	/**
-	 * @param selGtagA the selGtagA to set
+	 * @param selGtagA
+	 *            the selGtagA to set
 	 */
-	public void setSelGtagA(String selGtagA) {
-		log.info("Setting selected gtag A "+selGtagA);
+	public void setSelGtagA(final String selGtagA) {
+		log.info("Setting selected gtag A " + selGtagA);
 		this.selGtagA = selGtagA;
 	}
-
 
 	/**
 	 * @return the selGtagB
@@ -99,22 +100,20 @@ public class CoolDiffParamsBean implements Serializable {
 		return selGtagB;
 	}
 
-
 	/**
-	 * @param selGtagB the selGtagB to set
+	 * @param selGtagB
+	 *            the selGtagB to set
 	 */
-	public void setSelGtagB(String selGtagB) {
-		log.info("Setting selected gtag B "+selGtagB);
+	public void setSelGtagB(final String selGtagB) {
+		log.info("Setting selected gtag B " + selGtagB);
 		this.selGtagB = selGtagB;
 	}
-
 
 	/**
 	 * @return the gtagDiffs
 	 */
 	public List<GtagTagDiffType> getGtagDiffs() {
 		return gtagDiffs;
-	}	
-	
-	
+	}
+
 }
