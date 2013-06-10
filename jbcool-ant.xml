@@ -79,7 +79,7 @@
 		<antcall target="depend.findbugs">
 			<param name="dependency.target" value="findbugs" />
 			<param name="build.findbugs.dir" value="${basedir}/findbugs" />
-			<param name="findbugs.output" value="html" />
+			<param name="findbugs.output" value="xml" />
 		</antcall>
 	</target>
 
