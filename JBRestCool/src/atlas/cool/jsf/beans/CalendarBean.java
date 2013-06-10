@@ -19,12 +19,12 @@ import atlas.coma.model.RunSummary;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
 
-@Named("calendarparams")
-@SessionScoped
 /**
  * @author formica
  *
  */
+@Named("calendarparams")
+@SessionScoped
 public class CalendarBean implements Serializable {
 
 	/**
@@ -74,7 +74,7 @@ public class CalendarBean implements Serializable {
 	 * @param dateSince
 	 *            the dateSince to set
 	 */
-	public void setDateSince(Date dateSince) {
+	public void setDateSince(final Date dateSince) {
 		this.dateSince = dateSince;
 	}
 
@@ -89,7 +89,7 @@ public class CalendarBean implements Serializable {
 	 * @param dateUntil
 	 *            the dateUntil to set
 	 */
-	public void setDateUntil(Date dateUntil) {
+	public void setDateUntil(final Date dateUntil) {
 		this.dateUntil = dateUntil;
 	}
 
@@ -108,7 +108,7 @@ public class CalendarBean implements Serializable {
 		log.info("Setting run since " + runSince);
 		if (runSince != null) {
 			this.runSince = runSince;
-			this.lumiSince = runSince.getSlb();
+			lumiSince = runSince.getSlb();
 		}
 	}
 
@@ -127,7 +127,7 @@ public class CalendarBean implements Serializable {
 		log.info("Setting run until " + runUntil);
 		if (runUntil != null) {
 			this.runUntil = runUntil;
-			this.lumiUntil = runUntil.getElb();
+			lumiUntil = runUntil.getElb();
 		}
 	}
 
@@ -142,7 +142,7 @@ public class CalendarBean implements Serializable {
 	 * @param lumiSince
 	 *            the lumiSince to set
 	 */
-	public void setLumiSince(Long lumiSince) {
+	public void setLumiSince(final Long lumiSince) {
 		this.lumiSince = lumiSince;
 	}
 
@@ -157,7 +157,7 @@ public class CalendarBean implements Serializable {
 	 * @param lumiUntil
 	 *            the lumiUntil to set
 	 */
-	public void setLumiUntil(Long lumiUntil) {
+	public void setLumiUntil(final Long lumiUntil) {
 		this.lumiUntil = lumiUntil;
 	}
 
@@ -169,9 +169,10 @@ public class CalendarBean implements Serializable {
 	}
 
 	/**
-	 * @param runLow the runLow to set
+	 * @param runLow
+	 *            the runLow to set
 	 */
-	public void setRunLow(Long runLow) {
+	public void setRunLow(final Long runLow) {
 		this.runLow = runLow;
 	}
 
@@ -183,20 +184,27 @@ public class CalendarBean implements Serializable {
 	}
 
 	/**
-	 * @param runHigh the runHigh to set
+	 * @param runHigh
+	 *            the runHigh to set
 	 */
-	public void setRunHigh(Long runHigh) {
+	public void setRunHigh(final Long runHigh) {
 		this.runHigh = runHigh;
 	}
 
+	/**
+	 * @return
+	 */
 	public BigDecimal getCoolTimeSince() {
-		BigDecimal time = new BigDecimal(dateSince.getTime()
+		final BigDecimal time = new BigDecimal(dateSince.getTime()
 				* CoolIov.TO_NANOSECONDS);
 		return time;
 	}
 
+	/**
+	 * @return
+	 */
 	public BigDecimal getCoolTimeUntil() {
-		BigDecimal time = new BigDecimal(dateUntil.getTime()
+		final BigDecimal time = new BigDecimal(dateUntil.getTime()
 				* CoolIov.TO_NANOSECONDS);
 		return time;
 	}
@@ -205,8 +213,9 @@ public class CalendarBean implements Serializable {
 	 * @return the runSince + lumiSince
 	 */
 	public BigDecimal getCoolRunSince() {
-		Long start = ((runSince.getRunNumber().longValue()) << 32) + lumiSince;
-		log.info("Getting cool run since for " + runSince +" and lumi "+ lumiSince + " : " + start);
+		final Long start = (runSince.getRunNumber().longValue() << 32) + lumiSince;
+		log.info("Getting cool run since for " + runSince + " and lumi " + lumiSince
+				+ " : " + start);
 		return new BigDecimal(start);
 	}
 
@@ -214,8 +223,9 @@ public class CalendarBean implements Serializable {
 	 * @return the runUntil + lumiUntil
 	 */
 	public BigDecimal getCoolRunUntil() {
-		Long start = ((runUntil.getRunNumber().longValue()) << 32) + lumiUntil;
-		log.info("Getting cool run since for " + runUntil +" and lumi "+ lumiUntil + " : " + start);
+		final Long start = (runUntil.getRunNumber().longValue() << 32) + lumiUntil;
+		log.info("Getting cool run since for " + runUntil + " and lumi " + lumiUntil
+				+ " : " + start);
 		return new BigDecimal(start);
 	}
 
@@ -230,7 +240,7 @@ public class CalendarBean implements Serializable {
 	 * @param runList
 	 *            the runList to set
 	 */
-	public void setRunList(List<RunSummary> runList) {
+	public void setRunList(final List<RunSummary> runList) {
 		this.runList = runList;
 	}
 
@@ -245,27 +255,26 @@ public class CalendarBean implements Serializable {
 	 * @param runListFiltered
 	 *            the runListFiltered to set
 	 */
-	public void setRunListFiltered(List<RunSummary> runListFiltered) {
+	public void setRunListFiltered(final List<RunSummary> runListFiltered) {
 		this.runListFiltered = runListFiltered;
 	}
 
 	public void loadRuns() {
-		log.info("Searching runs using since " + dateSince + " and until "
-				+ dateUntil);
+		log.info("Searching runs using since " + dateSince + " and until " + dateUntil);
 		try {
 			runList = comarundao.getRunSummaryRangeByTime(dateSince, dateUntil);
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void loadRunsByRunNumber() {
-		log.info("Searching runs using since " + runLow + " and until "
-				+ runHigh);
+		log.info("Searching runs using since " + runLow + " and until " + runHigh);
 		try {
-			runList = comarundao.getRunSummaryRangeByRunNumber(runLow.intValue(), runHigh.intValue());
-		} catch (CoolIOException e) {
+			runList = comarundao.getRunSummaryRangeByRunNumber(runLow.intValue(),
+					runHigh.intValue());
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

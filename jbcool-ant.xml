@@ -39,7 +39,7 @@
 	</target>
 	<target name="depend.checkstyle" depends="depend.JBCoolUtils, depend.JBCoolEjbs,depend.JBComaEjbs, depend.JBRestCool">
 	</target>
-	<target name="depend.findbugs" depends="depend.JBCoolUtils, depend.JBCoolEjbs,depend.JBComaEjbs, depend.JBRestCool">
+	<target name="depend.findbugs" depends="deploy.JBCoolEAR">
 	</target>
 
 
@@ -76,6 +76,7 @@
 		<antcall target="depend.findbugs">
 			<param name="dependency.target" value="findbugs" />
 			<param name="build.findbugs.dir" value="${basedir}/findbugs" />
+			<param name="findbugs.output" value="html" />
 		</antcall>
 	</target>
 

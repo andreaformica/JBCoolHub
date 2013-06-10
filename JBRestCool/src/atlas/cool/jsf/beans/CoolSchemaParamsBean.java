@@ -642,11 +642,11 @@ public class CoolSchemaParamsBean implements Serializable {
 			}
 			channelList = cooldao.retrieveChannelsFromNodeSchemaAndDb(schemaName, dbName,
 					node.getNodeFullpath(), chanName);
-			log.info("Loaded list of " + channelList.size() + " channels ");
-			for (final ChannelType chan : channelList) {
-				log.info("channel " + chan.getChannelId() + " " + chan.getChannelName());
-			}
 			if (channelList != null) {
+				log.info("Loaded list of " + channelList.size() + " channels ");
+				for (final ChannelType chan : channelList) {
+					log.info("channel " + chan.getChannelId() + " " + chan.getChannelName());
+				}
 				channelList.add(defaultChannel);
 			}
 			// tabIndex = 1;

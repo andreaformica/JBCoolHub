@@ -13,46 +13,54 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
-import org.apache.commons.io.IOUtils;
-
+/**
+ * @author formica
+ *
+ */
 @Path("/file")
 public class UploadFileService {
 
 	private final String UPLOADED_FILE_PATH = "/tmp/";
-	
+
+	/**
+	 * @param input
+	 * @return
+	 */
 	@POST
 	@Path("/upload")
 	@Consumes("multipart/form-data")
-	public Response uploadFile(MultipartFormDataInput input) {
+	public Response uploadFile(final MultipartFormDataInput input) {
 
 		String fileName = "";
-		
-		Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-		List<InputPart> inputParts = uploadForm.get("uploadedFile");
 
-		for (InputPart inputPart : inputParts) {
+		final Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
+		final List<InputPart> inputParts = uploadForm.get("uploadedFile");
+
+		for (final InputPart inputPart : inputParts) {
 
 			try {
 
-				MultivaluedMap<String, String> header = inputPart.getHeaders();
+				final MultivaluedMap<String, String> header = inputPart.getHeaders();
 				fileName = getFileName(header);
 
-				//convert the uploaded file to inputstream
-				InputStream inputStream = inputPart.getBody(InputStream.class,null);
+				// convert the uploaded file to inputstream
+				final InputStream inputStream = inputPart
+						.getBody(InputStream.class, null);
 
-				byte [] bytes = IOUtils.toByteArray(inputStream);
-				
-				//constructs upload file path
+				final byte[] bytes = IOUtils.toByteArray(inputStream);
+
+				// constructs upload file path
 				fileName = UPLOADED_FILE_PATH + fileName;
-				
-				writeFile(bytes,fileName);
-				
+
+				writeFile(bytes, fileName);
+
 				System.out.println("Done");
 
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 
@@ -64,39 +72,48 @@ public class UploadFileService {
 	}
 
 	/**
-	 * header sample
-	 * {
-	 * 		Content-Type=[image/png], 
-	 * 		Content-Disposition=[form-data; name="file"; filename="filename.extension"]
-	 * }
+	 * header sample { Content-Type=[image/png], Content-Disposition=[form-data;
+	 * name="file"; filename="filename.extension"] }
 	 **/
-	//get uploaded filename, is there a easy way in RESTEasy?
-	private String getFileName(MultivaluedMap<String, String> header) {
+	// get uploaded filename, is there a easy way in RESTEasy?
+	/**
+	 * @param header
+	 * @return
+	 */
+	private String getFileName(final MultivaluedMap<String, String> header) {
 
-		String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
-		
-		for (String filename : contentDisposition) {
-			if ((filename.trim().startsWith("filename"))) {
+		final String[] contentDisposition = header.getFirst("Content-Disposition").split(
+				";");
 
-				String[] name = filename.split("=");
-				
-				String finalFileName = name[1].trim().replaceAll("\"", "");
+		for (final String filename : contentDisposition) {
+			if (filename.trim().startsWith("filename")) {
+
+				final String[] name = filename.split("=");
+
+				final String finalFileName = name[1].trim().replaceAll("\"", "");
 				return finalFileName;
 			}
 		}
 		return "unknown";
 	}
 
-	//save to somewhere
-	private void writeFile(byte[] content, String filename) throws IOException {
+	/**
+	 * @param content
+	 * @param filename
+	 * @throws IOException
+	 */
+	private void writeFile(final byte[] content, final String filename)
+			throws IOException {
 
-		File file = new File(filename);
+		final File file = new File(filename);
 
 		if (!file.exists()) {
-			file.createNewFile();
+			if (!file.createNewFile()) {
+				throw new IOException("Cannot create new file");
+			}
 		}
 
-		FileOutputStream fop = new FileOutputStream(file);
+		final FileOutputStream fop = new FileOutputStream(file);
 
 		fop.write(content);
 		fop.flush();

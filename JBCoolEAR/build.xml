@@ -19,6 +19,18 @@
 	        <include name="jboss-app.xml"/>
 	    </patternset>
 		
+	    <!-- Useful shortcuts -->
+	    <patternset id="ear.files">
+	        <include name="${lib.client.name}"/>
+	        <include name="JBComaEjbs.jar"/>
+	        <include name="JBCoolUtils.jar"/>
+	        <include name="JBCoolEjbs.jar"/>
+	        <include name="JBRestCool.war"/>
+	    </patternset>
+	    <patternset id="lib.files">
+	        <!--<include name="JBCoolUtils.jar"/ -->
+		</patternset>
+
 	</target>
 
 	<!-- Prepare -->
@@ -34,17 +46,6 @@
 	      <mkdir dir="${build.dir}/META-INF"/>
 	         <copy file="${ear.content.dir}/META-INF/application.xml"
 	            todir="${build.dir}/META-INF" filtering="on"/>	
-	    <!-- Useful shortcuts -->
-	    <patternset id="ear.files">
-	        <include name="${lib.client.name}"/>
-	        <include name="JBComaEjbs.jar"/>
-	        <include name="JBCoolUtils.jar"/>
-	        <include name="JBCoolEjbs.jar"/>
-	        <include name="JBRestCool.war"/>
-	    </patternset>
-	    <patternset id="lib.files">
-	        <!--<include name="JBCoolUtils.jar"/ -->
-		</patternset>
 		<!--<copy file="${all.lib.dir}/JBCoolUtils.jar" todir="${build.lib.dir}"/-->
 	</target>
 	
@@ -101,6 +102,18 @@
 	        <available file="${deployed.jar}.deployed" />
 	    </waitfor>
 	    <echo>deployment ok!</echo>
+	</target>
+
+	<target name="findbugs" depends="init-findbugs,init">
+		
+		<property name="findbugsloc.output" value="html" />
+	    <echo>Using findbugs output ${findbugs.output}</echo>
+
+		<findbugs home="${findbugs.dir}" debug="false" failOnError="true" effort="max" output="${findbugs.output}" excludefilter="${conf.dir}/exclude.xml" outputFile="${build.findbugs.dir}/foundbugs.${findbugs.output}">
+			<fileset dir="${all.lib.dir}">
+                <patternset refid="ear.files"/>
+			</fileset>
+		</findbugs>
 	</target>
 
 	

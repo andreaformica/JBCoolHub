@@ -130,7 +130,7 @@ public class ComaCoolResourceRESTService {
 							+ ", node " + ccnt.getNodeFullpath() + ", tag "
 							+ ccnt.getTagName()
 							+ " does not exists in COMA ....</font><br>");
-				} else if (ccnt.getComaTagLockStatus() != ccnt.getTagLockStatus()) {
+				} else if (ccnt.getComaTagLockStatus().equals(ccnt.getTagLockStatus())) {
 					buf.append("<font color=\"#FF0090\"> schema " + ccnt.getSchemaName()
 							+ ", node " + ccnt.getNodeFullpath() + ", tag "
 							+ ccnt.getTagName()
@@ -197,7 +197,7 @@ public class ComaCoolResourceRESTService {
 							+ ", gtag " + ccnt.getGtagName() + ", node "
 							+ ccnt.getNodeFullpath() + ", tag " + ccnt.getTagName()
 							+ " does not exists in COMA ....</font><br>");
-				} else if (ccnt.getComaTagLockStatus() != ccnt.getTagLockStatus()) {
+				} else if (ccnt.getComaTagLockStatus().equals(ccnt.getTagLockStatus())) {
 					buf.append("<font color=\"#FF0090\"> schema " + ccnt.getSchemaName()
 							+ ", gtag " + ccnt.getGtagName() + ", node "
 							+ ccnt.getNodeFullpath() + ", tag " + ccnt.getTagName()
