@@ -726,7 +726,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 	 * @return
 	 * @throws SQLException
 	 */
-	protected final String dumpObject(final Object val) throws SQLException {
+	protected String dumpObject(final Object val) throws SQLException {
 		String buf = "null";
 		if (val == null) {
 			return buf;
@@ -753,7 +753,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 	 * @return
 	 * @throws CoolIOException
 	 */
-	protected final String lobtoString(final BLOB dat) throws CoolIOException {
+	protected String lobtoString(final BLOB dat) throws CoolIOException {
 		BufferedReader br = null;
 		try {
 			final StringBuffer strOut = new StringBuffer();

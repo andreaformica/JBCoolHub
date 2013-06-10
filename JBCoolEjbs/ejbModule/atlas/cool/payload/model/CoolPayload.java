@@ -342,7 +342,7 @@ public class CoolPayload implements Serializable {
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	protected final String lobtoString(final BLOB dat) throws CoolIOException {
+	protected String lobtoString(final BLOB dat) throws CoolIOException {
 
 		BufferedReader br = null;
 		try {
