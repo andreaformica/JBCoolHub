@@ -22,6 +22,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import atlas.cool.exceptions.CoolIOException;
+
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
 
@@ -327,6 +329,9 @@ public class CoolPayload implements Serializable {
 		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return "done";
 	}
@@ -337,15 +342,28 @@ public class CoolPayload implements Serializable {
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	protected final String lobtoString(final BLOB dat) throws IOException, SQLException {
+	protected final String lobtoString(final BLOB dat) throws CoolIOException {
+
+		BufferedReader br = null;
+		try {
 		final StringBuffer strOut = new StringBuffer();
 		String aux;
-		final BufferedReader br = new BufferedReader(new InputStreamReader(
+		br = new BufferedReader(new InputStreamReader(
 				dat.asciiStreamValue()));
 		while ((aux = br.readLine()) != null) {
 			strOut.append(aux);
 		}
 		return strOut.toString();
+		} catch (Exception e) {
+			throw new CoolIOException(e.getMessage());
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**

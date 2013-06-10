@@ -52,8 +52,9 @@ public class SQLiteBean {
 	 * @return
 	 */
 	public final ResultSet listAllTables() {
+		Statement statement = null;
 		try {
-			final Statement statement = conn.createStatement();
+			statement = conn.createStatement();
 			statement.setQueryTimeout(30); // set timeout to 30 sec.
 
 			final ResultSet rs = statement
@@ -67,6 +68,15 @@ public class SQLiteBean {
 			// if the error message is "out of memory",
 			// it probably means no database file is found
 			System.err.println(e.getMessage());
+		} finally {
+			try {
+				if (statement != null) {
+					statement.close();
+				}
+			} catch (final SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}

@@ -296,8 +296,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			final String folder, final String tagname, final BigDecimal time,
 			final Long channelId) {
 
-		final String stmt = 
-				"select cool_select_pkg.f_get_payloadiov(?,?,?,?,?,?) from dual";
+		final String stmt = "select cool_select_pkg.f_get_payloadiov(?,?,?,?,?,?) from dual";
 		ResultSet rset = null;
 		ResultSet rs = null;
 		// PreparedStatement pstmt = null;
@@ -361,8 +360,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			final String folder, final String tagname, final BigDecimal stime,
 			final BigDecimal etime, final Long channelId) {
 
-		final String stmt = 
-				"select cool_select_pkg.f_get_payloadiovs(?,?,?,?,?,?,?) from dual";
+		final String stmt = "select cool_select_pkg.f_get_payloadiovs(?,?,?,?,?,?,?) from dual";
 		ResultSet rset = null;
 		ResultSet rs = null;
 		// PreparedStatement pstmt = null;
@@ -437,8 +435,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			final String folder, final String tagname, final BigDecimal time,
 			final String channelName) {
 
-		final String stmt = 
-				"select cool_select_pkg.f_get_payloadiovbychanname(?,?,?,?,?,?) from dual";
+		final String stmt = "select cool_select_pkg.f_get_payloadiovbychanname(?,?,?,?,?,?) from dual";
 		ResultSet rset = null;
 		ResultSet rs = null;
 		// PreparedStatement pstmt = null;
@@ -502,8 +499,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			final String folder, final String tagname, final BigDecimal stime,
 			final BigDecimal etime, final String channelName) {
 
-		final String stmt = 
-				"select cool_select_pkg.f_get_payloadiovsbychanname(?,?,?,?,?,?,?) from dual";
+		final String stmt = "select cool_select_pkg.f_get_payloadiovsbychanname(?,?,?,?,?,?,?) from dual";
 		ResultSet rset = null;
 		ResultSet rs = null;
 		// PreparedStatement pstmt = null;
@@ -577,8 +573,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 
 		// String stmt =
 		// "begin ? := cool_select_pkg.f_get_payloadiov(?,?,?,?,?); end;";
-		final String stmt = 
-				"select cool_select_pkg.f_get_payloadiov(?,?,?,?,?) from dual";
+		final String stmt = "select cool_select_pkg.f_get_payloadiov(?,?,?,?,?) from dual";
 		ResultSet rset = null;
 		ResultSet rs = null;
 		// PreparedStatement pstmt = null;
@@ -743,7 +738,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			final BLOB blob = (BLOB) val;
 			try {
 				buf = lobtoString(blob);
-			} catch (final IOException e) {
+			} catch (CoolIOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -756,18 +751,28 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 	/**
 	 * @param dat
 	 * @return
-	 * @throws IOException
-	 * @throws SQLException
+	 * @throws CoolIOException
 	 */
-	protected final String lobtoString(final BLOB dat) throws IOException, SQLException {
-		final StringBuffer strOut = new StringBuffer();
-		String aux;
-		final BufferedReader br = new BufferedReader(new InputStreamReader(
-				dat.asciiStreamValue()));
-		while ((aux = br.readLine()) != null) {
-			strOut.append(aux);
+	protected final String lobtoString(final BLOB dat) throws CoolIOException {
+		BufferedReader br = null;
+		try {
+			final StringBuffer strOut = new StringBuffer();
+			String aux = null;
+			br = new BufferedReader(new InputStreamReader(dat.asciiStreamValue()));
+			while ((aux = br.readLine()) != null) {
+				strOut.append(aux);
+			}
+			return strOut.toString();
+		} catch (final Exception e) {
+			throw new CoolIOException(e.getMessage());
+		} finally {
+			try {
+				br.close();
+			} catch (final IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		return strOut.toString();
 	}
 
 	/**

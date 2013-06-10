@@ -21,6 +21,7 @@ import javax.inject.Named;
 
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.payload.model.CoolPayload;
 
 /**
@@ -206,7 +207,7 @@ public class PayloadHelperBean implements Serializable {
 			final BLOB blob = (BLOB) val;
 			try {
 				buf = lobtoString(blob);
-			} catch (final IOException e) {
+			} catch (CoolIOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -222,15 +223,28 @@ public class PayloadHelperBean implements Serializable {
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	protected String lobtoString(final BLOB dat) throws IOException, SQLException {
+	protected final String lobtoString(final BLOB dat) throws CoolIOException {
+
+		BufferedReader br = null;
+		try {
 		final StringBuffer strOut = new StringBuffer();
 		String aux;
-		final BufferedReader br = new BufferedReader(new InputStreamReader(
+		br = new BufferedReader(new InputStreamReader(
 				dat.asciiStreamValue()));
 		while ((aux = br.readLine()) != null) {
 			strOut.append(aux);
 		}
 		return strOut.toString();
+		} catch (Exception e) {
+			throw new CoolIOException(e.getMessage());
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

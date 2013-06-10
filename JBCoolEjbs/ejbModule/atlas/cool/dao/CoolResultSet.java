@@ -548,7 +548,7 @@ public class CoolResultSet implements CoolResultSetDAO {
 			final BLOB blob = (BLOB) val;
 			try {
 				buf = lobtoString(blob);
-			} catch (final IOException e) {
+			} catch (CoolIOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -561,18 +561,28 @@ public class CoolResultSet implements CoolResultSetDAO {
 	/**
 	 * @param dat
 	 * @return
-	 * @throws IOException
-	 * @throws SQLException
+	 * @throws CoolIOException
 	 */
-	protected final String lobtoString(final BLOB dat) throws IOException, SQLException {
-		final StringBuffer strOut = new StringBuffer();
-		String aux;
-		final BufferedReader br = new BufferedReader(new InputStreamReader(
-				dat.asciiStreamValue()));
-		while ((aux = br.readLine()) != null) {
-			strOut.append(aux);
+	protected final String lobtoString(final BLOB dat) throws CoolIOException {
+		BufferedReader br = null;
+		try {
+			final StringBuffer strOut = new StringBuffer();
+			String aux = null;
+			br = new BufferedReader(new InputStreamReader(dat.asciiStreamValue()));
+			while ((aux = br.readLine()) != null) {
+				strOut.append(aux);
+			}
+			return strOut.toString();
+		} catch (final Exception e) {
+			throw new CoolIOException(e.getMessage());
+		} finally {
+			try {
+				br.close();
+			} catch (final IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		return strOut.toString();
 	}
 
 }
