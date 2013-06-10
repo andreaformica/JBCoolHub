@@ -15,7 +15,7 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
  * @author formica
  * 
  */
-public class CoolIov implements Serializable {
+public final class CoolIov implements Serializable {
 
 	/**
 	 * 
@@ -61,6 +61,14 @@ public class CoolIov implements Serializable {
 	 */
 	public static BigDecimal toNanoSeconds = new BigDecimal(1000000L);
 
+	
+	/**
+	 * Ctor is private since this class is only static.
+	 */
+	private CoolIov() {
+		
+	}
+	
 	/**
 	 * @param atime
 	 *            The COOL time.
@@ -74,7 +82,7 @@ public class CoolIov implements Serializable {
 				|| atime.longValue() == COOL_MAX_RUN) {
 			return COOL_MAX_DATE;
 		}
-		BigInteger run = atime.shiftRight(cooliov_run_mask);
+		final BigInteger run = atime.shiftRight(cooliov_run_mask);
 		return run.longValue();
 	}
 
@@ -87,7 +95,7 @@ public class CoolIov implements Serializable {
 		if (atime == null) {
 			return null;
 		}
-		BigDecimal time = new BigDecimal(atime);
+		final BigDecimal time = new BigDecimal(atime);
 		return getRun(time.toBigInteger());
 	}
 
@@ -103,8 +111,8 @@ public class CoolIov implements Serializable {
 		if (arun.equals("Inf")) {
 			return new BigDecimal(COOL_MAX_DATE);
 		}
-		BigInteger coolrun = new BigInteger(arun);
-		BigInteger run = coolrun.shiftLeft(cooliov_run_mask);
+		final BigInteger coolrun = new BigInteger(arun);
+		final BigInteger run = coolrun.shiftLeft(cooliov_run_mask);
 		return new BigDecimal(run);
 	}
 
@@ -120,7 +128,7 @@ public class CoolIov implements Serializable {
 		if (atime.longValue() == COOL_MAX_DATE) {
 			return 0L;
 		}
-		BigInteger lumi = atime.and(lumimask);
+		final BigInteger lumi = atime.and(lumimask);
 		return lumi.longValue();
 	}
 
@@ -134,7 +142,7 @@ public class CoolIov implements Serializable {
 		if (atime == null) {
 			return null;
 		}
-		BigDecimal time = new BigDecimal(atime);
+		final BigDecimal time = new BigDecimal(atime);
 		return getLumi(time.toBigInteger());
 	}
 
@@ -145,10 +153,19 @@ public class CoolIov implements Serializable {
 	 *            The lumi block as a String.
 	 * @return The COOL time.
 	 */
-	public static BigDecimal getCoolRunLumi(
-				final String arun, final String lb) {
-		Long runlong = new Long(arun);
-		Long lblong = new Long(lb);
+	public static BigDecimal getCoolRunLumi(final String arun, final String lb) {
+		Long runlong = null;
+		Long lblong = null;
+		if (arun == null) {
+			return null;
+		}
+		if (arun.equals("Inf")) {
+			runlong = COOL_MAX_RUN;
+			lblong = COOL_MAX_LUMIBLOCK;
+		} else {
+			runlong = new Long(arun);
+			lblong = new Long(lb);
+		}
 		return getCoolRunLumi(runlong, lblong);
 	}
 
@@ -167,10 +184,6 @@ public class CoolIov implements Serializable {
 		BigInteger run = null;
 		if (arun == null) {
 			return null;
-		} else if (arun.equals("Inf")) {
-			irun = new BigDecimal(new Long(COOL_MAX_DATE)).toBigIntegerExact();
-			ilb = new BigDecimal(0L).toBigIntegerExact();
-			runlumi = irun;
 		} else {
 			irun = new BigDecimal(arun).toBigIntegerExact();
 			if (lb == null) {
@@ -196,7 +209,8 @@ public class CoolIov implements Serializable {
 		if (atime.longValue() == COOL_MAX_DATE) {
 			return COOL_MAX_DATE;
 		}
-		BigInteger timeInMilliSec = atime.divide(toNanoSeconds.toBigInteger());
+		final BigInteger timeInMilliSec = atime.divide(toNanoSeconds
+				.toBigInteger());
 		return timeInMilliSec.longValue();
 	}
 
@@ -221,7 +235,7 @@ public class CoolIov implements Serializable {
 			if (time == CoolIov.COOL_MAX_DATE) {
 				return "Inf";
 			}
-			Date iov = new Date(time);
+			final Date iov = new Date(time);
 			iovstr = TimestampStringFormatter.format(null, iov);
 		}
 		return iovstr;
@@ -237,14 +251,14 @@ public class CoolIov implements Serializable {
 	public static String getCoolTimeRunLumiString(final Long time,
 			final String iovBase) {
 		String iovstr = "";
-		Calendar endofatlasyear = Calendar.getInstance();
+		final Calendar endofatlasyear = Calendar.getInstance();
 		endofatlasyear.set(2100, 1, 1);
 		if (iovBase.equals("run-lumi")) {
 			if (time == CoolIov.COOL_MAX_DATE) {
 				return "Inf";
 			}
-			Long run = getRun(time);
-			Long lb = getLumi(time);
+			final Long run = getRun(time);
+			final Long lb = getLumi(time);
 			iovstr = run + " - " + lb;
 			if (lb == COOL_MAX_LUMIBLOCK) {
 				iovstr = run + " - maxlb";
@@ -256,8 +270,8 @@ public class CoolIov implements Serializable {
 			if (time == CoolIov.COOL_MAX_DATE) {
 				return "Inf";
 			}
-			Long timeInMilliSec = time / TO_NANOSECONDS;
-			Date iov = new Date(timeInMilliSec);
+			final Long timeInMilliSec = time / TO_NANOSECONDS;
+			final Date iov = new Date(timeInMilliSec);
 			iovstr = TimestampStringFormatter.format(null, iov);
 
 		} else {
@@ -269,16 +283,16 @@ public class CoolIov implements Serializable {
 			if (time == CoolIov.COOL_MAX_DATE) {
 				return "Inf";
 			}
-			Long timeInMilliSec = time / TO_NANOSECONDS;
-			Date iov = new Date(timeInMilliSec);
+			final Long timeInMilliSec = time / TO_NANOSECONDS;
+			final Date iov = new Date(timeInMilliSec);
 			iovstr = TimestampStringFormatter.format(null, iov);
 
-			Calendar iovcal = Calendar.getInstance();
+			final Calendar iovcal = Calendar.getInstance();
 			iovcal.setTime(iov);
-			int iovyear = iovcal.get(Calendar.YEAR);
+			final int iovyear = iovcal.get(Calendar.YEAR);
 			if (iovyear > endofatlasyear.get(Calendar.YEAR)) {
-				Long run = getRun(new BigInteger(time.toString()));
-				Long lb = getLumi(new BigInteger(time.toString()));
+				final Long run = getRun(new BigInteger(time.toString()));
+				final Long lb = getLumi(new BigInteger(time.toString()));
 				iovstr = run + " - " + lb;
 			}
 		}

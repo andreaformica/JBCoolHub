@@ -237,13 +237,15 @@ public class QueryListIterator<E> implements Iterator<E> {
 	 *            The index of the element.
 	 * @return The object from the list.
 	 */
+	@SuppressWarnings("unchecked")
 	public final E getNextUntilIndex(final int index) {
 		E obj = null;
 		try {
 			Integer ipage = index / pageSize; // should give the page number
 			//Integer iline = index % pageSize;
 			Integer iselpage = ielement / pageSize;
-			if (ipage == iselpage) {
+			//TODO : verify that this comparison is correct
+			if (ipage.equals(iselpage)) {
 				log.info("get object at index " + index + " ielement="
 						+ ielement);
 				obj = (E) scrollableResults.get(index - first);

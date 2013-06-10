@@ -117,8 +117,6 @@ public class ComaCoolResourceRESTService {
 			log.info("Retrieved list of size " + results.size());
 			buf.append("<h3>Retrieved list of " + results.size() + "</h3><br>");
 			for (final CmpCoolComaTagType ccnt : results) {
-				log.info("Found obj " + ccnt.getComaCoolSchema() + " "
-						+ ccnt.getComaNodeFullpath() + " " + ccnt.getComaTagName());
 				if (ccnt == null) {
 					buf.append("<p>Object is null in list...</p>");
 				} else if (ccnt.getTagName() == null) {
@@ -186,7 +184,6 @@ public class ComaCoolResourceRESTService {
 			log.info("Retrieved list of size " + results.size());
 			buf.append("<h3>Retrieved list of " + results.size() + "</h3><br>");
 			for (final CmpCoolComaGlobalTagType ccnt : results) {
-				// log.info("Found obj "+ccnt.getComaCoolSchema()+" "+ccnt.getComaNodeFullpath()+" "+ccnt.getComaTagName());
 				if (ccnt == null) {
 					buf.append("<p>Object is null in list...</p>");
 				} else if (ccnt.getTagName() == null) {

@@ -147,12 +147,15 @@ public class ComaRunBean implements ComaRunDAO {
 						.longValue() : null;
 				final Long recevts = line[14] != null ? ((BigDecimal) line[14])
 						.longValue() : null;
-				final String partition_name = line[15] != null ? (String) line[15] : null;
+				final String partitionname = line[15] != null ? (String) line[15] : null;
 				final BigDecimal runlumi = line[16] != null ? (BigDecimal) line[16]
 						: null;
-				final RunSummary rsum = new RunSummary(runnum, new Date(runs.getTime()),
-						new Date(rune.getTime()), runtype, runtypedesc, datasource,
-						projdesc, partition_name, project, period, null, l1evts, l2evts,
+				
+				Date runsince = (runs != null) ? new Date(runs.getTime()) : null;
+				Date rununtil = (rune != null) ? new Date(rune.getTime()) : null;
+				final RunSummary rsum = new RunSummary(runnum, runsince, rununtil, 
+						runtype, runtypedesc, datasource,
+						projdesc, partitionname, project, period, null, l1evts, l2evts,
 						efevts, recevts, startlbn, endlbn, null, runlumi);
 
 				runlist.add(rsum);

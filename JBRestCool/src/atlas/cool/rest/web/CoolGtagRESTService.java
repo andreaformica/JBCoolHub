@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
@@ -76,7 +77,10 @@ public class CoolGtagRESTService {
 						selnode = anode;
 					}
 				}
-
+				if (selnode == null) {
+					log.log(Level.SEVERE, "Cannot use null node");
+					continue;
+				}
 				final String seltag = nodeGtagTagType.getTagName();
 
 				final Collection<CoolIovSummary> summarylist = coolutilsdao
@@ -333,6 +337,10 @@ public class CoolGtagRESTService {
 								+ anode.getNodeIovType());
 						selnode = anode;
 					}
+				}
+				if (selnode == null) {
+					log.log(Level.SEVERE, "Cannot use null node");
+					continue;
 				}
 				results.append("# " + schema + " > " + " " + selnode.getNodeFullpath()
 						+ " ; " + nodeGtagTagType.getTagName() + " ! " + "\n");

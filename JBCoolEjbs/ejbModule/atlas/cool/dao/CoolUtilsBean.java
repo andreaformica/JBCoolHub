@@ -41,7 +41,7 @@ import atlas.cool.rest.utils.SvgRestUtils;
 
 /**
  * @author formica
- *
+ * 
  */
 @Named
 @Stateless
@@ -73,7 +73,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	/**
 	 * 
 	 */
-	private SimpleDateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
+	private final SimpleDateFormat df = new SimpleDateFormat("yyyyMMddhhmmss");
 
 	/**
 	 * 
@@ -89,9 +89,9 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final SortedMap<Long, CoolIovSummary> computeIovSummaryMap(final String schema,
-			final String db, final String node, final String tag, final String iovbase)
-			throws CoolIOException {
+	public final SortedMap<Long, CoolIovSummary> computeIovSummaryMap(
+			final String schema, final String db, final String node, final String tag,
+			final String iovbase) throws CoolIOException {
 		try {
 
 			final List<IovType> iovperchanList = cooldao
@@ -121,8 +121,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			final List<IovType> iovperchanList, final String schema, final String db,
 			final String node, final String tag, final String iovbase) {
 
-		final SortedMap<Long, CoolIovSummary> iovsummary = 
-				new TreeMap<Long, CoolIovSummary>();
+		final SortedMap<Long, CoolIovSummary> iovsummary = new TreeMap<Long, CoolIovSummary>();
 
 		for (final IovType aniov : iovperchanList) {
 			// log.info("Analyze iov from DB : "+aniov.getChannelId()+" "+aniov.getNiovs());
@@ -191,8 +190,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			final List<IovType> iovperchanList, final String schema, final String db,
 			final String node, final String tag, final String iovbase) {
 
-		final SortedMap<Long, CoolIovSummary> iovsummary = 
-				new TreeMap<Long, CoolIovSummary>();
+		final SortedMap<Long, CoolIovSummary> iovsummary = new TreeMap<Long, CoolIovSummary>();
 
 		for (final IovType aniov : iovperchanList) {
 			// log.info("Analyze iov from DB : " + aniov.getChannelId() + " "
@@ -248,9 +246,10 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
-	public final SortedMap<Long, CoolIovSummary> computeIovSummaryRangeMap(final String schema,
-			final String db, final String node, final String tag, final String iovbase,
-			final BigDecimal since, final BigDecimal until) throws CoolIOException {
+	public final SortedMap<Long, CoolIovSummary> computeIovSummaryRangeMap(
+			final String schema, final String db, final String node, final String tag,
+			final String iovbase, final BigDecimal since, final BigDecimal until)
+			throws CoolIOException {
 
 		try {
 
@@ -384,6 +383,9 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 				selnode = anode;
 			}
 		}
+		if (selnode == null) {
+			throw new CoolIOException("Cannot find node...");
+		}
 		String seltag = tag;
 		if (tag.equals("none")) {
 			seltag = null;
@@ -425,6 +427,9 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 						+ anode.getNodeIovType());
 				selnode = anode;
 			}
+		}
+		if (selnode == null) {
+			throw new CoolIOException("Cannot find node...");
 		}
 		String seltag = tag;
 		if (tag.equals("none")) {
@@ -472,6 +477,9 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 							+ anode.getNodeIovType());
 					selnode = anode;
 				}
+			}
+			if (selnode == null) {
+				throw new CoolIOException("Cannot find node...");
 			}
 			String seltag = tag;
 			if (tag.equals("none")) {
@@ -526,6 +534,9 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 					selnode = anode;
 				}
 			}
+			if (selnode == null) {
+				throw new CoolIOException("Cannot find node...");
+			}
 			String seltag = tag;
 			if (tag.equals("none")) {
 				seltag = null;
@@ -569,6 +580,10 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 				selnode = anode;
 			}
 		}
+		if (selnode == null) {
+			throw new CoolIOException("Cannot find node...");
+		}
+
 		String seltag = tag;
 		if (tag.equals("none")) {
 			seltag = null;
@@ -588,7 +603,8 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * @see atlas.cool.dao.CoolUtilsDAO#dumpIovSummaryAsText(java.util.Collection)
 	 */
 	@Override
-	public final String dumpIovSummaryAsText(final Collection<CoolIovSummary> iovsummaryColl) {
+	public final String dumpIovSummaryAsText(
+			final Collection<CoolIovSummary> iovsummaryColl) {
 
 		final StringBuffer results = new StringBuffer();
 
@@ -655,8 +671,9 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	}
 
 	@Override
-	public final String dumpIovSummaryAsText(final Collection<CoolIovSummary> iovsummaryColl,
-			final BigDecimal since, final BigDecimal until) {
+	public final String dumpIovSummaryAsText(
+			final Collection<CoolIovSummary> iovsummaryColl, final BigDecimal since,
+			final BigDecimal until) {
 
 		final StringBuffer results = new StringBuffer();
 
@@ -793,6 +810,9 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 						+ " " + firstsumm.getNode() + " ; " + firstsumm.getTag()
 						+ colortagend + "</h2>" + "<br>");
 			}
+		} else {
+			results.append("<h3>Collection of iovs summaries is null</h3>");
+			return results.toString();
 		}
 		final SvgRestUtils svgutil = new SvgRestUtils();
 		svgutil.setSvgabsmin(0L);
@@ -856,8 +876,8 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 */
 	@Override
 	public final String dumpIovSummaryAsSvg(
-			final Collection<CoolIovSummary> iovsummaryColl,
-			final BigDecimal since, final BigDecimal until) {
+			final Collection<CoolIovSummary> iovsummaryColl, final BigDecimal since,
+			final BigDecimal until) {
 
 		final StringBuffer results = new StringBuffer();
 		final StringBuffer svg = new StringBuffer();
@@ -883,6 +903,9 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 						+ " " + firstsumm.getNode() + " ; " + firstsumm.getTag()
 						+ colortagend + "</h2>" + "<br>");
 			}
+		} else {
+			results.append("<h3>Collection of iovs summaries is null</h3>");
+			return results.toString();
 		}
 		final SvgRestUtils svgutil = new SvgRestUtils();
 		svgutil.setSvgabsmin(since.longValue());
@@ -978,10 +1001,11 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 						+ " " + firstsumm.getNode() + " ; " + firstsumm.getTag()
 						+ colortagend + "</h2>" + "<br>");
 			}
+		} else {
+			throw new ComaQueryException("Cannot check null collection of summaries...");
 		}
 		List<CrViewRuninfo> runlist = null;
-		final Map<String, List<CrViewRuninfo>> runMap = 
-				new HashMap<String, List<CrViewRuninfo>>();
+		final Map<String, List<CrViewRuninfo>> runMap = new HashMap<String, List<CrViewRuninfo>>();
 		Boolean ishole = false;
 		Boolean coverageerror = true;
 		for (final CoolIovSummary iovsummary : iovsummaryColl) {
@@ -1002,16 +1026,16 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 						if (iovsummary.getIovbase().equals("time")) {
 							timespan = timespan / 1000L;
 							holedump = "[" + timespan + "] ";
-							final Timestamp _since = new Timestamp(ivr.getSince()
+							final Timestamp lsince = new Timestamp(ivr.getSince()
 									/ CoolIov.TO_NANOSECONDS);
-							final Timestamp _until = new Timestamp(ivr.getUntil()
+							final Timestamp luntil = new Timestamp(ivr.getUntil()
 									/ CoolIov.TO_NANOSECONDS);
-							final String timekey = _since.toString() + "/"
-									+ _until.toString();
+							final String timekey = lsince.toString() + "/"
+									+ luntil.toString();
 							if (runMap.containsKey(timekey)) {
 								runlist = runMap.get(timekey);
 							} else {
-								runlist = comadao.findRunsInRange(_since, _until);
+								runlist = comadao.findRunsInRange(lsince, luntil);
 								runMap.put(timekey, runlist);
 							}
 
@@ -1091,8 +1115,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.lang.String)
 	 */
 	@Override
-	public final Map<String, Object> getTimeRange(
-			final String since, final String until,
+	public final Map<String, Object> getTimeRange(final String since, final String until,
 			final String timespan) throws CoolIOException {
 		// Time selection
 		final Map<String, Object> timerangeMap = new HashMap<String, Object>();
@@ -1246,6 +1269,9 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 				} else {
 					throw new CoolIOException("Cannot search using timespan " + timespan);
 				}
+			}
+			if (lsince == null || luntil == null) {
+				throw new CoolIOException("Cannot use timerange with null iov times...");
 			}
 			if (lsince.longValue() > luntil.longValue()) {
 				log.log(Level.SEVERE, "Until time preceeds Since time...!!!!");

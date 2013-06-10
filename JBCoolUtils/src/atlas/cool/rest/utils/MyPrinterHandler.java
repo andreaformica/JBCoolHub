@@ -61,7 +61,7 @@ public class MyPrinterHandler<T> {
 	public final void exclude(final String methname, final Integer exclusion) {
 		if (exclusionMap.containsKey(methname)) {
 			Integer value = exclusionMap.get(methname);
-			if (value != exclusion) {
+			if (value.intValue() != exclusion.intValue()) {
 				exclusionMap.put(methname, exclusion);
 			}
 		} else {
