@@ -500,6 +500,10 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		if (iovsummaryColl != null) {
 			channels = iovsummaryColl.size();
 		}
+		String header =
+		"<head><style>" + "h1 {font-size:20px;} " + "h2 {font-size:18px;}"
+				+ "h3 {font-size:16px;}" + "hr {color:sienna;}" + "p {font-size:14px;}"
+				+ "p.small {line-height:80%;}" + "</style></head>";
 		String results = "Empty result string...retrieved list of " + channels;
 		if (type.equals("text")) {
 			results = "";
@@ -510,7 +514,7 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 			log.info("Dumping list as text html");
 			results = super.coolutilsdao.dumpIovSummaryAsSvg(iovsummaryColl);
 		}
-		return results;
+		return header+results;
 	}
 
 	@GET
@@ -534,8 +538,8 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 			channels = iovsummaryColl.size();
 		}
 		final StringBuffer results = new StringBuffer();
-		results.append("<head><style>" + "h1 {font-size:25px;} " + "h2 {font-size:20px;}"
-				+ "h3 {font-size:15px;}" + "hr {color:sienna;}" + "p {font-size:14px;}"
+		results.append("<head><style>" + "h1 {font-size:20px;} " + "h2 {font-size:18px;}"
+				+ "h3 {font-size:16px;}" + "hr {color:sienna;}" + "p {font-size:14px;}"
 				+ "p.small {line-height:80%;}" + "</style></head>");
 		results.append("<body>");
 		final String resultsDefault = "Empty result string...retrieved list of "
@@ -543,20 +547,21 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		if (type.equals("text")) {
 			log.info("Dumping list as text html");
 			results.append(super.coolutilsdao.dumpIovSummaryAsText(iovsummaryColl));
+			String coverage = "<p>All important runs are covered</p>";
+			try {
+				coverage = super.coolutilsdao.checkHoles(iovsummaryColl);
+			} catch (final ComaQueryException e) {
+				e.printStackTrace();
+				coverage = "<p>Error in coverage checking...</p>";
+			}
+			results.append(coverage);
+
 		} else if (type.equals("svg")) {
 			log.info("Dumping list as svg and html");
 			results.append(super.coolutilsdao.dumpIovSummaryAsSvg(iovsummaryColl));
 		} else {
 			results.append(resultsDefault);
 		}
-		String coverage = "<p>All important runs are covered</p>";
-		try {
-			coverage = super.coolutilsdao.checkHoles(iovsummaryColl);
-		} catch (final ComaQueryException e) {
-			e.printStackTrace();
-			coverage = "<p>Error in coverage checking...</p>";
-		}
-		results.append(coverage);
 		results.append("</body>");
 		return results.toString();
 	}

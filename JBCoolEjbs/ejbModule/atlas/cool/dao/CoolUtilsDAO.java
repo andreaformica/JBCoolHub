@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import atlas.coma.exceptions.ComaQueryException;
+import atlas.coma.model.CrViewRuninfo;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.CoolIovSummary;
+import atlas.cool.rest.model.IovRange;
 import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
@@ -237,5 +239,24 @@ public interface CoolUtilsDAO {
 	 */
 	Map<String, Object> getTimeRange(String since, String until,
 			String timespan) throws CoolIOException;
+
+	/**
+	 * @param ivr
+	 * @param iovbase
+	 * @return
+	 * @throws ComaQueryException
+	 */
+	List<CrViewRuninfo> checkHoles(IovRange ivr, String iovbase)
+			throws ComaQueryException;
+
+	/**
+	 * @param since
+	 * @param until
+	 * @param iovbase
+	 * @return
+	 * @throws ComaQueryException
+	 */
+	List<CrViewRuninfo> checkHoles(BigDecimal since, BigDecimal until, String iovbase)
+			throws ComaQueryException;
 
 }

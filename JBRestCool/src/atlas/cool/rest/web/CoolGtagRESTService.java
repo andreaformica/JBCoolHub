@@ -115,14 +115,21 @@ public class CoolGtagRESTService {
 		log.info("Calling listIovsSummaryInNodesSchema..." + schema + " " + db);
 		final StringBuffer results = new StringBuffer();
 		List<NodeGtagTagType> nodeingtagList = null;
+		String header =
+		"<head><style>" + "h1 {font-size:20px;} " + "h2 {font-size:18px;}"
+				+ "h3 {font-size:16px;}" + "hr {color:sienna;}" + "p {font-size:14px;}"
+				+ "p.small {line-height:80%;}" + "</style></head>";
 		try {
+			results.append(header);
 			results.append("<body>");
-			results.append("<h1>List of NODEs and TAGs iovs statistic associated to "
-					+ gtag + "</h1><hr>");
+			results.append("<p>Choose output mode: ");
+			results.append("<a href="+createLink(schema, db, gtag, "text/summary")+">text</a> or ");
+			results.append("<a href="+createLink(schema, db, gtag, "svg/summary")+">svg</a></p>");
+			results.append("<h2>List of NODEs and TAGs iovs statistic associated to "
+					+ gtag + "</h2><br><hr>");
 			nodeingtagList = cooldao.retrieveGtagTagsFromSchemaAndDb(schema + "%", db,
 					gtag);
 			for (final NodeGtagTagType nodeGtagTagType : nodeingtagList) {
-				results.append("<br><hr>");
 				final String node = nodeGtagTagType.getNodeFullpath();
 				// List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(
 				// schema, db, node);
@@ -153,22 +160,21 @@ public class CoolGtagRESTService {
 				final String resultsDefault = "Empty result string...retrieved list of "
 						+ channels + " channels ";
 				if (type.equals("text")) {
-					log.info("Dumping list as text html");
+					log.fine("Dumping list as text html");
 					results.append(coolutilsdao.dumpIovSummaryAsText(iovsummaryColl));
+					try {
+						String coverage = coolutilsdao.checkHoles(iovsummaryColl);
+						results.append(coverage);
+					} catch (final ComaQueryException e) {
+						e.printStackTrace();
+						results.append("Error while checking run coverage");
+					}
 				} else if (type.equals("svg")) {
-					log.info("Dumping list as svg and html");
+					log.fine("Dumping list as svg and html");
 					results.append(coolutilsdao.dumpIovSummaryAsSvg(iovsummaryColl));
 				} else {
 					results.append(resultsDefault);
 				}
-				String coverage = "<p>All important runs are covered</p>";
-				try {
-					coverage = coolutilsdao.checkHoles(iovsummaryColl);
-				} catch (final ComaQueryException e) {
-					e.printStackTrace();
-					coverage = "<p>Error in coverage checking...</p>";
-				}
-				results.append(coverage);
 			}
 			results.append("</body>");
 
@@ -557,8 +563,8 @@ public class CoolGtagRESTService {
 		String urlbase = null;
 		String commandurl = null;
 		try {
-			urlbase = "https://" + InetAddress.getLocalHost().getHostName()
-					+ ":8443/JBRestCool/rest";
+			urlbase = "http://" + InetAddress.getLocalHost().getHostName()
+					+ ":8080/JBRestCool/rest";
 			commandurl = "coolgtag/" + schema + "/" + db + "/" + tag + "/" + command;
 		} catch (final UnknownHostException e) {
 			// TODO Auto-generated catch block

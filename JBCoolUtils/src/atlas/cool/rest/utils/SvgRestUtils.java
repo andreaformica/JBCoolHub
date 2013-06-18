@@ -176,7 +176,7 @@ public class SvgRestUtils {
 	 * @return A string with the line tag in svg.
 	 */
 	public final String getSvgLine(Long start, Long end, final Long ichan,
-			final String iovtype, final Boolean ishole) {
+			final String iovtype, final Boolean ishole, String color) {
 		final StringBuffer svgline = new StringBuffer();
 
 		final Long infinity = svgabsmax;
@@ -213,8 +213,7 @@ public class SvgRestUtils {
 					+ "\" y1=\"" + (ichan * linewidth + svgheight) + "\" x2=\""
 					+ this.convert(end, infinity) + "\" y2=\""
 					+ (ichan * linewidth + svgheight) + "\"");
-			svgline.append(" stroke=\"red\" stroke-width=\"" + linewidth
-					+ "\"/>");
+
 
 			// Now add a vertical line plus a text giving the limits in the hole
 			// time range
@@ -233,9 +232,11 @@ public class SvgRestUtils {
 					+ "\" y1=\"" + (ichan * linewidth + svgheight) + "\" x2=\""
 					+ this.convert(end, infinity) + "\" y2=\""
 					+ (ichan * linewidth + svgheight) + "\"");
-			svgline.append(" stroke=\"green\" stroke-width=\"" + linewidth
-					+ "\"/>");
+//			svgline.append(" stroke=\"green\" stroke-width=\"" + linewidth
+//					+ "\"/>");
 		}
+		svgline.append(" stroke=\""+color+"\" stroke-width=\"" + linewidth
+				+ "\"/>");
 
 		return svgline.toString();
 	}
