@@ -116,6 +116,38 @@ public interface CoolUtilsDAO {
 	 * @param schema
 	 * @param db
 	 * @param fld
+	 * @param tag1
+	 * @param tag2
+	 * @param channel
+	 * @param since
+	 * @param until
+	 * @return
+	 * @throws CoolIOException
+	 */
+	NodeType listIovsDiffInNodesSchemaTagRangeAsList(String schema,
+			String db, String fld, String tag1, String tag2, String channel, BigDecimal since,
+			BigDecimal until) throws CoolIOException;
+
+	/**
+	 * @param schema
+	 * @param db
+	 * @param fld
+	 * @param tag1
+	 * @param tag2
+	 * @param chanid
+	 * @param since
+	 * @param until
+	 * @return
+	 * @throws CoolIOException
+	 */
+	NodeType listIovsDiffInNodesSchemaTagRangeAsList(String schema,
+			String db, String fld, String tag1, String tag2, Long chanid, BigDecimal since,
+			BigDecimal until) throws CoolIOException;
+
+	/**
+	 * @param schema
+	 * @param db
+	 * @param fld
 	 * @param tag
 	 * @param channel
 	 * @param since

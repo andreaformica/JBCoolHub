@@ -180,6 +180,55 @@ public interface ICoolREST {
 			@PathParam("since") String since, @PathParam("until") String until,
 			@PathParam("timespan") String timespan);
 
+	
+	/**
+	 * <p>
+	 * Method :
+	 * /{schema}/{db}/{fld:.*}/fld/{tag1:.*}/tag1/{tag2:.*}/tag2/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list
+	 * </p>
+	 * <p>
+	 * It retrieves iovs in a given range for every channel selected only if they are different in the 2 tags. 
+	 * The date format is a number
+	 * representing a date: yyyyMMddhhmmss ; it does not take fractions of seconds. For details on how the
+	 * timespan option is implemented see @See CoolRESTImpl documentation for method getTimeRange.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 *            The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag1
+	 *            The tag1 name.
+	 * @param tag2
+	 *            The tag2 name.
+	 * @param channel
+	 *            The channel selection, either an ID or a channel name, or <b>all</b> for selecting every channel.
+	 * @param chansel
+	 * 			  The channel selector: can be either <b>channel</b> or <b>chanid</b> 
+	 * @param since
+	 *            The COOL since time as a string following the format given by timespan.
+	 * @param until
+	 *            The COOL until time as a string following the format given by timespan.
+	 * @param timespan
+	 *            The COOL date format to be used: time, date, runlb.
+	 *            
+	 * @return A JSON file with iovs for all channels.
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag1:.*}/tag1/{tag2:.*}/tag2/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
+	public abstract NodeType listDiffIovsInNodesSchemaTagRangeAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, 
+			@PathParam("tag1") String tag1,
+			@PathParam("tag2") String tag2,
+			@PathParam("channel") String channel,
+			@PathParam("chansel") String chansel,
+			@PathParam("since") String since, @PathParam("until") String until,
+			@PathParam("timespan") String timespan);
+
 	/**
 	 * <p>
 	 * Method :

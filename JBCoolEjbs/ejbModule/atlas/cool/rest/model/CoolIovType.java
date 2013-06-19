@@ -172,15 +172,10 @@ public class CoolIovType implements Serializable {
 	 * @param tagName
 	 * @param iovBase
 	 */
-	public CoolIovType(final BigDecimal objectId, 
-			final Long channelId,
-			final String channelName, 
-			final BigDecimal iovSince,
-			final BigDecimal iovUntil, 
-			final Long tagId, 
-			final Timestamp sysInstime,
-			final Timestamp lastmodDate, 
-			final BigDecimal newHeadId,
+	public CoolIovType(final BigDecimal objectId, final Long channelId,
+			final String channelName, final BigDecimal iovSince,
+			final BigDecimal iovUntil, final Long tagId, final Timestamp sysInstime,
+			final Timestamp lastmodDate, final BigDecimal newHeadId,
 			final String tagName, final String iovBase) {
 		super();
 		this.objectId = objectId;
@@ -433,6 +428,36 @@ public class CoolIovType implements Serializable {
 	 */
 	public final void setUntilCoolStr(final String untilCoolStr) {
 		this.untilCoolStr = untilCoolStr;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		CoolIovType cobj = null;
+		if (obj instanceof CoolIovType) {
+			cobj = (CoolIovType) obj;
+			if (cobj.getChannelId().equals(this.getChannelId())
+					&& cobj.getIovSince().equals(this.getIovSince())
+					&& cobj.getIovUntil().equals(this.getIovUntil())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return this.getChannelId().hashCode() + this.getIovSince().toString().hashCode()
+				+ this.getIovUntil().toString().hashCode();
 	}
 
 }

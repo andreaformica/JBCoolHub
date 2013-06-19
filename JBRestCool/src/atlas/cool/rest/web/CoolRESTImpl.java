@@ -11,7 +11,10 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
 import atlas.coma.dao.ComaCbDAO;
 import atlas.cool.dao.CoolDAO;
@@ -250,6 +253,49 @@ public class CoolRESTImpl implements ICoolREST {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (final CoolQueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return selnode;
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolREST#listDiffIovsInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag1:.*}/tag1/{tag2:.*}/tag2/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
+	public NodeType listDiffIovsInNodesSchemaTagRangeAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag1") String tag1,
+			@PathParam("tag2") String tag2, @PathParam("channel") String channel,
+			@PathParam("chansel") String chansel, @PathParam("since") String since,
+			@PathParam("until") String until, @PathParam("timespan") String timespan) {
+		NodeType selnode = null;
+		try {
+			// Time selection
+			final Map<String, Object> trmap = coolutilsdao.getTimeRange(since, until,
+					timespan);
+			final BigDecimal lsince = (BigDecimal) trmap.get("since");
+			final BigDecimal luntil = (BigDecimal) trmap.get("until");
+
+			final String chan = channel;
+			// Channel Selection
+			if (chansel.equals("chanid")) {
+				// Treat the channel in input as a Long
+				final Long chanid = new Long(channel);
+				selnode = coolutilsdao.listIovsDiffInNodesSchemaTagRangeAsList(schema, db,
+						fld, tag1, tag2, chanid, lsince, luntil);
+
+			} else if (chansel.equals("channel")) {
+				selnode = coolutilsdao.listIovsDiffInNodesSchemaTagRangeAsList(schema, db,
+						fld, tag1, tag2, chan, lsince, luntil);
+			} else {
+				throw new CoolIOException("Wrong REST syntax...refer to documentation");
+			}
+
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

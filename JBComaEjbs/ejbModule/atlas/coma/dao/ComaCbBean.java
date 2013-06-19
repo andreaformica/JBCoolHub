@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import atlas.coma.exceptions.ComaQueryException;
+import atlas.coma.model.ComaCbSchemas;
 import atlas.coma.model.ComaCbamiGtags;
 import atlas.coma.model.CrViewRuninfo;
 import atlas.connection.dao.CoolRepositoryDAO;
@@ -37,6 +38,25 @@ public class ComaCbBean implements ComaCbDAO {
 	 */
 	public ComaCbBean() {
 		// TODO Auto-generated constructor stub
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.coma.dao.ComaCbDAO#findSchemas(java.lang.String)
+	 */
+	@Override
+	public List<ComaCbSchemas> findSchemas(final String name) throws ComaQueryException {
+		final Object[] params = new Object[1];
+		params[0] = name;
+		log.info("Using query " + ComaCbSchemas.QUERY_FINDSCHEMAS + " with " + name);
+		List<ComaCbSchemas> comalist = null;
+		try {
+			comalist = (List<ComaCbSchemas>) coolrep.findCoolList(
+					ComaCbSchemas.QUERY_FINDSCHEMAS, params);
+		} catch (final CoolIOException e) {
+			throw new ComaQueryException(e.getMessage());
+		}
+		// log.info("Retrieved a list of "+nodelist.size()+" nodes");
+		return comalist;
 	}
 
 	/**

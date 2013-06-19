@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import atlas.coma.exceptions.ComaQueryException;
+import atlas.coma.model.ComaCbSchemas;
 import atlas.coma.model.ComaCbamiGtags;
 import atlas.coma.model.CrViewRuninfo;
 
@@ -16,6 +17,14 @@ import atlas.coma.model.CrViewRuninfo;
  * 
  */
 public interface ComaCbDAO {
+
+	/**
+	 * @param name
+	 * @return
+	 * @throws ComaQueryException
+	 */
+	List<ComaCbSchemas> findSchemas(String name)
+			throws ComaQueryException;
 
 	/**
 	 * @param gtagname

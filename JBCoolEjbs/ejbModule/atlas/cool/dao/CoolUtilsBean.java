@@ -571,7 +571,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		if (!fld.startsWith("/")) {
 			node = "/" + fld;
 		}
-		final List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema, db,
+		List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema, db,
 				node);
 		NodeType selnode = null;
 		if (nodes != null && nodes.size() > 0) {
@@ -590,7 +590,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			seltag = null;
 		}
 
-		final Map<Long, CoolIovSummary> iovsummary = computeIovSummaryRangeMap(schema,
+		Map<Long, CoolIovSummary> iovsummary = computeIovSummaryRangeMap(schema,
 				db, node, seltag, selnode.getNodeIovBase(), since, until);
 
 		summarylist = iovsummary.values();
@@ -1493,4 +1493,75 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		return timerangeMap;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.dao.CoolUtilsDAO#listIovsDiffInNodesSchemaTagRangeAsList(java.lang.String
+	 * , java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.Long, java.math.BigDecimal, java.math.BigDecimal)
+	 */
+	@Override
+	public NodeType listIovsDiffInNodesSchemaTagRangeAsList(final String schema,
+			final String db, final String fld, final String tag1, final String tag2,
+			final Long chanid, final BigDecimal since, final BigDecimal until)
+			throws CoolIOException {
+		final NodeType nodefortag1 = listIovsInNodesSchemaTagRangeAsList(schema, db, fld,
+				tag1, chanid, since, until);
+		final NodeType nodefortag2 = listIovsInNodesSchemaTagRangeAsList(schema, db, fld,
+				tag2, chanid, since, until);
+
+		final List<CoolIovType> iovtag1list = nodefortag1.getIovList();
+		final List<CoolIovType> iovtag2list = nodefortag2.getIovList();
+		final List<CoolIovType> iovtagdifflist = new ArrayList<CoolIovType>();
+
+		int iovdiff = 0;
+		for (int iiov = 0; iiov < Math.min(iovtag1list.size(), iovtag2list.size()); iiov++) {
+			final CoolIovType iov1 = iovtag1list.get(iiov);
+			final CoolIovType iov2 = iovtag2list.get(iiov);
+			if (!iov1.equals(iov2)) {
+				iovtagdifflist.add(iov1);
+				iovtagdifflist.add(iov2);
+				iovdiff++;
+			}
+		}
+		log.info("Found " + iovdiff + " different iov in range " + since.longValue()
+				+ " " + until.longValue());
+		nodefortag1.setIovList(iovtagdifflist);
+		return nodefortag1;
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolUtilsDAO#listIovsDiffInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.math.BigDecimal, java.math.BigDecimal)
+	 */
+	@Override
+	public NodeType listIovsDiffInNodesSchemaTagRangeAsList(String schema, String db,
+			String fld, String tag1, String tag2, String channel, BigDecimal since,
+			BigDecimal until) throws CoolIOException {
+		final NodeType nodefortag1 = listIovsInNodesSchemaTagRangeAsList(schema, db, fld,
+				tag1, channel, since, until);
+		final NodeType nodefortag2 = listIovsInNodesSchemaTagRangeAsList(schema, db, fld,
+				tag2, channel, since, until);
+
+		final List<CoolIovType> iovtag1list = nodefortag1.getIovList();
+		final List<CoolIovType> iovtag2list = nodefortag2.getIovList();
+		final List<CoolIovType> iovtagdifflist = new ArrayList<CoolIovType>();
+
+		int iovdiff = 0;
+		for (int iiov = 0; iiov < Math.min(iovtag1list.size(), iovtag2list.size()); iiov++) {
+			final CoolIovType iov1 = iovtag1list.get(iiov);
+			final CoolIovType iov2 = iovtag2list.get(iiov);
+			if (!iov1.equals(iov2)) {
+				iovtagdifflist.add(iov1);
+				iovtagdifflist.add(iov2);
+				iovdiff++;
+			}
+		}
+		log.info("Found " + iovdiff + " different iov in range " + since.longValue()
+				+ " " + until.longValue());
+		nodefortag1.setIovList(iovtagdifflist);
+		return nodefortag1;
+	}
+
+	
 }
