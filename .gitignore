@@ -28,3 +28,9 @@ JBCoolClient/build
 JBCoolClient/external
 JBCoolClient/common
 JBRestCool/test
+checkstyle/checkstyle_report.xml
+findbugs/foundbugs.html
+lib/JBComaEjbs.jar
+lib/JBCoolEjbs.jar
+lib/JBCoolUtils.jar
+lib/JBRestCool.war
