@@ -223,7 +223,7 @@ public final class CoolIov implements Serializable {
 	 */
 	public static String getCoolTimeString(final Long time, final String iovBase) {
 		String iovstr = "";
-		if (iovBase.equals("run-lumi")) {
+		if (iovBase.startsWith("run-")) {
 			if (time == CoolIov.COOL_MAX_DATE) {
 				return "Inf";
 			}
@@ -253,7 +253,7 @@ public final class CoolIov implements Serializable {
 		String iovstr = "";
 		final Calendar endofatlasyear = Calendar.getInstance();
 		endofatlasyear.set(2100, 1, 1);
-		if (iovBase.equals("run-lumi")) {
+		if (iovBase.startsWith("run-")) {
 			if (time == CoolIov.COOL_MAX_DATE) {
 				return "Inf";
 			}

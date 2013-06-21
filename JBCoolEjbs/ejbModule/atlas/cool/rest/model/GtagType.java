@@ -13,7 +13,9 @@ import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import atlas.cool.annotations.CoolQuery;
 import atlas.cool.rest.utils.TimestampStringFormatter;
@@ -62,7 +64,7 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 				+ " from table(coma_select_pkg.f_GetAll_GlobalTags(:schema, :dbname,:gtag)) "
 				+ " group by tag_name " + " order by sys_instime desc ", resultClass = GtagType.class) })
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.NONE)
 public class GtagType implements Serializable {
 
 	/**
@@ -107,6 +109,7 @@ public class GtagType implements Serializable {
 	/**
 	 * @return the gtagName
 	 */
+	@XmlElement
 	public final String getGtagName() {
 		return gtagName;
 	}
@@ -122,6 +125,7 @@ public class GtagType implements Serializable {
 	/**
 	 * @return the gtagDescription
 	 */
+	@XmlElement
 	public final String getGtagDescription() {
 		return gtagDescription;
 	}
@@ -137,6 +141,7 @@ public class GtagType implements Serializable {
 	/**
 	 * @return the gtagLockStatus
 	 */
+	@XmlElement
 	public final Integer getGtagLockStatus() {
 		return gtagLockStatus;
 	}
@@ -152,6 +157,7 @@ public class GtagType implements Serializable {
 	/**
 	 * @return the nschemas
 	 */
+	@XmlElement
 	public final Integer getNschemas() {
 		return nschemas;
 	}
@@ -167,6 +173,8 @@ public class GtagType implements Serializable {
 	/**
 	 * @return the sysInstime
 	 */
+	@XmlElement
+	@XmlJavaTypeAdapter(atlas.cool.rest.utils.TimestampXmlAdapter.class)
 	public final Timestamp getSysInstime() {
 		return sysInstime;
 	}

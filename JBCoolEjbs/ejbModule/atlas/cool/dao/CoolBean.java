@@ -29,7 +29,7 @@ import atlas.cool.rest.model.SchemaType;
 
 /**
  * @author formica
- *
+ * 
  */
 @Named
 @Stateless
@@ -62,7 +62,7 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * @see atlas.cool.dao.CoolDAO#interfaceName()
 	 */
 	@Override
-	public final String interfaceName() {
+	public String interfaceName() {
 		Class<?>[] interf = this.getClass().getInterfaces();
 		log.info("Number of implementing interfaces " + interf.length);
 		String name = "CoolBean:";
@@ -79,7 +79,7 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * @see atlas.cool.dao.CoolDAO#getInfo(java.lang.String)
 	 */
 	@Override
-	public final String getInfo(final String name) {
+	public String getInfo(final String name) {
 		log.info("\n\n\t Bean's getInfo(String name) called....");
 		return "[CallerBean] returned Hello " + name;
 	}
@@ -91,10 +91,8 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<NodeType> retrieveNodesFromSchemaAndDb(
-			final String schema, 
-			final String db,
-			final String node) throws CoolIOException {
+	public List<NodeType> retrieveNodesFromSchemaAndDb(final String schema,
+			final String db, final String node) throws CoolIOException {
 		Object[] params = new Object[3];
 		params[0] = schema;
 		params[1] = db;
@@ -103,7 +101,10 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 				+ db + " " + node);
 		List<NodeType> nodelist = (List<NodeType>) coolrep.findCoolList(
 				NodeType.QUERY_FINDALLNODES, params);
-		// log.info("Retrieved a list of "+nodelist.size()+" nodes");
+		if (nodelist != null) {
+			log.fine("Retrieved a list of " + nodelist.size() + " nodes, object ref "
+					+ nodelist.toString());
+		}
 		return nodelist;
 	}
 
@@ -114,11 +115,8 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<SchemaNodeTagType> retrieveTagsFromNodesSchemaAndDb(
-			final String schema,
-			final String db, 
-			final String node, 
-			final String tag) throws CoolIOException {
+	public List<SchemaNodeTagType> retrieveTagsFromNodesSchemaAndDb(final String schema,
+			final String db, final String node, final String tag) throws CoolIOException {
 		Object[] params = new Object[4];
 		params[0] = schema;
 		params[1] = db;
@@ -138,10 +136,8 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<NodeGtagTagType> retrieveGtagTagsFromSchemaAndDb(
-			final String schema,
-			final String db, 
-			final String gtag) throws CoolIOException {
+	public List<NodeGtagTagType> retrieveGtagTagsFromSchemaAndDb(final String schema,
+			final String db, final String gtag) throws CoolIOException {
 		Object[] params = new Object[3];
 		params[0] = schema;
 		params[1] = db;
@@ -160,12 +156,9 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<NodeGtagTagType> retrieveGtagFromSchemaDbNodeTag(
-			final String schema,
-			final String db, 
-			final String gtag, 
-			final String node, 
-			final String tag) throws CoolIOException {
+	public List<NodeGtagTagType> retrieveGtagFromSchemaDbNodeTag(final String schema,
+			final String db, final String gtag, final String node, final String tag)
+			throws CoolIOException {
 		Object[] params = new Object[5];
 		params[0] = schema;
 		params[1] = db;
@@ -186,10 +179,8 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<NodeGtagTagType> retrieveGtagDoublFldFromSchemaDb(
-			final String schema,
-			final String db, 
-			final String gtag) throws CoolIOException {
+	public List<NodeGtagTagType> retrieveGtagDoublFldFromSchemaDb(final String schema,
+			final String db, final String gtag) throws CoolIOException {
 		Object[] params = new Object[3];
 		params[0] = schema;
 		params[1] = db;
@@ -208,10 +199,8 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<GtagType> retrieveGtagsFromSchemaAndDb(
-			final String schema, 
-			final String db,
-			final String gtag) throws CoolIOException {
+	public List<GtagType> retrieveGtagsFromSchemaAndDb(final String schema,
+			final String db, final String gtag) throws CoolIOException {
 		Object[] params = new Object[3];
 		params[0] = schema;
 		params[1] = db;
@@ -230,11 +219,9 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<GtagTagDiffType> retrieveGtagsDiffFromSchemaAndDb(
-			final String schema,
-			final String db, 
-			final String gtag1, 
-			final String gtag2) throws CoolIOException {
+	public List<GtagTagDiffType> retrieveGtagsDiffFromSchemaAndDb(final String schema,
+			final String db, final String gtag1, final String gtag2)
+			throws CoolIOException {
 		Object[] params = new Object[4];
 		params[0] = schema;
 		params[1] = db;
@@ -254,11 +241,9 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<ChannelType> retrieveChannelsFromNodeSchemaAndDb(
-			final String schema,
-			final String db, 
-			final String node, 
-			final String channame) throws CoolIOException {
+	public List<ChannelType> retrieveChannelsFromNodeSchemaAndDb(final String schema,
+			final String db, final String node, final String channame)
+			throws CoolIOException {
 		Object[] params = new Object[4];
 		params[0] = schema;
 		params[1] = db;
@@ -279,9 +264,8 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<IovStatType> retrieveIovStatFromNodeSchemaAndDb(
-			final String schema, final String db,
-			final String node, final String tag) throws CoolIOException {
+	public List<IovStatType> retrieveIovStatFromNodeSchemaAndDb(final String schema,
+			final String db, final String node, final String tag) throws CoolIOException {
 		Object[] params = new Object[4];
 		params[0] = schema;
 		params[1] = db;
@@ -303,9 +287,8 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<SchemaType> retrieveSchemasFromNodeSchemaAndDb(
-			final String schema, final String db,
-			final String node) throws CoolIOException {
+	public List<SchemaType> retrieveSchemasFromNodeSchemaAndDb(final String schema,
+			final String db, final String node) throws CoolIOException {
 		Object[] params = new Object[3];
 		params[0] = schema;
 		params[1] = db;
@@ -325,11 +308,9 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * , java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<IovType> retrieveIovStatPerChannelFromNodeSchemaAndDb(
-			final String schema,
-			final String db, 
-			final String node, 
-			final String tag) throws CoolIOException {
+	public List<IovType> retrieveIovStatPerChannelFromNodeSchemaAndDb(
+			final String schema, final String db, final String node, final String tag)
+			throws CoolIOException {
 		Object[] params = new Object[4];
 		params[0] = schema;
 		params[1] = db;
@@ -350,11 +331,9 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * .String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<IovType> retrieveHolesStatPerChannelFromNodeSchemaAndDb(
-			final String schema,
-			final String db, 
-			final String node, 
-			final String tag) throws CoolIOException {
+	public List<IovType> retrieveHolesStatPerChannelFromNodeSchemaAndDb(
+			final String schema, final String db, final String node, final String tag)
+			throws CoolIOException {
 		Object[] params = new Object[4];
 		params[0] = schema;
 		params[1] = db;
@@ -375,11 +354,9 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * .String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<IovType> retrieveIovSummaryPerChannelFromNodeSchemaAndDb(
-			final String schema,
-			final String db, 
-			final String node, 
-			final String tag) throws CoolIOException {
+	public List<IovType> retrieveIovSummaryPerChannelFromNodeSchemaAndDb(
+			final String schema, final String db, final String node, final String tag)
+			throws CoolIOException {
 		Object[] params = new Object[4];
 		params[0] = schema;
 		params[1] = db;
@@ -401,13 +378,9 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
-	public final List<IovType> retrieveIovSummaryPerChannelFromNodeSchemaAndDbInRange(
-			final String schema, 
-			final String db, 
-			final String node, 
-			final String tag, 
-			final BigDecimal since,
-			final BigDecimal until) throws CoolIOException {
+	public List<IovType> retrieveIovSummaryPerChannelFromNodeSchemaAndDbInRange(
+			final String schema, final String db, final String node, final String tag,
+			final BigDecimal since, final BigDecimal until) throws CoolIOException {
 		Object[] params = new Object[6];
 		params[0] = schema;
 		params[1] = db;
@@ -431,11 +404,9 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
-	public final List<IovType> retrieveHolesStatPerChannelFromNodeSchemaAndDbInRange(
-			final String schema, final String db, final String node, 
-			final String tag, 
-			final BigDecimal since,
-			final BigDecimal until) throws CoolIOException {
+	public List<IovType> retrieveHolesStatPerChannelFromNodeSchemaAndDbInRange(
+			final String schema, final String db, final String node, final String tag,
+			final BigDecimal since, final BigDecimal until) throws CoolIOException {
 		Object[] params = new Object[6];
 		params[0] = schema;
 		params[1] = db;
@@ -459,10 +430,10 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
-	public final List<CoolIovType> retrieveIovsFromNodeSchemaAndDbInRangeByChanName(
-			final String schema, final String db, final String node, 
-			final String tag, final String channel,
-			final BigDecimal since, final BigDecimal until) throws CoolIOException {
+	public List<CoolIovType> retrieveIovsFromNodeSchemaAndDbInRangeByChanName(
+			final String schema, final String db, final String node, final String tag,
+			final String channel, final BigDecimal since, final BigDecimal until)
+			throws CoolIOException {
 		Object[] params = new Object[7];
 		params[0] = schema;
 		params[1] = db;
@@ -491,10 +462,10 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
-	public final List<CoolIovType> retrieveIovsFromNodeSchemaAndDbInRangeByChanId(
-			final String schema, final String db, final String node, 
-			final String tag, final Long chanid,
-			final BigDecimal since, final BigDecimal until) throws CoolIOException {
+	public List<CoolIovType> retrieveIovsFromNodeSchemaAndDbInRangeByChanId(
+			final String schema, final String db, final String node, final String tag,
+			final Long chanid, final BigDecimal since, final BigDecimal until)
+			throws CoolIOException {
 		Object[] params = new Object[7];
 		params[0] = schema;
 		params[1] = db;

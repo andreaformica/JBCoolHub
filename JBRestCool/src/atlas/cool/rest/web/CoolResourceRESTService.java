@@ -566,17 +566,22 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		return results.toString();
 	}
 
+	/**
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 */
 	protected String dumpResultSet(final ResultSet rs) throws SQLException {
-		final ResultSetMetaData rsmd_rs = rs.getMetaData();
-		for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-			log.info("col " + i + " name = " + rsmd_rs.getColumnName(i));
+		final ResultSetMetaData rsmdRs = rs.getMetaData();
+		for (int i = 1; i <= rsmdRs.getColumnCount(); i++) {
+			log.info("col " + i + " name = " + rsmdRs.getColumnName(i));
 		}
 		log.info(" rs is on first row " + rs.isFirst());
 		final StringBuffer buf = new StringBuffer();
-		final int ncol = rsmd_rs.getColumnCount();
+		final int ncol = rsmdRs.getColumnCount();
 		while (rs.next()) {
 			for (int i = 1; i <= ncol; i++) {
-				final String colname = rsmd_rs.getColumnName(i);
+				final String colname = rsmdRs.getColumnName(i);
 				final Object colval = rs.getObject(i);
 				// payload.addColumn(i, colname);
 				// payload.addData(i, colval);
@@ -588,6 +593,12 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		return buf.toString();
 	}
 
+	/**
+	 * @param rs
+	 * @param fname
+	 * @return
+	 * @throws SQLException
+	 */
 	protected String dump2FileResultSet(final ResultSet rs, final String fname)
 			throws SQLException {
 		FileWriter fw = null;
@@ -595,10 +606,10 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		final List<String> masked = pyld.getMasked();
 		try {
 			fw = new FileWriter(fname);
-			final ResultSetMetaData rsmd_rs = rs.getMetaData();
+			final ResultSetMetaData rsmdRs = rs.getMetaData();
 			final StringBuffer bufheader = new StringBuffer();
-			for (int i = 1; i <= rsmd_rs.getColumnCount(); i++) {
-				final String colname = rsmd_rs.getColumnName(i);
+			for (int i = 1; i <= rsmdRs.getColumnCount(); i++) {
+				final String colname = rsmdRs.getColumnName(i);
 				log.info("col " + i + " name = " + colname);
 				if (masked.contains(colname)) {
 					log.info("Ignore column " + colname + " in the output file ");
@@ -608,11 +619,11 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 			}
 			fw.write(bufheader.toString() + "\n");
 			log.info(" rs is on first row " + rs.isFirst());
-			final int ncol = rsmd_rs.getColumnCount();
+			final int ncol = rsmdRs.getColumnCount();
 			while (rs.next()) {
 				final StringBuffer bufline = new StringBuffer();
 				for (int i = 1; i <= ncol; i++) {
-					final String colname = rsmd_rs.getColumnName(i);
+					final String colname = rsmdRs.getColumnName(i);
 					final Object colval = rs.getObject(i);
 					if (masked.contains(colname)) {
 						log.info("Ignore column " + colname + " in the output file ");
@@ -633,6 +644,11 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		return fname;
 	}
 
+	/**
+	 * @param val
+	 * @return
+	 * @throws SQLException
+	 */
 	protected String dumpObject(final Object val) throws SQLException {
 		String buf = "null";
 		if (val == null) {
@@ -655,6 +671,12 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 		return buf;
 	}
 
+	/**
+	 * @param dat
+	 * @return
+	 * @throws IOException
+	 * @throws SQLException
+	 */
 	protected String lobtoString(final BLOB dat) throws IOException, SQLException {
 		final StringBuffer strOut = new StringBuffer();
 		String aux;

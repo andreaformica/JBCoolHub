@@ -39,8 +39,7 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 				+ " folder_iovtablename ," + " folder_tagtablename ,"
 				+ " folder_channeltablename, " + " schema_name, " + " dbname, "
 				+ " iov_base, " + " iov_type, " + " rownum "
-				+ "from table(cool_select_pkg.f_getall_nodes(:schema,:dbname,:node))", 
-				resultClass = NodeType.class),
+				+ "from table(cool_select_pkg.f_getall_nodes(:schema,:dbname,:node))", resultClass = NodeType.class),
 		@NamedNativeQuery(name = NodeType.QUERY_FINDALLNODES, query = "select   node_id,"
 				+ " node_name , " + " node_fullpath ," + " node_description ,"
 				+ " node_isleaf ," + " node_instime ," + " node_tinstime ,"
@@ -48,9 +47,7 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 				+ " folder_iovtablename ," + " folder_tagtablename ,"
 				+ " folder_channeltablename, " + " schema_name, " + " dbname, "
 				+ " iov_base, " + " iov_type, " + " rownum "
-				+ "from table(cool_select_pkg.f_getall_nodes(:schema,:dbname,:node))", 
-				resultClass = NodeType.class) })
-@BatchSize(size = 5)
+				+ "from table(cool_select_pkg.f_getall_nodes(:schema,:dbname,:node))", resultClass = NodeType.class) })
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class NodeType implements Serializable {

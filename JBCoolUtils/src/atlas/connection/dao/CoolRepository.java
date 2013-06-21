@@ -148,7 +148,7 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * java.lang.Object[])
 	 */
 	@Override
-	public synchronized List<?> findCoolList(final String qryname,
+	public  List<?> findCoolList(final String qryname,
 			final Object[] params) throws CoolIOException {
 		try {
 			return findCoolListByRange(qryname, params, 0, 0);
@@ -166,7 +166,7 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * java.lang.Object[], int, int)
 	 */
 	@Override
-	public synchronized List<?> findCoolListByRange(final String qryname,
+	public  List<?> findCoolListByRange(final String qryname,
 			final Object[] params, final int firstResult, final int maxResults)
 			throws CoolIOException {
 		try {
@@ -179,7 +179,9 @@ public class CoolRepository implements CoolRepositoryDAO {
 			} else {
 				q.setMaxResults(maxFetchResults);
 			}
-			return q.getResultList();
+			List<?> results = q.getResultList();
+			em.clear();
+			return results;
 		} catch (NoResultException e) {
 			e.printStackTrace();
 		}
@@ -208,7 +210,7 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * @throws CoolIOException
 	 *             Cool exception.
 	 */
-	protected final synchronized Query getQuery(final String qry,
+	protected Query getQuery(final String qry,
 			final Object[] params) throws CoolIOException {
 		// log.info("Build query "+qry+" with N parameters "+params.length);
 		try {

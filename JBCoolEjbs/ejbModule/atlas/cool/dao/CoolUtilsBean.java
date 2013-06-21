@@ -90,9 +90,9 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final SortedMap<Long, CoolIovSummary> computeIovSummaryMap(
-			final String schema, final String db, final String node, final String tag,
-			final String iovbase) throws CoolIOException {
+	public SortedMap<Long, CoolIovSummary> computeIovSummaryMap(final String schema,
+			final String db, final String node, final String tag, final String iovbase)
+			throws CoolIOException {
 		try {
 
 			final List<IovType> iovperchanList = cooldao
@@ -118,7 +118,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * @param iovbase
 	 * @return
 	 */
-	protected final SortedMap<Long, CoolIovSummary> getSummary(
+	protected SortedMap<Long, CoolIovSummary> getSummary(
 			final List<IovType> iovperchanList, final String schema, final String db,
 			final String node, final String tag, final String iovbase) {
 
@@ -247,13 +247,14 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
-	public final SortedMap<Long, CoolIovSummary> computeIovSummaryRangeMap(
-			final String schema, final String db, final String node, final String tag,
-			final String iovbase, final BigDecimal since, final BigDecimal until)
-			throws CoolIOException {
+	public SortedMap<Long, CoolIovSummary> computeIovSummaryRangeMap(final String schema,
+			final String db, final String node, final String tag, final String iovbase,
+			final BigDecimal since, final BigDecimal until) throws CoolIOException {
 
 		try {
 
+			log.info("computeIovSummaryRangeMap: " + schema + " " + db + " " + node + " "
+					+ tag + " " + iovbase);
 			final List<IovType> iovperchanList = cooldao
 					.retrieveIovSummaryPerChannelFromNodeSchemaAndDbInRange(schema, db,
 							node, tag, since, until);
@@ -275,7 +276,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.lang.String)
 	 */
 	@Override
-	public final List<NodeType> listNodesInSchema(final String schema, final String db)
+	public List<NodeType> listNodesInSchema(final String schema, final String db)
 			throws CoolIOException {
 		log.info("Calling listNodesInSchema..." + schema + " " + db);
 		List<NodeType> results = null;
@@ -291,7 +292,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<SchemaNodeTagType> listTagsInNodesSchema(final String schema,
+	public List<SchemaNodeTagType> listTagsInNodesSchema(final String schema,
 			final String db, final String node) throws CoolIOException {
 		log.info("Calling listTagsInNodeSchema..." + schema + " " + db + " " + node);
 		List<SchemaNodeTagType> results = null;
@@ -314,7 +315,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public final List<IovType> getIovStatPerChannel(final String schema, final String db,
+	public List<IovType> getIovStatPerChannel(final String schema, final String db,
 			final String fld, final String tag) throws CoolIOException {
 		log.info("Calling getIovStatPerChannel..." + schema + " " + db + " " + fld + " "
 				+ tag);
@@ -358,7 +359,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.lang.String, java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
-	public final NodeType listIovsInNodesSchemaTagRangeAsList(final String schema,
+	public NodeType listIovsInNodesSchemaTagRangeAsList(final String schema,
 			final String db, final String fld, final String tag, final String channel,
 			final BigDecimal since, final BigDecimal until) throws CoolIOException {
 		log.info("Calling listIovsInNodesSchemaTagRangeAsList..." + schema + " " + db
@@ -407,7 +408,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
-	public final NodeType listIovsInNodesSchemaTagRangeAsList(final String schema,
+	public NodeType listIovsInNodesSchemaTagRangeAsList(final String schema,
 			final String db, final String fld, final String tag, final Long chanid,
 			final BigDecimal since, final BigDecimal until) throws CoolIOException {
 		log.info("Calling listIovsInNodesSchemaTagRangeAsList..." + schema + " " + db
@@ -452,7 +453,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.lang.String, java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
-	public final NodeType listPayloadInNodesSchemaTagRangeAsList(final String schema,
+	public NodeType listPayloadInNodesSchemaTagRangeAsList(final String schema,
 			final String db, final String fld, final String tag, final String channel,
 			final BigDecimal since, final BigDecimal until) throws CoolIOException {
 		log.info("Calling listPayloadInNodesSchemaTagRangeAsList..." + schema + " " + db
@@ -571,13 +572,13 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		if (!fld.startsWith("/")) {
 			node = "/" + fld;
 		}
-		List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema, db,
-				node);
+		List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema, db, node);
 		NodeType selnode = null;
 		if (nodes != null && nodes.size() > 0) {
-			for (final NodeType anode : nodes) {
+			log.info("List of nodes retrieved: " + nodes.toString());
+			for (NodeType anode : nodes) {
 				log.info("Found " + anode.getNodeFullpath() + " of type "
-						+ anode.getNodeIovType());
+						+ anode.getNodeIovType() + " iovbase " + anode.getNodeIovBase());
 				selnode = anode;
 			}
 		}
@@ -590,8 +591,8 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			seltag = null;
 		}
 
-		Map<Long, CoolIovSummary> iovsummary = computeIovSummaryRangeMap(schema,
-				db, node, seltag, selnode.getNodeIovBase(), since, until);
+		Map<Long, CoolIovSummary> iovsummary = computeIovSummaryRangeMap(schema, db,
+				node, seltag, selnode.getNodeIovBase(), since, until);
 
 		summarylist = iovsummary.values();
 
@@ -604,8 +605,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * @see atlas.cool.dao.CoolUtilsDAO#dumpIovSummaryAsText(java.util.Collection)
 	 */
 	@Override
-	public final String dumpIovSummaryAsText(
-			final Collection<CoolIovSummary> iovsummaryColl) {
+	public String dumpIovSummaryAsText(final Collection<CoolIovSummary> iovsummaryColl) {
 
 		final StringBuffer results = new StringBuffer();
 
@@ -683,9 +683,8 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	}
 
 	@Override
-	public final String dumpIovSummaryAsText(
-			final Collection<CoolIovSummary> iovsummaryColl, final BigDecimal since,
-			final BigDecimal until) {
+	public String dumpIovSummaryAsText(final Collection<CoolIovSummary> iovsummaryColl,
+			final BigDecimal since, final BigDecimal until) {
 
 		final StringBuffer results = new StringBuffer();
 
@@ -799,8 +798,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * @see atlas.cool.dao.CoolUtilsDAO#dumpIovSummaryAsSvg(java.util.Collection)
 	 */
 	@Override
-	public final String dumpIovSummaryAsSvg(
-			final Collection<CoolIovSummary> iovsummaryColl) {
+	public String dumpIovSummaryAsSvg(final Collection<CoolIovSummary> iovsummaryColl) {
 
 		final StringBuffer results = new StringBuffer();
 		final StringBuffer svg = new StringBuffer();
@@ -907,9 +905,8 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * @see atlas.cool.dao.CoolUtilsDAO#dumpIovSummaryAsSvg(java.util.Collection)
 	 */
 	@Override
-	public final String dumpIovSummaryAsSvg(
-			final Collection<CoolIovSummary> iovsummaryColl, final BigDecimal since,
-			final BigDecimal until) {
+	public String dumpIovSummaryAsSvg(final Collection<CoolIovSummary> iovsummaryColl,
+			final BigDecimal since, final BigDecimal until) {
 
 		final StringBuffer results = new StringBuffer();
 		final StringBuffer svg = new StringBuffer();
@@ -1048,7 +1045,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * @see atlas.cool.dao.CoolUtilsDAO#checkHoles(java.util.Collection)
 	 */
 	@Override
-	public final String checkHoles(final Collection<CoolIovSummary> iovsummaryColl)
+	public String checkHoles(final Collection<CoolIovSummary> iovsummaryColl)
 			throws ComaQueryException {
 		final StringBuffer results = new StringBuffer();
 
@@ -1171,7 +1168,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.lang.String)
 	 */
 	@Override
-	public final List<CrViewRuninfo> checkHoles(final IovRange ivr, final String iovbase)
+	public List<CrViewRuninfo> checkHoles(final IovRange ivr, final String iovbase)
 			throws ComaQueryException {
 
 		final List<CrViewRuninfo> results = new ArrayList<CrViewRuninfo>();
@@ -1196,7 +1193,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 					runlist = comadao.findRunsInRange(lsince, luntil);
 					runMap.put(timekey, runlist);
 				}
-			} else if (iovbase.equals("run-lumi")) {
+			} else if (iovbase.startsWith("run-")) {
 				Long runsince = CoolIov.getRun(ivr.getSince());
 				final Long rununtil = CoolIov.getRun(ivr.getUntil());
 				final Long lbsince = CoolIov.getLumi(ivr.getSince());
@@ -1246,8 +1243,8 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.math.BigDecimal, java.lang.String)
 	 */
 	@Override
-	public final List<CrViewRuninfo> checkHoles(final BigDecimal since,
-			final BigDecimal until, final String iovbase) throws ComaQueryException {
+	public List<CrViewRuninfo> checkHoles(final BigDecimal since, final BigDecimal until,
+			final String iovbase) throws ComaQueryException {
 
 		final List<CrViewRuninfo> results = new ArrayList<CrViewRuninfo>();
 
@@ -1318,7 +1315,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.lang.String)
 	 */
 	@Override
-	public final Map<String, Object> getTimeRange(final String since, final String until,
+	public Map<String, Object> getTimeRange(final String since, final String until,
 			final String timespan) throws CoolIOException {
 		// Time selection
 		final Map<String, Object> timerangeMap = new HashMap<String, Object>();
@@ -1531,8 +1528,13 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		return nodefortag1;
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.dao.CoolUtilsDAO#listIovsDiffInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.math.BigDecimal, java.math.BigDecimal)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.dao.CoolUtilsDAO#listIovsDiffInNodesSchemaTagRangeAsList(java.lang.String
+	 * , java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
 	public NodeType listIovsDiffInNodesSchemaTagRangeAsList(String schema, String db,
@@ -1563,5 +1565,4 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		return nodefortag1;
 	}
 
-	
 }
