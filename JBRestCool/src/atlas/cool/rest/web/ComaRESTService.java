@@ -13,6 +13,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.CrViewRuninfo;
 
 
@@ -51,10 +52,21 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	@GET
 	@Produces("application/xml")
 	@Path("/{runstart}/{runend}/runs")
-	public List<CrViewRuninfo> listRuns(@PathParam("runstart") BigDecimal runstart, @PathParam("runend") BigDecimal runend) {
+	public List<CrViewRuninfo> listRuns(@PathParam("runstart") final BigDecimal runstart, @PathParam("runend") final BigDecimal runend) {
 		// TODO Auto-generated method stub
 		return super.listRuns(runstart, runend);
 	}
 
+	/**
+	 * @param state
+	 * @return
+	 */
+	@GET
+	@Produces("application/xml")
+	@Path("/{state}/gtagstate")
+	public List<ComaCbGtagStates> listGtagStates(
+			@PathParam("state") final String state) {
+		return super.listGtagStates(state);
+	}
 
 }

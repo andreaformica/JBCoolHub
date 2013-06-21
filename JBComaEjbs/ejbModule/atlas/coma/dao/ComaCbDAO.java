@@ -5,9 +5,11 @@ package atlas.coma.dao;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import atlas.coma.exceptions.ComaQueryException;
+import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.ComaCbSchemas;
 import atlas.coma.model.ComaCbamiGtags;
 import atlas.coma.model.CrViewRuninfo;
@@ -32,6 +34,20 @@ public interface ComaCbDAO {
 	 * @throws ComaQueryException
 	 */
 	List<ComaCbamiGtags> findGtagUsageInAmi(String gtagname) throws ComaQueryException;
+
+	/**
+	 * @param state
+	 * @return
+	 * @throws ComaQueryException
+	 */
+	List<ComaCbGtagStates> findGtagState(String state) throws ComaQueryException;
+
+	/**
+	 * @param state
+	 * @return
+	 * @throws ComaQueryException
+	 */
+	List<ComaCbGtagStates> findGtagStateAtTime(String state, Date time) throws ComaQueryException;
 
 	/**
 	 * @param runstart

@@ -2,6 +2,7 @@ package atlas.coma.dao;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import atlas.coma.exceptions.ComaQueryException;
+import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.ComaCbSchemas;
 import atlas.coma.model.ComaCbamiGtags;
 import atlas.coma.model.CrViewRuninfo;
@@ -40,7 +42,9 @@ public class ComaCbBean implements ComaCbDAO {
 		// TODO Auto-generated constructor stub
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see atlas.coma.dao.ComaCbDAO#findSchemas(java.lang.String)
 	 */
 	@Override
@@ -55,7 +59,47 @@ public class ComaCbBean implements ComaCbDAO {
 		} catch (final CoolIOException e) {
 			throw new ComaQueryException(e.getMessage());
 		}
-		// log.info("Retrieved a list of "+nodelist.size()+" nodes");
+		return comalist;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.coma.dao.ComaCbDAO#findGtagState(java.lang.String)
+	 */
+	@Override
+	public List<ComaCbGtagStates> findGtagState(final String state)
+			throws ComaQueryException {
+		final Object[] params = new Object[1];
+		params[0] = state;
+		log.info("Using query " + ComaCbGtagStates.QUERY_FINDSTATE + " with " + state);
+		List<ComaCbGtagStates> comalist = null;
+		try {
+			comalist = (List<ComaCbGtagStates>) coolrep.findCoolList(
+					ComaCbGtagStates.QUERY_FINDSTATE, params);
+		} catch (final CoolIOException e) {
+			throw new ComaQueryException(e.getMessage());
+		}
+		return comalist;
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.coma.dao.ComaCbDAO#findGtagStateAtTime(java.lang.String, java.util.Date)
+	 */
+	@Override
+	public List<ComaCbGtagStates> findGtagStateAtTime(final String state, final Date time)
+			throws ComaQueryException {
+		final Object[] params = new Object[2];
+		params[0] = state;
+		params[1] = time;
+		log.info("Using query " + ComaCbGtagStates.QUERY_FINDSTATEATTIME + " with " + state + " time " + time);
+		List<ComaCbGtagStates> comalist = null;
+		try {
+			comalist = (List<ComaCbGtagStates>) coolrep.findCoolList(
+					ComaCbGtagStates.QUERY_FINDSTATEATTIME, params);
+		} catch (final CoolIOException e) {
+			throw new ComaQueryException(e.getMessage());
+		}
 		return comalist;
 	}
 
