@@ -69,7 +69,7 @@ public class CoolGtagChecks {
      * 
      */
 	@Schedule(dayOfWeek = "*", hour = "0", persistent = false)
-	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 25)
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 20)
 	public void checkCoverage() {
 		String globaltagname = "COMCOND-BLKPA-RUN1-01";
 		final String db = "COMP200";
