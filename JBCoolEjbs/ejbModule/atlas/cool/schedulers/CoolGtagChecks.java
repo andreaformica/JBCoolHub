@@ -153,6 +153,8 @@ public class CoolGtagChecks {
 		} catch (final ComaQueryException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} finally {
+			badcooliovsummary.clear();
 		}
 	}
 

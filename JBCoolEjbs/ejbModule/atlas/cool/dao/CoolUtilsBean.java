@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +25,8 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.jboss.ejb3.annotation.TransactionTimeout;
 
 import atlas.coma.dao.ComaCbDAO;
 import atlas.coma.exceptions.ComaQueryException;
@@ -453,6 +456,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.lang.String, java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 20)
 	public NodeType listPayloadInNodesSchemaTagRangeAsList(final String schema,
 			final String db, final String fld, final String tag, final String channel,
 			final BigDecimal since, final BigDecimal until) throws CoolIOException {
@@ -471,7 +475,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			if (!fld.startsWith("/")) {
 				node = "/" + fld;
 			}
-			final List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema, db,
+			List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema, db,
 					node);
 			if (nodes != null && nodes.size() > 0) {
 				for (final NodeType anode : nodes) {
@@ -491,6 +495,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			log.info("Retrieving payload " + payloaddao);
 			final CoolPayload payload = payloaddao.getPayloadsObj(schema, db, node,
 					seltag, since, until, chan);
+			log.info("Retrieved payload of n rows = " + payload.getRows());
 			iovlist = new CoolPayloadTransform(payload).getIovsWithPayload();
 			if (iovlist != null) {
 				log.info("Retrieved iovlist of " + iovlist.size());
@@ -511,6 +516,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 20)
 	public NodeType listPayloadInNodesSchemaTagRangeAsList(final String schema,
 			final String db, final String fld, final String tag, final Long chanid,
 			final BigDecimal since, final BigDecimal until) throws CoolIOException {
@@ -562,6 +568,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * java.lang.String, java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 20)
 	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(
 			final String schema, final String db, final String fld, final String tag,
 			final BigDecimal since, final BigDecimal until) throws CoolIOException {
