@@ -9,5 +9,9 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="/JBCoolEjbs"/>
+	<classpathentry kind="src" path="/JBCoolUtils"/>
+	<classpathentry kind="var" path="EXTERNALS_LIB/share/java/jackson/jackson-annotations-2.2.0.jar"/>
+	<classpathentry kind="var" path="EXTERNALS_LIB/share/java/jackson/jackson-core-2.2.0.jar"/>
+	<classpathentry kind="var" path="EXTERNALS_LIB/share/java/jackson/jackson-databind-2.2.0.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
