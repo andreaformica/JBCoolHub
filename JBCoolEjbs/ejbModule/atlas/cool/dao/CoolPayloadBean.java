@@ -372,7 +372,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 		log.fine("- tag     " + tagname);
 		log.fine("- since   " + stime);
 		log.fine("- until   " + etime);
-		log.fine("- channel " + channelId);
+		log.fine("- channelId " + channelId);
 
 		try {
 			String fld = folder;
@@ -391,7 +391,11 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			cstmt.setString(1, schemaname);
 			cstmt.setString(2, dbname);
 			cstmt.setString(3, fld);
-			cstmt.setString(4, tagname);
+			if (tagname != null) {
+				cstmt.setString(4, tagname);
+			} else {
+				cstmt.setNull(4, Types.VARCHAR);
+			}
 			cstmt.setBigDecimal(5, stime);
 			cstmt.setBigDecimal(6, etime);
 			if (channelId != null) {
@@ -455,7 +459,11 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			cstmt.setString(1, schemaname);
 			cstmt.setString(2, dbname);
 			cstmt.setString(3, node);
-			cstmt.setString(4, tagname);
+			if (tagname != null) {
+				cstmt.setString(4, tagname);
+			} else {
+				cstmt.setNull(4, Types.VARCHAR);
+			}
 			cstmt.setBigDecimal(5, time);
 			cstmt.setString(6, channelName);
 			log.fine(" executing query ...");
@@ -530,7 +538,11 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 			cstmt.setString(1, schemaname);
 			cstmt.setString(2, dbname);
 			cstmt.setString(3, fld);
-			cstmt.setString(4, tagname);
+			if (tagname != null) {
+				cstmt.setString(4, tagname);
+			} else {
+				cstmt.setNull(4, Types.VARCHAR);
+			}
 			cstmt.setBigDecimal(5, stime);
 			cstmt.setBigDecimal(6, etime);
 			if (channelName != null) {

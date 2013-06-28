@@ -207,7 +207,7 @@ public class CoolPayload implements Serializable {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public final Map<String, Object> getDataRow(final int i) throws SQLException, IOException {
+	public final Map<String, Object> getDataRow(final int i) throws SQLException, IOException, Exception {
 		final Map<String, Object> rowdata = new HashMap<String, Object>();
 		final Set<Integer> colkeyset = columns.keySet();
 		for (final Integer icol : colkeyset) {
@@ -242,13 +242,16 @@ public class CoolPayload implements Serializable {
 		for (int i = 0; i < getRows(); i++) {
 			Map<String, Object> rowdata;
 			try {
-				rowdata = getDataRow(i);
-				log.fine("got map of size " + rowdata.size());
-				datalist.add(rowdata);
+					rowdata = getDataRow(i);
+					log.fine("got map of size " + rowdata.size());
+					datalist.add(rowdata);
 			} catch (final SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (final IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -330,6 +333,9 @@ public class CoolPayload implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

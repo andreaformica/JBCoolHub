@@ -26,7 +26,7 @@ public class CoolPayloadTransform {
 	/**
 	 * 
 	 */
-	private final CoolPayload pyld;
+	private CoolPayload pyld;
 	/**
 	 * 
 	 */
@@ -48,53 +48,60 @@ public class CoolPayloadTransform {
 		if (pyld == null) {
 			return null;
 		}
-
-		final List<CoolIovType> iovlist = new ArrayList<CoolIovType>();
-		final List<Map<String, Object>> pyldmap = pyld.getDataList();
-		for (final Map<String, Object> map : pyldmap) {
-			final BigDecimal objectId = (BigDecimal) map.get("OBJECT_ID");
-			final BigDecimal channelId = (BigDecimal) map.get("CHANNEL_ID");
-			final String channelName = (String) map.get("CHANNEL_NAME");
-			final BigDecimal iovSince = (BigDecimal) map.get("IOV_SINCE");
-			final BigDecimal iovUntil = (BigDecimal) map.get("IOV_UNTIL");
-			final BigDecimal tagId = (BigDecimal) map.get("USER_TAG_ID");
-			final String sysInstimeStr = (String) map.get("SYS_INSTIME");
-			final String lastmodDateStr = (String) map.get("LASTMOD_DATE");
-			final BigDecimal newHeadId = (BigDecimal) map.get("NEW_HEAD_ID");
-			String tagName = "unknown";
-			if (map.containsKey("TAG_NAME")) {
-				tagName = (String) map.get("TAG_NAME");
-			}
-			String iovBase = "unknown";
-			if (map.containsKey("IOV_BASE")) {
-				iovBase = (String) map.get("IOV_BASE");
-			}
-
-			Date sysInstime = null;
-			Date lastmodDate = null;
-			try {
-				sysInstime = df.parse(sysInstimeStr.substring(0, 19));
-				lastmodDate = df.parse(lastmodDateStr.substring(0, 19));
-			} catch (final ParseException e) {
-				throw new CoolIOException(e.getMessage());
-			}
-
-			final CoolIovType cooliov = new CoolIovType(objectId, channelId.longValue(),
-					channelName, iovSince, iovUntil, tagId.longValue(), new Timestamp(
-							sysInstime.getTime()), new Timestamp(lastmodDate.getTime()),
-					newHeadId, tagName, iovBase);
-			final Map<String, String> payloadcolumns = 
-					new LinkedHashMap<String, String>();
-			final Set<String> keys = map.keySet();
-			for (final String akey : keys) {
-				if (pyld.isNumber(akey)) {
-					final Object value = map.get(akey);
-					payloadcolumns.put(akey, value.toString());
+		try {
+			List<CoolIovType> iovlist = new ArrayList<CoolIovType>();
+			final List<Map<String, Object>> pyldmap = pyld.getDataList();
+			//System.out.println("Parsing "+pyld.toString());
+			for (final Map<String, Object> map : pyldmap) {
+				final BigDecimal objectId = (BigDecimal) map.get("OBJECT_ID");
+				final BigDecimal channelId = (BigDecimal) map.get("CHANNEL_ID");
+				final String channelName = (String) map.get("CHANNEL_NAME");
+				final BigDecimal iovSince = (BigDecimal) map.get("IOV_SINCE");
+				final BigDecimal iovUntil = (BigDecimal) map.get("IOV_UNTIL");
+				final BigDecimal tagId = (BigDecimal) map.get("USER_TAG_ID");
+				final String sysInstimeStr = (String) map.get("SYS_INSTIME");
+				final String lastmodDateStr = (String) map.get("LASTMOD_DATE");
+				final BigDecimal newHeadId = (BigDecimal) map.get("NEW_HEAD_ID");
+				String tagName = "unknown";
+				if (map.containsKey("TAG_NAME")) {
+					tagName = (String) map.get("TAG_NAME");
 				}
+				String iovBase = "unknown";
+				if (map.containsKey("IOV_BASE")) {
+					iovBase = (String) map.get("IOV_BASE");
+				}
+
+				Date sysInstime = null;
+				Date lastmodDate = null;
+				try {
+					sysInstime = df.parse(sysInstimeStr.substring(0, 19));
+					lastmodDate = df.parse(lastmodDateStr.substring(0, 19));
+				} catch (final ParseException e) {
+					throw new CoolIOException(e.getMessage());
+				}
+
+				
+				final CoolIovType cooliov = new CoolIovType(objectId,
+						channelId.longValue(), channelName, iovSince, iovUntil,
+						tagId.longValue(), new Timestamp(sysInstime.getTime()),
+						new Timestamp(lastmodDate.getTime()), newHeadId, tagName, iovBase);
+				final Map<String, String> payloadcolumns = new LinkedHashMap<String, String>();
+				final Set<String> keys = map.keySet();
+				for (final String akey : keys) {
+					
+
+					if (pyld.isNumber(akey)) {
+						final Object value = map.get(akey);
+						payloadcolumns.put(akey, (value != null) ? value.toString() : null);
+					}
+				}
+				
+				cooliov.setPayload(payloadcolumns);
+				iovlist.add(cooliov);
 			}
-			cooliov.setPayload(payloadcolumns);
-			iovlist.add(cooliov);
+			return iovlist;
+		} catch (Exception e) {
+			throw new CoolIOException("Transform of payload got exception...."+e.getMessage());
 		}
-		return iovlist;
 	}
 }
