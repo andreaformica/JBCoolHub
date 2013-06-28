@@ -51,7 +51,7 @@ public class ComaCbBean implements ComaCbDAO {
 	public List<ComaCbSchemas> findSchemas(final String name) throws ComaQueryException {
 		final Object[] params = new Object[1];
 		params[0] = name;
-		log.info("Using query " + ComaCbSchemas.QUERY_FINDSCHEMAS + " with " + name);
+		log.fine("Using query " + ComaCbSchemas.QUERY_FINDSCHEMAS + " with " + name);
 		List<ComaCbSchemas> comalist = null;
 		try {
 			comalist = (List<ComaCbSchemas>) coolrep.findCoolList(
@@ -72,7 +72,7 @@ public class ComaCbBean implements ComaCbDAO {
 			throws ComaQueryException {
 		final Object[] params = new Object[1];
 		params[0] = state;
-		log.info("Using query " + ComaCbGtagStates.QUERY_FINDSTATE + " with " + state);
+		log.fine("Using query " + ComaCbGtagStates.QUERY_FINDSTATE + " with " + state);
 		List<ComaCbGtagStates> comalist = null;
 		try {
 			comalist = (List<ComaCbGtagStates>) coolrep.findCoolList(
@@ -92,7 +92,7 @@ public class ComaCbBean implements ComaCbDAO {
 		final Object[] params = new Object[2];
 		params[0] = state;
 		params[1] = time;
-		log.info("Using query " + ComaCbGtagStates.QUERY_FINDSTATEATTIME + " with " + state + " time " + time);
+		log.fine("Using query " + ComaCbGtagStates.QUERY_FINDSTATEATTIME + " with " + state + " time " + time);
 		List<ComaCbGtagStates> comalist = null;
 		try {
 			comalist = (List<ComaCbGtagStates>) coolrep.findCoolList(
@@ -113,7 +113,7 @@ public class ComaCbBean implements ComaCbDAO {
 
 		final Object[] params = new Object[1];
 		params[0] = gtagname;
-		log.info("Using query " + ComaCbamiGtags.QUERY_AMI_GTAGS + " with " + gtagname);
+		log.fine("Using query " + ComaCbamiGtags.QUERY_AMI_GTAGS + " with " + gtagname);
 		List<ComaCbamiGtags> comalist = null;
 		try {
 			comalist = (List<ComaCbamiGtags>) coolrep.findCoolList(
@@ -139,7 +139,7 @@ public class ComaCbBean implements ComaCbDAO {
 		final Object[] params = new Object[2];
 		params[0] = runstart;
 		params[1] = runend;
-		log.info("Using query " + CrViewRuninfo.QUERY_FINDRUNS + " with " + runstart
+		log.fine("Using query " + CrViewRuninfo.QUERY_FINDRUNS + " with " + runstart
 				+ " " + runend);
 		List<CrViewRuninfo> runlist = null;
 		try {
@@ -163,7 +163,7 @@ public class ComaCbBean implements ComaCbDAO {
 		final Object[] params = new Object[2];
 		params[0] = since;
 		params[1] = until;
-		log.info("Using query " + CrViewRuninfo.QUERY_FINDRUNS_BYTIME + " with " + since
+		log.fine("Using query " + CrViewRuninfo.QUERY_FINDRUNS_BYTIME + " with " + since
 				+ " " + until);
 		List<CrViewRuninfo> runlist = null;
 		try {

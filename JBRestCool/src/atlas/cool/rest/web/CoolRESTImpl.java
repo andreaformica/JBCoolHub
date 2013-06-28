@@ -29,6 +29,7 @@ import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
+import atlas.cool.rest.model.SchemaType;
 
 /**
  * This class implements the RESTful services to read the contents of the Cool
@@ -65,8 +66,35 @@ public class CoolRESTImpl implements ICoolREST {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.ICoolREST#listNodesInSchema(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.rest.web.ICoolREST#listSchemasInDb(java.lang.String,
+	 * java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/schemas")
+	public List<SchemaType> listSchemasInDb(@PathParam("schema") final String schema,
+			@PathParam("db") final String db) {
+		log.info("Calling listSchemasInDb..." + schema + " " + db);
+		List<SchemaType> results = null;
+		try {
+
+			results = cooldao.retrieveSchemasFromNodeSchemaAndDb(schema + "%", db, "%");
+		} catch (final CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return results;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.rest.web.ICoolREST#listNodesInSchema(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	public List<NodeType> listNodesInSchema(@PathParam("schema") final String schema,
@@ -83,8 +111,12 @@ public class CoolRESTImpl implements ICoolREST {
 		return results;
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.ICoolREST#listTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.ICoolREST#listTagsInNodesSchema(java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	public List<SchemaNodeTagType> listTagsInNodesSchema(
@@ -101,8 +133,12 @@ public class CoolRESTImpl implements ICoolREST {
 		return results;
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.ICoolREST#listChannelsInNodesSchema(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.ICoolREST#listChannelsInNodesSchema(java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public List<ChannelType> listChannelsInNodesSchema(
@@ -131,8 +167,12 @@ public class CoolRESTImpl implements ICoolREST {
 		return results;
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.ICoolREST#listGlobalTagsTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.ICoolREST#listGlobalTagsTagsInNodesSchema(java.lang
+	 * .String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
@@ -151,8 +191,11 @@ public class CoolRESTImpl implements ICoolREST {
 		return results;
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.ICoolREST#getIovStatPerChannel(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.rest.web.ICoolREST#getIovStatPerChannel(java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public List<IovType> getIovStatPerChannel(@PathParam("schema") final String schema,
@@ -170,8 +213,14 @@ public class CoolRESTImpl implements ICoolREST {
 		return results;
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.ICoolREST#listIovsInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.ICoolREST#listIovsInNodesSchemaTagRangeAsList(java
+	 * .lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	public NodeType listIovsInNodesSchemaTagRangeAsList(
@@ -213,8 +262,14 @@ public class CoolRESTImpl implements ICoolREST {
 		return selnode;
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.ICoolREST#listIovsInNodesSchemaTagRangeSortedAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.ICoolREST#listIovsInNodesSchemaTagRangeSortedAsList
+	 * (java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	public NodeType listIovsInNodesSchemaTagRangeSortedAsList(
@@ -259,19 +314,28 @@ public class CoolRESTImpl implements ICoolREST {
 		return selnode;
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.ICoolREST#listDiffIovsInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.ICoolREST#listDiffIovsInNodesSchemaTagRangeAsList
+	 * (java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag1:.*}/tag1/{tag2:.*}/tag2/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
 	public NodeType listDiffIovsInNodesSchemaTagRangeAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("fld") String fld, @PathParam("tag1") String tag1,
-			@PathParam("tag2") String tag2, @PathParam("channel") String channel,
-			@PathParam("chansel") String chansel, @PathParam("since") String since,
-			@PathParam("until") String until, @PathParam("timespan") String timespan) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("fld") final String fld, @PathParam("tag1") final String tag1,
+			@PathParam("tag2") final String tag2,
+			@PathParam("channel") final String channel,
+			@PathParam("chansel") final String chansel,
+			@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan) {
 		NodeType selnode = null;
 		try {
 			// Time selection
@@ -285,12 +349,12 @@ public class CoolRESTImpl implements ICoolREST {
 			if (chansel.equals("chanid")) {
 				// Treat the channel in input as a Long
 				final Long chanid = new Long(channel);
-				selnode = coolutilsdao.listIovsDiffInNodesSchemaTagRangeAsList(schema, db,
-						fld, tag1, tag2, chanid, lsince, luntil);
+				selnode = coolutilsdao.listIovsDiffInNodesSchemaTagRangeAsList(schema,
+						db, fld, tag1, tag2, chanid, lsince, luntil);
 
 			} else if (chansel.equals("channel")) {
-				selnode = coolutilsdao.listIovsDiffInNodesSchemaTagRangeAsList(schema, db,
-						fld, tag1, tag2, chan, lsince, luntil);
+				selnode = coolutilsdao.listIovsDiffInNodesSchemaTagRangeAsList(schema,
+						db, fld, tag1, tag2, chan, lsince, luntil);
 			} else {
 				throw new CoolIOException("Wrong REST syntax...refer to documentation");
 			}
@@ -302,8 +366,14 @@ public class CoolRESTImpl implements ICoolREST {
 		return selnode;
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.ICoolREST#listPayloadInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.ICoolREST#listPayloadInNodesSchemaTagRangeAsList(
+	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	public NodeType listPayloadInNodesSchemaTagRangeAsList(
@@ -388,8 +458,13 @@ public class CoolRESTImpl implements ICoolREST {
 		return selnode;
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.ICoolREST#listIovsSummaryInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.ICoolREST#listIovsSummaryInNodesSchemaTagRangeAsList
+	 * (java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(

@@ -125,7 +125,7 @@ public class NodeType implements Serializable {
 	/**
 	 * @return the nodeId
 	 */
-	public final Long getNodeId() {
+	public Long getNodeId() {
 		return nodeId;
 	}
 
@@ -133,14 +133,14 @@ public class NodeType implements Serializable {
 	 * @param nodeId
 	 *            the nodeId to set
 	 */
-	public final void setNodeId(final Long nodeId) {
+	public void setNodeId(final Long nodeId) {
 		this.nodeId = nodeId;
 	}
 
 	/**
 	 * @return the nodeName
 	 */
-	public final String getNodeName() {
+	public String getNodeName() {
 		return nodeName;
 	}
 
@@ -148,14 +148,14 @@ public class NodeType implements Serializable {
 	 * @param nodeName
 	 *            the nodeName to set
 	 */
-	public final void setNodeName(final String nodeName) {
+	public void setNodeName(final String nodeName) {
 		this.nodeName = nodeName;
 	}
 
 	/**
 	 * @return the nodeFullpath
 	 */
-	public final String getNodeFullpath() {
+	public String getNodeFullpath() {
 		return nodeFullpath;
 	}
 
@@ -163,14 +163,14 @@ public class NodeType implements Serializable {
 	 * @param nodeFullpath
 	 *            the nodeFullpath to set
 	 */
-	public final void setNodeFullpath(final String nodeFullpath) {
+	public void setNodeFullpath(final String nodeFullpath) {
 		this.nodeFullpath = nodeFullpath;
 	}
 
 	/**
 	 * @return the nodeDescription
 	 */
-	public final String getNodeDescription() {
+	public String getNodeDescription() {
 		return nodeDescription;
 	}
 
@@ -178,14 +178,14 @@ public class NodeType implements Serializable {
 	 * @param nodeDescription
 	 *            the nodeDescription to set
 	 */
-	public final void setNodeDescription(final String nodeDescription) {
+	public void setNodeDescription(final String nodeDescription) {
 		this.nodeDescription = nodeDescription;
 	}
 
 	/**
 	 * @return the nodeIsleaf
 	 */
-	public final Integer getNodeIsleaf() {
+	public Integer getNodeIsleaf() {
 		return nodeIsleaf;
 	}
 
@@ -193,14 +193,14 @@ public class NodeType implements Serializable {
 	 * @param nodeIsleaf
 	 *            the nodeIsleaf to set
 	 */
-	public final void setNodeIsleaf(final Integer nodeIsleaf) {
+	public void setNodeIsleaf(final Integer nodeIsleaf) {
 		this.nodeIsleaf = nodeIsleaf;
 	}
 
 	/**
 	 * @return the nodeInstime
 	 */
-	public final String getNodeInstime() {
+	public String getNodeInstime() {
 		return nodeInstime;
 	}
 
@@ -208,14 +208,14 @@ public class NodeType implements Serializable {
 	 * @param nodeInstime
 	 *            the nodeInstime to set
 	 */
-	public final void setNodeInstime(final String nodeInstime) {
+	public void setNodeInstime(final String nodeInstime) {
 		this.nodeInstime = nodeInstime;
 	}
 
 	/**
 	 * @return the nodeTinstime
 	 */
-	public final Timestamp getNodeTinstime() {
+	public Timestamp getNodeTinstime() {
 		return nodeTinstime;
 	}
 
@@ -223,14 +223,14 @@ public class NodeType implements Serializable {
 	 * @param nodeTinstime
 	 *            the nodeTinstime to set
 	 */
-	public final void setNodeTinstime(final Timestamp nodeTinstime) {
+	public void setNodeTinstime(final Timestamp nodeTinstime) {
 		this.nodeTinstime = nodeTinstime;
 	}
 
 	/**
 	 * @return the lastmodDate
 	 */
-	public final String getLastmodDate() {
+	public String getLastmodDate() {
 		return lastmodDate;
 	}
 
@@ -238,14 +238,14 @@ public class NodeType implements Serializable {
 	 * @param lastmodDate
 	 *            the lastmodDate to set
 	 */
-	public final void setLastmodDate(final String lastmodDate) {
+	public void setLastmodDate(final String lastmodDate) {
 		this.lastmodDate = lastmodDate;
 	}
 
 	/**
 	 * @return the folderIovtablename
 	 */
-	public final String getFolderIovtablename() {
+	public String getFolderIovtablename() {
 		return folderIovtablename;
 	}
 
@@ -253,14 +253,14 @@ public class NodeType implements Serializable {
 	 * @param folderIovtablename
 	 *            the folderIovtablename to set
 	 */
-	public final void setFolderIovtablename(final String folderIovtablename) {
+	public void setFolderIovtablename(final String folderIovtablename) {
 		this.folderIovtablename = folderIovtablename;
 	}
 
 	/**
 	 * @return the folderTagtablename
 	 */
-	public final String getFolderTagtablename() {
+	public String getFolderTagtablename() {
 		return folderTagtablename;
 	}
 
@@ -268,14 +268,14 @@ public class NodeType implements Serializable {
 	 * @param folderTagtablename
 	 *            the folderTagtablename to set
 	 */
-	public final void setFolderTagtablename(final String folderTagtablename) {
+	public void setFolderTagtablename(final String folderTagtablename) {
 		this.folderTagtablename = folderTagtablename;
 	}
 
 	/**
 	 * @return the folderChanneltablename
 	 */
-	public final String getFolderChanneltablename() {
+	public String getFolderChanneltablename() {
 		return folderChanneltablename;
 	}
 
@@ -283,14 +283,14 @@ public class NodeType implements Serializable {
 	 * @param folderChanneltablename
 	 *            the folderChanneltablename to set
 	 */
-	public final void setFolderChanneltablename(final String folderChanneltablename) {
+	public void setFolderChanneltablename(final String folderChanneltablename) {
 		this.folderChanneltablename = folderChanneltablename;
 	}
 
 	/**
 	 * @return the schemaName
 	 */
-	public final String getSchemaName() {
+	public String getSchemaName() {
 		return schemaName;
 	}
 
@@ -298,14 +298,14 @@ public class NodeType implements Serializable {
 	 * @param schemaName
 	 *            the schemaName to set
 	 */
-	public final void setSchemaName(final String schemaName) {
+	public void setSchemaName(final String schemaName) {
 		this.schemaName = schemaName;
 	}
 
 	/**
 	 * @return the dbName
 	 */
-	public final String getDbName() {
+	public String getDbName() {
 		return dbName;
 	}
 
@@ -313,14 +313,14 @@ public class NodeType implements Serializable {
 	 * @param dbName
 	 *            the dbName to set
 	 */
-	public final void setDbName(final String dbName) {
+	public void setDbName(final String dbName) {
 		this.dbName = dbName;
 	}
 
 	/**
 	 * @return the nodeIovBase
 	 */
-	public final String getNodeIovBase() {
+	public String getNodeIovBase() {
 		return nodeIovBase;
 	}
 
@@ -328,14 +328,14 @@ public class NodeType implements Serializable {
 	 * @param nodeIovBase
 	 *            the nodeIovBase to set
 	 */
-	public final void setNodeIovBase(final String nodeIovBase) {
+	public void setNodeIovBase(final String nodeIovBase) {
 		this.nodeIovBase = nodeIovBase;
 	}
 
 	/**
 	 * @return the nodeIovType
 	 */
-	public final String getNodeIovType() {
+	public String getNodeIovType() {
 		return nodeIovType;
 	}
 
@@ -343,14 +343,14 @@ public class NodeType implements Serializable {
 	 * @param nodeIovType
 	 *            the nodeIovType to set
 	 */
-	public final void setNodeIovType(final String nodeIovType) {
+	public void setNodeIovType(final String nodeIovType) {
 		this.nodeIovType = nodeIovType;
 	}
 
 	/**
 	 * @return
 	 */
-	public final String getNodeTinstimeStr() {
+	public String getNodeTinstimeStr() {
 		if (nodeTinstime == null) {
 			return "";
 		}
@@ -361,9 +361,16 @@ public class NodeType implements Serializable {
 	}
 
 	/**
+	 * @return
+	 */
+	public void setNodeTinstimeStr(final String tinstimstr) {
+		// Ignore this method
+	}
+
+	/**
 	 * @return the folderVersioning
 	 */
-	public final Integer getFolderVersioning() {
+	public Integer getFolderVersioning() {
 		return folderVersioning;
 	}
 
@@ -371,14 +378,14 @@ public class NodeType implements Serializable {
 	 * @param folderVersioning
 	 *            the folderVersioning to set
 	 */
-	public final void setFolderVersioning(final Integer folderVersioning) {
+	public void setFolderVersioning(final Integer folderVersioning) {
 		this.folderVersioning = folderVersioning;
 	}
 
 	/**
 	 * @return the folderPayloadSpec
 	 */
-	public final String getFolderPayloadSpec() {
+	public String getFolderPayloadSpec() {
 		return folderPayloadSpec;
 	}
 
@@ -386,14 +393,14 @@ public class NodeType implements Serializable {
 	 * @param folderPayloadSpec
 	 *            the folderPayloadSpec to set
 	 */
-	public final void setFolderPayloadSpec(final String folderPayloadSpec) {
+	public void setFolderPayloadSpec(final String folderPayloadSpec) {
 		this.folderPayloadSpec = folderPayloadSpec;
 	}
 
 	/**
 	 * @return the iovList
 	 */
-	public final List<CoolIovType> getIovList() {
+	public List<CoolIovType> getIovList() {
 		return iovList;
 	}
 
@@ -401,14 +408,14 @@ public class NodeType implements Serializable {
 	 * @param iovList
 	 *            the iovList to set
 	 */
-	public final void setIovList(final List<CoolIovType> iovList) {
+	public void setIovList(final List<CoolIovType> iovList) {
 		this.iovList = iovList;
 	}
 
 	/**
 	 * @return the iovSummaryList
 	 */
-	public final Collection<CoolIovSummary> getIovSummaryList() {
+	public Collection<CoolIovSummary> getIovSummaryList() {
 		return iovSummaryList;
 	}
 
@@ -416,7 +423,7 @@ public class NodeType implements Serializable {
 	 * @param iovSummaryList
 	 *            the iovSummaryList to set
 	 */
-	public final void setIovSummaryList(final Collection<CoolIovSummary> iovSummaryList) {
+	public void setIovSummaryList(final Collection<CoolIovSummary> iovSummaryList) {
 		this.iovSummaryList = iovSummaryList;
 	}
 

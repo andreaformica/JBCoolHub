@@ -18,6 +18,7 @@ import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
+import atlas.cool.rest.model.SchemaType;
 
 /**
  * JAX-RS Example
@@ -55,6 +56,17 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	protected void setSort(final String orderByName) {
 		// TODO Auto-generated method stub
 		super.setSort(orderByName);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listSchemasInDb(java.lang.String, java.lang.String)
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/schemas")
+	public List<SchemaType> listSchemasInDb(
+			@PathParam("schema") final String schema, @PathParam("db") final String db) {
+		return super.listSchemasInDb(schema, db);
 	}
 
 	/*

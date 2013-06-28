@@ -20,13 +20,18 @@ import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.SchemaType;
 
-@Named("coolparams")
-@SessionScoped
 /**
  * @author formica
  *
  */
+@Named("coolparams")
+@SessionScoped
 public class CoolParamsBean implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3342487556805557264L;
 
 	@Inject
 	private Logger log;
@@ -61,6 +66,9 @@ public class CoolParamsBean implements Serializable {
 		initDbs();
 	}
 
+	/**
+	 * 
+	 */
 	protected void initDbs() {
 		if (dbList == null) {
 			dbList = new ArrayList<String>();
@@ -70,6 +78,9 @@ public class CoolParamsBean implements Serializable {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public  void retrieveGtagsData() {
 		try {
 			log.info("Retrieving gtags for :" + schemaName + " " + dbName + " "
@@ -83,6 +94,9 @@ public class CoolParamsBean implements Serializable {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public  void retrieveNodeGtagTagsData() {
 		try {
 			log.info("Retrieving node tags for :" + schemaName + " " + dbName + " "
@@ -96,6 +110,9 @@ public class CoolParamsBean implements Serializable {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	public  void retrieveNodeGtagDoubleFldData() {
 		try {
 			log.info("Retrieving node tags for :" + schemaName + " " + dbName + " "
@@ -109,6 +126,9 @@ public class CoolParamsBean implements Serializable {
 		}
 	}
 
+	/**
+	 * Load schemas from COOL.
+	 */
 	public  void loadSchemas() {
 		try {
 			log.info("Retrieving schemas for :" + schemaName + " " + dbName);
