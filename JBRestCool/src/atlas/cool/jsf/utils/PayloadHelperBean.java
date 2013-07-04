@@ -137,6 +137,9 @@ public class PayloadHelperBean implements Serializable {
 		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return outurl;
 	}
