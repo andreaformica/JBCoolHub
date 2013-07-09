@@ -50,9 +50,9 @@ public class CoolGtagChecks {
 	@Inject
 	private Logger log;
 
-	private List<CoolIovSummary> badcooliovsummary = new ArrayList<CoolIovSummary>();
+	private final List<CoolIovSummary> badcooliovsummary = new ArrayList<CoolIovSummary>();
 
-	private List<String> destAddrs = new ArrayList<String>();
+	private final List<String> destAddrs = new ArrayList<String>();
 
 	/**
 	 * Default constructor.
@@ -75,7 +75,7 @@ public class CoolGtagChecks {
 		final String db = "COMP200";
 
 		final int maxschemas = 999;
-		Date starttime = new Date();
+		final Date starttime = new Date();
 		try {
 
 			final List<ComaCbGtagStates> gtagstates = comadao.findGtagStateAtTime(
@@ -88,7 +88,7 @@ public class CoolGtagChecks {
 			nodeingtagList = cooldao.retrieveGtagTagsFromSchemaAndDb("ATLAS_COOL%", db,
 					globaltagname);
 			int icount = 0;
-			StringBuffer buf = new StringBuffer();
+			final StringBuffer buf = new StringBuffer();
 
 			for (final NodeGtagTagType nodeGtagTagType : nodeingtagList) {
 				final String schema = nodeGtagTagType.getSchemaName();
@@ -118,7 +118,7 @@ public class CoolGtagChecks {
 						log.info("WARN>>> schema " + schema + " node "
 								+ nodeGtagTagType.getNodeFullpath() + " tag "
 								+ nodeGtagTagType.getTagName() + " has holes...!!!");
-						CoolIovSummary firstofbad = summarylist.iterator().next();
+						final CoolIovSummary firstofbad = summarylist.iterator().next();
 						badcooliovsummary.add(firstofbad);
 
 					}
@@ -127,15 +127,15 @@ public class CoolGtagChecks {
 					e.printStackTrace();
 				}
 			}
-			Date endtime = new Date();
+			final Date endtime = new Date();
 			buf.append("\n Total time for the summary analysis of global tag "
 					+ globaltagname + " was ~ "
-					+ ((endtime.getTime() - starttime.getTime()) / (1000L * 60))
+					+ (endtime.getTime() - starttime.getTime()) / (1000L * 60)
 					+ " minutes \n");
 			if (badcooliovsummary.size() > 0) {
 				buf.append("\n================== List of Holes overlapping with data* runs =============\n\n");
 			}
-			for (CoolIovSummary iovsumm : badcooliovsummary) {
+			for (final CoolIovSummary iovsumm : badcooliovsummary) {
 				buf.append("Found holes in " + iovsumm.getSchema() + " "
 						+ iovsumm.getNode() + " " + iovsumm.getTag() + " : ");
 				buf.append(UrlLinkUtils.createLink(iovsumm.getSchema(), iovsumm.getDb(),
