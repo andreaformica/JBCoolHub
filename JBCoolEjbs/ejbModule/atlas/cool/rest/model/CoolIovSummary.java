@@ -8,9 +8,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.logging.Logger;
 
-import javax.inject.Inject;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -123,7 +121,7 @@ public class CoolIovSummary implements Serializable {
 	 * @param chanId
 	 *            the chanId to set
 	 */
-	public final void setChanId(Long chanId) {
+	public final void setChanId(final Long chanId) {
 		this.chanId = chanId;
 	}
 
