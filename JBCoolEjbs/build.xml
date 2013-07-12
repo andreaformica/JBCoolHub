@@ -8,6 +8,7 @@
 		<property name="src.dir" value="${basedir}/ejbModule"/>
 		
 		<property name="prj.lib" value="${basedir}/lib" />
+		<property name="hb.package.name" value="atlas.cool.summary.model"/>
 
 		<path id="external.classpath">
 			<fileset dir="${basedir}/external/share/java/utils">

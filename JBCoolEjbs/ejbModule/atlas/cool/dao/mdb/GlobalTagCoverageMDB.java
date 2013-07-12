@@ -22,10 +22,10 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
-
 import atlas.coma.dao.ComaCbDAO;
 import atlas.coma.exceptions.ComaQueryException;
 import atlas.coma.model.CrViewRuninfo;
+import atlas.connection.dao.CoolRepositoryDAO;
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.exceptions.CoolIOException;
@@ -54,6 +54,8 @@ public class GlobalTagCoverageMDB implements MessageListener {
 	private CoolUtilsDAO coolutilsdao;
 	@Inject
 	private MailSender mailsender;
+	@Inject
+	private CoolRepositoryDAO coolrep;
 
 	@Inject
 	private Logger log;
@@ -124,6 +126,7 @@ public class GlobalTagCoverageMDB implements MessageListener {
 					if (summarylist == null) {
 						continue;
 					}
+					synchroSummaryTable(nodeGtagTagType.getGtagName(), summarylist);
 					buf.append("Analyzed " + schema + " " + db + " "
 							+ nodeGtagTagType.getNodeFullpath() + " "
 							+ nodeGtagTagType.getTagName() + " summary list of size "
@@ -205,4 +208,65 @@ public class GlobalTagCoverageMDB implements MessageListener {
 		return hashole;
 	}
 
+	/**
+	 * Utility method to synchronize the local summary table with the info gathered from
+	 * COOL.
+	 * 
+	 * @param summarylist
+	 */
+	protected void synchroSummaryTable(final String globaltag,
+			final Collection<CoolIovSummary> summarylist) {
+		for (CoolIovSummary iovsummary : summarylist) {
+			String schema = iovsummary.getSchema();
+			String db = iovsummary.getDb();
+			String node = iovsummary.getNode();
+			String tag = iovsummary.getTag();
+			Long channelid = iovsummary.getChanId();
+			BigDecimal chanid = null;
+			if (channelid != null) {
+				chanid = new BigDecimal(channelid);
+			}
+			try {
+				// check if entry exists in DB
+				List<atlas.cool.summary.model.CoolIovSummary> coolsummobjlist = cooldao
+						.findIovSummaryList(schema, db, node, tag, chanid);
+				if (coolsummobjlist != null && coolsummobjlist.size() > 0) {
+					// if yes, update content
+					atlas.cool.summary.model.CoolIovSummary summary = coolsummobjlist
+							.get(0);
+					summary.setCoolChannelName(iovsummary.getChannelName());
+					summary.setCoolGlobalTagName(globaltag);
+					summary.setCoolSummary(iovsummary.getSummary());
+					summary.setCoolMiniovsince(new BigDecimal(iovsummary.getMinsince()));
+					summary.setCoolMaxiovsince(new BigDecimal(iovsummary.getMaxsince()));
+					summary.setCoolMiniovuntil(new BigDecimal(iovsummary.getMinuntil()));
+					summary.setCoolMaxiovuntil(new BigDecimal(iovsummary.getMaxuntil()));
+					summary.setCoolTotaliovs(new BigDecimal(iovsummary.getTotalIovs()));
+//					log.info("Updating " + summary.toString());
+				} else {
+					// if not, store entry
+					atlas.cool.summary.model.CoolIovSummary summary = new atlas.cool.summary.model.CoolIovSummary();
+					summary.setDb(db);
+					summary.setSchemaName(schema);
+					summary.setCoolNodeFullpath(node);
+					summary.setCoolNodeIovbase(iovsummary.getIovbase());
+					summary.setCoolTagName(tag);
+					summary.setCoolGlobalTagName(globaltag);
+					summary.setCoolChannelId(new BigDecimal(iovsummary.getChanId()));
+					summary.setCoolChannelName(iovsummary.getChannelName());
+					summary.setCoolSummary(iovsummary.getSummary());
+					summary.setCoolMiniovsince(new BigDecimal(iovsummary.getMinsince()));
+					summary.setCoolMaxiovsince(new BigDecimal(iovsummary.getMaxsince()));
+					summary.setCoolMiniovuntil(new BigDecimal(iovsummary.getMinuntil()));
+					summary.setCoolMaxiovuntil(new BigDecimal(iovsummary.getMaxuntil()));
+					summary.setCoolTotaliovs(new BigDecimal(iovsummary.getTotalIovs()));
+//					log.info("Inserting " + summary.toString());
+					coolrep.persist(summary);
+				}
+			} catch (CoolIOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 }

@@ -63,6 +63,18 @@ public class CoolRepository implements CoolRepositoryDAO {
 		// TODO Auto-generated constructor stub
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.connection.dao.CoolRepositoryDAO#persist(java.lang.Object)
+	 */
+	@Override
+	public void persist(Object obj) throws CoolIOException {
+		try {
+			em.persist(obj);
+		} catch (Exception e) {
+			throw new CoolIOException(e.getMessage());
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

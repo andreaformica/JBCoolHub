@@ -12,6 +12,13 @@ import atlas.query.pagination.HibernateQueryList;
  */
 public interface CoolRepositoryDAO {
 
+	
+	/**
+	 * @param obj
+	 * @throws CoolIOException
+	 */
+	void persist(Object obj) throws CoolIOException;
+	
 	/**
 	 * @param qryname
 	 * @param params
