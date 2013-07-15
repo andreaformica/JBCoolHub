@@ -18,6 +18,28 @@ public interface CoolRepositoryDAO {
 	 * @throws CoolIOException
 	 */
 	void persist(Object obj) throws CoolIOException;
+
+	/**
+	 * @param obj
+	 * @throws CoolIOException
+	 */
+	void remove(Object obj) throws CoolIOException;
+
+	/**
+	 * @param obj
+	 * @throws CoolIOException
+	 */
+	void merge(Object obj) throws CoolIOException;
+
+	/**
+	 * @throws CoolIOException
+	 */
+	void flush() throws CoolIOException;
+	
+	/**
+	 * @throws CoolIOException
+	 */
+	void commit() throws CoolIOException;
 	
 	/**
 	 * @param qryname

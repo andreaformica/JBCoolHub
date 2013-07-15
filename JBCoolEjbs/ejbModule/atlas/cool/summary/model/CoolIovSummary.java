@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,8 +33,7 @@ import atlas.cool.rest.utils.MyPrinterHandler;
 				+ "      and ciovs.coolNodeFullpath = :node and ciovs.coolTagName = :tag and ciovs.coolChannelId = :chanid"),
 		@NamedQuery(name = CoolIovSummary.QUERY_FINDALL_SUMMARY, query = " "
 				+ " from CoolIovSummary ciovs where ciovs.db = :db and ciovs.schemaName = :schema "
-				+ "      and ciovs.coolNodeFullpath = :node and ciovs.coolTagName = :tag"),
-
+				+ "      and ciovs.coolNodeFullpath = :node and ciovs.coolTagName = :tag")
 })
 @SequenceGenerator(name = "COOLIOVSUMMARY_SEQ", sequenceName = "COOLIOVSUMMARY_SEQ", allocationSize = 1)
 public class CoolIovSummary implements java.io.Serializable {
@@ -267,7 +267,7 @@ public class CoolIovSummary implements java.io.Serializable {
 		this.coolTotaliovs = coolTotaliovs;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "coolIovSummary")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "coolIovSummary",cascade = CascadeType.PERSIST)
 	public Set<CoolIovRanges> getCoolIovRangeses() {
 		return coolIovRangeses;
 	}

@@ -19,6 +19,7 @@
 		<path id="project.dependency.classpath">
 			<fileset dir="${basedir}/lib">
 				<include name="JBCoolEjbs.jar" />
+				<include name="JBCoolUtils.jar" />
 			</fileset>
 		</path>
 

@@ -304,4 +304,13 @@ public interface CoolDAO {
 	 */
 	List<atlas.cool.summary.model.CoolIovSummary> findIovSummaryList(String schema,
 			String db, String node, String tag, BigDecimal chanid) throws CoolIOException;
+	
+	/**
+	 * @param iovid
+	 * @param since
+	 * @return
+	 * @throws CoolIOException
+	 */
+	List<atlas.cool.summary.model.CoolIovRanges> findIovRangesList(BigDecimal iovid, BigDecimal since) throws CoolIOException;
+
 }

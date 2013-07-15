@@ -63,13 +63,68 @@ public class CoolRepository implements CoolRepositoryDAO {
 		// TODO Auto-generated constructor stub
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see atlas.connection.dao.CoolRepositoryDAO#persist(java.lang.Object)
 	 */
 	@Override
-	public void persist(Object obj) throws CoolIOException {
+	public void persist(final Object obj) throws CoolIOException {
 		try {
 			em.persist(obj);
+		} catch (Exception e) {
+			throw new CoolIOException(e.getMessage());
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.connection.dao.CoolRepositoryDAO#remove(java.lang.Object)
+	 */
+	@Override
+	public void remove(final Object obj) throws CoolIOException {
+		try {
+			em.remove(obj);
+		} catch (Exception e) {
+			throw new CoolIOException(e.getMessage());
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.connection.dao.CoolRepositoryDAO#merge(java.lang.Object)
+	 */
+	@Override
+	public void merge(final Object obj) throws CoolIOException {
+		try {
+			em.merge(obj);
+		} catch (Exception e) {
+			throw new CoolIOException(e.getMessage());
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.connection.dao.CoolRepositoryDAO#flush()
+	 */
+	@Override
+	public void flush() throws CoolIOException {
+		try {
+			em.flush();
+		} catch (Exception e) {
+			throw new CoolIOException(e.getMessage());
+		}
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see atlas.connection.dao.CoolRepositoryDAO#commit()
+	 */
+	@Override
+	public void commit() throws CoolIOException {
+		try {
+			em.getTransaction().commit();
 		} catch (Exception e) {
 			throw new CoolIOException(e.getMessage());
 		}
@@ -160,8 +215,8 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * java.lang.Object[])
 	 */
 	@Override
-	public  List<?> findCoolList(final String qryname,
-			final Object[] params) throws CoolIOException {
+	public List<?> findCoolList(final String qryname, final Object[] params)
+			throws CoolIOException {
 		try {
 			return findCoolListByRange(qryname, params, 0, 0);
 		} catch (NoResultException e) {
@@ -178,7 +233,7 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * java.lang.Object[], int, int)
 	 */
 	@Override
-	public  List<?> findCoolListByRange(final String qryname,
+	public List<?> findCoolListByRange(final String qryname,
 			final Object[] params, final int firstResult, final int maxResults)
 			throws CoolIOException {
 		try {
@@ -222,8 +277,8 @@ public class CoolRepository implements CoolRepositoryDAO {
 	 * @throws CoolIOException
 	 *             Cool exception.
 	 */
-	protected Query getQuery(final String qry,
-			final Object[] params) throws CoolIOException {
+	protected Query getQuery(final String qry, final Object[] params)
+			throws CoolIOException {
 		// log.info("Build query "+qry+" with N parameters "+params.length);
 		try {
 			log.fine("Search query in " + coolqry);

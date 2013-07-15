@@ -26,6 +26,7 @@ import atlas.coma.dao.ComaCbDAO;
 import atlas.coma.exceptions.ComaQueryException;
 import atlas.coma.model.CrViewRuninfo;
 import atlas.connection.dao.CoolRepositoryDAO;
+import atlas.cool.dao.CondToolsDAO;
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.exceptions.CoolIOException;
@@ -56,6 +57,8 @@ public class GlobalTagCoverageMDB implements MessageListener {
 	private MailSender mailsender;
 	@Inject
 	private CoolRepositoryDAO coolrep;
+	@Inject
+	private CondToolsDAO condtools;
 
 	@Inject
 	private Logger log;
@@ -126,7 +129,8 @@ public class GlobalTagCoverageMDB implements MessageListener {
 					if (summarylist == null) {
 						continue;
 					}
-					synchroSummaryTable(nodeGtagTagType.getGtagName(), summarylist);
+					//synchroSummaryTable(nodeGtagTagType.getGtagName(), summarylist);
+					
 					buf.append("Analyzed " + schema + " " + db + " "
 							+ nodeGtagTagType.getNodeFullpath() + " "
 							+ nodeGtagTagType.getTagName() + " summary list of size "
@@ -162,10 +166,10 @@ public class GlobalTagCoverageMDB implements MessageListener {
 						iovsumm.getNode(), iovsumm.getTag(),
 						"0/Inf/time/rangesummary/text/dump \n"));
 			}
-			mailsender
-					.sendMail(destAddrs.toArray(new String[0]),
-							"Global Tag coverage checks " + new Date().toString(),
-							buf.toString());
+//			mailsender
+//					.sendMail(destAddrs.toArray(new String[0]),
+//							"Global Tag coverage checks " + new Date().toString(),
+//							buf.toString());
 
 		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block

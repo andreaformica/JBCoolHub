@@ -26,6 +26,7 @@ import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
 import atlas.cool.rest.model.SchemaType;
+import atlas.cool.summary.model.CoolIovRanges;
 import atlas.cool.summary.model.CoolIovSummary;
 
 /**
@@ -363,8 +364,8 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 		params[1] = db;
 		params[2] = node;
 		params[3] = tag;
-		log.info("Using query " + IovType.QUERY_FINDIOVSUMMARY + " with " + schema + " "
-				+ db + " " + node + " " + tag);
+//		log.info("Using query " + IovType.QUERY_FINDIOVSUMMARY + " with " + schema + " "
+//				+ db + " " + node + " " + tag);
 		final List<IovType> iovstatlist = (List<IovType>) coolrep.findCoolList(
 				IovType.QUERY_FINDIOVSUMMARY, params);
 		return iovstatlist;
@@ -389,8 +390,8 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 		params[3] = tag;
 		params[4] = since;
 		params[5] = until;
-		log.info("Using query " + IovType.QUERY_FINDIOVSUMMARY_INRANGE + " with "
-				+ schema + " " + db + " " + node + " " + tag + " " + since + " " + until);
+//		log.info("Using query " + IovType.QUERY_FINDIOVSUMMARY_INRANGE + " with "
+//				+ schema + " " + db + " " + node + " " + tag + " " + since + " " + until);
 		final List<IovType> iovstatlist = (List<IovType>) coolrep.findCoolList(
 				IovType.QUERY_FINDIOVSUMMARY_INRANGE, params);
 		return iovstatlist;
@@ -507,11 +508,37 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 		if (nparams == 5) {
 			params[4] = chanid;
 		}
-		log.info("Using query " + qry + " with " + schema + " " + db + " " + node + " "
-				+ tag + " " + chanid);
+//		log.info("Using query " + qry + " with " + schema + " " + db + " " + node + " "
+//				+ tag + " " + chanid);
 		final List<CoolIovSummary> iovlist = (List<CoolIovSummary>) coolrep.findCoolList(
 				qry, params);
 		return iovlist;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolDAO#findIovRangesList(java.math.BigDecimal, java.math.BigDecimal)
+	 */
+	@Override
+	public List<CoolIovRanges> findIovRangesList(BigDecimal iovid, BigDecimal since)
+			throws CoolIOException {
+		int nparams = 2;
+		String qry = CoolIovRanges.QUERY_FIND_RANGESFORCHANNEL_ATTIME;
+		if (since == null) {
+			nparams = 1;
+			qry = CoolIovRanges.QUERY_FIND_RANGESFORCHANNEL;
+		}
+		final Object[] params = new Object[nparams];
+		params[0] = iovid;
+		if (nparams == 2) {
+			params[1] = since;
+		}
+//		log.info("Using query " + qry + " with " + schema + " " + db + " " + node + " "
+//				+ tag + " " + chanid);
+		final List<CoolIovRanges> iovlist = (List<CoolIovRanges>) coolrep.findCoolList(
+				qry, params);
+		return iovlist;
+	}
+
+
+	
 }
