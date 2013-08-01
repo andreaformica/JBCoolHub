@@ -23,6 +23,7 @@ import atlas.cool.meta.CoolIov;
 import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.IovRange;
 import atlas.cool.rest.model.NodeGtagTagType;
+import atlas.cool.summary.model.CondNodeStats;
 import atlas.cool.summary.model.CoolIovRanges;
 
 /**
@@ -71,41 +72,10 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 	 * java.lang.String)
 	 */
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 60)
 	public void synchroIovSummary(final String globaltag, final String db)
 			throws CoolIOException {
-		final int maxschemas = 999;
 		try {
-
-			List<NodeGtagTagType> nodeingtagList = null;
-			nodeingtagList = cooldao.retrieveGtagTagsFromSchemaAndDb("ATLAS_COOL%", db,
-					globaltag);
-			int icount = 0;
-
-			for (final NodeGtagTagType nodeGtagTagType : nodeingtagList) {
-				final String schema = nodeGtagTagType.getSchemaName();
-				if (icount++ > maxschemas) {
-					return;
-				}
-				log.info("Found schema " + schema + " and node "
-						+ nodeGtagTagType.getNodeFullpath() + " ... search for iovs!");
-				try {
-
-					final Collection<CoolIovSummary> summarylist = coolutilsdao
-							.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db,
-									nodeGtagTagType.getNodeFullpath(),
-									nodeGtagTagType.getTagName(), new BigDecimal(0L),
-									new BigDecimal(CoolIov.COOL_MAX_DATE));
-					if (summarylist == null) {
-						continue;
-					}
-					updateTable(nodeGtagTagType.getGtagName(), summarylist);
-					coolrep.flush();
-				} catch (final Exception e) {
-					e.printStackTrace();
-				}
-			}
+			checkGlobalTagForSchemaDB(globaltag, "ATLAS_COOL%", db, false);
 		} catch (final Exception e) {
 			throw new CoolIOException(e.getMessage());
 		}
@@ -115,6 +85,8 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 	 * @param globaltag
 	 * @param summarylist
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 120)
 	protected void updateTable(final String globaltag,
 			final Collection<CoolIovSummary> summarylist) {
 
@@ -181,21 +153,19 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Synchro a collection of iovranges with the table cool_iov_range.
 	 * 
-	 * @see
-	 * atlas.cool.dao.CondToolsDAO#synchroIovRanges(atlas.cool.summary.model.CoolIovSummary
-	 * , java.util.Collection)
+	 * @param iovsumm
+	 * @param iovrangelist
+	 * @throws CoolIOException
 	 */
-	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void synchroIovRanges(final atlas.cool.summary.model.CoolIovSummary iovsumm,
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 120)
+	protected void synchroIovRanges(
+			final atlas.cool.summary.model.CoolIovSummary iovsumm,
 			final Collection<IovRange> iovrangelist) throws CoolIOException {
 
-		// final atlas.cool.summary.model.CoolIovSummary thesumm = coolrep.findObj(
-		// atlas.cool.summary.model.CoolIovSummary.class,
-		// iovsumm.getCoolIovsummaryId());
 		for (final IovRange iovRange : iovrangelist) {
 			final CoolIovRanges newrange = new CoolIovRanges();
 			newrange.setCoolIovbase(iovsumm.getCoolNodeIovbase());
@@ -211,11 +181,10 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 			if (dbranges != null && dbranges.size() == 1) {
 				log.info("Compare range with the DB ");
 				final CoolIovRanges oldrange = dbranges.get(0);
-				if (oldrange.getCoolIovrangeSince().equals(
-						newrange.getCoolIovrangeSince())
-						&& oldrange.getCoolIovrangeNiovs().equals(
-								newrange.getCoolIovrangeNiovs())) {
+				if (oldrange.equals(newrange)) {
 					log.info("Iovrange is the same....do not update");
+				} else {
+					log.info("Iovrange is not the same, should update it");
 				}
 			} else {
 				// log.info("Cannot find range in DB, persist it");
@@ -280,13 +249,12 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 	 * 
 	 * @see
 	 * atlas.cool.dao.remote.CondToolsDAORemote#checkGlobalTagForSchemaDB(java.lang.String
-	 * , java.lang.String, java.lang.String)
+	 * , java.lang.String, java.lang.String, java.lang.Boolean)
 	 */
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 120)
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void checkGlobalTagForSchemaDB(final String gtag, final String schema,
-			final String db) throws CoolIOException {
+			final String db, final Boolean ignoreExistingSchemas) throws CoolIOException {
 		final int maxschemas = 9999;
 		try {
 			List<NodeGtagTagType> nodeingtagList = null;
@@ -298,27 +266,115 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 				if (icount++ > maxschemas) {
 					return;
 				}
-				log.info("Found schema " + coolschema + " and node "
-						+ nodeGtagTagType.getNodeFullpath() + " ... search for iovs!");
-				try {
-
-					final Collection<CoolIovSummary> summarylist = coolutilsdao
-							.listIovsSummaryInNodesSchemaTagRangeAsList(coolschema, db,
-									nodeGtagTagType.getNodeFullpath(),
-									nodeGtagTagType.getTagName(), new BigDecimal(0L),
-									new BigDecimal(CoolIov.COOL_MAX_DATE));
-					if (summarylist == null) {
-						continue;
+				// This list of objects from Cool_Iov_Summary table
+				// should represent what we have already stored, nevertheless
+				// we need to check if cool_iov_ranges are present.
+				final List<atlas.cool.summary.model.CoolIovSummary> existingSchemaList = cooldao
+						.findIovSummaryList(coolschema, db,
+								nodeGtagTagType.getNodeFullpath(),
+								nodeGtagTagType.getTagName(), null);
+				// The following is by channel !!!
+				if (existingSchemaList != null && existingSchemaList.size() > 0) {
+					// skip schema if iov ranges are present
+					// if not, flag it for update
+					boolean toupdate = false;
+					for (final atlas.cool.summary.model.CoolIovSummary coolIovSummary : existingSchemaList) {
+						final Collection<CoolIovRanges> iovranges = coolIovSummary
+								.getCoolIovRangeses();
+						if (iovranges != null && iovranges.size() > 0) {
+							log.info("Skipping schema " + coolschema + " node "
+									+ nodeGtagTagType.getNodeFullpath() + " tag "
+									+ nodeGtagTagType.getTagName());
+							continue;
+						} else {
+							toupdate = true;
+						}
 					}
-					updateTable(nodeGtagTagType.getGtagName(), summarylist);
-					coolrep.flush();
-				} catch (final Exception e) {
-					e.printStackTrace();
+					if (toupdate) {
+						log.info("Found schema " + coolschema + " node "
+								+ nodeGtagTagType.getNodeFullpath() + " tag "
+								+ nodeGtagTagType.getTagName() + " with empty ranges...!");
+						updateTableForNodeAndTag(nodeGtagTagType.getGtagName(),
+								coolschema, db, nodeGtagTagType.getNodeFullpath(),
+								nodeGtagTagType.getTagName());
+					}
+				} else {
+					log.info("Insert new summary for " + coolschema + " " + db + " "
+							+ nodeGtagTagType.getNodeFullpath() + " "
+							+ nodeGtagTagType.getTagName());
+
+					updateTableForNodeAndTag(nodeGtagTagType.getGtagName(), coolschema,
+							db, nodeGtagTagType.getNodeFullpath(),
+							nodeGtagTagType.getTagName());
 				}
 			}
 		} catch (final Exception e) {
 			throw new CoolIOException(e.getMessage());
 		}
+	}
+
+	/**
+	 * Utility function.
+	 * 
+	 * @param globaltag
+	 * @param schema
+	 * @param db
+	 * @param node
+	 * @param tag
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	protected void updateTableForNodeAndTag(final String globaltag, final String schema,
+			final String db, final String node, final String tag) {
+		try {
+			log.info("Updating db for " + schema + " " + db + " " + node + " " + tag);
+			final Collection<CoolIovSummary> summarylist = coolutilsdao
+					.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, node, tag,
+							new BigDecimal(0L), new BigDecimal(CoolIov.COOL_MAX_DATE));
+			if (summarylist != null && summarylist.size() > 0) {
+				updateTable(globaltag, summarylist);
+			} else {
+				log.warning("Cannot retrieve list of summary IOVs...store only the cooliov summary as empty");
+				final atlas.cool.summary.model.CoolIovSummary summary = new atlas.cool.summary.model.CoolIovSummary();
+				summary.setCoolChannelName("unknown");
+				summary.setCoolGlobalTagName(globaltag);
+				summary.setCoolTagName(tag);
+				summary.setCoolChannelId(new BigDecimal(-1));
+				summary.setCoolNodeFullpath(node);
+				summary.setSchemaName(schema);
+				summary.setDb(db);
+				summary.setCoolSummary("empty set of iovs");
+				summary.setCoolMiniovsince(new BigDecimal(0));
+				summary.setCoolMaxiovsince(new BigDecimal(0));
+				summary.setCoolMiniovuntil(new BigDecimal(CoolIov.COOL_MAX_DATE));
+				summary.setCoolMaxiovuntil(new BigDecimal(CoolIov.COOL_MAX_DATE));
+				summary.setCoolTotaliovs(new BigDecimal(0));
+				coolrep.persist(summary);
+				coolrep.flush();
+				log.info("Stored object " + summary);
+			}
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.dao.CondToolsDAO#getNodeStatsForSchemaDb(java.lang.String,
+	 * java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<CondNodeStats> getNodeStatsForSchemaDb(final String schema,
+			final String db, final String gtag) throws CoolIOException {
+		final Object[] params = new Object[3];
+		params[0] = schema;
+		params[1] = db;
+		params[2] = "/%";
+		log.info("Using query " + CondNodeStats.QUERY_NODESSTATINFO + " with " + schema
+				+ " " + db);
+		final List<CondNodeStats> statlist = (List<CondNodeStats>) coolrep.findCoolList(
+				CondNodeStats.QUERY_NODESSTATINFO, params);
+		return statlist;
 	}
 
 }

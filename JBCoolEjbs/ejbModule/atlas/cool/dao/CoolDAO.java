@@ -306,6 +306,19 @@ public interface CoolDAO {
 			String db, String node, String tag, BigDecimal chanid) throws CoolIOException;
 	
 	/**
+	 * @param schema
+	 * @param db
+	 * @param node
+	 * @param tag
+	 * @param chanid
+	 * @return
+	 * @throws CoolIOException
+	 */
+	List<atlas.cool.summary.model.CoolIovSummary> findIovSummaryList(String schema,
+			String db) throws CoolIOException;
+
+	
+	/**
 	 * @param iovid
 	 * @param since
 	 * @return

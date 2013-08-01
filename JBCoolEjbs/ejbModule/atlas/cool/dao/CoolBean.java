@@ -539,6 +539,26 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 		return iovlist;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolDAO#findIovSummaryList(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<CoolIovSummary> findIovSummaryList(String schema, String db)
+			throws CoolIOException {
+		int nparams = 2;
+		String qry = CoolIovSummary.QUERY_FIND_SUMMARY_FORSCHEMADB;
+		
+		final Object[] params = new Object[nparams];
+		params[0] = schema;
+		params[1] = db;
+		
+//		log.info("Using query " + qry + " with " + schema + " " + db + " " + node + " "
+//				+ tag + " " + chanid);
+		final List<CoolIovSummary> iovlist = (List<CoolIovSummary>) coolrep.findCoolList(
+				qry, params);
+		return iovlist;
+	}
+
 
 	
 }

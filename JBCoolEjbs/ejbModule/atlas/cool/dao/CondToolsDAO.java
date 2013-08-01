@@ -3,11 +3,10 @@
  */
 package atlas.cool.dao;
 
-import java.util.Collection;
+import java.util.List;
 
 import atlas.cool.exceptions.CoolIOException;
-import atlas.cool.rest.model.IovRange;
-import atlas.cool.summary.model.CoolIovSummary;
+import atlas.cool.summary.model.CondNodeStats;
 
 /**
  * @author formica
@@ -28,12 +27,11 @@ public interface CondToolsDAO {
 	void synchroIovSummary(String globaltag, String db) throws CoolIOException;
 
 	/**
-	 * Synchro a collection of iovranges with the table cool_iov_range.
-	 * @param iovsumm
-	 * @param iovrangelist
+	 * @param schema
+	 * @param db
+	 * @param gtag
+	 * @return
 	 * @throws CoolIOException
 	 */
-	void synchroIovRanges(CoolIovSummary iovsumm, Collection<IovRange> iovrangelist) throws CoolIOException;
-
-
+	List<CondNodeStats> getNodeStatsForSchemaDb(String schema, String db, String gtag) throws CoolIOException;
 }
