@@ -31,10 +31,13 @@ import org.jboss.ejb3.annotation.TransactionTimeout;
 import atlas.coma.dao.ComaCbDAO;
 import atlas.coma.exceptions.ComaQueryException;
 import atlas.coma.model.CrViewRuninfo;
+import atlas.cool.annotations.CoolQueryRepository;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
 import atlas.cool.payload.model.CoolPayload;
 import atlas.cool.payload.model.CoolPayloadTransform;
+import atlas.cool.payload.plugin.ClobParser;
+import atlas.cool.payload.plugin.RpcClobParser;
 import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.CoolIovType;
 import atlas.cool.rest.model.IovRange;
@@ -67,6 +70,12 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 */
 	@Inject
 	private CoolPayloadDAO payloaddao;
+
+	/**
+	 * 
+	 */
+	@Inject
+	private CoolQueryRepository coolqry;
 
 	/**
 	 * 
@@ -496,6 +505,13 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			final CoolPayload payload = payloaddao.getPayloadsObj(schema, db, node,
 					seltag, since, until, chan);
 			log.info("Retrieved payload of n rows = " + payload.getRows());
+			
+			ClobParser parser = coolqry.getParser(selnode.getSchemaName(), selnode.getNodeFullpath());
+			if (parser != null) {
+				log.info("Parser has been found... "+parser.getClass().getName());
+				payload.setParser(parser);
+			}
+
 			iovlist = new CoolPayloadTransform(payload).getIovsWithPayload();
 			if (iovlist != null) {
 				log.info("Retrieved iovlist of " + iovlist.size());
@@ -552,6 +568,16 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			log.info("Retrieving payload " + payloaddao);
 			final CoolPayload payload = payloaddao.getPayloadsObj(schema, db, node,
 					seltag, since, until, chan);
+			
+//			if (selnode.getNodeFullpath().equals("/RPC/DQMF/ELEMENT_STATUS") 
+//					&& selnode.getSchemaName().equals("ATLAS_COOLOFL_RPC")) {
+//				payload.setParser(new RpcClobParser());
+//			}
+			ClobParser parser = coolqry.getParser(selnode.getSchemaName(), selnode.getNodeFullpath());
+			if (parser != null) {
+				log.info("Parser has been found... "+parser.getClass().getName());
+				payload.setParser(parser);
+			}
 			iovlist = new CoolPayloadTransform(payload).getIovsWithPayload();
 			selnode.setIovList(iovlist);
 		} catch (final Exception e) {
