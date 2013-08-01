@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import atlas.cool.exceptions.CoolIOException;
+import atlas.cool.payload.plugin.ClobParser;
 
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
@@ -58,6 +59,11 @@ public class CoolPayload implements Serializable {
 	 * 
 	 */
 	private List<String> masked = null;
+
+	/**
+	 * If parser it is not null, then it will try to use it when parsing some data objects.
+	 */
+	private ClobParser parser = null;
 
 	/**
 	 * 
@@ -435,6 +441,20 @@ public class CoolPayload implements Serializable {
 	 */
 	public final List<String> getMasked() {
 		return masked;
+	}
+
+	/**
+	 * @return the parser
+	 */
+	public ClobParser getParser() {
+		return parser;
+	}
+
+	/**
+	 * @param parser the parser to set
+	 */
+	public void setParser(final ClobParser parser) {
+		this.parser = parser;
 	}
 
 }

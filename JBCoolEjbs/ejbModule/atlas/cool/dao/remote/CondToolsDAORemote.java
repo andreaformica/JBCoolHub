@@ -11,7 +11,7 @@ import atlas.cool.exceptions.CoolIOException;
  */
 public interface CondToolsDAORemote {
 
-	void checkGlobalTagForSchemaDB(String gtag, String schema, String db) throws CoolIOException;
+	void checkGlobalTagForSchemaDB(String gtag, String schema, String db, Boolean ignoreExistingSchemas) throws CoolIOException;
 	
 	void insertCoolIovRanges(String schema, String db, String node, String tag);
 }

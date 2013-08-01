@@ -86,17 +86,24 @@ public class CoolPayloadTransform {
 						tagId.longValue(), new Timestamp(sysInstime.getTime()),
 						new Timestamp(lastmodDate.getTime()), newHeadId, tagName, iovBase);
 				final Map<String, String> payloadcolumns = new LinkedHashMap<String, String>();
+				final Map<String, Object> payloadObjcolumns = new LinkedHashMap<String, Object>();
 				final Set<String> keys = map.keySet();
 				for (final String akey : keys) {
-					
-
 					if (pyld.isNumber(akey)) {
-						final Object value = map.get(akey);
+						Object value = map.get(akey);
 						payloadcolumns.put(akey, (value != null) ? value.toString() : null);
+						if (pyld.getParser() != null) {
+							value = pyld.getParser().parseClob(akey, (value != null) ? value.toString() : null);
+							if (value == null) {
+								value = map.get(akey);
+							}
+						}
+						payloadObjcolumns.put(akey, value);
 					}
 				}
 				
 				cooliov.setPayload(payloadcolumns);
+				cooliov.setPayloadObj(payloadObjcolumns);
 				iovlist.add(cooliov);
 			}
 			return iovlist;
