@@ -19,6 +19,7 @@ import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
 import atlas.cool.rest.model.SchemaType;
+import atlas.cool.rest.utils.FilteredResponse;
 
 /**
  * JAX-RS Example
@@ -44,6 +45,7 @@ import atlas.cool.rest.model.SchemaType;
  * </p>
  */
 @Path("/plsqlcooljson")
+@FilteredResponse
 @RequestScoped
 public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolREST {
 
@@ -224,6 +226,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/data/list")
+	@FilteredResponse
 	public NodeType listPayloadInNodesSchemaTagRangeAsList(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
 			@PathParam("fld") final String fld, @PathParam("tag") final String tag,

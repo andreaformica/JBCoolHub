@@ -12,10 +12,12 @@ import javax.ws.rs.Produces;
 
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.NodeType;
+import atlas.cool.summary.model.CondSchema;
+import atlas.cool.summary.model.D3TreeMap;
 
 /**
  * @author formica
- *
+ * 
  */
 public interface ICoolGtagREST {
 
@@ -28,9 +30,8 @@ public interface ICoolGtagREST {
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{gtag}/iovsummary/list")
-	public abstract List<NodeType> listIovsSummaryInNodesSchemaAsList(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("gtag") String gtag);
+	List<NodeType> listIovsSummaryInNodesSchemaAsList(@PathParam("schema") String schema,
+			@PathParam("db") String db, @PathParam("gtag") String gtag);
 
 	/**
 	 * @param schema
@@ -41,11 +42,9 @@ public interface ICoolGtagREST {
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{gtag}/list")
-	public abstract List<GtagType> listGlobalTagsInSchema(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("gtag") String gtag);
+	List<GtagType> listGlobalTagsInSchema(@PathParam("schema") String schema,
+			@PathParam("db") String db, @PathParam("gtag") String gtag);
 
-	
 	/**
 	 * @param schema
 	 * @param db
@@ -56,7 +55,7 @@ public interface ICoolGtagREST {
 	@GET
 	@Produces("text/html")
 	@Path("/{schema}/{db}/{gtag}/{type}/summary")
-	public abstract String listIovsSummaryInNodesSchema(
+	String listIovsSummaryInNodesSchema(
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("gtag") String gtag, @PathParam("type") String type);
 
@@ -72,8 +71,8 @@ public interface ICoolGtagREST {
 	 */
 	@GET
 	@Produces("text/html")
-	@Path("/{schema}/{db}/{gtag}/{since}/{until}/{timespan}/{type}/summary")
-	public abstract String listIovsSummaryInNodesSchema(
+	@Path("/{schema}/{db}/{gtag}/{since}/{until}/{timespan}/{type}/summary") 
+	String listIovsSummaryInNodesSchema(
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("gtag") String gtag, @PathParam("since") String since,
 			@PathParam("until") String until, @PathParam("timespan") String timespan,
@@ -87,9 +86,22 @@ public interface ICoolGtagREST {
 	 */
 	@GET
 	@Produces("text/ascii")
-	@Path("/{schema}/{db}/{gtag}/iovsummary/gpl")
-	public abstract String listIovsSummaryInNodesSchemaGpl(
+	@Path("/{schema}/{db}/{gtag}/iovsummary/gpl") 
+	String listIovsSummaryInNodesSchemaGpl(
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("gtag") String gtag);
 
+	/**
+	 * @param schema
+	 * @param db
+	 * @param gtag
+	 * @return
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{gtag}/schemasummary") 
+	D3TreeMap listSchemaSummaryInSchemaDb(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("gtag") String gtag);
+	
 }

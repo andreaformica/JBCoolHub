@@ -142,6 +142,12 @@ public class CoolIovType implements Serializable {
 	/**
 	 * 
 	 */
+	@Transient
+	private Map<String, Object> payloadObj = new LinkedHashMap<String, Object>();
+
+	/**
+	 * 
+	 */
 	@CoolQuery(name = "cool.findiovsinrange", params = "schema;db;node;tag;chanid;since;until")
 	public static final String QUERY_FINDIOVS_INRANGE = "cool.findiovsinrange";
 	/**
@@ -270,6 +276,15 @@ public class CoolIovType implements Serializable {
 	}
 
 	/**
+	 * @return the payload map with original objects
+	 */
+	@XmlElement
+	@XmlJavaTypeAdapter(atlas.cool.rest.utils.MapObjAdapter.class)
+	public final Map<String, Object> getPayloadObj() {
+		return payloadObj;
+	}
+
+	/**
 	 * @return the sinceCoolStr
 	 */
 	@XmlElement
@@ -390,6 +405,14 @@ public class CoolIovType implements Serializable {
 		this.payload = payload;
 	}
 
+	/**
+	 * @param payloadobj
+	 *            the payload to set
+	 */
+	public final void setPayloadObj(final Map<String, Object> payloadobj) {
+		this.payloadObj = payloadobj;
+	}
+	
 	/**
 	 * @param sinceCoolStr
 	 *            the sinceCoolStr to set

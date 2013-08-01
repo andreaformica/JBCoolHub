@@ -10,6 +10,8 @@ import javax.ws.rs.Produces;
 
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.NodeType;
+import atlas.cool.summary.model.CondSchema;
+import atlas.cool.summary.model.D3TreeMap;
 
 /**
  * JAX-RS Example
@@ -113,6 +115,20 @@ public class CoolGtagRESTService extends CoolGtagRESTImpl implements ICoolGtagRE
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
 			@PathParam("gtag") final String gtag) {
 		return super.listIovsSummaryInNodesSchemaGpl(schema, db, gtag);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolGtagRESTImpl#listSchemaSummaryInSchemaDb(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{gtag}/schemasummary")
+	public D3TreeMap listSchemaSummaryInSchemaDb(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("gtag") String gtag) {
+		// TODO Auto-generated method stub
+		return super.listSchemaSummaryInSchemaDb(schema, db, gtag);
 	}
 
 }

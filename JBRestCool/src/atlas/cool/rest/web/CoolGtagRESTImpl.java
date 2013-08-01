@@ -8,16 +8,23 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
 import atlas.coma.exceptions.ComaQueryException;
+import atlas.cool.dao.CondToolsDAO;
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.exceptions.CoolIOException;
@@ -27,6 +34,9 @@ import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
+import atlas.cool.summary.model.CondNodeStats;
+import atlas.cool.summary.model.CondSchema;
+import atlas.cool.summary.model.D3TreeMap;
 
 /**
  * @author formica
@@ -39,6 +49,8 @@ public class CoolGtagRESTImpl implements ICoolGtagREST {
 	private CoolDAO cooldao;
 	@Inject
 	private CoolUtilsDAO coolutilsdao;
+	@Inject
+	private CondToolsDAO condtoolsdao;
 
 	@Inject
 	private Logger log;
@@ -449,6 +461,59 @@ public class CoolGtagRESTImpl implements ICoolGtagREST {
 			e.printStackTrace();
 		}
 		return urlbase + "/" + commandurl;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.ICoolGtagREST#listSchemaSummaryInSchemaDb(java.lang
+	 * .String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{gtag}/schemasummary")
+	public D3TreeMap listSchemaSummaryInSchemaDb(
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("gtag") final String gtag) {
+		D3TreeMap dt3m = null;
+		Set<CondSchema> schemaList = new HashSet<CondSchema>();
+		try {
+			final List<CondNodeStats> nodestatlist = condtoolsdao
+					.getNodeStatsForSchemaDb(schema + "%", db, gtag);
+			for (final CondNodeStats condNodeStats : nodestatlist) {
+				final CondSchema temp = new CondSchema(condNodeStats.getSchemaName(),
+						condNodeStats.getDbName(), new HashSet<CondNodeStats>());
+				if (schemaList.contains(temp)) {
+					// update existing object
+					Iterator<CondSchema> it = schemaList.iterator();
+					while (it.hasNext()) {
+						CondSchema cs = (CondSchema) it.next();
+						if (cs.equals(temp)) {
+							Set<CondNodeStats> nodestats = cs.getChildren();
+							if (nodestats == null) {
+								nodestats = new HashSet<CondNodeStats>();
+							}
+							nodestats.add(condNodeStats);
+							break;
+						}
+					}
+					/*
+					 * Set<CondNodeStats> nodestats = objschema.getChildren();
+					 * if (nodestats == null) { nodestats = new
+					 * HashSet<CondNodeStats>(); } nodestats.add(condNodeStats);
+					 */
+				} else {
+					temp.getChildren().add(condNodeStats);
+					schemaList.add(temp);
+				}
+				dt3m = new D3TreeMap("schemasummary", schemaList);
+			}
+		} catch (final CoolIOException e) {
+			e.printStackTrace();
+		}
+		return dt3m;
 	}
 
 }

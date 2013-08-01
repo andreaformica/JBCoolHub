@@ -38,6 +38,7 @@ import org.reflections.vfs.Vfs;
 import org.reflections.vfs.ZipDir;
 
 import atlas.cool.exceptions.CoolQueryException;
+import atlas.cool.payload.plugin.ClobParser;
 
 /**
  * @author formica
@@ -53,6 +54,7 @@ public class CoolQueryRepository {
 	 * 
 	 */
 	private Map<String, QueryParams> queryMap = new HashMap<String, QueryParams>();
+	private Map<String, Class<ClobParser>> parserMap = new HashMap<String, Class<ClobParser>>();
 
 	// private final Map<String, Query> queryEmMap = new HashMap<String,
 	// Query>();
@@ -148,12 +150,29 @@ public class CoolQueryRepository {
 	}
 
 	/**
+	 * @param schema
+	 * @param folder
+	 * @return
+	 * @throws CoolQueryException
+	 */
+	public synchronized ClobParser getParser(final String schema,
+			final String folder) throws CoolQueryException {
+		try {
+			Class<ClobParser> parser = parserMap.get(schema + folder);
+			return parser.newInstance();
+		} catch (Exception e) {
+			throw new CoolQueryException(e.getMessage());
+		}
+	}
+
+	/**
 	 * Jar files URLs [ vfs:/content/JBCoolEjbs.jar vfs:/content/JBComaEjbs.jar]
 	 * .
 	 * 
 	 * @param pckgname
 	 * @throws CoolQueryException
 	 */
+	@SuppressWarnings("unchecked")
 	private void findAnnotatedClasses(final String pckgname)
 			throws CoolQueryException {
 
@@ -190,6 +209,17 @@ public class CoolQueryRepository {
 				}
 			}
 		}
+		Set<Class<?>> pluginParsers = reflections
+				.getTypesAnnotatedWith(CoolPayloadParser.class);
+		for (Class<?> jpaclass : pluginParsers) {
+			CoolPayloadParser ann = (CoolPayloadParser) jpaclass
+					.getAnnotation(CoolPayloadParser.class);
+			String schemaname = ann.schema();
+			String folder = ann.folder();
+			// System.out.println("Update map "+queryMap+" with query "+params);
+			parserMap.put(schemaname + folder, (Class<ClobParser>) jpaclass);
+		}
+
 	}
 
 	/**

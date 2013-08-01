@@ -13,6 +13,9 @@ import javax.ws.rs.Produces;
 
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.NodeType;
+import atlas.cool.rest.utils.FilteredResponse;
+import atlas.cool.summary.model.CondSchema;
+import atlas.cool.summary.model.D3TreeMap;
 
 /**
  * @author formica
@@ -20,6 +23,7 @@ import atlas.cool.rest.model.NodeType;
  */
 @Path("/coolgtagjson")
 @RequestScoped
+@FilteredResponse
 public class CoolGtagRESTJsonService extends CoolGtagRESTImpl implements ICoolGtagREST {
 
 	/*
@@ -58,4 +62,20 @@ public class CoolGtagRESTJsonService extends CoolGtagRESTImpl implements ICoolGt
 		return super.listIovsSummaryInNodesSchemaAsList(schema, db, gtag);
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolGtagRESTImpl#listSchemaSummaryInSchemaDb(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{gtag}/schemasummary")
+	@FilteredResponse
+	public D3TreeMap listSchemaSummaryInSchemaDb(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("gtag") String gtag) {
+		// TODO Auto-generated method stub
+		return super.listSchemaSummaryInSchemaDb(schema, db, gtag);
+	}
+
+	
 }

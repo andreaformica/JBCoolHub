@@ -3,6 +3,7 @@ package atlas.cool.summary.model;
 // Generated Jul 11, 2013 5:02:12 PM by Hibernate Tools 3.4.0.CR1
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,11 +27,11 @@ import atlas.cool.annotations.CoolQuery;
 @Table(name = "COOL_IOV_RANGES", schema = "ATLAS_COND_TOOLS")
 @SequenceGenerator(name = "COOLIOVRANGE_SEQ", sequenceName = "COOLIOVRANGE_SEQ", allocationSize = 1)
 @NamedQueries({
-	@NamedQuery(name = CoolIovRanges.QUERY_FIND_RANGESFORCHANNEL, query = " "
-			+ " from CoolIovRanges crange where crange.coolIovSummary.coolIovsummaryId = :iovsummid"),
-			@NamedQuery(name = CoolIovRanges.QUERY_FIND_RANGESFORCHANNEL_ATTIME, query = " "
-					+ " from CoolIovRanges crange where crange.coolIovSummary.coolIovsummaryId = :iovsummid "
-					+ " and crange.coolIovrangeSince=:since"),
+		@NamedQuery(name = CoolIovRanges.QUERY_FIND_RANGESFORCHANNEL, query = " "
+				+ " from CoolIovRanges crange where crange.coolIovSummary.coolIovsummaryId = :iovsummid"),
+		@NamedQuery(name = CoolIovRanges.QUERY_FIND_RANGESFORCHANNEL_ATTIME, query = " "
+				+ " from CoolIovRanges crange where crange.coolIovSummary.coolIovsummaryId = :iovsummid "
+				+ " and crange.coolIovrangeSince=:since"),
 		@NamedQuery(name = CoolIovRanges.QUERY_FIND_RANGESFORNODE, query = " "
 				+ " from CoolIovRanges crange where crange.coolIovSummary.coolNodeFullpath = :node "
 				+ " and crange.coolIovSummary.schemaName=:schema and crange.coolIovSummary.db=:db") })
@@ -49,6 +50,10 @@ public class CoolIovRanges implements java.io.Serializable {
 	private String coolIovbase;
 	private String coolIovsinceStr;
 	private String coolIovuntilStr;
+	private BigDecimal comaRunMin;
+	private BigDecimal comaRunMax;
+	private Date comaRunStartTime;
+	private Date comaRunEndTime;
 
 	@CoolQuery(name = "cool.findrangesforchannel", params = "iovsummid")
 	public static final String QUERY_FIND_RANGESFORCHANNEL = "cool.findrangesforchannel";
@@ -187,6 +192,97 @@ public class CoolIovRanges implements java.io.Serializable {
 
 	public void setCoolIovuntilStr(final String coolIovuntilStr) {
 		this.coolIovuntilStr = coolIovuntilStr;
+	}
+
+	/**
+	 * @return the runMin
+	 */
+	@Column(name = "COMA_RUN_MIN", precision = 12, scale = 0)
+	public BigDecimal getComaRunMin() {
+		return comaRunMin;
+	}
+
+	/**
+	 * @param runMin
+	 *            the runMin to set
+	 */
+	public void setComaRunMin(final BigDecimal runMin) {
+		this.comaRunMin = runMin;
+	}
+
+	/**
+	 * @return the runMax
+	 */
+	@Column(name = "COMA_RUN_MAX", precision = 12, scale = 0)
+	public BigDecimal getComaRunMax() {
+		return comaRunMax;
+	}
+
+	/**
+	 * @param runMax
+	 *            the runMax to set
+	 */
+	public void setComaRunMax(final BigDecimal runMax) {
+		this.comaRunMax = runMax;
+	}
+
+	/**
+	 * @return the comaRunStartTime
+	 */
+	@Column(name = "COMA_RUN_STARTTIME")
+	public Date getComaRunStartTime() {
+		return comaRunStartTime;
+	}
+
+	/**
+	 * @param comaRunStartTime the comaRunStartTime to set
+	 */
+	public void setComaRunStartTime(final Date comaRunStartTime) {
+		this.comaRunStartTime = comaRunStartTime;
+	}
+
+	/**
+	 * @return the comaRunEndTime
+	 */
+	@Column(name = "COMA_RUN_ENDTIME")
+	public Date getComaRunEndTime() {
+		return comaRunEndTime;
+	}
+
+	/**
+	 * @param comaRunEndTime the comaRunEndTime to set
+	 */
+	public void setComaRunEndTime(final Date comaRunEndTime) {
+		this.comaRunEndTime = comaRunEndTime;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		CoolIovRanges cobj = null;
+		if (obj instanceof CoolIovRanges) {
+			cobj = (CoolIovRanges) obj;
+			if (cobj.getCoolIovrangeSince().equals(this.getCoolIovrangeSince())
+					&& cobj.getCoolIovrangeUntil().equals(this.getCoolIovrangeUntil())
+					&& cobj.getCoolIovrangeNiovs().equals(this.getCoolIovrangeNiovs())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -33,7 +33,10 @@ import atlas.cool.rest.utils.MyPrinterHandler;
 				+ "      and ciovs.coolNodeFullpath = :node and ciovs.coolTagName = :tag and ciovs.coolChannelId = :chanid"),
 		@NamedQuery(name = CoolIovSummary.QUERY_FINDALL_SUMMARY, query = " "
 				+ " from CoolIovSummary ciovs where ciovs.db = :db and ciovs.schemaName = :schema "
-				+ "      and ciovs.coolNodeFullpath = :node and ciovs.coolTagName = :tag")
+				+ "      and ciovs.coolNodeFullpath = :node and ciovs.coolTagName = :tag"),
+				@NamedQuery(name = CoolIovSummary.QUERY_FIND_SUMMARY_FORSCHEMADB, query = " "
+						+ " from CoolIovSummary ciovs where ciovs.db = :db and ciovs.schemaName = :schema "
+				)				
 })
 @SequenceGenerator(name = "COOLIOVSUMMARY_SEQ", sequenceName = "COOLIOVSUMMARY_SEQ", allocationSize = 1)
 public class CoolIovSummary implements java.io.Serializable {
@@ -63,6 +66,8 @@ public class CoolIovSummary implements java.io.Serializable {
 	public static final String QUERY_FIND_SUMMARY = "cool.findsummary";
 	@CoolQuery(name = "cool.findallsummary", params = "schema;db;node;tag")
 	public static final String QUERY_FINDALL_SUMMARY = "cool.findallsummary";
+	@CoolQuery(name = "cool.findsummaryforschemadb", params = "schema;db")
+	public static final String QUERY_FIND_SUMMARY_FORSCHEMADB = "cool.findsummaryforschemadb";
 
 	/**
 	 * 
@@ -267,7 +272,7 @@ public class CoolIovSummary implements java.io.Serializable {
 		this.coolTotaliovs = coolTotaliovs;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "coolIovSummary",cascade = CascadeType.PERSIST)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "coolIovSummary",cascade = CascadeType.PERSIST)
 	public Set<CoolIovRanges> getCoolIovRangeses() {
 		return coolIovRangeses;
 	}
