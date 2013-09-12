@@ -34,4 +34,15 @@ public interface CondToolsDAO {
 	 * @throws CoolIOException
 	 */
 	List<CondNodeStats> getNodeStatsForSchemaDb(String schema, String db, String gtag) throws CoolIOException;
+
+
+	/**
+	 * @param gtag
+	 * @param schema
+	 * @param db
+	 * @param ignoreExistingSchemas
+	 * @throws CoolIOException
+	 */
+	void updateGlobalTagForSchemaDB(String gtag, String schema, String db, Boolean ignoreExistingSchemas) throws CoolIOException;
+
 }

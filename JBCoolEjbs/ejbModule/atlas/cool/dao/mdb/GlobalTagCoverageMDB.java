@@ -29,6 +29,7 @@ import atlas.connection.dao.CoolRepositoryDAO;
 import atlas.cool.dao.CondToolsDAO;
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolUtilsDAO;
+import atlas.cool.dao.remote.CondToolsDAORemote;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
 import atlas.cool.rest.model.CoolIovSummary;
@@ -78,16 +79,19 @@ public class GlobalTagCoverageMDB implements MessageListener {
 	 * @see MessageListener#onMessage(Message)
 	 */
 	@Override
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void onMessage(final Message message) {
 		try {
 			if (message instanceof ObjectMessage) {
 				final GtagCoverage jmsmess = (GtagCoverage) ((ObjectMessage) message)
 						.getObject();
+				final String checktype = (String) (message.getStringProperty("checkType"));
+				final String db = (String) (message.getStringProperty("db"));
 				if (jmsmess.getDestAddrs() != null) {
 					destAddrs = jmsmess.getDestAddrs();
 				}
 				log.info("Start analyzing coverage for tag " + jmsmess.getGlobaltagname());
-				checkCoverage(jmsmess.getGlobaltagname());
+				checkCoverage(jmsmess.getGlobaltagname(), checktype, db);
 			} else {
 				log.log(Level.WARNING, "Cannot treat message of unknown type");
 			}
@@ -100,11 +104,21 @@ public class GlobalTagCoverageMDB implements MessageListener {
 	/**
 	 * @param globaltagname
 	 */
-	protected void checkCoverage(final String globaltagname) {
-		final String db = "COMP200";
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	protected void checkCoverage(final String globaltagname, final String checkType, final String adb) {
+		String db = "COMP200";
 		final int maxschemas = 999;
 		final Date starttime = new Date();
 		try {
+			if (adb != null) {
+				db = adb;
+			}
+			if (checkType.equals("store")) {
+				log.info("Launch process to store new data associated to "+globaltagname+" from "+db);
+				condtools.updateGlobalTagForSchemaDB(globaltagname, "ATLAS_COOL%", db, true);
+				return;
+			}
+			
 
 			List<NodeGtagTagType> nodeingtagList = null;
 			nodeingtagList = cooldao.retrieveGtagTagsFromSchemaAndDb("ATLAS_COOL%", db,

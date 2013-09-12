@@ -11,7 +11,15 @@
 		<p>
 			Select a globaltag : <input type="text" name="gtagname" size="50" />
 		</p>
-
+		<br>
+		<p> Select the running check type: use store if you want to store results inside the appropriate tables</p>
+	    <input type="radio" name="checktype" value="check" checked>Check<br>
+		<input type="radio" name="checktype" value="store">Store
+	 	<select name="db">
+			<option value="COMP200">comp200</option>
+			<option value="OFLP200">oflp200</option>
+		</select>
+	 	   
 		<input type="submit" value="Check Coverage" />
 	</form>
 

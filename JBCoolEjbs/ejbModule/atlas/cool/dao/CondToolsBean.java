@@ -141,9 +141,12 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 					summary.setCoolMiniovuntil(new BigDecimal(iovsummary.getMinuntil()));
 					summary.setCoolMaxiovuntil(new BigDecimal(iovsummary.getMaxuntil()));
 					summary.setCoolTotaliovs(new BigDecimal(iovsummary.getTotalIovs()));
-					// log.info("Inserting " + summary.toString());
 					coolrep.persist(summary);
-					coolrep.flush();
+					if (icount % 100 == 0) {
+						log.info("Inserting " + summary.toString());
+						coolrep.flush();
+						coolrep.clear();
+					}
 					synchroIovRanges(summary, iovsummary.getIovlist());
 				}
 			} catch (final CoolIOException e) {
@@ -160,7 +163,7 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 	 * @param iovrangelist
 	 * @throws CoolIOException
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 120)
 	protected void synchroIovRanges(
 			final atlas.cool.summary.model.CoolIovSummary iovsumm,
@@ -322,7 +325,8 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 	 * @param node
 	 * @param tag
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 120)
 	protected void updateTableForNodeAndTag(final String globaltag, final String schema,
 			final String db, final String node, final String tag) {
 		try {
@@ -331,6 +335,7 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 					.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, node, tag,
 							new BigDecimal(0L), new BigDecimal(CoolIov.COOL_MAX_DATE));
 			if (summarylist != null && summarylist.size() > 0) {
+				log.info("retrieved summarylist of size " + summarylist.size());
 				updateTable(globaltag, summarylist);
 			} else {
 				log.warning("Cannot retrieve list of summary IOVs...store only the cooliov summary as empty");
@@ -375,6 +380,19 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 		final List<CondNodeStats> statlist = (List<CondNodeStats>) coolrep.findCoolList(
 				CondNodeStats.QUERY_NODESSTATINFO, params);
 		return statlist;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.dao.CondToolsDAO#updateGlobalTagForSchemaDB(java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.Boolean)
+	 */
+	@Override
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public void updateGlobalTagForSchemaDB(final String gtag, final String schema,
+			final String db, final Boolean ignoreExistingSchemas) throws CoolIOException {
+		checkGlobalTagForSchemaDB(gtag, schema, db, ignoreExistingSchemas);
 	}
 
 }

@@ -130,6 +130,18 @@ public class CoolRepository implements CoolRepositoryDAO {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.connection.dao.CoolRepositoryDAO#clear()
+	 */
+	@Override
+	public void clear() throws CoolIOException {
+		try {
+			em.clear();
+		} catch (Exception e) {
+			throw new CoolIOException(e.getMessage());
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

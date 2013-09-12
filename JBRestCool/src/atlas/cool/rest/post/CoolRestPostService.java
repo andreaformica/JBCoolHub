@@ -48,6 +48,8 @@ public class CoolRestPostService {
 			session = connection.createSession(false, javax.jms.Session.AUTO_ACKNOWLEDGE);
 			ObjectMessage mess = session.createObjectMessage();
 			mess.setObject(new GtagCoverage(globaltagname, null));
+			mess.setStringProperty("checkType", form.getCheckType());
+			mess.setStringProperty("db", form.getDb());
 			MessageProducer producer = session.createProducer(queueCoverage);
 			producer.send(mess);
 

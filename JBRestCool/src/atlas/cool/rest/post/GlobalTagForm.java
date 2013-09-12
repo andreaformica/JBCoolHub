@@ -14,6 +14,12 @@ public class GlobalTagForm {
 	@FormParam("gtagname")	
 	private String globalTagName;
 
+	@FormParam("checktype")	
+	private String checkType;
+
+	@FormParam("db")	
+	private String db;
+
 	
 	/**
 	 * 
@@ -43,6 +49,34 @@ public class GlobalTagForm {
 	 */
 	public void setGlobalTagName(final String globalTagName) {
 		this.globalTagName = globalTagName;
+	}
+
+	/**
+	 * @return the checkType
+	 */
+	public String getCheckType() {
+		return checkType;
+	}
+
+	/**
+	 * @param checkType the checkType to set
+	 */
+	public void setCheckType(String checkType) {
+		this.checkType = checkType;
+	}
+
+	/**
+	 * @return the db
+	 */
+	public String getDb() {
+		return db;
+	}
+
+	/**
+	 * @param db the db to set
+	 */
+	public void setDb(String db) {
+		this.db = db;
 	}
 	
 	

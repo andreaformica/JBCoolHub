@@ -42,6 +42,11 @@ public interface CoolRepositoryDAO {
 	void commit() throws CoolIOException;
 	
 	/**
+	 * @throws CoolIOException
+	 */
+	void clear() throws CoolIOException;
+	
+	/**
 	 * @param qryname
 	 * @param params
 	 * @return
