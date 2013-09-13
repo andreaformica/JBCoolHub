@@ -45,7 +45,7 @@ public class TestClient {
 			for (int i=0; i< mths1.length ; i++) {
 				System.out.println("method "+mths1[i].getName());
 			}
-//			condtoolsdao.insertCoolIovRanges("ATLAS_COOLOFL_MUONALIGN", "COMP200", "/MUONALIGN/MDT/ENDCAP/SIDEC", "MuonAlignMDTEndCapCAlign-ECC_ROLLING_2012_03_01-UPD4-03");
+//			condtoolsdao.insertCoolIovRanges("ATLAS_COOLOFL_MUONALIGN", "COMP200", "/MUONALIGN/MDT/BARREL", "MuonAlignMDTBarrelAlign-BA_ROLLING_04-BLKP-UPD4-00");
 //			condtoolsdao.insertCoolIovRanges("ATLAS_COOLOFL_MUONALIGN", "COMP200", "/MUONALIGN/MDT/ENDCAP/SIDEA", "MuonAlignMDTEndCapAAlign-ECA_ROLLING_2012_03_01-UPD4-03");
 //			condtoolsdao.checkGlobalTagForSchemaDB("COMCOND-BLKPA-RUN1-01","ATLAS_COOLOFL_FWD", "COMP200");
 //			System.out.println("done FWD");
@@ -55,8 +55,12 @@ public class TestClient {
 //			System.out.println("done CALO");
 //			condtoolsdao.checkGlobalTagForSchemaDB("COMCOND-BLKPA-RUN1-01","ATLAS_COOLOFL_TRIGGER", "COMP200");
 //			System.out.println("done TRIGGER");
-			condtoolsdao.checkGlobalTagForSchemaDB("COMCOND-BLKPA-RUN1-01","ATLAS_COOLONL%", "COMP200");
-			System.out.println("done ONLINE schemas");
+//			condtoolsdao.checkGlobalTagForSchemaDB("COMCOND-BLKPA-RUN1-01","ATLAS_COOLONL%", "COMP200",true);
+//			System.out.println("done ONLINE schemas");
+
+			//condtoolsdao.checkGlobalTagForSchemaDB("COMCOND-BLKPA-RUN1-01","ATLAS_COOLOFL_%", "COMP200",true);
+			condtoolsdao.checkGlobalTagForSchemaDB("OFLCOND-RUN1-SIM-00","ATLAS_COOLOFL_%", "OFLP200",true);
+//			System.out.println("done OFFLINE schemas");
 
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
