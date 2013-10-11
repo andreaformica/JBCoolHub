@@ -1125,7 +1125,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 								runMap.put(timekey, runlist);
 							}
 
-						} else if (iovsummary.getIovbase().equals("run-lumi")) {
+						} else if (iovsummary.getIovbase().equals("run-lumi") || iovsummary.getIovbase().equals("run-event")) {
 							Long runsince = CoolIov.getRun(ivr.getSince());
 							final Long rununtil = CoolIov.getRun(ivr.getUntil());
 							final Long lbsince = CoolIov.getLumi(ivr.getSince());
