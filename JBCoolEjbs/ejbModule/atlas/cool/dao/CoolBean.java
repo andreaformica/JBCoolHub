@@ -5,6 +5,7 @@ package atlas.cool.dao;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.ejb.Local;
@@ -12,6 +13,8 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.jboss.ejb3.annotation.TransactionTimeout;
 
 import atlas.connection.dao.CoolRepositoryDAO;
 import atlas.cool.dao.remote.CoolDAORemote;
@@ -356,6 +359,7 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * .String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 20)
 	public List<IovType> retrieveIovSummaryPerChannelFromNodeSchemaAndDb(
 			final String schema, final String db, final String node, final String tag)
 			throws CoolIOException {
@@ -380,6 +384,7 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 	 * java.math.BigDecimal, java.math.BigDecimal)
 	 */
 	@Override
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 20)
 	public List<IovType> retrieveIovSummaryPerChannelFromNodeSchemaAndDbInRange(
 			final String schema, final String db, final String node, final String tag,
 			final BigDecimal since, final BigDecimal until) throws CoolIOException {

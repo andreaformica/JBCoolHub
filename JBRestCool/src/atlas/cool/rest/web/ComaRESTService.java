@@ -69,4 +69,16 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 		return super.listGtagStates(state);
 	}
 
+	/**
+	 * @param state
+	 * @return
+	 */
+	@GET
+	@Produces("application/xml")
+	@Path("/{state}/{since}/gtagstate")
+	public List<ComaCbGtagStates> listGtagStatesAtTime(
+			@PathParam("state") final String state, @PathParam("since") final String since) {
+		return super.listGtagStatesAtTime(state, since);
+	}
+
 }

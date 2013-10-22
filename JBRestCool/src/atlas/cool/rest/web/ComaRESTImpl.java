@@ -1,17 +1,25 @@
 package atlas.cool.rest.web;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
 import atlas.coma.dao.ComaCbDAO;
 import atlas.coma.exceptions.ComaQueryException;
 import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.CrViewRuninfo;
+import atlas.cool.dao.CoolUtilsDAO;
+import atlas.cool.exceptions.CoolIOException;
+import atlas.cool.meta.CoolIov;
 
 /**
  * @author formica
@@ -20,6 +28,8 @@ import atlas.coma.model.CrViewRuninfo;
 @RequestScoped
 public class ComaRESTImpl implements IComaREST {
 
+	@Inject
+	protected CoolUtilsDAO coolutilsdao;
 	@Inject
 	protected ComaCbDAO comadao;
 	@Inject
@@ -67,4 +77,37 @@ public class ComaRESTImpl implements IComaREST {
 		return results;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.IComaREST#listGtagStatesInRange(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<ComaCbGtagStates> listGtagStatesAtTime(@PathParam("state") final String state,
+			@PathParam("since") final String since) {
+		List<ComaCbGtagStates> results = null;
+		try {
+			String gtagstate = "%" + state + "%";
+			if (state.equals("all")) {
+				gtagstate = "%";
+			}
+			// Time selection
+			Date attime = null;
+			if (since.equals("now")) {
+				attime = new Date();
+			} else {
+				final Map<String, Object> trmap = coolutilsdao.getTimeRange(since, since, "date");
+				final BigDecimal lsince = (BigDecimal) trmap.get("since");
+				attime = new Date(lsince.longValue() / CoolIov.TO_NANOSECONDS);
+			}
+			results = comadao.findGtagStateAtTime(gtagstate, attime);
+		} catch (final ComaQueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return results;
+	}
+
+	
 }

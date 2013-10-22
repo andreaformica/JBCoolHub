@@ -638,6 +638,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * @see atlas.cool.dao.CoolUtilsDAO#dumpIovSummaryAsText(java.util.Collection)
 	 */
 	@Override
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 20)
 	public String dumpIovSummaryAsText(final Collection<CoolIovSummary> iovsummaryColl) {
 
 		final StringBuffer results = new StringBuffer();
@@ -716,6 +717,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	}
 
 	@Override
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 20)
 	public String dumpIovSummaryAsText(final Collection<CoolIovSummary> iovsummaryColl,
 			final BigDecimal since, final BigDecimal until) {
 
@@ -831,6 +833,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * @see atlas.cool.dao.CoolUtilsDAO#dumpIovSummaryAsSvg(java.util.Collection)
 	 */
 	@Override
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 20)
 	public String dumpIovSummaryAsSvg(final Collection<CoolIovSummary> iovsummaryColl) {
 
 		final StringBuffer results = new StringBuffer();
@@ -938,6 +941,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 * @see atlas.cool.dao.CoolUtilsDAO#dumpIovSummaryAsSvg(java.util.Collection)
 	 */
 	@Override
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 20)
 	public String dumpIovSummaryAsSvg(final Collection<CoolIovSummary> iovsummaryColl,
 			final BigDecimal since, final BigDecimal until) {
 

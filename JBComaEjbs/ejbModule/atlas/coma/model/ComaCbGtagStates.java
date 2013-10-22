@@ -31,7 +31,7 @@ import atlas.cool.annotations.CoolQuery;
 		@NamedQuery(name = ComaCbGtagStates.QUERY_FINDSTATEATTIME, query = "FROM ComaCbGtagStates states "
 				+ " WHERE "
 				+ " gtagState like :state AND ("
-				+ " :time BETWEEN startTime AND endTime OR endTime is null) "
+				+ " :time > startTime AND ( :time <= endTime OR endTime is null)) "
 				+ " order by start_time desc") })
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)

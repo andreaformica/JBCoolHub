@@ -24,20 +24,30 @@ public interface IComaREST {
 	 */
 	@GET
 	@Produces("application/xml")
-	@Path("/{runstart}/{runend}/runs")
-	public abstract List<CrViewRuninfo> listRuns(
+	@Path("/{runstart}/{runend}/runs") 
+	List<CrViewRuninfo> listRuns(
 			@PathParam("runstart") BigDecimal runstart,
 			@PathParam("runend") BigDecimal runend);
 
 	/**
 	 * @param state
-	 * @return
+	 * @return List of global tag states.
 	 */
 	@GET
 	@Produces("application/xml")
-	@Path("/{state}/gtagstate")
-	public abstract List<ComaCbGtagStates> listGtagStates(
+	@Path("/{state}/gtagstate") 
+	List<ComaCbGtagStates> listGtagStates(
 			@PathParam("state") String state);
 
-	
+	/**
+	 * @param state
+	 * @param since
+	 * @return 
+	 * 	List of global tag states in a given range in time.
+	 */
+	@GET
+	@Produces("application/xml")
+	@Path("/{state}/{since}/{until}/gtagstate") List<ComaCbGtagStates> listGtagStatesAtTime(
+			@PathParam("state") final String state, @PathParam("since") final String since);
+
 }
