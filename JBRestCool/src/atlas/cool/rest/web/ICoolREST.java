@@ -16,26 +16,30 @@ import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
 import atlas.cool.rest.model.SchemaType;
 
+/**
+ * @author formica
+ *
+ */
 public interface ICoolREST {
 
 	/**
 	 * <p>
-	 * Method : /{schema}/{db}/schemas
+	 * Method : /{schema}/{db}/schemas.
 	 * </p>
 	 * <p>
 	 * It retrieves a list of schemas in XML format, and the number of nodes in that schema
 	 * </p>
 	 * 
-	 * @param schema
+	 * @param schema.
 	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN, or ATLAS_COOLOFL
-	 * @param db
+	 * @param db.
 	 *            The Cool Instance name: e.g. COMP200
 	 * @return
 	 */
 	@GET
 	@Produces("application/json")
-	@Path("/{schema}/{db}/schemas")
-	public abstract List<SchemaType> listSchemasInDb(
+	@Path("/{schema}/{db}/schemas") 
+	List<SchemaType> listSchemasInDb(
 			@PathParam("schema") String schema, @PathParam("db") String db);
 	/**
 	 * <p>
