@@ -17,10 +17,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import atlas.coma.dao.ComaCbDAO;
+import atlas.coma.exceptions.ComaQueryException;
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.exceptions.CoolQueryException;
+import atlas.cool.meta.CoolIov;
 import atlas.cool.query.tools.QueryTools;
 import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovSummary;
@@ -499,6 +501,127 @@ public class CoolRESTImpl implements ICoolREST {
 		}
 		return summarylist;
 	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolREST#dumpIovsSummaryInNodesSchemaTagRangeAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public String dumpIovsSummaryInNodesSchemaTagRangeAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("since") String since, @PathParam("until") String until,
+			@PathParam("timespan") String timespan, @PathParam("type") String type) {
+
+		log.info("Calling dumpIovsSummaryInNodesSchemaTagRangeAsList..." + schema + " " + db);
+		final StringBuffer results = new StringBuffer();
+		List<SchemaNodeTagType> nodetagList = null;
+		try {
+			results.append("<body>");
+			results.append("<h1>List of NODEs and TAGs iovs statistic associated to "
+					+ tag + "</h1><hr>");
+			
+			String node = fld;
+			if (!fld.startsWith("/")) {
+				node = "/" + fld;
+			}
+
+			nodetagList = cooldao.retrieveTagsFromNodesSchemaAndDb(schema, db, node, tag);
+
+			// Time selection...use timespan from URL then check what kind of
+			// time the folder wants
+			final Map<String, Object> trmap = coolutilsdao.getTimeRange(since, until,
+					timespan);
+			BigDecimal lsince = (BigDecimal) trmap.get("since");
+			BigDecimal luntil = (BigDecimal) trmap.get("until");
+			String outputformat = (String) trmap.get("iovbase");
+			if (lsince == null || luntil == null) {
+				results.append("<p>Timespan cannot be determined using arguments "
+						+ since + " " + until + " " + timespan + "</p>");
+				results.append("</body>");
+				return results.toString();
+			}
+
+			for (final SchemaNodeTagType nodeTagType : nodetagList) {
+				results.append("<br><hr>");
+				final String nodetag = nodeTagType.getNodeFullpath();
+
+				final String seltag = nodeTagType.getTagName();
+
+				// Convert time range using iov_base
+				final List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
+						db, nodetag);
+				NodeType selnode = null;
+				if (nodes != null && nodes.size() > 0) {
+					for (final NodeType anode : nodes) {
+						log.info("Found " + anode.getNodeFullpath() + " of type "
+								+ anode.getNodeIovType());
+						selnode = anode;
+					}
+				}
+				if (!outputformat.equals("fullspan")
+						&& !selnode.getNodeIovBase().equals(outputformat)) {
+					// the format is not good for this folder
+					if (outputformat.equals("time")) {
+						// convert it into run
+						final Map<String, Object> trmapnew = coolutilsdao.getTimeRange(
+								lsince.toString(), luntil.toString(), "timerunlb");
+						lsince = (BigDecimal) trmapnew.get("since");
+						luntil = (BigDecimal) trmapnew.get("until");
+						outputformat = "run-lumi";
+					} else if (outputformat.equals("run-lumi")) {
+						final Map<String, Object> trmapnew = coolutilsdao.getTimeRange(
+								lsince.toString(), luntil.toString(), "runlbtime");
+						lsince = (BigDecimal) trmapnew.get("since");
+						luntil = (BigDecimal) trmapnew.get("until");
+						outputformat = "time";
+					}
+				}
+
+				results.append("<p>Setting the time span to " + lsince + " " + luntil
+						+ "</p>");
+
+				final Collection<CoolIovSummary> iovsummaryColl = coolutilsdao
+						.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, nodetag,
+								seltag, new BigDecimal(0L), new BigDecimal(
+										CoolIov.COOL_MAX_DATE));
+				if (iovsummaryColl == null) {
+					results.append("Empty list of cool iov summary");
+					results.append("</body>");
+					return results.toString();
+				}
+				final int channels = iovsummaryColl.size();
+				final String resultsDefault = "Empty result string...retrieved list of "
+						+ channels + " channels ";
+				if (type.equals("text")) {
+					log.info("Dumping list as text html");
+					results.append(coolutilsdao.dumpIovSummaryAsText(iovsummaryColl,
+							lsince, luntil));
+				} else if (type.equals("svg")) {
+					log.info("Dumping list as svg and html");
+					results.append(coolutilsdao.dumpIovSummaryAsSvg(iovsummaryColl,
+							lsince, luntil));
+				} else {
+					results.append(resultsDefault);
+				}
+				String coverage = "<p>All important runs are covered</p>";
+				try {
+					coverage = coolutilsdao.checkHoles(iovsummaryColl);
+				} catch (final ComaQueryException e) {
+					e.printStackTrace();
+					coverage = "<p>Error in coverage checking...</p>";
+				}
+				results.append(coverage);
+			}
+			results.append("</body>");
+
+		} catch (final CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return results.toString();
+	}
+	
+	
 
 	// /**
 	// * <p>

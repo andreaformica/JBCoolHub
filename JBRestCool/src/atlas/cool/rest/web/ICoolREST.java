@@ -411,4 +411,43 @@ public interface ICoolREST {
 			@PathParam("since") String since, @PathParam("until") String until,
 			@PathParam("timespan") String timespan);
 
+	
+	/**
+	 * <p>
+	 * Method :
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/{timespan}/rangesummary/list
+	 * /list
+	 * </p>
+	 * <p>
+	 * It retrieves a summary of iovs in a given range per channel. The time is given
+	 * as run number, without the lbs...since we are interested in summary we do not provide here
+	 * a better time resolution for selecting the time range.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 *            The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 *            The tag name.
+	 * @param since
+	 *            The COOL since time following timespan convention.
+	 * @param until
+	 *            The COOL until time following timespan convention.
+	 * @param timespan
+	 *            The timespan type: time (cool format in nanosec), runlb (run-lb), date (yyyyMMddhhmmss)
+	 * @return  A JSON page of summary for every channel over the given time range
+	 */
+	@GET
+	@Produces("text/html")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/{timespan}/range/{type}/summary")
+	public abstract String dumpIovsSummaryInNodesSchemaTagRangeAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("since") String since, @PathParam("until") String until,
+			@PathParam("timespan") String timespan,
+			@PathParam("type") String type);
+
 }

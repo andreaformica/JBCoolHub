@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,7 +80,7 @@ public class CoolGtagChecks {
 		try {
 
 			final List<ComaCbGtagStates> gtagstates = comadao.findGtagStateAtTime(
-					"Current", new Date());
+					"Next", new Date());
 			if (gtagstates != null && gtagstates.size() > 0) {
 				globaltagname = gtagstates.get(0).getTagName();
 			}
@@ -167,21 +168,75 @@ public class CoolGtagChecks {
 			throws ComaQueryException {
 		boolean hashole = false;
 
+		final Map<String, List<CrViewRuninfo>> skippedrunsCacheMap = new HashMap<String, List<CrViewRuninfo>>();
+
 		for (final CoolIovSummary iovsummary : summarylist) {
 			final Map<Long, IovRange> timeranges = iovsummary.getIovRanges();
 			if (timeranges != null) {
 				final Set<Long> sincetimes = timeranges.keySet();
+				int iiov = 0;
 				for (final Long asince : sincetimes) {
 					final IovRange ivr = timeranges.get(asince);
+					
+					if (iiov == 0 && ivr.getSince() > 0) {
+						// Check against the first valid run number for 2010: 152166
+						final BigDecimal since = new BigDecimal(0L);
+						final BigDecimal until = new BigDecimal(ivr.getSince());
+						final String cacheKey = since.longValue() + "-"
+								+ until.longValue();
+						try {
+							Boolean missingPhysicsRuns = false;
+							if (skippedrunsCacheMap.containsKey(cacheKey)) {
+								final List<CrViewRuninfo> runinhole = skippedrunsCacheMap
+										.get(cacheKey);
+								if (runinhole.size() > 0) {
+									missingPhysicsRuns = true;
+								}
+							} else {
+								final List<CrViewRuninfo> runinhole = coolutilsdao.checkHoles(since,
+										until, iovsummary.getIovbase());
+								skippedrunsCacheMap.put(cacheKey, runinhole);
+								if (runinhole.size() > 0) {
+									missingPhysicsRuns = true;
+								}
+							}
+							if (missingPhysicsRuns) {
+								hashole = true;
+								return hashole;
+							}
+						} catch (final ComaQueryException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+
+					
 					if (ivr.getIshole()) {
-						final List<CrViewRuninfo> runs = coolutilsdao.checkHoles(ivr,
-								iovsummary.getIovbase());
-						if (runs != null && runs.size() > 0) {
-							// badcooliovsummary.add(iovsummary);
+						final BigDecimal since = new BigDecimal(ivr.getSince());
+						final String cacheKey = since.longValue() + "-"
+								+ ivr.getUntil();
+						Boolean missingPhysicsRuns = false;
+						if (skippedrunsCacheMap.containsKey(cacheKey)) {
+							final List<CrViewRuninfo> skippedruns = skippedrunsCacheMap
+									.get(cacheKey);
+							if (skippedruns.size() > 0) {
+								missingPhysicsRuns = true;
+							}
+						} else {
+							final List<CrViewRuninfo> skippedruns = coolutilsdao.checkHoles(ivr,
+									iovsummary.getIovbase());
+							skippedrunsCacheMap.put(cacheKey, skippedruns);
+							if (skippedruns.size() > 0) {
+								missingPhysicsRuns = true;
+							}
+						}
+
+						if (missingPhysicsRuns) {
 							hashole = true;
 							return hashole;
 						}
 					}
+					iiov++;
 				}
 			}
 		}

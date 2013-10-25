@@ -1,6 +1,7 @@
 package atlas.cool.rest.web;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ import atlas.cool.meta.CoolIov;
 
 /**
  * @author formica
- *
+ * 
  */
 @RequestScoped
 public class ComaRESTImpl implements IComaREST {
@@ -59,6 +60,37 @@ public class ComaRESTImpl implements IComaREST {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see atlas.cool.rest.web.IComaREST#listRuns(java.lang.String,
+	 * java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{since}/{until}/{timespan}/runs")
+	public List<CrViewRuninfo> listRuns(@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan) {
+		// TODO Auto-generated method stub
+		try {
+			// Time selection
+			final Map<String, Object> trmap = coolutilsdao.getTimeRange(since, until,
+					timespan);
+			if (trmap.containsKey("runlist")) {
+				final List<CrViewRuninfo> runlist = (List<CrViewRuninfo>) trmap
+						.get("runlist");
+				return runlist;
+			}
+			return new ArrayList<CrViewRuninfo>();
+		} catch (final CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see atlas.cool.rest.web.IComaREST#listGtagStates(java.lang.String)
 	 */
 	@Override
@@ -77,12 +109,16 @@ public class ComaRESTImpl implements IComaREST {
 		return results;
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.IComaREST#listGtagStatesInRange(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.IComaREST#listGtagStatesInRange(java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<ComaCbGtagStates> listGtagStatesAtTime(@PathParam("state") final String state,
-			@PathParam("since") final String since) {
+	public List<ComaCbGtagStates> listGtagStatesAtTime(
+			@PathParam("state") final String state, @PathParam("since") final String since) {
 		List<ComaCbGtagStates> results = null;
 		try {
 			String gtagstate = "%" + state + "%";
@@ -94,7 +130,8 @@ public class ComaRESTImpl implements IComaREST {
 			if (since.equals("now")) {
 				attime = new Date();
 			} else {
-				final Map<String, Object> trmap = coolutilsdao.getTimeRange(since, since, "date");
+				final Map<String, Object> trmap = coolutilsdao.getTimeRange(since, since,
+						"date");
 				final BigDecimal lsince = (BigDecimal) trmap.get("since");
 				attime = new Date(lsince.longValue() / CoolIov.TO_NANOSECONDS);
 			}
@@ -102,12 +139,11 @@ public class ComaRESTImpl implements IComaREST {
 		} catch (final ComaQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return results;
 	}
 
-	
 }

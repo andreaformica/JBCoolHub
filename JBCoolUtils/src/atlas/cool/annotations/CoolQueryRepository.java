@@ -159,6 +159,9 @@ public class CoolQueryRepository {
 			final String folder) throws CoolQueryException {
 		try {
 			Class<ClobParser> parser = parserMap.get(schema + folder);
+			if (parser == null) {
+				return null;
+			}
 			return parser.newInstance();
 		} catch (Exception e) {
 			throw new CoolQueryException(e.getMessage());

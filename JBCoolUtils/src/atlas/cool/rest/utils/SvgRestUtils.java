@@ -72,34 +72,48 @@ public class SvgRestUtils {
 		this.setSvgabsmax(maxuntil);
 		double firstspan = minuntil - minsince;
 		double lastspan = maxuntil - maxsince;
+		final double timespan = maxsince - minuntil;
 		System.out.println("computeBestRange: " + minsince + " " + minuntil
 				+ " " + maxsince + " " + maxuntil + " spanning " + firstspan
 				+ " " + lastspan);
 		if (minuntil < maxsince) {
 			// there are at least 3 IOV ranges
-			final double timespan = maxsince - minuntil;
 			System.out.println("computeBestRange: timespan " + timespan);
-			if (timespan < 0.1 * firstspan) {
+			if (timespan == 1) {
+				firstspan = timespan * 100;
+			} else if (timespan < 0.1 * firstspan) {
+				firstspan = 10 * timespan;
+			} else if (timespan < 0.4 * firstspan) {
+				firstspan = 10 / 4 * timespan;
+			} else if (timespan < 0.8 * firstspan) {
+				firstspan = 10 / 8 * timespan;
+			} else if (timespan < 1.2 * firstspan) {
+				firstspan = timespan;
+			} else if (timespan < 2 * firstspan) {
 				firstspan = 0.5 * timespan;
 			} else {
-				firstspan = 0.1 * timespan;
+				firstspan = 0.2 * timespan;
 			}
-			if (timespan < 0.1 * lastspan) {
+			if (timespan == 1) {
+				lastspan = timespan * 100;
+			} else if (timespan < 0.1 * lastspan) {
+				lastspan = 10 * timespan;
+			} else if (timespan < 0.4 * lastspan) {
+				lastspan = 10 / 4 * timespan;
+			} else if (timespan < 0.8 * lastspan) {
+				lastspan = 10 / 8 * timespan;
+			} else if (timespan < 1.2 * lastspan) {
+				lastspan = timespan;
+			} else if (timespan < 2 * lastspan) {
 				lastspan = 0.5 * timespan;
 			} else {
-				lastspan = 0.1 * timespan;
+				lastspan = 0.2 * timespan;
 			}
 			this.setSvgabsmin(minuntil - (long) firstspan);
 			this.setSvgabsmax(maxsince + (long) lastspan);
 			System.out.println("computeBestRange: after changes " + svgabsmin
 					+ " " + svgabsmax);
 		}
-		/*
-		 * if (minuntil < CoolIov.COOL_MAX_DATE) { Long iovspan = minuntil -
-		 * minsince; if (iovspan < 1000L) setSvgabsmin(minuntil - (Long)
-		 * (iovspan / 10L)); else setSvgabsmin(minuntil - 1000L); } if (maxuntil
-		 * >= CoolIov.COOL_MAX_RUN) { setSvgabsmax(maxsince + 1000L); }
-		 */
 	}
 
 	/**
@@ -176,7 +190,7 @@ public class SvgRestUtils {
 	 * @return A string with the line tag in svg.
 	 */
 	public final String getSvgLine(Long start, Long end, final Long ichan,
-			final String iovtype, final Boolean ishole, String color) {
+			final String iovtype, final Boolean ishole, final String color) {
 		final StringBuffer svgline = new StringBuffer();
 
 		final Long infinity = svgabsmax;
@@ -196,46 +210,20 @@ public class SvgRestUtils {
 			start = svgabsmin;
 		}
 		if (ishole) {
-			/*
-			 * svgline = "<circle"; Double radius = ((convert(end, infinity) -
-			 * convert(start,infinity)) / 2); Double xcenter =
-			 * convert(start,infinity) + (radius); svgline +=
-			 * (" cx=\""+xcenter+"\" cy=\""
-			 * +ichan*linewidth+"\" r=\""+radius*5+"\" ");
-			 */
-			// svgline = "<rect";
-			// Double width = ((convert(end, infinity) -
-			// convert(start,infinity)));
-			// svgline +=
-			// (" x=\""+convert(start,infinity)+"\" y=\""+0+"\" width=\""+width+"\" height=\""+svgheight*linewidth+"\"");
 			svgline.append("<line");
 			svgline.append(" x1=\"" + this.convert(start, infinity)
 					+ "\" y1=\"" + (ichan * linewidth + svgheight) + "\" x2=\""
 					+ this.convert(end, infinity) + "\" y2=\""
 					+ (ichan * linewidth + svgheight) + "\"");
 
-
-			// Now add a vertical line plus a text giving the limits in the hole
-			// time range
-			/*
-			 * svgline.append("<line"); svgline.append(" x1=\"" + convert(start,
-			 * infinity) + "\" y1=\"" + (2) + "\" x2=\"" + convert(start,
-			 * infinity) + "\" y2=\"" + (ichan * linewidth + svgheight) + "\"");
-			 * svgline.append(" stroke=\"black\" stroke-width=\"" + 1 + "\"/>");
-			 * svgline.append("<text x=\"" + convert(start, infinity) +
-			 * "\" y=\"2\">"); svgline.append(CoolIov.getCoolTimeString(start,
-			 * iovtype)); svgline.append("</text>");
-			 */
 		} else {
 			svgline.append("<line");
 			svgline.append(" x1=\"" + this.convert(start, infinity)
 					+ "\" y1=\"" + (ichan * linewidth + svgheight) + "\" x2=\""
 					+ this.convert(end, infinity) + "\" y2=\""
 					+ (ichan * linewidth + svgheight) + "\"");
-//			svgline.append(" stroke=\"green\" stroke-width=\"" + linewidth
-//					+ "\"/>");
 		}
-		svgline.append(" stroke=\""+color+"\" stroke-width=\"" + linewidth
+		svgline.append(" stroke=\"" + color + "\" stroke-width=\"" + linewidth
 				+ "\"/>");
 
 		return svgline.toString();
@@ -244,7 +232,7 @@ public class SvgRestUtils {
 	/**
 	 * @return the svglinewidth
 	 */
-	public final  Integer getSvglinewidth() {
+	public final Integer getSvglinewidth() {
 		return svglinewidth;
 	}
 
@@ -252,7 +240,7 @@ public class SvgRestUtils {
 	 * @param linewidth
 	 *            the linewidth to set
 	 */
-	public final  void setLinewidth(final Integer linewidth) {
+	public final void setLinewidth(final Integer linewidth) {
 		this.linewidth = linewidth;
 	}
 
@@ -260,7 +248,7 @@ public class SvgRestUtils {
 	 * @param svgabsmax
 	 *            the svgabsmax to set
 	 */
-	public final  void setSvgabsmax(final Long svgabsmax) {
+	public final void setSvgabsmax(final Long svgabsmax) {
 		this.svgabsmax = svgabsmax;
 	}
 
@@ -268,7 +256,7 @@ public class SvgRestUtils {
 	 * @param svgabsmin
 	 *            the svgabsmin to set
 	 */
-	public final  void setSvgabsmin(final Long svgabsmin) {
+	public final void setSvgabsmin(final Long svgabsmin) {
 		this.svgabsmin = svgabsmin;
 	}
 
@@ -276,7 +264,7 @@ public class SvgRestUtils {
 	 * @param svgheight
 	 *            the svgheight to set
 	 */
-	public final  void setSvgheight(final Long svgheight) {
+	public final void setSvgheight(final Long svgheight) {
 		this.svgheight = svgheight;
 	}
 
@@ -284,7 +272,7 @@ public class SvgRestUtils {
 	 * @param svglinewidth
 	 *            the svglinewidth to set
 	 */
-	public final  void setSvglinewidth(final Integer svglinewidth) {
+	public final void setSvglinewidth(final Integer svglinewidth) {
 		this.svglinewidth = svglinewidth;
 	}
 

@@ -51,7 +51,7 @@ public class CoolPayloadTransform {
 		try {
 			List<CoolIovType> iovlist = new ArrayList<CoolIovType>();
 			final List<Map<String, Object>> pyldmap = pyld.getDataList();
-			//System.out.println("Parsing "+pyld.toString());
+			System.out.println("Parsing "+pyld.toString());
 			for (final Map<String, Object> map : pyldmap) {
 				final BigDecimal objectId = (BigDecimal) map.get("OBJECT_ID");
 				final BigDecimal channelId = (BigDecimal) map.get("CHANNEL_ID");

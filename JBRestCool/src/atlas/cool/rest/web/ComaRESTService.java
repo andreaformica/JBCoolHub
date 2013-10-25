@@ -3,7 +3,6 @@
  */
 package atlas.cool.rest.web;
 
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import javax.ws.rs.Produces;
 
 import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.CrViewRuninfo;
-
 
 /**
  * JAX-RS Example
@@ -45,27 +43,48 @@ import atlas.coma.model.CrViewRuninfo;
 @RequestScoped
 public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.ComaRESTImpl#listRuns(java.math.BigDecimal, java.math.BigDecimal)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.rest.web.ComaRESTImpl#listRuns(java.math.BigDecimal,
+	 * java.math.BigDecimal)
 	 */
 	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{runstart}/{runend}/runs")
-	public List<CrViewRuninfo> listRuns(@PathParam("runstart") final BigDecimal runstart, @PathParam("runend") final BigDecimal runend) {
+	public List<CrViewRuninfo> listRuns(@PathParam("runstart") final BigDecimal runstart,
+			@PathParam("runend") final BigDecimal runend) {
 		// TODO Auto-generated method stub
 		return super.listRuns(runstart, runend);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.rest.web.ComaRESTImpl#listRuns(java.lang.String,
+	 * java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{since}/{until}/{timespan}/runs")
+	public List<CrViewRuninfo> listRuns(@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan) {
+		// TODO Auto-generated method stub
+		return super.listRuns(since, until, timespan);
 	}
 
 	/**
 	 * @param state
 	 * @return
 	 */
+	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{state}/gtagstate")
-	public List<ComaCbGtagStates> listGtagStates(
-			@PathParam("state") final String state) {
+	public List<ComaCbGtagStates> listGtagStates(@PathParam("state") final String state) {
 		return super.listGtagStates(state);
 	}
 
@@ -73,6 +92,7 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	 * @param state
 	 * @return
 	 */
+	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{state}/{since}/gtagstate")
