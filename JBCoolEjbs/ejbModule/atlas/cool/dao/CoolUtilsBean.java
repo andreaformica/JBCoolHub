@@ -699,6 +699,9 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 						final BigDecimal until = new BigDecimal(ivr.getSince());
 						final String cacheKey = since.longValue() + "-"
 								+ until.longValue();
+						log.fine("first iovrange: " + ivr.getSince() + " "
+								+ ivr.getUntil() + " check for hole in " + since + " "
+								+ until);
 						try {
 							Boolean missingPhysicsRuns = false;
 							if (skippedrunsCacheMap.containsKey(cacheKey)) {
@@ -716,7 +719,17 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 								}
 							}
 							if (missingPhysicsRuns) {
-								colortagstart = colorbadtagstart;
+								//colortagstart = colorbadtagstart;
+								long timespan = until.longValue() - since.longValue();
+								if (iovsummary.getIovbase().equals("time")) {
+									timespan = timespan / 1000L;
+								}
+								String holedump = "[" + timespan + "] ";
+								iovDump = colorbadtagstart + "1" + " ["
+										+ "0" + "] [" + ivr.getSinceCoolStr()
+										+ "] " + holedump + colortagend;
+
+								results.append(" | " + iovDump);
 							}
 						} catch (final ComaQueryException e) {
 							// TODO Auto-generated catch block
@@ -726,7 +739,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 
 					String holedump = "";
 					if (ivr.getIshole()) {
-						colortagstart = colorbadtagstart;
+						colortagstart = colorwarntagstart;
 						long timespan = ivr.getUntil() - ivr.getSince();
 						if (iovsummary.getIovbase().equals("time")) {
 							timespan = timespan / 1000L;
@@ -751,19 +764,14 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 									missingPhysicsRuns = true;
 								}
 							}
-							// final List<CrViewRuninfo> skippedruns = checkHoles(ivr,
-							// iovsummary.getIovbase());
-							// if (skippedruns.size() == 0) {
-							if (!missingPhysicsRuns) {
-								colortagstart = colorwarntagstart;
+							if (missingPhysicsRuns) {
+								colortagstart = colorbadtagstart;
 							}
 						} catch (final ComaQueryException e) {
 							e.printStackTrace();
 						}
 					}
-					// if (ivr.getNiovs() == 1 && (iiov<1) && niovranges==1) {
-					// colortagstart = colorsingleiovstart;
-					// }
+				
 					iovDump = colortagstart + ivr.getNiovs() + " ["
 							+ ivr.getSinceCoolStr() + "] [" + ivr.getUntilCoolStr()
 							+ "] " + holedump + colortagend;
@@ -774,7 +782,6 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 				results.append("</p>");
 			}
 		}
-		// results.append("</body>");
 		return results.toString();
 	}
 
@@ -784,11 +791,12 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			final BigDecimal since, final BigDecimal until) {
 
 		final StringBuffer results = new StringBuffer();
+		final Map<String, List<CrViewRuninfo>> skippedrunsCacheMap = new HashMap<String, List<CrViewRuninfo>>();
 
 		if (since.longValue() == 0L && until.longValue() >= CoolIov.COOL_MAX_DATE) {
 			return dumpIovSummaryAsText(iovsummaryColl);
 		}
-		
+
 		// List<NodeGtagTagType> nodeingtagList = null;
 		final String colorgoodtagstart = "<span style=\"color:#20D247\">";
 		final String colorwarntagstart = "<span style=\"color:#D1A22C\">";
@@ -797,7 +805,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		final String colorsingleiovstart = "<span style=\"color:#2E64FE\">";
 		final String colortagend = "</span>";
 
-		results.append("<h1>Iovs statistics.... </h1>");
+		// results.append("<h1>Iovs statistics.... </h1>");
 
 		final int channels = iovsummaryColl.size();
 		final Iterator<CoolIovSummary> it = iovsummaryColl.iterator();
@@ -816,50 +824,109 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 					+ " : ");
 
 			final Map<Long, IovRange> timeranges = iovsummary.getIovRanges();
+			final Integer niovranges = timeranges.size();
 			if (timeranges != null) {
 				final Set<Long> sincetimes = timeranges.keySet();
 				String colortagstart = colorgoodtagstart;
 				String iovDump = "";
 				final long minsince = iovsummary.getMinsince();
-				final long maxuntil = iovsummary.getMaxuntil();
-
-				if (minsince > since.longValueExact()) {
-					colortagstart = colorbadtagstart;
-					long timespan = minsince - since.longValue();
-					if (iovsummary.getIovbase().equals("time")) {
-						timespan = timespan / 1000L;
-					}
-					final String holedump = "[" + timespan + "] ";
-					iovDump = colortagstart
-							+ "0 ["
-							+ CoolIov.getCoolTimeRunLumiString(since.longValue(),
-									iovsummary.getIovbase())
-							+ "] ["
-							+ CoolIov.getCoolTimeRunLumiString(minsince,
-									iovsummary.getIovbase()) + "] " + holedump
-							+ colortagend;
-
-					results.append(" | " + iovDump);
-				}
 				int iiov = 0;
 				for (final Long asince : sincetimes) {
+
 					final IovRange ivr = timeranges.get(asince);
 					colortagstart = colorgoodtagstart;
 					if (iiov == 0 && ivr.getSince().compareTo(minsince) != 0) {
 						colortagstart = colorwarntagstart;
 					}
+					if (ivr.getNiovs() == 1 && iiov == 0 && niovranges == 1) {
+						colortagstart = colorsingleiovstart;
+					}
+
+					if (iiov == 0 && ivr.getSince() > 0) {
+						// Check against the first valid run number for 2010: 152166
+						final BigDecimal lsince = since;
+						final BigDecimal luntil = new BigDecimal(ivr.getSince());
+						final String cacheKey = lsince.longValue() + "-"
+								+ luntil.longValue();
+						log.fine("first iovrange: " + ivr.getSince() + " "
+								+ ivr.getUntil() + " check for hole in " + lsince + " "
+								+ luntil);
+						try {
+							Boolean missingPhysicsRuns = false;
+							if (luntil.longValue() > lsince.longValue()) {
+							if (skippedrunsCacheMap.containsKey(cacheKey)) {
+								final List<CrViewRuninfo> runinhole = skippedrunsCacheMap
+										.get(cacheKey);
+								if (runinhole.size() > 0) {
+									missingPhysicsRuns = true;
+								}
+							} else {
+								final List<CrViewRuninfo> runinhole = checkHoles(lsince,
+										luntil, iovsummary.getIovbase());
+								skippedrunsCacheMap.put(cacheKey, runinhole);
+								if (runinhole.size() > 0) {
+									missingPhysicsRuns = true;
+								}
+							}
+							}
+							if (missingPhysicsRuns) {
+								//colortagstart = colorbadtagstart;
+								long timespan = luntil.longValue() - lsince.longValue();
+								if (iovsummary.getIovbase().equals("time")) {
+									timespan = timespan / 1000L;
+								}
+								String holedump = "[" + timespan + "] ";
+								iovDump = colorbadtagstart + "1" + " ["
+										+ since + "] [" + ivr.getSinceCoolStr()
+										+ "] " + holedump + colortagend;
+
+								results.append(" | " + iovDump);
+							}
+							log.fine("Hole in IOV0 with color " + colortagstart
+									+ " and missing run key " + cacheKey);
+						} catch (final ComaQueryException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					}
+
 					String holedump = "";
 					if (ivr.getIshole()) {
-						colortagstart = colorbadtagstart;
+						colortagstart = colorwarntagstart;
 						long timespan = ivr.getUntil() - ivr.getSince();
 						if (iovsummary.getIovbase().equals("time")) {
 							timespan = timespan / 1000L;
 						}
 						holedump = "[" + timespan + "] ";
+						try {
+							Boolean missingPhysicsRuns = false;
+							final BigDecimal lsince = new BigDecimal(ivr.getSince());
+							final String cacheKey = lsince.longValue() + "-"
+									+ ivr.getUntil();
+							if (skippedrunsCacheMap.containsKey(cacheKey)) {
+								final List<CrViewRuninfo> skippedruns = skippedrunsCacheMap
+										.get(cacheKey);
+								if (skippedruns.size() > 0) {
+									missingPhysicsRuns = true;
+								}
+							} else {
+								final List<CrViewRuninfo> skippedruns = checkHoles(ivr,
+										iovsummary.getIovbase());
+								skippedrunsCacheMap.put(cacheKey, skippedruns);
+								if (skippedruns.size() > 0) {
+									missingPhysicsRuns = true;
+								}
+							}
+
+							if (missingPhysicsRuns) {
+								colortagstart = colorbadtagstart;
+							}
+						} catch (final ComaQueryException e) {
+							e.printStackTrace();
+						}
 					}
-					if (ivr.getNiovs() == 1) {
-						colortagstart = colorsingleiovstart;
-					}
+					
 					iovDump = colortagstart + ivr.getNiovs() + " ["
 							+ ivr.getSinceCoolStr() + "] [" + ivr.getUntilCoolStr()
 							+ "] " + holedump + colortagend;
@@ -867,29 +934,9 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 					results.append(" | " + iovDump);
 					iiov++;
 				}
-				if (maxuntil < until.longValueExact()) {
-					colortagstart = colorbadtagstart;
-					long timespan = until.longValue() - maxuntil;
-					if (iovsummary.getIovbase().equals("time")) {
-						timespan = timespan / 1000L;
-					}
-					final String holedump = "[" + timespan + "] ";
-					iovDump = colortagstart
-							+ "0 ["
-							+ CoolIov.getCoolTimeRunLumiString(maxuntil,
-									iovsummary.getIovbase())
-							+ "] ["
-							+ CoolIov.getCoolTimeRunLumiString(until.longValue(),
-									iovsummary.getIovbase()) + "] " + holedump
-							+ colortagend;
-
-					results.append(" | " + iovDump);
-				}
-
 				results.append("</p>");
 			}
 		}
-		// results.append("</body>");
 		return results.toString();
 	}
 
@@ -909,12 +956,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 
 		final String colorseptagstart = "<span style=\"color:#1A91C4\">";
 		final String colortagend = "</span>";
-		// results.append("<head><style>" + "h1 {font-size:25px;} "
-		// + "h2 {font-size:20px;}" + "h3 {font-size:15px;}"
-		// + "hr {color:sienna;}" + "p {font-size:14px;}"
-		// + "p.small {line-height:80%;}" + "</style></head>");
-
-		// results.append("<body>");
+	
 		int channels = 0;
 		if (iovsummaryColl != null) {
 			channels = iovsummaryColl.size();
@@ -933,6 +975,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		final SvgRestUtils svgutil = new SvgRestUtils();
 		svgutil.setSvgabsmin(0L);
 		svgutil.setSvgabsmax(CoolIov.COOL_MAX_DATE);
+		// Reset IOV for Run1: 2010/01/01 - 2013/03/01
 		if (channels < 20) {
 			svgutil.setLinewidth(10);
 		} else if (channels < 100) {
@@ -963,7 +1006,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 
 				svgutil.computeBestRange(iovsummary.getMinsince(),
 						iovsummary.getMinuntil(), iovsummary.getMaxsince(),
-						iovsummary.getMaxuntil());
+						iovsummary.getMaxuntil(), iovsummary.getIovbase());
 			}
 			log.fine("Node " + iovsummary.getNode() + " tag " + iovsummary.getTag()
 					+ ": Chan " + iovsummary.getChanId() + " is using svgmin "
@@ -972,12 +1015,13 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 					+ iovsummary.getMinuntil() + " " + iovsummary.getMaxsince());
 			if (timeranges != null) {
 				final Set<Long> sincetimes = timeranges.keySet();
-				int nranges = timeranges.size();
+				final int nranges = timeranges.size();
 				for (final Long asince : sincetimes) {
 					final IovRange ivr = timeranges.get(asince);
 
 					String color = "green";
-					if (ivr.getNiovs() == 1 && !ivr.getIshole() && iiov == 0 && nranges == 1) {
+					if (ivr.getNiovs() == 1 && !ivr.getIshole() && iiov == 0
+							&& nranges == 1) {
 						color = "blue";
 					}
 
@@ -1004,7 +1048,9 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 								}
 							}
 							if (missingPhysicsRuns) {
-								color = "red";
+								//color = "red";
+								svg.append(svgutil.getSvgLine(0L, ivr.getSince(), ichan,
+										iovsummary.getIovbase(), true, "red"));
 							}
 						} catch (final ComaQueryException e) {
 							// TODO Auto-generated catch block
@@ -1012,23 +1058,10 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 						}
 					}
 
-					/*
-					 * if (iiov == 0 && ivr.getSince() > 0) { // Check against the first
-					 * valid run number for 2010: 152166 BigDecimal since = new
-					 * BigDecimal(0L); BigDecimal until = new BigDecimal(ivr.getSince());
-					 * try { List<CrViewRuninfo> runinhole = checkHoles(since, until,
-					 * iovsummary.getIovbase()); if (runinhole.size()>0) { color = "red";
-					 * } } catch (ComaQueryException e) { // TODO Auto-generated catch
-					 * block e.printStackTrace(); } }
-					 */
 					if (ivr.getIshole()) {
 						color = "orange";
 						try {
-							// final List<CrViewRuninfo> skippedruns = checkHoles(ivr,
-							// iovsummary.getIovbase());
-							// if (skippedruns.size() > 0) {
-							// color = "red";
-							// }
+							
 							final String cacheKey = ivr.getSince() + "-" + ivr.getUntil();
 							Boolean missingPhysicsRuns = false;
 							if (skippedrunsCacheMap.containsKey(cacheKey)) {
@@ -1079,6 +1112,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 
 		final StringBuffer results = new StringBuffer();
 		final StringBuffer svg = new StringBuffer();
+		final Map<String, List<CrViewRuninfo>> skippedrunsCacheMap = new HashMap<String, List<CrViewRuninfo>>();
 
 		if (since.longValue() == 0L && until.longValue() >= CoolIov.COOL_MAX_DATE) {
 			return dumpIovSummaryAsSvg(iovsummaryColl);
@@ -1086,12 +1120,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 
 		final String colorseptagstart = "<span style=\"color:#1A91C4\">";
 		final String colortagend = "</span>";
-		// results.append("<head><style>" + "h1 {font-size:25px;} "
-		// + "h2 {font-size:20px;}" + "h3 {font-size:15px;}"
-		// + "hr {color:sienna;}" + "p {font-size:14px;}"
-		// + "p.small {line-height:80%;}" + "</style></head>");
-
-		// results.append("<body>");
+	
 		int channels = 0;
 		if (iovsummaryColl != null) {
 			channels = iovsummaryColl.size();
@@ -1105,7 +1134,8 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 						+ colortagend + "</h2>");
 			}
 		} else {
-			results.append("<h3>Collection of iovs summaries is null</h3>");
+			results.append("<h3>Collection of iovs summaries is null for this node "
+					+ "</h3>");
 			return results.toString();
 		}
 		final SvgRestUtils svgutil = new SvgRestUtils();
@@ -1131,6 +1161,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		Long ichan = 0L;
 		for (final CoolIovSummary iovsummary : iovsummaryColl) {
 
+			int iiov = 0;
 			final Map<Long, IovRange> timeranges = iovsummary.getIovRanges();
 			if (ichan == 0) {
 				results.append(" | Info in ichan 0: niovs=" + iovsummary.getTotalIovs()
@@ -1138,72 +1169,106 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 						+ iovsummary.getMinuntil() + " to " + iovsummary.getMaxsince()
 						+ " / " + iovsummary.getMaxuntil() + "</p><br>");
 
-				// svgutil.computeBestRange(iovsummary.getMinsince(),
-				// iovsummary.getMinuntil(),
-				// iovsummary.getMaxsince(), iovsummary.getMaxuntil());
 			}
 			log.fine("Node " + iovsummary.getNode() + " tag " + iovsummary.getTag()
 					+ ": Chan " + iovsummary.getChanId() + " is using svgmin "
 					+ svgutil.getSvgabsmin() + " and svgmax " + svgutil.getSvgabsmax()
-					+ " from " + iovsummary.getMinsince() + " "
-					+ iovsummary.getMinuntil() + " " + iovsummary.getMaxsince());
+					+ " from iovsummary (minsince,minuntil,maxsince) = "
+					+ iovsummary.getMinsince() + " " + iovsummary.getMinuntil() + " "
+					+ iovsummary.getMaxsince());
+
 			if (timeranges != null) {
-				final long minsince = iovsummary.getMinsince();
-				final long maxuntil = iovsummary.getMaxuntil();
-
-				if (minsince > since.longValueExact()) {
-					String color = "orange";
-					try {
-						final List<CrViewRuninfo> skippedruns = checkHoles(since,
-								new BigDecimal(minsince), iovsummary.getIovbase());
-						if (skippedruns.size() > 0) {
-							color = "red";
-						}
-					} catch (final ComaQueryException e) {
-						e.printStackTrace();
-					}
-					svg.append(svgutil.getSvgLine(since.longValueExact(), minsince,
-							ichan, iovsummary.getIovbase(), true, color));
-				}
-
 				final Set<Long> sincetimes = timeranges.keySet();
-				int iiov = 0;
+				final int nranges = timeranges.size();
 				for (final Long asince : sincetimes) {
 					final IovRange ivr = timeranges.get(asince);
+
 					String color = "green";
-					if (ivr.getNiovs() == 1 && !ivr.getIshole() && iiov == 0) {
+					if (ivr.getNiovs() == 1 && !ivr.getIshole() && iiov == 0
+							&& nranges == 1) {
 						color = "blue";
 					}
+
+					if (iiov == 0 && ivr.getSince() > 0) {
+						// final BigDecimal lsince = new
+						// BigDecimal(Math.min(since.longValue(), ivr.getSince()));
+						// final BigDecimal luntil = new
+						// BigDecimal(Math.max(since.longValue(), ivr.getSince()));
+						final BigDecimal lsince = since;
+						final BigDecimal luntil = new BigDecimal(ivr.getSince());
+						final String cacheKey = lsince.longValue() + "-"
+								+ luntil.longValue();
+						log.fine("first iovrange: " + ivr.getSince() + " "
+								+ ivr.getUntil() + " check for hole in " + lsince + " "
+								+ luntil);
+						try {
+							Boolean missingPhysicsRuns = false;
+							if (luntil.longValue() > lsince.longValue()) {
+								if (skippedrunsCacheMap.containsKey(cacheKey)) {
+									final List<CrViewRuninfo> runinhole = skippedrunsCacheMap
+											.get(cacheKey);
+									if (runinhole.size() > 0) {
+										missingPhysicsRuns = true;
+									}
+								} else {
+									final List<CrViewRuninfo> runinhole = checkHoles(
+											lsince, luntil, iovsummary.getIovbase());
+									skippedrunsCacheMap.put(cacheKey, runinhole);
+									if (runinhole.size() > 0) {
+										missingPhysicsRuns = true;
+									}
+								}
+								String usedcolor = color;
+								if (missingPhysicsRuns) {
+									//color = "red";
+									usedcolor="red";
+									svg.append(svgutil.getSvgLine(since.longValue(), ivr.getSince(), ichan,
+											iovsummary.getIovbase(), true, "red"));
+									
+								}
+								log.fine("Hole in IOV0 with color " + usedcolor
+										+ " and missing run key " + cacheKey);
+							}
+						} catch (final ComaQueryException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+
 					if (ivr.getIshole()) {
 						color = "orange";
 						try {
-							final List<CrViewRuninfo> skippedruns = checkHoles(ivr,
-									iovsummary.getIovbase());
-							if (skippedruns.size() > 0) {
+
+							final String cacheKey = ivr.getSince() + "-" + ivr.getUntil();
+							Boolean missingPhysicsRuns = false;
+							if (skippedrunsCacheMap.containsKey(cacheKey)) {
+								final List<CrViewRuninfo> skippedruns = skippedrunsCacheMap
+										.get(cacheKey);
+								if (skippedruns.size() > 0) {
+									missingPhysicsRuns = true;
+								}
+							} else {
+								final List<CrViewRuninfo> skippedruns = checkHoles(ivr,
+										iovsummary.getIovbase());
+								skippedrunsCacheMap.put(cacheKey, skippedruns);
+								if (skippedruns.size() > 0) {
+									missingPhysicsRuns = true;
+								}
+							}
+							if (missingPhysicsRuns) {
 								color = "red";
 							}
+							log.fine("Hole with color " + color + " and missing run key "
+									+ cacheKey);
 						} catch (final ComaQueryException e) {
 							e.printStackTrace();
 						}
 					}
+
 					svg.append(svgutil.getSvgLine(ivr.getSince(), ivr.getUntil(), ichan,
 							iovsummary.getIovbase(), ivr.getIshole(), color));
+					iiov++;
 				}
-				if (maxuntil < until.longValueExact()) {
-					String color = "orange";
-					try {
-						final List<CrViewRuninfo> skippedruns = checkHoles(
-								new BigDecimal(maxuntil), until, iovsummary.getIovbase());
-						if (skippedruns.size() > 0) {
-							color = "red";
-						}
-					} catch (final ComaQueryException e) {
-						e.printStackTrace();
-					}
-					svg.append(svgutil.getSvgLine(maxuntil, until.longValueExact(),
-							ichan, iovsummary.getIovbase(), true, color));
-				}
-				iiov++;
 			}
 			ichan++;
 		}
@@ -1404,7 +1469,8 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 				if (runMap.containsKey(timekey)) {
 					runlist = runMap.get(timekey);
 				} else {
-					log.info("Retrieve runlist from COMA using " + lsince + " " + luntil);
+					log.info("Retrieve runlist using time from COMA using " + lsince
+							+ " " + luntil);
 					runlist = comadao.findRunsInRange(lsince, luntil);
 					runMap.put(timekey, runlist);
 				}
@@ -1435,8 +1501,12 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 				if (runMap.containsKey(runkey)) {
 					runlist = runMap.get(runkey);
 				} else {
-					log.info("Retrieve runlist from COMA using " + lsince + " " + luntil);
+					// log.info("Retrieve runlist from COMA using " + lsince + " " +
+					// luntil);
 					runlist = comadao.findRunsInRange(lsince, luntil);
+					log.info("Retrieve runlist using run from COMA using " + lsince + " "
+							+ luntil + ": nruns "
+							+ (runlist != null ? runlist.size() : " null list!"));
 					runMap.put(runkey, runlist);
 				}
 			}
@@ -1444,7 +1514,8 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 				if (arun.getRunNumber().intValue() < 152166) {
 					continue;
 				}
-				log.info("Potential matching run " + arun.getRunNumber() + " " + arun.getPProject());
+				log.fine("Potential matching run " + arun.getRunNumber() + " "
+						+ arun.getPProject());
 				if (arun.getPPeriod() != null && arun.getPProject() != null) {
 					if (arun.getPProject().startsWith("data")) {
 						results.add(arun);
@@ -1483,11 +1554,11 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			if (runMap.containsKey(timekey)) {
 				runlist = runMap.get(timekey);
 			} else {
-				log.info("Retrieve runlist from COMA using " + lsince + " " + luntil);
+				log.info("checkHoles [time]: retrieve runlist from COMA using " + lsince + " " + luntil);
 				runlist = comadao.findRunsInRange(lsince, luntil);
 				runMap.put(timekey, runlist);
 			}
-		} else if (iovbase.equals("run-lumi")) {
+		} else if (iovbase.startsWith("run")) {
 			Long runsince = CoolIov.getRun(since.longValue());
 			final Long rununtil = CoolIov.getRun(until.longValue());
 			final Long lbsince = CoolIov.getLumi(since.longValue());
@@ -1513,7 +1584,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			if (runMap.containsKey(runkey)) {
 				runlist = runMap.get(runkey);
 			} else {
-				log.info("Retrieve runlist from COMA using " + lsince + " " + luntil);
+				log.info("checkHoles [run-xxx]: retrieve runlist from COMA using " + lsince + " " + luntil);
 				runlist = comadao.findRunsInRange(lsince, luntil);
 				runMap.put(runkey, runlist);
 			}
@@ -1521,7 +1592,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 
 		for (final CrViewRuninfo arun : runlist) {
 			if (arun.getPPeriod() != null && arun.getPProject() != null) {
-				log.info("Found potential matching with run "
+				log.fine("Found potential matching with run "
 						+ arun.getRunNumber().intValue() + " " + arun.getPProject());
 				if (arun.getRunNumber().intValue() < 152166) {
 					continue;
@@ -1581,7 +1652,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 						lbstr = untilargs[1];
 					}
 					luntil = CoolIov.getCoolRunLumi(untilargs[0], lbstr);
-					outputformat = "run-lumi";
+					outputformat = "run";
 				} else if (timespan.equals("runtime")) {
 					// Convert run request into time range given by start of
 					// since run
@@ -1658,7 +1729,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 								endrun += 1L;
 								luntil = CoolIov.getCoolRunLumi(endrun.toString(), "0");
 							}
-							outputformat = "run-lumi";
+							outputformat = "run";
 							timerangeMap.put("runlist", results);
 						}
 					} catch (final ComaQueryException e) {
@@ -1689,7 +1760,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 								endrun += 1L;
 								luntil = CoolIov.getCoolRunLumi(endrun.toString(), "0");
 							}
-							outputformat = "run-lumi";
+							outputformat = "run";
 							timerangeMap.put("runlist", results);
 						}
 					} catch (final ComaQueryException e) {

@@ -3,6 +3,10 @@
  */
 package atlas.cool.rest.utils;
 
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
+
 import atlas.cool.meta.CoolIov;
 
 /**
@@ -16,13 +20,15 @@ public class SvgRestUtils {
 	 */
 	Integer svglinewidth = 1000;
 	/**
-	 * 
+	 * The minimum allowed value for the svg line. 
 	 */
-	Long svgabsmin = 0L;
+	Long svgabsmin = 0L; 
+	
 	/**
-	 * 
+	 * The maximum allowed value for the svg line.
 	 */
 	Long svgabsmax = CoolIov.COOL_MAX_DATE;
+	
 	/**
 	 * 
 	 */
@@ -36,7 +42,7 @@ public class SvgRestUtils {
 	 * 
 	 */
 	public SvgRestUtils() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	/**
@@ -67,7 +73,7 @@ public class SvgRestUtils {
 	 *            maximum until.
 	 */
 	public final void computeBestRange(final Long minsince,
-			final Long minuntil, final Long maxsince, final Long maxuntil) {
+			final Long minuntil, final Long maxsince, final Long maxuntil, final String iovbase) {
 		this.setSvgabsmin(minsince);
 		this.setSvgabsmax(maxuntil);
 		double firstspan = minuntil - minsince;
@@ -111,6 +117,27 @@ public class SvgRestUtils {
 			}
 			this.setSvgabsmin(minuntil - (long) firstspan);
 			this.setSvgabsmax(maxsince + (long) lastspan);
+			
+			// Now verify that the range is contained in run1 period
+			if (iovbase.startsWith("run-")) {
+				Long minrun = 152166L; Long maxrun = 219305L;
+				BigDecimal coolrunsince = CoolIov.getCoolTime(minrun, iovbase);
+				BigDecimal coolrununtil = CoolIov.getCoolTime(maxrun, iovbase);
+//				this.setSvgabsmin(Math.max(getSvgabsmin(), coolrunsince.longValue()));
+				//this.setSvgabsmax(Math.min(getSvgabsmax(), coolrununtil.longValue()));
+				this.setSvgabsmin(coolrunsince.longValue());
+				this.setSvgabsmax(coolrununtil.longValue());
+			} else if (iovbase.equals("time")) {
+				Calendar cal = Calendar.getInstance();
+				cal.set(2010, 1, 1);
+				Date timesince = cal.getTime();
+//				this.setSvgabsmin(Math.max(this.getSvgabsmin(), (timesince.getTime() * CoolIov.TO_NANOSECONDS)));
+				this.setSvgabsmin(timesince.getTime() * CoolIov.TO_NANOSECONDS);
+				cal.set(2013, 3, 1);
+				Date timeuntil = cal.getTime();
+//				this.setSvgabsmax(Math.min(this.getSvgabsmax(), (timeuntil.getTime() * CoolIov.TO_NANOSECONDS)));
+				this.setSvgabsmax(timeuntil.getTime() * CoolIov.TO_NANOSECONDS);
+			}
 			System.out.println("computeBestRange: after changes " + svgabsmin
 					+ " " + svgabsmax);
 		}

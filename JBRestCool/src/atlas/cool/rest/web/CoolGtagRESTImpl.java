@@ -162,8 +162,40 @@ public class CoolGtagRESTImpl implements ICoolGtagREST {
 			results.append("<a href=" + createLink(schema, db, gtag, "text/summary")
 					+ ">text</a> or ");
 			results.append("<a href=" + createLink(schema, db, gtag, "svg/summary")
-					+ ">svg</a></p>");
-			results.append("<h2>List of NODEs and TAGs iovs statistic associated to "
+					+ ">svg</a>");
+			/*
+			 * create links for the following periods: 2010: 152166 - 170482
+			 * 2011: 177531 - 194382 2012: 200804 - 210186 2013: 217946 - 219365
+			 */
+			final String link2010 = "152166-0/170482-0/runlb/";
+			final String link2011 = "177531-0/194382-0/runlb/";
+			final String link2012 = "200804-0/210186-0/runlb/";
+			final String link2013 = "217946-0/219365-0/runlb/";
+			results.append("<br><a href="
+					+ createLink(schema, db, gtag, link2010 + "text/summary")
+					+ ">text-2010</a><br>");
+			results.append("<a href="
+					+ createLink(schema, db, gtag, link2010 + "svg/summary")
+					+ ">svg-2010</a><br>");
+			results.append("<a href="
+					+ createLink(schema, db, gtag, link2011 + "text/summary")
+					+ ">text-2011</a><br>");
+			results.append("<a href="
+					+ createLink(schema, db, gtag, link2011 + "svg/summary")
+					+ ">svg-2011</a><br>");
+			results.append("<a href="
+					+ createLink(schema, db, gtag, link2012 + "text/summary")
+					+ ">text-2012</a><br>");
+			results.append("<a href="
+					+ createLink(schema, db, gtag, link2012 + "svg/summary")
+					+ ">svg-2012</a><br>");
+			results.append("<a href="
+					+ createLink(schema, db, gtag, link2013 + "text/summary")
+					+ ">text-2013</a><br>");
+			results.append("<a href="
+					+ createLink(schema, db, gtag, link2013 + "svg/summary")
+					+ ">svg-2013</a><br>");
+			results.append("</p><h2>List of NODEs and TAGs iovs statistic associated to "
 					+ gtag + "</h2><br><hr>");
 			nodeingtagList = cooldao.retrieveGtagTagsFromSchemaAndDb(schema + "%", db,
 					gtag);
@@ -268,6 +300,8 @@ public class CoolGtagRESTImpl implements ICoolGtagREST {
 				final String node = nodeGtagTagType.getNodeFullpath();
 
 				final String seltag = nodeGtagTagType.getTagName();
+				results.append("<p>Checking summary for node " + node + " and tag "
+						+ seltag + "</p>");
 
 				// Convert time range using iov_base
 				final List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema,
@@ -281,8 +315,10 @@ public class CoolGtagRESTImpl implements ICoolGtagREST {
 					}
 				}
 				if (!outputformat.equals("fullspan")
-						&& !selnode.getNodeIovBase().equals(outputformat)) {
+						&& !selnode.getNodeIovBase().startsWith(outputformat)) {
 					// the format is not good for this folder
+					log.fine("Output format " + outputformat + " different from folder "
+							+ selnode.getNodeIovBase());
 					if (outputformat.equals("time")) {
 						// convert it into run
 						final Map<String, Object> trmapnew = coolutilsdao.getTimeRange(
@@ -290,30 +326,38 @@ public class CoolGtagRESTImpl implements ICoolGtagREST {
 						lsince = (BigDecimal) trmapnew.get("since");
 						luntil = (BigDecimal) trmapnew.get("until");
 						outputformat = "run-lumi";
-					} else if (outputformat.equals("run-lumi")) {
+					} else if (outputformat.startsWith("run")) {
 						final Map<String, Object> trmapnew = coolutilsdao.getTimeRange(
 								lsince.toString(), luntil.toString(), "runlbtime");
 						lsince = (BigDecimal) trmapnew.get("since");
 						luntil = (BigDecimal) trmapnew.get("until");
 						outputformat = "time";
 					}
+					log.fine("Changed output format " + outputformat + " : " + lsince
+							+ " - " + luntil);
 				}
 
 				results.append("<p>Setting the time span to " + lsince + " " + luntil
-						+ "</p>");
+						+ " and output format to " + outputformat + "</p>");
 
+				// final Collection<CoolIovSummary> iovsummaryColl =
+				// coolutilsdao
+				// .listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, node,
+				// seltag, new BigDecimal(0L), new BigDecimal(
+				// CoolIov.COOL_MAX_DATE));
 				final Collection<CoolIovSummary> iovsummaryColl = coolutilsdao
 						.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, node,
-								seltag, new BigDecimal(0L), new BigDecimal(
-										CoolIov.COOL_MAX_DATE));
+								seltag, lsince, luntil);
 				if (iovsummaryColl == null) {
-					results.append("Empty list of cool iov summary");
-					results.append("</body>");
-					return results.toString();
+					results.append("<p>Empty list of cool iov summary for node " + node
+							+ "</p>");
+					// results.append("</body>");
+					// return results.toString();
+					continue;
 				}
 				final int channels = iovsummaryColl.size();
-				final String resultsDefault = "Empty result string...retrieved list of "
-						+ channels + " channels ";
+				final String resultsDefault = "<p>Empty result string...retrieved list of "
+						+ channels + " channels </p>";
 				if (type.equals("text")) {
 					log.info("Dumping list as text html");
 					results.append(coolutilsdao.dumpIovSummaryAsText(iovsummaryColl,
@@ -478,7 +522,7 @@ public class CoolGtagRESTImpl implements ICoolGtagREST {
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
 			@PathParam("gtag") final String gtag) {
 		D3TreeMap dt3m = null;
-		Set<CondSchema> schemaList = new HashSet<CondSchema>();
+		final Set<CondSchema> schemaList = new HashSet<CondSchema>();
 		try {
 			final List<CondNodeStats> nodestatlist = condtoolsdao
 					.getNodeStatsForSchemaDb(schema + "%", db, gtag);
@@ -487,9 +531,9 @@ public class CoolGtagRESTImpl implements ICoolGtagREST {
 						condNodeStats.getDbName(), new HashSet<CondNodeStats>());
 				if (schemaList.contains(temp)) {
 					// update existing object
-					Iterator<CondSchema> it = schemaList.iterator();
+					final Iterator<CondSchema> it = schemaList.iterator();
 					while (it.hasNext()) {
-						CondSchema cs = (CondSchema) it.next();
+						final CondSchema cs = it.next();
 						if (cs.equals(temp)) {
 							Set<CondNodeStats> nodestats = cs.getChildren();
 							if (nodestats == null) {

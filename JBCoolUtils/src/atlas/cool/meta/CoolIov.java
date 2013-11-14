@@ -299,4 +299,18 @@ public final class CoolIov implements Serializable {
 		return iovstr;
 	}
 
+	/**
+	 * @param adate
+	 * @return The cool time in nanoseconds.
+	 */
+	public static BigDecimal getCoolTime(final Long runortime, final String iovBase) {
+
+		if (iovBase.startsWith("run-")) {
+			return getCoolRunLumi(runortime, 0L);
+		} else if (iovBase.equals("time")) {
+			return new BigDecimal(runortime * TO_NANOSECONDS);
+		} else {
+			return new BigDecimal(0L);
+		}
+	}
 }

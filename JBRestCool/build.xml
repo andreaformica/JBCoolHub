@@ -62,6 +62,7 @@
 				<include name="**/*.MF" />
 				<include name="**/*html" />
 				<include name="**/*jsp" />
+				<include name="app/**/*" />
 				<include name="resources/**/*" />
 				<exclude name="etc/**" />
 			</fileset>
@@ -125,6 +126,7 @@
 				<include name="**/*gif" />
 				<include name="**/*css" />
 				<include name="**/*png" />
+				<include name="app/**/*" />
 				<exclude name="atlas/mdt/dcs/server/**/*" />
 				<exclude name="WEB-INF/**/*" />
 				<exclude name="resources/**/*" />
@@ -171,6 +173,7 @@
 				<include name="**/*css" />
 				<include name="**/*png" />
 				<include name="**/*js" />
+				<include name="app/**/*" />
 				<include name="WEB-INF/**/*" />
 				<exclude name="**/META-INF/persistence.xml" />
 				<exclude name="WEB-INF/*-ds.xml" />
