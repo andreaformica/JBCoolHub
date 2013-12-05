@@ -30,6 +30,7 @@ import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
 import atlas.cool.rest.model.CoolIovSummary;
+import atlas.cool.rest.model.GtagTagDiffType;
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
@@ -561,24 +562,52 @@ public class CoolGtagRESTImpl implements ICoolGtagREST {
 		return dt3m;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see atlas.cool.rest.web.ICoolGtagREST#findCoverage(java.lang.String)
 	 */
 	@Override
 	@GET
 	@Produces("application/json")
 	@Path("/{gtag}/coverage")
-	public CoolCoverage findCoverage(@PathParam("gtag") String gtag) {
+	public CoolCoverage findCoverage(@PathParam("gtag") final String gtag) {
 		CoolCoverage coolcov;
 		try {
 			coolcov = condtoolsdao.findGlobalTagCoverage(gtag);
 			return coolcov;
-		} catch (CoolIOException e) {
+		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.ICoolGtagREST#listGtagDifferences(java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{gtag1}/{gtag2}/diff")
+	public List<GtagTagDiffType> listGtagDifferences(
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("gtag1") final String gtag1, @PathParam("gtag2") final String gtag2) {
+		List<GtagTagDiffType> gtagdifflist = null;
+		try {
+			String m_schema = schema+"%";
+			gtagdifflist = cooldao.retrieveGtagsDiffFromSchemaAndDb(m_schema, db, gtag1,
+					gtag2);
+			return gtagdifflist;
+		} catch (final CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }

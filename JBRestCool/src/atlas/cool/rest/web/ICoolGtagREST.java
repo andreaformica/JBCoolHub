@@ -10,6 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import atlas.cool.rest.model.GtagTagDiffType;
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.summary.model.CoolCoverage;
@@ -104,8 +105,22 @@ public interface ICoolGtagREST {
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("gtag") String gtag);
 
+	/**
+	 * @param gtag
+	 * @return
+	 */
 	@GET
 	@Produces("application/json")
 	@Path("/{gtag}/coverage") 
 	CoolCoverage findCoverage(@PathParam("gtag") String gtag);
+	
+	/**
+	 * @return
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{gtag1}/{gtag2}/diff") 
+	List<GtagTagDiffType> listGtagDifferences(@PathParam("schema") String schema, 
+			@PathParam("db") String db,
+			@PathParam("gtag1") String gtag1, @PathParam("gtag2") String gtag2);
 }

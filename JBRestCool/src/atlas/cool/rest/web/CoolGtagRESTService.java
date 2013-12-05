@@ -8,9 +8,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import atlas.cool.rest.model.GtagTagDiffType;
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.NodeType;
-import atlas.cool.summary.model.CondSchema;
 import atlas.cool.summary.model.CoolCoverage;
 import atlas.cool.summary.model.D3TreeMap;
 
@@ -118,30 +118,54 @@ public class CoolGtagRESTService extends CoolGtagRESTImpl implements ICoolGtagRE
 		return super.listIovsSummaryInNodesSchemaGpl(schema, db, gtag);
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.CoolGtagRESTImpl#listSchemaSummaryInSchemaDb(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.CoolGtagRESTImpl#listSchemaSummaryInSchemaDb(java
+	 * .lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{schema}/{db}/{gtag}/schemasummary")
 	public D3TreeMap listSchemaSummaryInSchemaDb(
-			@PathParam("schema") String schema, @PathParam("db") String db,
-			@PathParam("gtag") String gtag) {
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("gtag") final String gtag) {
 		// TODO Auto-generated method stub
 		return super.listSchemaSummaryInSchemaDb(schema, db, gtag);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see atlas.cool.rest.web.CoolGtagRESTImpl#findCoverage(java.lang.String)
 	 */
 	@Override
 	@GET
 	@Produces("application/xml")
 	@Path("/{gtag}/coverage")
-	public CoolCoverage findCoverage(@PathParam("gtag") String gtag) {
+	public CoolCoverage findCoverage(@PathParam("gtag") final String gtag) {
 		// TODO Auto-generated method stub
 		return super.findCoverage(gtag);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.CoolGtagRESTImpl#listGtagDifferences(java.lang.String
+	 * , java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{gtag1}/{gtag2}/diff")
+	public List<GtagTagDiffType> listGtagDifferences(
+			@PathParam("schema") final String schema, @PathParam("db") final String db,
+			@PathParam("gtag1") final String gtag1, @PathParam("gtag2") final String gtag2) {
+		// TODO Auto-generated method stub
+		return super.listGtagDifferences(schema, db, gtag1, gtag2);
 	}
 
 }

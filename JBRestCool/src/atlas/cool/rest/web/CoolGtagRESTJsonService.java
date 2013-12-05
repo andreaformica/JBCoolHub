@@ -11,6 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import atlas.cool.rest.model.GtagTagDiffType;
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.utils.FilteredResponse;
@@ -90,6 +91,18 @@ public class CoolGtagRESTJsonService extends CoolGtagRESTImpl implements ICoolGt
 		return super.findCoverage(gtag);
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolGtagRESTImpl#listGtagDifferences(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{gtag1}/{gtag2}/diff")
+	public List<GtagTagDiffType> listGtagDifferences(@PathParam("schema") String schema,
+			@PathParam("db") String db, @PathParam("gtag1") String gtag1,
+			@PathParam("gtag2") String gtag2) {
+		// TODO Auto-generated method stub
+		return super.listGtagDifferences(schema, db, gtag1, gtag2);
+	}
 	
 }
