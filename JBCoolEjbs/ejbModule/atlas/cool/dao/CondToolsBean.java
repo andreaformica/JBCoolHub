@@ -2,6 +2,7 @@ package atlas.cool.dao;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -24,6 +25,7 @@ import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.IovRange;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.summary.model.CondNodeStats;
+import atlas.cool.summary.model.CoolCoverage;
 import atlas.cool.summary.model.CoolIovRanges;
 
 /**
@@ -91,7 +93,10 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 			final Collection<CoolIovSummary> summarylist) {
 
 		int icount = 0;
+
 		for (final CoolIovSummary iovsummary : summarylist) {
+
+			// Standard loop over iovsummaries...
 			final String schema = iovsummary.getSchema();
 			final String db = iovsummary.getDb();
 			final String node = iovsummary.getNode();
@@ -110,20 +115,41 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 					// if yes, update content
 					final atlas.cool.summary.model.CoolIovSummary summary = coolsummobjlist
 							.get(0);
-					summary.setCoolChannelName(iovsummary.getChannelName());
-					summary.setCoolGlobalTagName(globaltag);
-					summary.setCoolSummary(iovsummary.getSummary());
-					summary.setCoolMiniovsince(new BigDecimal(iovsummary.getMinsince()));
-					summary.setCoolMaxiovsince(new BigDecimal(iovsummary.getMaxsince()));
-					summary.setCoolMiniovuntil(new BigDecimal(iovsummary.getMinuntil()));
-					summary.setCoolMaxiovuntil(new BigDecimal(iovsummary.getMaxuntil()));
-					summary.setCoolTotaliovs(new BigDecimal(iovsummary.getTotalIovs()));
-					// log.info("Updating " + summary.toString());
-					if (icount % 100 == 0 && iovsummary.getIovlist() != null) {
-						log.info("Updating " + summary.toString() + " with iovranges "
-								+ iovsummary.getIovlist().size());
+
+					// Verify the total number of iovs...if it is equal skip the update.
+					final Long dbtotaliovs = summary.getCoolTotaliovs().longValue();
+					final Long newtotal = iovsummary.getTotalIovs();
+					if (dbtotaliovs == newtotal) {
+						log.fine("SKIP channel: Same number of total iovs for "
+								+ iovsummary.getSchema() + " " + iovsummary.getNode()
+								+ " " + iovsummary.getChanId());
+					} else {
+						log.warning("Different number of total iovs for "
+								+ iovsummary.getSchema() + " " + iovsummary.getNode()
+								+ " " + iovsummary.getChanId());
+						// The number of iovs is not the same...update the summary
+						summary.setCoolChannelName(iovsummary.getChannelName());
+						summary.setCoolGlobalTagName(globaltag);
+						summary.setCoolSummary(iovsummary.getSummary());
+						summary.setCoolMiniovsince(new BigDecimal(iovsummary
+								.getMinsince()));
+						summary.setCoolMaxiovsince(new BigDecimal(iovsummary
+								.getMaxsince()));
+						summary.setCoolMiniovuntil(new BigDecimal(iovsummary
+								.getMinuntil()));
+						summary.setCoolMaxiovuntil(new BigDecimal(iovsummary
+								.getMaxuntil()));
+						summary.setCoolTotaliovs(new BigDecimal(iovsummary.getTotalIovs()));
+						// log.info("Updating " + summary.toString());
+						// Merge the summary
+						coolrep.merge(summary);
+						// log message
+						if (icount % 100 == 0 && iovsummary.getIovlist() != null) {
+							log.info("Updating " + summary.toString()
+									+ " with iovranges " + iovsummary.getIovlist().size());
+						}
+						synchroIovRanges(summary, iovsummary.getIovlist());
 					}
-					synchroIovRanges(summary, iovsummary.getIovlist());
 				} else {
 					// if not, store entry
 					final atlas.cool.summary.model.CoolIovSummary summary = new atlas.cool.summary.model.CoolIovSummary();
@@ -149,6 +175,7 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 					}
 					synchroIovRanges(summary, iovsummary.getIovlist());
 				}
+				coolrep.flush();
 			} catch (final CoolIOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -169,6 +196,13 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 			final atlas.cool.summary.model.CoolIovSummary iovsumm,
 			final Collection<IovRange> iovrangelist) throws CoolIOException {
 
+		final List<CoolIovRanges> dbrangeslist = cooldao.findIovRangesList(
+				iovsumm.getCoolIovsummaryId(), null);
+		if (dbrangeslist != null && dbrangeslist.size() == iovrangelist.size()) {
+			log.fine("No difference in list size for iovranges...");
+			return;
+		}
+
 		for (final IovRange iovRange : iovrangelist) {
 			final CoolIovRanges newrange = new CoolIovRanges();
 			newrange.setCoolIovbase(iovsumm.getCoolNodeIovbase());
@@ -179,22 +213,19 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 			newrange.setCoolIovsinceStr(iovRange.getSinceCoolStr());
 			newrange.setCoolIovuntilStr(iovRange.getUntilCoolStr());
 			newrange.setCoolIovSummary(iovsumm);
-			final List<CoolIovRanges> dbranges = cooldao.findIovRangesList(
-					iovsumm.getCoolIovsummaryId(), new BigDecimal(iovRange.getSince()));
-			if (dbranges != null && dbranges.size() == 1) {
-				log.info("Compare range with the DB ");
-				final CoolIovRanges oldrange = dbranges.get(0);
-				if (oldrange.equals(newrange)) {
-					log.info("Iovrange is the same....do not update");
-				} else {
-					log.info("Iovrange is not the same, should update it");
-				}
-			} else {
-				// log.info("Cannot find range in DB, persist it");
-				coolrep.persist(newrange);
-			}
+			// final List<CoolIovRanges> dbranges = cooldao.findIovRangesList(
+			// iovsumm.getCoolIovsummaryId(), new BigDecimal(iovRange.getSince()));
+			/*
+			 * if (dbranges != null && dbranges.size() == 1) { //
+			 * log.info("Compare range with the DB "); final CoolIovRanges oldrange =
+			 * dbranges.get(0); if (oldrange.equals(newrange)) {
+			 * log.fine("Iovrange is the same....do not update"); } else {
+			 * log.fine("Iovrange is not the same, should update it"); } } else { //
+			 * log.info("Cannot find range in DB, persist it"); coolrep.persist(newrange);
+			 * }
+			 */
 		}
-		coolrep.flush();
+		// coolrep.flush();
 	}
 
 	/*
@@ -392,7 +423,130 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void updateGlobalTagForSchemaDB(final String gtag, final String schema,
 			final String db, final Boolean ignoreExistingSchemas) throws CoolIOException {
+		// Add bookkeeping of update
+		final CoolCoverage coolcovrun = new CoolCoverage(gtag);
+		coolcovrun.setDbName(db);
+		coolcovrun.setInsTime(new Date());
+		coolcovrun.setCovComment("Init");
 		checkGlobalTagForSchemaDB(gtag, schema, db, ignoreExistingSchemas);
+		try {
+			final CoolCoverage coolcov = findGlobalTagCoverage(gtag);
+			if (coolcov == null) {
+				coolrep.persist(coolcovrun);
+				coolrep.commit();
+			}
+		} catch (final CoolIOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.dao.CondToolsDAO#insertCoverageInfo(java.lang.String,
+	 * java.lang.String, java.util.Date, java.lang.Integer, java.lang.Integer,
+	 * java.lang.String)
+	 */
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 10)
+	public void insertCoverageInfo(final String gtag, final String db,
+			final Date instime, final Integer nupdschemas, final Integer nupdfolders,
+			final String comment) throws CoolIOException {
+		final CoolCoverage coolcov = new CoolCoverage(gtag, db, instime, nupdschemas,
+				nupdfolders, comment);
+
+		try {
+			coolrep.persist(coolcov);
+			coolrep.flush();
+		} catch (final Exception e) {
+			throw new CoolIOException(
+					"Error in inserting cool coverage logging information :"
+							+ e.getMessage());
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.dao.CondToolsDAO#updateCoverageInfo(java.lang.String,
+	 * java.lang.String, java.lang.Integer, java.lang.Integer, java.lang.String)
+	 */
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 10)
+	public void updateCoverageInfo(final String gtag, String db, Integer nupdschemas,
+			Integer nupdfolders, String comment) throws CoolIOException {
+
+		final CoolCoverage coolcov = coolrep.findObj(CoolCoverage.class, gtag);
+		try {
+
+			if (coolcov == null) {
+				if (gtag == null || db == null || nupdschemas == null
+						|| nupdfolders == null) {
+					log.severe("Cannot insert new coverage summary with null values...");
+				}
+				insertCoverageInfo(gtag, db, new Date(), nupdschemas, nupdfolders,
+						comment);
+			} else {
+				// update the info
+				log.info("Update information for " + gtag + " with comment "
+						+ coolcov.getCovComment());
+				if (db == null || nupdschemas == null || nupdfolders == null) {
+					// get information from COOL_IOV_SUMMARY table
+					log.info("Input fields are empty: get information from cool_iov_summary");
+					final List<CoolCoverage> covlist = getSummaryCoverage(gtag);
+					if (covlist != null && covlist.size() > 0) {
+						log.fine("List of coverage of size "+covlist.size());
+						final CoolCoverage newcoolcov = covlist.get(0);
+						db = newcoolcov.getDbName();
+						nupdfolders = newcoolcov.getnUpdatedFolders();
+						nupdschemas = newcoolcov.getnUpdatedSchemas();
+						comment = " Source:CoolIovSummary ";
+						log.info("Filled fields from cool_iov_summary :"+nupdfolders+" "+nupdschemas+" and db "+db);
+					}
+				}
+				log.info("Using input fields: " + nupdfolders + " " + nupdschemas + " "
+						+ comment);
+				coolcov.setDbName(db);
+				coolcov.setnUpdatedFolders(nupdfolders);
+				coolcov.setnUpdatedSchemas(nupdschemas);
+				coolcov.setCovComment(coolcov.getCovComment() + "\n" + comment);
+				coolrep.merge(coolcov);
+			}
+		} catch (final Exception e) {
+			throw new CoolIOException("update coverage got exception " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Retrieve summary of coverage for bookkeeping.
+	 * 
+	 * @param gtag
+	 * @return
+	 * @throws Exception
+	 */
+	protected List<CoolCoverage> getSummaryCoverage(final String gtag) throws Exception {
+		List<CoolCoverage> covlist = null;
+		final Object[] params = new Object[1];
+		params[0] = gtag;
+		log.info("Using query " + CoolCoverage.QUERY_GETLOG + " with " + gtag);
+		covlist = (List<CoolCoverage>) coolrep.findCoolList(CoolCoverage.QUERY_GETLOG,
+				params);
+		return covlist;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.dao.CondToolsDAO#findGlobalTagCoverage(java.lang.String)
+	 */
+	@Override
+	public CoolCoverage findGlobalTagCoverage(final String gtag) throws CoolIOException {
+		CoolCoverage coolcov = null;
+		coolcov = coolrep.findObj(CoolCoverage.class, gtag);
+		return coolcov;
 	}
 
 }

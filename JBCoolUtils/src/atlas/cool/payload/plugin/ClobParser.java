@@ -18,4 +18,10 @@ public interface ClobParser {
 	 * @return
 	 */
 	Object  parseClob(String payloadColumn, String content);
+	
+	/**
+	 * @param payloadColumn
+	 * @return
+	 */
+	String  header(String payloadColumn);
 }

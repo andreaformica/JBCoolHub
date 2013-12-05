@@ -68,7 +68,7 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	@Override
 	@GET
 	@Produces("application/xml")
-	@Path("/{since}/{until}/{timespan}/runs")
+	@Path("/{since}/{until}/{timespan}/runsbyiov")
 	public List<CrViewRuninfo> listRuns(@PathParam("since") final String since,
 			@PathParam("until") final String until,
 			@PathParam("timespan") final String timespan) {
@@ -99,6 +99,41 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	public List<ComaCbGtagStates> listGtagStatesAtTime(
 			@PathParam("state") final String state, @PathParam("since") final String since) {
 		return super.listGtagStatesAtTime(state, since);
+	}
+
+	/**
+	 * @param runstart
+	 * @param runend
+	 * @param rtype
+	 * @param period
+	 * @return
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{runstart}/{runend}/{rtype}/{period}/runs")
+	public List<CrViewRuninfo> listRuns(@PathParam("runstart") final BigDecimal runstart,
+			@PathParam("runend") final BigDecimal runend,
+			@PathParam("rtype") final String rtype,
+			@PathParam("period") final String period) {
+		return super.listRuns(runstart, runend, rtype, period);
+	}
+
+	/**
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{since}/{until}/{timespan}/{rtype}/{period}/runsbyiov")
+	public List<CrViewRuninfo> listRuns(@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan,
+			@PathParam("rtype") final String rtype,
+			@PathParam("period") final String period) {
+		return super.listRuns(since, until, timespan, rtype, period);
 	}
 
 }

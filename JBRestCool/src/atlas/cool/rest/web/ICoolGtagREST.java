@@ -12,7 +12,7 @@ import javax.ws.rs.Produces;
 
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.NodeType;
-import atlas.cool.summary.model.CondSchema;
+import atlas.cool.summary.model.CoolCoverage;
 import atlas.cool.summary.model.D3TreeMap;
 
 /**
@@ -103,5 +103,9 @@ public interface ICoolGtagREST {
 	D3TreeMap listSchemaSummaryInSchemaDb(
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("gtag") String gtag);
-	
+
+	@GET
+	@Produces("application/json")
+	@Path("/{gtag}/coverage") 
+	CoolCoverage findCoverage(@PathParam("gtag") String gtag);
 }

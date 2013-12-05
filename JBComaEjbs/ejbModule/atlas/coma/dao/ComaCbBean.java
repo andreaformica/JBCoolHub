@@ -192,4 +192,50 @@ public class ComaCbBean implements ComaCbDAO {
 		return therun;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.coma.dao.ComaCbDAO#findRunsInRange(java.math.BigDecimal, java.math.BigDecimal, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<CrViewRuninfo> findRunsInRange(BigDecimal runstart, BigDecimal runend,
+			String rtype, String pproj) throws ComaQueryException {
+		final Object[] params = new Object[4];
+		params[0] = runstart;
+		params[1] = runend;
+		params[2] = (rtype == null) ? "%" : rtype;
+		params[3] = (pproj == null) ? "%" : pproj;
+		log.fine("Using query " + CrViewRuninfo.QUERY_FINDRUNS_TYPEPROJ + " with " + runstart
+				+ " " + runend+" "+rtype+" "+pproj+".");
+		List<CrViewRuninfo> runlist = null;
+		try {
+			runlist = (List<CrViewRuninfo>) coolrep.findCoolList(
+					CrViewRuninfo.QUERY_FINDRUNS_TYPEPROJ, params);
+		} catch (final CoolIOException e) {
+			throw new ComaQueryException(e.getMessage());
+		}
+		return runlist;
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.coma.dao.ComaCbDAO#findRunsInRange(java.sql.Timestamp, java.sql.Timestamp, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<CrViewRuninfo> findRunsInRange(Timestamp since, Timestamp until,
+			String rtype, String pproj) throws ComaQueryException {
+		final Object[] params = new Object[4];
+		params[0] = since;
+		params[1] = until;
+		params[2] = (rtype == null) ? "%" : rtype;
+		params[3] = (pproj == null) ? "%" : pproj;
+		log.fine("Using query " + CrViewRuninfo.QUERY_FINDRUNS_BYTIME_TYPEPROJ + " with " + since
+				+ " " + until+" "+rtype+" "+pproj+".");
+		List<CrViewRuninfo> runlist = null;
+		try {
+			runlist = (List<CrViewRuninfo>) coolrep.findCoolList(
+					CrViewRuninfo.QUERY_FINDRUNS_BYTIME_TYPEPROJ, params);
+		} catch (final CoolIOException e) {
+			throw new ComaQueryException(e.getMessage());
+		}
+		return runlist;
+	}
+	
 }

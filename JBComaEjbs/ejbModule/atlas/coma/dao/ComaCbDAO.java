@@ -59,12 +59,34 @@ public interface ComaCbDAO {
 			throws ComaQueryException;
 
 	/**
+	 * @param runstart
+	 * @param runend
+	 * @param rtype
+	 * @param pproj
+	 * @return
+	 * @throws ComaQueryException
+	 */
+	List<CrViewRuninfo> findRunsInRange(BigDecimal runstart, BigDecimal runend, String rtype, String pproj)
+			throws ComaQueryException;
+
+	/**
 	 * @param since
 	 * @param until
 	 * @return
 	 * @throws ComaQueryException
 	 */
 	List<CrViewRuninfo> findRunsInRange(Timestamp since, Timestamp until)
+			throws ComaQueryException;
+
+	/**
+	 * @param runstart
+	 * @param runend
+	 * @param rtype
+	 * @param pproj
+	 * @return
+	 * @throws ComaQueryException
+	 */
+	List<CrViewRuninfo> findRunsInRange(Timestamp since, Timestamp until, String rtype, String pproj)
 			throws ComaQueryException;
 
 	/**

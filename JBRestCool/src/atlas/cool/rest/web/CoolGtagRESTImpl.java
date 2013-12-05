@@ -36,6 +36,7 @@ import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.summary.model.CondNodeStats;
 import atlas.cool.summary.model.CondSchema;
+import atlas.cool.summary.model.CoolCoverage;
 import atlas.cool.summary.model.D3TreeMap;
 
 /**
@@ -560,4 +561,24 @@ public class CoolGtagRESTImpl implements ICoolGtagREST {
 		return dt3m;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolGtagREST#findCoverage(java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{gtag}/coverage")
+	public CoolCoverage findCoverage(@PathParam("gtag") String gtag) {
+		CoolCoverage coolcov;
+		try {
+			coolcov = condtoolsdao.findGlobalTagCoverage(gtag);
+			return coolcov;
+		} catch (CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	
 }

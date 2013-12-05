@@ -29,7 +29,6 @@ import atlas.connection.dao.CoolRepositoryDAO;
 import atlas.cool.dao.CondToolsDAO;
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolUtilsDAO;
-import atlas.cool.dao.remote.CondToolsDAORemote;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
 import atlas.cool.rest.model.CoolIovSummary;
@@ -118,7 +117,11 @@ public class GlobalTagCoverageMDB implements MessageListener {
 				condtools.updateGlobalTagForSchemaDB(globaltagname, "ATLAS_COOL%", db, true);
 				return;
 			}
-			
+			if (checkType.equals("fillsummary")) {
+				log.info("Launch process to store the number of schemas and folders related to "+globaltagname+" coverage.");
+				condtools.updateCoverageInfo(globaltagname, null, null, null, null);
+				return;
+			}
 
 			List<NodeGtagTagType> nodeingtagList = null;
 			nodeingtagList = cooldao.retrieveGtagTagsFromSchemaAndDb("ATLAS_COOL%", db,

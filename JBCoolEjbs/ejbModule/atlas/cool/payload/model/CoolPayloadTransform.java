@@ -91,14 +91,19 @@ public class CoolPayloadTransform {
 				for (final String akey : keys) {
 					if (pyld.isNumber(akey)) {
 						Object value = map.get(akey);
+						String header = "";
 						payloadcolumns.put(akey, (value != null) ? value.toString() : null);
 						if (pyld.getParser() != null) {
 							value = pyld.getParser().parseClob(akey, (value != null) ? value.toString() : null);
+							header = pyld.getParser().header(akey);
 							if (value == null) {
 								value = map.get(akey);
 							}
 						}
 						payloadObjcolumns.put(akey, value);
+						if (header != null) {
+							payloadObjcolumns.put(akey+"Header", header);
+						}
 					}
 				}
 				

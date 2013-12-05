@@ -128,9 +128,9 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 				// +" abs(iov_number+LAG(iov_number,1,0) OVER (order by channel_id, iov_since)) as iov_sum "
 				+ " from ( select "
 				+ " user_tag_id, tag_name, "
-				+ " channel_id, channel_name,iov_since, iov_until, next_since, "
-				+ " (case when (next_since-iov_until)>0 then (next_since-iov_until) else 0 end) as hole, "
-				+ " SUM(case when (next_since-iov_until)>0 then 1 else 0 end) OVER (PARTITION BY channel_id ORDER BY iov_since "
+				+ " channel_id, channel_name,iov_since, iov_until, next_since, " 
+				+ " (case when (next_since-iov_until)>1 then (next_since-iov_until) else 0 end) as hole, " //Change the cut for the hole from 0 to 1
+				+ " SUM(case when (next_since-iov_until)>1 then 1 else 0 end) OVER (PARTITION BY channel_id ORDER BY iov_since " //Change the cut for the hole from 0 to 1
 				+ " RANGE UNBOUNDED PRECEDING) as iov_number "
 				+ " from ( select "
 				+ " user_tag_id, tag_name, "
@@ -164,8 +164,8 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 				+ " from ( select "
 				+ " user_tag_id, tag_name, "
 				+ " channel_id, channel_name,iov_since, iov_until, next_since, "
-				+ " (case when (next_since-iov_until)>0 then (next_since-iov_until) else 0 end) as hole, "
-				+ " SUM(case when (next_since-iov_until)>0 then 1 else 0 end) OVER (PARTITION BY channel_id ORDER BY iov_since "
+				+ " (case when (next_since-iov_until)>1 then (next_since-iov_until) else 0 end) as hole, " //Change the cut for the hole from 0 to 1
+				+ " SUM(case when (next_since-iov_until)>1 then 1 else 0 end) OVER (PARTITION BY channel_id ORDER BY iov_since " //Change the cut for the hole from 0 to 1
 				+ " RANGE UNBOUNDED PRECEDING) as iov_number "
 				+ " from ( select "
 				+ " user_tag_id, tag_name, "

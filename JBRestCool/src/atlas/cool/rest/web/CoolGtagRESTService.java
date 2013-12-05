@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.summary.model.CondSchema;
+import atlas.cool.summary.model.CoolCoverage;
 import atlas.cool.summary.model.D3TreeMap;
 
 /**
@@ -129,6 +130,18 @@ public class CoolGtagRESTService extends CoolGtagRESTImpl implements ICoolGtagRE
 			@PathParam("gtag") String gtag) {
 		// TODO Auto-generated method stub
 		return super.listSchemaSummaryInSchemaDb(schema, db, gtag);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolGtagRESTImpl#findCoverage(java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{gtag}/coverage")
+	public CoolCoverage findCoverage(@PathParam("gtag") String gtag) {
+		// TODO Auto-generated method stub
+		return super.findCoverage(gtag);
 	}
 
 }

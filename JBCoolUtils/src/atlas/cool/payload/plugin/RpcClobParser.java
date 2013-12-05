@@ -3,6 +3,7 @@
  */
 package atlas.cool.payload.plugin;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -42,13 +43,98 @@ public class RpcClobParser implements ClobParser {
 			return null;
 		}
 		if (payloadColumn.equals("PanelRes")) {
-			//System.out.println("Calling transformation for panelres");
+			// System.out.println("Calling transformation for panelres");
 			return parsePanelResObj(content);
 		} else if (payloadColumn.equals("StripStatus")) {
-			//System.out.println("Calling transformation for stripstatus");
+			// System.out.println("Calling transformation for stripstatus");
 			return parseStripStatusObj(content);
 		}
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.payload.plugin.ClobParser#header(java.lang.String)
+	 */
+	@Override
+	public String header(final String payloadColumn) {
+		if (payloadColumn == null) {
+			return null;
+		}
+		try {
+			if (payloadColumn.equals("PanelRes")) {
+				return parsePanelResHeader();
+			} else if (payloadColumn.equals("StripStatus")) {
+				// System.out.println("Calling transformation for stripstatus");
+				return parseStripStatusHeader();
+			}
+		} catch (final Exception e) {
+			return "Error in parsing header";
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws SecurityException
+	 * @throws NoSuchFieldException
+	 */
+	protected String parsePanelResHeader() throws NoSuchFieldException,
+			SecurityException {
+
+		String header = "Obj : { ";
+		final Class<RpcPanelRes> aclzz = RpcPanelRes.class;
+		final Field[] fields = aclzz.getDeclaredFields();
+		for (int i = 0; i < fields.length; i++) {
+			final String name = fields[i].getName();
+			final String type = fields[i].getType().getSimpleName();
+			boolean isfield = false;
+			for (int j = 0; j < panelresvars.length; j++) {
+				if (name.equals(panelresvars[j])) {
+					isfield = true;
+					continue;
+				}
+			}
+			if (isfield) {
+				header += (" "+name + " : " + type + ",");
+			}
+		}
+		header = header.substring(0, header.length()-1);
+		header += " }";
+		return header;
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws SecurityException
+	 * @throws NoSuchFieldException
+	 */
+	protected String parseStripStatusHeader() throws NoSuchFieldException,
+			SecurityException {
+
+		String header = "Collection : { Obj : { ";
+		final Class<RpcStripStatus> aclzz = RpcStripStatus.class;
+		final Field[] fields = aclzz.getDeclaredFields();
+		for (int i = 0; i < fields.length; i++) {
+			final String name = fields[i].getName();
+			final String type = fields[i].getType().getSimpleName();
+			boolean isfield = false;
+			for (int j = 0; j < stripstatusvars.length; j++) {
+				if (name.equals(stripstatusvars[j])) {
+					isfield = true;
+					continue;
+				}
+			}
+			if (isfield) {
+				header += (" "+name + " : " + type + ",");
+			}
+		}
+		header = header.substring(0, header.length()-1);
+		header += " }}";
+		return header;
 	}
 
 	/**
@@ -82,7 +168,7 @@ public class RpcClobParser implements ClobParser {
 
 		final RpcPanelRes panelres = new RpcPanelRes();
 		for (int i = 0; i < rowarr.length; i++) {
-			//System.out.println("Parsing panelres " + rowarr[i]);
+			// System.out.println("Parsing panelres " + rowarr[i]);
 			if (rowarr[i].length() == 0) {
 				continue;
 			}
@@ -151,15 +237,15 @@ public class RpcClobParser implements ClobParser {
 		final Collection<RpcStripStatus> stripstatusList = new ArrayList<RpcStripStatus>();
 
 		final String[] striparr = content.split("\\|");
-		//System.out.println("Parsing clob " + content + " in array of "
-		//		+ striparr.length);
+		// System.out.println("Parsing clob " + content + " in array of "
+		// + striparr.length);
 
 		for (int i = 0; i < striparr.length; i++) {
 			final String astrip = striparr[i].trim();
 			final String[] astriparr = astrip.split("\\s+");
 			final RpcStripStatus stripstatus = new RpcStripStatus();
 			for (int j = 0; j < astriparr.length; j++) {
-				//System.out.println("Parsing stripstatus " + astriparr[j]);
+				// System.out.println("Parsing stripstatus " + astriparr[j]);
 				final String val = astriparr[j].trim();
 				final String name = stripstatusvars[j];
 				try {

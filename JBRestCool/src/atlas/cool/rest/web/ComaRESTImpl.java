@@ -1,6 +1,7 @@
 package atlas.cool.rest.web;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -66,7 +67,7 @@ public class ComaRESTImpl implements IComaREST {
 	@Override
 	@GET
 	@Produces("application/xml")
-	@Path("/{since}/{until}/{timespan}/runs")
+	@Path("/{since}/{until}/{timespan}/runsbyiov")
 	public List<CrViewRuninfo> listRuns(@PathParam("since") final String since,
 			@PathParam("until") final String until,
 			@PathParam("timespan") final String timespan) {
@@ -144,6 +145,78 @@ public class ComaRESTImpl implements IComaREST {
 			e.printStackTrace();
 		}
 		return results;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.rest.web.IComaREST#listRuns(java.math.BigDecimal,
+	 * java.math.BigDecimal, java.lang.String)
+	 */
+	public List<CrViewRuninfo> listRuns(@PathParam("runstart") final BigDecimal runstart,
+			@PathParam("runend") final BigDecimal runend,
+			@PathParam("rtype") final String rtype,
+			@PathParam("period") final String period) {
+		log.info("Calling listRuns..." + runstart + " " + runend);
+		List<CrViewRuninfo> results = null;
+		try {
+			String rt = rtype + "%";
+			String pp = period + "%";
+			if (rtype.equals("all")) {
+				rt = "%";
+			}
+			if (period.equals("all")) {
+				pp = "%";
+			}
+			results = comadao.findRunsInRange(runstart, runend, rt, pp);
+		} catch (final ComaQueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return results;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.rest.web.IComaREST#listRuns(java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public List<CrViewRuninfo> listRuns(@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan,
+			@PathParam("rtype") final String rtype,
+			@PathParam("period") final String period) {
+
+		log.info("Calling listRuns..." + since + " " + until + " using timespan "
+				+ timespan + " " + rtype + " " + period);
+		List<CrViewRuninfo> results = null;
+		try {
+			String rt = rtype + "%";
+			String pp = period + "%";
+			if (rtype.equals("all")) {
+				rt = "%";
+			}
+			if (period.equals("all")) {
+				pp = "%";
+			}
+			// Time selection
+			final Map<String, Object> trmap = coolutilsdao.getTimeRange(since, until,
+					timespan);
+			final BigDecimal ds = (BigDecimal) trmap.get("since");
+			final BigDecimal du = (BigDecimal) trmap.get("until");
+			final Timestamp ssince = new Timestamp(ds.longValue());
+			final Timestamp suntil = new Timestamp(du.longValue());
+			results = comadao.findRunsInRange(ssince, suntil, rt, pp);
+			return results;
+		} catch (final CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final ComaQueryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

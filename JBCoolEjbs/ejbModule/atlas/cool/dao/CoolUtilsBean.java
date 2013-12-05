@@ -1469,7 +1469,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 				if (runMap.containsKey(timekey)) {
 					runlist = runMap.get(timekey);
 				} else {
-					log.info("Retrieve runlist using time from COMA using " + lsince
+					log.fine("Retrieve runlist using time from COMA using " + lsince
 							+ " " + luntil);
 					runlist = comadao.findRunsInRange(lsince, luntil);
 					runMap.put(timekey, runlist);
@@ -1501,10 +1501,8 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 				if (runMap.containsKey(runkey)) {
 					runlist = runMap.get(runkey);
 				} else {
-					// log.info("Retrieve runlist from COMA using " + lsince + " " +
-					// luntil);
 					runlist = comadao.findRunsInRange(lsince, luntil);
-					log.info("Retrieve runlist using run from COMA using " + lsince + " "
+					log.fine("Retrieve runlist using run from COMA using " + lsince + " "
 							+ luntil + ": nruns "
 							+ (runlist != null ? runlist.size() : " null list!"));
 					runMap.put(runkey, runlist);
@@ -1637,6 +1635,12 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 					final Date ut = df.parse(until);
 					lsince = new BigDecimal(st.getTime() * CoolIov.TO_NANOSECONDS);
 					luntil = new BigDecimal(ut.getTime() * CoolIov.TO_NANOSECONDS);
+				} else if (timespan.equals("datetime")) {
+					// Interpret fields as dates in the yyyyMMddhhmmss format
+					final Date st = df.parse(since);
+					final Date ut = df.parse(until);
+					lsince = new BigDecimal(st.getTime());
+					luntil = new BigDecimal(ut.getTime());
 				} else if (timespan.equals("runlb")) {
 					final String[] sinceargs = since.split("-");
 					final String[] untilargs = until.split("-");
@@ -1777,7 +1781,7 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			}
 			if (lsince.longValue() > luntil.longValue()) {
 				log.log(Level.SEVERE, "Until time preceeds Since time...!!!!");
-				throw new CoolIOException("Cannot query DB with this range...");
+				throw new CoolIOException("Cannot query DB with this range (since before until)...");
 			}
 			timerangeMap.put("since", lsince);
 			timerangeMap.put("until", luntil);
