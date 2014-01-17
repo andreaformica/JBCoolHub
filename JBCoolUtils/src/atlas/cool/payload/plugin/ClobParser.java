@@ -3,6 +3,9 @@
  */
 package atlas.cool.payload.plugin;
 
+import java.util.Map;
+
+
 
 /**
  * @author formica
@@ -23,5 +26,5 @@ public interface ClobParser {
 	 * @param payloadColumn
 	 * @return
 	 */
-	String  header(String payloadColumn);
+	Map<String, Object>  header(String payloadColumn);
 }

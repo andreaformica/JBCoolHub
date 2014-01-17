@@ -34,6 +34,7 @@ import atlas.coma.model.CrViewRuninfo;
 import atlas.cool.annotations.CoolQueryRepository;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
+import atlas.cool.meta.ParserHeader;
 import atlas.cool.payload.model.CoolPayload;
 import atlas.cool.payload.model.CoolPayloadTransform;
 import atlas.cool.payload.plugin.ClobParser;
@@ -513,13 +514,18 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 				log.info("Parser has been found... " + parser.getClass().getName());
 				payload.setParser(parser);
 			}
-
-			iovlist = new CoolPayloadTransform(payload).getIovsWithPayload();
+			CoolPayloadTransform pyldtransf = new CoolPayloadTransform(payload);
+			iovlist = pyldtransf.getIovsWithPayload();
+			ParserHeader header = pyldtransf.getPyldHeader();
 			log.info("Retrieving iovlist ...");
 			if (iovlist != null) {
 				log.info("Retrieved iovlist of " + iovlist.size());
 			}
+			if (header != null) {
+				log.info("Build header for payload object: "+header);
+			}
 			selnode.setIovList(iovlist);
+			selnode.setParserHeader(header);
 		} catch (final Exception e) {
 			// payloaddao.remove();
 			throw new CoolIOException(e.getMessage());
@@ -582,8 +588,19 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 				log.info("Parser has been found... " + parser.getClass().getName());
 				payload.setParser(parser);
 			}
-			iovlist = new CoolPayloadTransform(payload).getIovsWithPayload();
+			CoolPayloadTransform pyldtransf = new CoolPayloadTransform(payload);
+			iovlist = pyldtransf.getIovsWithPayload();
+			ParserHeader header = pyldtransf.getPyldHeader();
+			log.info("Retrieving iovlist ...");
+			if (iovlist != null) {
+				log.info("Retrieved iovlist of " + iovlist.size());
+			}
+			if (header != null) {
+				log.info("Build header for payload object: "+header);
+			}
 			selnode.setIovList(iovlist);
+			selnode.setParserHeader(header);
+
 		} catch (final Exception e) {
 			throw new CoolIOException(e.getMessage());
 		}

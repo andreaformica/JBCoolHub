@@ -62,9 +62,11 @@
 				<include name="**/*.MF" />
 				<include name="**/*html" />
 				<include name="**/*jsp" />
-				<include name="app/**/*" />
 				<include name="resources/**/*" />
 				<exclude name="etc/**" />
+			</fileset>
+			<fileset dir="${basedir}/../JBCoolJS/">
+				<include name="app/**"/>
 			</fileset>
 		</copy>
 	</target>	

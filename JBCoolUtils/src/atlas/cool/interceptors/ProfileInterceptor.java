@@ -3,14 +3,32 @@
  */
 package atlas.cool.interceptors;
 
+import java.util.logging.Logger;
+
+import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+
+import atlas.cool.annotations.Tracer;
 
 /**
  * @author formica
  * 
  */
+@Interceptor
+@Tracer
 public class ProfileInterceptor {
+
+	@Inject
+	private Logger log;
+
+	
+	/**
+	 * Default ctor.
+	 */
+	public ProfileInterceptor() {
+	}
 
 	/**
 	 * @param ctx
@@ -21,8 +39,8 @@ public class ProfileInterceptor {
 	 * 	Exception.
 	 */
 	@AroundInvoke
-	public final Object log(final InvocationContext ctx) throws Exception {
-		System.out.println("*** TracingInterceptor intercepting "
+	public final Object trace(final InvocationContext ctx) throws Exception {
+		log.info("*** TracingInterceptor intercepting "
 				+ ctx.getMethod().getName());
 		long start = System.currentTimeMillis();
 		String param = (String) ctx.getParameters()[0];
@@ -38,7 +56,7 @@ public class ProfileInterceptor {
 		} finally {
 			long time = System.currentTimeMillis() - start;
 			String method = ctx.getClass().getName();
-			System.out.println("*** TracingInterceptor invocation of " + method
+			log.info("*** TracingInterceptor invocation of " + method
 					+ " took " + time + "ms");
 		}
 	}

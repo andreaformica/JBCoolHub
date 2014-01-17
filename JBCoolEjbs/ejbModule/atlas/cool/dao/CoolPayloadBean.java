@@ -22,6 +22,7 @@ import javax.sql.DataSource;
 
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
+import atlas.cool.annotations.Tracer;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
 import atlas.cool.payload.model.CoolPayload;
@@ -42,7 +43,7 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 	/**
 	 * 
 	 */
-	private static final int FETCHSIZE = 5000;
+	private static final int FETCHSIZE = 1000;
 	/**
 	 * 
 	 */
@@ -193,7 +194,8 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 	 * java.math.BigDecimal, java.lang.Long)
 	 */
 	@Override
-	public final CoolPayload getPayloadsObj(final String schemaname, final String dbname,
+	@Tracer
+	public CoolPayload getPayloadsObj(final String schemaname, final String dbname,
 			final String folder, final String tagname, final BigDecimal stime,
 			final BigDecimal etime, final Long channelId) throws CoolIOException {
 
@@ -221,6 +223,10 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 					}
 				}
 			}
+			if (payload != null) {
+				log.info("Retrieved payload " + payload.getNcol() + " "
+						+ payload.getRows());
+			}
 			return payload;
 
 		} catch (final SQLException e) {
@@ -239,7 +245,8 @@ public class CoolPayloadBean implements CoolPayloadDAO {
 	 * java.math.BigDecimal, java.lang.String)
 	 */
 	@Override
-	public final CoolPayload getPayloadsObj(final String schemaname, final String dbname,
+	@Tracer
+	public CoolPayload getPayloadsObj(final String schemaname, final String dbname,
 			final String folder, final String tagname, final BigDecimal stime,
 			final BigDecimal etime, final String channelName) throws CoolIOException {
 

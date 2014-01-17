@@ -9,9 +9,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import atlas.cool.annotations.CoolPayloadParser;
+import atlas.cool.meta.ParserHeader;
 import atlas.cool.payload.plugin.rpc.RpcPanelRes;
 import atlas.cool.payload.plugin.rpc.RpcStripStatus;
 
@@ -58,7 +62,7 @@ public class RpcClobParser implements ClobParser {
 	 * @see atlas.cool.payload.plugin.ClobParser#header(java.lang.String)
 	 */
 	@Override
-	public String header(final String payloadColumn) {
+	public Map<String, Object> header(final String payloadColumn) {
 		if (payloadColumn == null) {
 			return null;
 		}
@@ -70,7 +74,9 @@ public class RpcClobParser implements ClobParser {
 				return parseStripStatusHeader();
 			}
 		} catch (final Exception e) {
-			return "Error in parsing header";
+			Map<String,Object> header = new HashMap<String,Object>();
+			header.put("Error","Parsing header got error");
+			return header;
 		}
 		return null;
 	}
@@ -81,10 +87,13 @@ public class RpcClobParser implements ClobParser {
 	 * @throws SecurityException
 	 * @throws NoSuchFieldException
 	 */
-	protected String parsePanelResHeader() throws NoSuchFieldException,
+	protected Map<String, Object> parsePanelResHeader() throws NoSuchFieldException,
 			SecurityException {
 
-		String header = "Obj : { ";
+		final Map<String, Object> panelresheader = new LinkedHashMap<String, Object>();
+		Map<String, String> columns = new HashMap<String, String>();
+		
+		String header = "\"PanelRes\" : { ";
 		final Class<RpcPanelRes> aclzz = RpcPanelRes.class;
 		final Field[] fields = aclzz.getDeclaredFields();
 		for (int i = 0; i < fields.length; i++) {
@@ -98,12 +107,14 @@ public class RpcClobParser implements ClobParser {
 				}
 			}
 			if (isfield) {
-				header += (" "+name + " : " + type + ",");
+				header += (" \""+name + "\":\"" + type + "\",");
+				columns.put(name, type);
 			}
 		}
 		header = header.substring(0, header.length()-1);
 		header += " }";
-		return header;
+		panelresheader.put("PanelRes", columns);
+		return panelresheader;
 	}
 
 	/**
@@ -112,10 +123,13 @@ public class RpcClobParser implements ClobParser {
 	 * @throws SecurityException
 	 * @throws NoSuchFieldException
 	 */
-	protected String parseStripStatusHeader() throws NoSuchFieldException,
+	protected Map<String, Object> parseStripStatusHeader() throws NoSuchFieldException,
 			SecurityException {
 
-		String header = "Collection : { Obj : { ";
+		final Map<String, Object> stripheader = new LinkedHashMap<String, Object>();
+		final Set<Object> arrcol = new HashSet<Object>();
+		Map<String, String> columns = new HashMap<String, String>();
+		String header = "\"StripStatus\" : [{ ";
 		final Class<RpcStripStatus> aclzz = RpcStripStatus.class;
 		final Field[] fields = aclzz.getDeclaredFields();
 		for (int i = 0; i < fields.length; i++) {
@@ -129,12 +143,15 @@ public class RpcClobParser implements ClobParser {
 				}
 			}
 			if (isfield) {
-				header += (" "+name + " : " + type + ",");
+				header += (" \""+name + "\":\"" + type + "\",");
+				columns.put(name, type);
 			}
 		}
 		header = header.substring(0, header.length()-1);
-		header += " }}";
-		return header;
+		header += " }]";
+		arrcol.add(columns);
+		stripheader.put("StripStatus", arrcol);
+		return stripheader;
 	}
 
 	/**
@@ -293,4 +310,13 @@ public class RpcClobParser implements ClobParser {
 		final Method mth = clazz.getDeclaredMethod(settername, argclazz);
 		return mth;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "RpcClobParser";
+	}
+	
 }

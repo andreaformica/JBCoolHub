@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import atlas.cool.annotations.CoolQuery;
+import atlas.cool.meta.ParserHeader;
 import atlas.cool.rest.utils.TimestampStringFormatter;
 
 /**
@@ -105,6 +106,13 @@ public class NodeType implements Serializable {
 	public static final String QUERY_FINDNODES = "cool.findnodes";
 	@CoolQuery(name = "coma.findnodes", params = "schema;dbname;node")
 	public static final String QUERY_COMA_FINDNODES = "coma.findnodes";
+
+	/**
+	 * 
+	 */
+	@Transient
+	@XmlElement(name = "parserHeader", type = String.class)
+	private ParserHeader parserHeader = null;
 
 	/**
 	 * 
@@ -408,6 +416,20 @@ public class NodeType implements Serializable {
 	 */
 	public void setIovList(final List<CoolIovType> iovList) {
 		this.iovList = iovList;
+	}
+
+	/**
+	 * @return the header
+	 */
+	public ParserHeader getParserHeader() {
+		return parserHeader;
+	}
+
+	/**
+	 * @param header the header to set
+	 */
+	public void setParserHeader(final ParserHeader header) {
+		this.parserHeader = header;
 	}
 
 	/**
