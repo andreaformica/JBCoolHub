@@ -1,0 +1,420 @@
+<div class="pane" ng-controller="HomeCtrl">
+<div class="row">
+<div>
+ <div class="panel panel-info">
+    <div class="panel-heading">
+      <h2 class="panel-title">
+        Global Tag coverage !
+      </h2>
+ </div>
+ <div class="row">
+ <p>You are requesting coverage for {{coverage.globalTagName}} in database {{coverage.dbName}}.</p>
+ <p>From the bookkeeping table the updates for this global tag concern {{coverage.nUpdatedSchemas}}
+  schemas and {{coverage.nUpdatedFolders}} folders</p>
+ </div>
+ <div class="row">
+  <label class="label-large">Get summary of {{schemaformparams.schema}} {{schemaformparams.gridopt.selectedItems[0].gtagName}}</label>
+  <button ng-click='plotchart()' class="button radius">Chart</button>
+ </div>  
+ <p>Data loading status: {{loadingmessage}}</p>
+ <p>You may change the schema pattern for coverage visualization from the  
+ <a href="#/globaltag">global tags</a>
+ search page</p>
+<div id="body" ng-show="loadeddata==true">
+  <p>Using object {{summarytree.name}} </p>
+  <div id="footer">
+     d3.layout.tree
+  <div class="hint">click or option-click to expand or collapse</div>
+</div>
+</div>
+<!--    
+<script type="text/javascript">
+
+var screenwidth = 1440;
+var screenheight = 900;
+var m = [20, 120, 20, 120],
+    w = screenwidth - m[1] - m[3],
+    h = screenheight - m[0] - m[2],
+    i = 0,
+    root;
+
+var tree = d3.layout.tree()
+    .size([h, w]);
+
+var diagonal = d3.svg.diagonal()
+    .projection(function(d) { return [d.y, d.x]; });
+
+var vis = d3.select("#body").append("svg:svg")
+    .attr("width", w + m[1] + m[3])
+    .attr("height", h + m[0] + m[2])
+  .append("svg:g")
+    .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+
+var url = {{summarytree}};
+console.log('using url '+url);
+
+var infodiv = d3.select("body").append("div")   
+    .attr("class", "tooltip")               
+    .style("opacity", 0);
+
+var tooltipwidth = 300;
+
+//d3.json('http://'+url, function(json) {
+d3.json(url, function(json) {
+  root = json;
+  root.x0 = h / 2;
+  root.y0 = 0;
+
+  function toggleAll(d) {
+    if (d.children) {
+      d.children.forEach(toggleAll);
+      toggle(d);
+    }
+  }
+
+  // Initialize the display to show a few nodes.
+  root.children.forEach(toggleAll);
+  
+//  toggle(root.children[1]);
+//  toggle(root.children[1].children[2]);
+//  toggle(root.children[9]);
+//  toggle(root.children[9].children[0]);
+
+  update(root);
+});
+
+function update(source) {
+
+  var duration = d3.event && d3.event.altKey ? 5000 : 500;
+
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root).reverse();
+
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = (d.depth * 180); });
+
+  // Update the nodes
+  var node = vis.selectAll("g.node")
+      .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+  // Enter any new nodes at the parent's previous position.
+  var formatTime = d3.time.format("%e %B");    
+
+  var maxlabelLength = 200;
+
+  var nodeEnter = node.enter().append("svg:g")
+      .attr("class", "node")
+      .attr("transform", function(d) { 
+//   			console.log('Transform node ' + d.name + ' y0 '+source.y0+' x0 '+source.x0);      
+//      		if (!d.children) {
+//      			source.y0 = source.y0 + d.name.length;
+//      			console.log('Changing y0 to '+source.y0);
+//      		}
+      		var translation = "translate(" + source.y0 + "," + source.x0 + ")";
+      		console.log('Use translation '+translation);
+      		return translation; 
+      		})
+      .on("click", function(d) { toggle(d); update(d); });
+
+
+  nodeEnter.append("svg:circle")
+      .attr("r", 1e-6)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; })
+	  .on("mouseover", function(d) {      
+            infodiv.transition()        
+                .duration(200)      
+                .style("opacity", .9);      
+            infodiv.html(d.name + ' <br/> ' + getInfo(d,'folderInfo'))
+             .style("left", (d3.event.pageX + 10) + "px")     
+             .style("top", (d3.event.pageY - 100) + "px");      
+            })
+	  .on("mouseout", function(d) {       
+            infodiv.transition()        
+                .duration(500)      
+                .style("opacity", 0);   
+       });
+
+//  nodeInfoEnter.append("svg:image")
+//	  .attr("x", function(d) { return d._children ? 0 : 10; })
+//	  .attr("dy", ".50em")
+//      .attr("height", 30)
+//      .attr("width", 30)
+//      .attr("xlink:href","public/images/badge_information_32.png")
+//      .on("click", function(d) { console.log('you did click '+d.name); });;
+
+//  nodeEnter.append("foreignObject")
+//      .append("xhtml:body")
+//      .html('<div style="width: 150px;">This is some information about whatever</div>')
+
+//  nodeEnter.append("svg:text")
+//      .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+//      .attr("dy", ".35em")
+//      .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+//      .text(function(d) { return d.name; })
+//      .style("fill-opacity", 1e-6);
+
+  var nodeText = nodeEnter.append("svg:text")
+      .attr("x", function(d) { 
+      					var pos0 = d.children || d._children ? -10 : 10; 
+      					if (d.name.lastIndexOf('/', 0) === 0) {
+      						pos0 = 10;
+      					}
+      					return pos0;
+      			 })
+      .attr("dy", ".35em")
+      .attr("text-anchor", function(d) { 
+      			var ancorpos = d.children || d._children ? "end" : "start"; 
+      			if (d.name.lastIndexOf('/', 0) === 0) {
+      						ancorpos = "start";
+      			}
+      			return ancorpos;
+      		});
+
+  nodeText.text(function(d) { return d.name + ((d.nfolders) ? (' - ' + d.nfolders) : ''); })
+	.style("fill", function(d) { return d.color; })
+  	.style("fill-opacity", 1e-6); 
+  	 
+  nodeText.append("svg:tspan").style("fill", function(d) { return getColor(d,"value"); }).text(function(d) { return getInfo(d,"value"); });
+  
+//  nodeText.append("svg:tspan").style("fill", function(d) { return getColor(d,"channels"); }).text(function(d) { return getInfo(d,"channels"); });
+//  nodeText.append("svg:tspan").style("fill", function(d) { return getColor(d,"iovs"); }).text(function(d) { return getInfo(d,"iovs"); });
+//  nodeText.append("svg:tspan").style("fill", function(d) { return getColor(d,"holes"); }).text(function(d) { return getInfo(d,"holes"); });
+//  nodeText.append("svg:tspan").style("fill", function(d) { return getColor(d,"runsinholes"); }).text(function(d) { return getInfo(d,"runsinholes"); });
+//  nodeText.append("svg:tspan").style("fill", function(d) { return getColor(d,"minrun"); }).text(function(d) { return getInfo(d,"minrun"); });
+//  nodeText.append("svg:tspan").style("fill", function(d) { return getColor(d,"maxrun"); }).text(function(d) { return getInfo(d,"maxrun"); });
+//  nodeText.append("svg:tspan").style("fill", function(d) { return getColor(d,"minsince"); }).text(function(d) { return getInfo(d,"minsince"); });
+//  nodeText.append("svg:tspan").style("fill", function(d) { return getColor(d,"maxuntil"); }).text(function(d) { return getInfo(d,"maxuntil"); });
+  
+      
+  
+
+// original text:       .text(function(d) { return d.name; })
+
+  // Transition nodes to their new position.
+  var nodeUpdate = node.transition()
+      .duration(duration)
+      .attr("transform", function(d) { 
+  	    				if (d.depth>1) {
+ 	     					d.y = d.y + maxlabelLength*(d.depth-2);
+ 	     				}
+      				var translation = "translate(" + d.y + "," + d.x + ")";
+      				return translation; 
+      		});
+
+  nodeUpdate.select("circle")
+      .attr("r", 4.5)
+      .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+  nodeUpdate.select("text")
+      .style("fill-opacity", 1);
+
+  // Transition exiting nodes to the parent's new position.
+  var nodeExit = node.exit().transition()
+      .duration(duration)
+      .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+      .remove();
+
+  nodeExit.select("circle")
+      .attr("r", 1e-6);
+
+  nodeExit.select("text")
+      .style("fill-opacity", 1e-6);
+
+  // Update the links
+  var link = vis.selectAll("path.link")
+      .data(tree.links(nodes), function(d) { return d.target.id; });
+
+  // Enter any new links at the parent's previous position.
+  link.enter().insert("svg:path", "g")
+      .attr("class", "link")
+      .attr("d", function(d) {
+        var o = {x: source.x0, y: source.y0};
+        return diagonal({source: o, target: o});
+      })
+    .transition()
+      .duration(duration)
+      .attr("d", diagonal);
+
+  // Transition links to their new position.
+  link.transition()
+      .duration(duration)
+      .attr("d", diagonal);
+
+  // Transition exiting nodes to the parent's new position.
+  link.exit().transition()
+      .duration(duration)
+      .attr("d", function(d) {
+        var o = {x: source.x, y: source.y};
+        return diagonal({source: o, target: o});
+      })
+      .remove();
+
+  // Stash the old positions for transition.
+  nodes.forEach(function(d) {
+    d.x0 = d.x;
+    d.y0 = d.y;
+  });
+}
+
+
+// create output text
+function getInfo(d,field) {
+	if (typeof d.totalIovs === "undefined" && typeof(d.content) === "undefined" ) {
+		if ( typeof(d.value) === "undefined" ) {
+			return "";
+		} else {
+			return ' - '+d.value;
+		}
+	} else {
+		var outinfo = '';
+		if (field == "channels") {
+			outinfo = ' NChan: '+d.nchannels;
+		} else if (field == "iovs") {
+			outinfo = ' Iovs: '+d.totalIovs;
+		} else if (field == "holes") {
+			outinfo = ' Holes: '+d.totalHoles;
+		} else if (field == "nruns") {
+			outinfo = ' Nruns: '+d.totalRuns;
+		} else if (field == "runsinholes") {
+			outinfo = ' Runs In holes: '+d.totalRunsInHole;
+		} else if (field == "minrun") {
+			outinfo = ' MinRun: '+d.minRun;
+		} else if (field == "maxrun") {
+			outinfo = ' MaxRun: '+d.maxRun;
+		} else if (field == "minsince") {
+			outinfo = ' From: '+d.minSince;
+		} else if (field == "maxuntil") {
+			outinfo = ' To: '+d.maxUntil;
+		} else if (field == "folderInfo") {
+//		    tooltipwidth = ('Description : '+d.content.nodeIovBase).length;
+//		    tooltipwidth = Math.max(tooltipwidth,('Payload Spec: '+d.content.folderPayloadSpec).length);
+//		    console.log('tooltip width will be of '+tooltipwidth);
+		    outinfo = 'Description : '+d.content.nodeIovBase+'<br/>'
+		    	    + 'Payload Spec: '+d.content.folderPayloadSpec+'<br/>'
+		    	    + 'Versioning  : '+d.content.folderVersioning+'<br/>'
+		     ;
+		}
+		return outinfo;
+	}
+}
+
+function getIovs(d) {
+    console.log('check iovs on children '+d.length);
+	for (var i=0 ; i<d.length; i++) {
+		if (d[i].name == "totalIovs") {
+			return d.value;
+		}
+	}
+	return -1;
+}
+
+function getHoles(d) {
+    console.log('check holes on children '+d.length);
+	for (var i=0 ; i<d.length; i++) {
+		if (d[i].name == "totalHoles") {
+			return d.value;
+		}
+	}
+	return -1;
+}
+
+function getColor(d,field) {
+  if (field === "value") {
+     field = d.name;
+  }
+
+  if (field === "checkholes") {
+  	 var children = d.children;
+  	 var color = "black";
+	 console.log("check holes for "+d.name+" children found "+children);
+  	 if (typeof(d.children) != "undefined" && children != null) {
+		console.log("check children for "+d.name);
+  	 	var iovs = getIovs(children);
+  	 	console.log('Found iovs '+iovs);
+  	 	if (iovs == 1) color = "blue";
+  	 	if (iovs < 0) color = "orange";
+  	 	var holes = getHoles(children);
+  	 	console.log('Found holes '+holes);
+  	 	if (holes > 0) color = "red";
+  	 	if (holes == 0) color = "green";
+  	 }
+  	 return color;
+  }
+
+  if (field == "nchannels") {
+  	return "gray";
+  } else if (field == "totalIovs") {
+    if (d.value == 1) {
+    	return "blue";
+    }
+  	return "black";
+  } else if (field == "totalHoles") {
+  	return "red";
+  } else if (field == "totalRuns") {
+  	return "darkgreen";
+  } else if (field == "totalRunsInHoles") {
+  	return "orange";
+  } else if (field == "minRun") {
+  	return "darkgreen";
+  } else if (field == "maxRun") {
+  	return "darkgreen";
+  } else {
+  	return "black";
+  }
+}
+
+function getColorOld(d,field) {
+  if (field === "value") {
+     field = d.name;
+  }
+
+  if (field === "checkholes") {
+  	 
+  }
+
+  if (field == "channels") {
+  	return "gray";
+  } else if (field == "iovs") {
+    if (d.totalIovs == 1) {
+    	return "blue";
+    }
+  	return "black";
+  } else if (field == "holes") {
+  	return "red";
+  } else if (field == "nruns") {
+  	return "darkgreen";
+  } else if (field == "runsinholes") {
+  	return "orange";
+  } else if (field == "minrun") {
+  	return "darkgreen";
+  } else if (field == "maxrun") {
+  	return "darkgreen";
+  } else {
+  	return "black";
+  }
+}
+
+// Toggle children.
+function toggle(d) {
+  if (d.children) {
+    d._children = d.children;
+    d.children = null;
+  } else {
+    d.children = d._children;
+    d._children = null;
+  }
+}
+
+function explodeAll(d) {
+    if (d.children) {
+      d.children.forEach(explodeAll);
+      toggle(d);
+    }
+}
+
+</script> 
+-->
+</div>
+</div>
+</div>
+</div>

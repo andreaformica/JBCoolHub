@@ -1,0 +1,12 @@
+{
+  "name": "JBCoolJS",
+  "version": "1.0.0",
+  "main": "app/css/jbcool.css",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {
+    "angular-bootstrap-datetimepicker": "latest"
+  }
+}

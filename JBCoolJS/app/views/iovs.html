@@ -1,0 +1,199 @@
+<div class="paneright">
+	<div class="row">
+		<div class="span4">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<h2 class="panel-title">Information</h2>
+				</div>
+				<p>
+					This is an information panel to guide you through the usage of this
+					page. You can search iovs for a given schema node and tag (use none in
+					case of single version folders).
+				</p>
+				<div class="row">
+					<button class="btn" ng-click="showsearch = !showsearch">Toggle
+						Search</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="pane">
+<div class="row">
+<div class="span8" ng-show="showsearch == true">
+ <div class="panel panel-info">
+    <div class="panel-heading">
+      <h2 class="panel-title">
+        Iovs search panel
+      </h2>
+ </div>
+<p>
+This page is used for searching tags related information, once you did select a specific tag in
+a schema and folder. You can also click on the link below to get an output showing only iov coverage
+and holes in text format.
+</p>
+<form novalidate name="iovForm" class="form" ng-submit="submit()">
+<fieldset class="field_set">
+    <legend class="legend">Iovs search panel</legend>
+<div class="row">
+    <label>Database: </label> 
+    <select ng-model="schemaformparams.dbname" ng-options="c.name for c in dbnames">
+          <option value="">-- choose Database --</option>
+    </select>
+    <p>Currently selected: {{ {selected_db:schemaformparams.dbname}  }}</p>
+</div>
+<div class="row">
+    <label>Schema: </label> 
+    <input type="text" ng-model="schemaformparams.schema" 
+    	ng-minlength=8 
+     	ng-pattern="/ATLAS_COOL.*/" 
+      	name="schemaPattern" value="ATLAS_COOL" 
+    	typeahead="schema.schemaName for schema in allschemas | filter:$viewValue" required>
+<!--     <input type="text" ng-model="schemaformparams.schema"  -->
+<!--     	ng-minlength=2  -->
+<!--       	name="schemaPattern" value="ATLAS_COOL" required/> -->
+	<div class="error" 
+        ng-show="iovForm.schemaPattern.$invalid">
+    <small class="error" 
+        ng-show="iovForm.schemaPattern.$error.required">
+        Schema name is required.
+    </small>    
+    <small class="error" 
+        ng-show="iovForm.schemaPattern.$error.minlength">
+        Search string is required to be at least 2 characters
+    </small>
+  </div>   
+  </div>  
+<div class="row">
+    <label>Node (needs a complete node name): </label> 
+    <input type="text" ng-model="schemaformparams.node" 
+        ng-pattern="/\/.*/" 
+    	ng-minlength=2 
+      	name="folderPattern" value="/NONE" required/>
+	<div class="error" 
+        ng-show="iovForm.folderPattern.$invalid">
+    <small class="error" 
+        ng-show="iovForm.folderPattern.$error.pattern">
+        Node name has to start with a /.
+    </small>
+    <small class="error" 
+        ng-show="iovForm.folderPattern.$error.required">
+        Node name for search is required.
+    </small>    
+    <small class="error" 
+        ng-show="iovForm.folderPattern.$error.minlength">
+        Search string is required to be at least 2 characters
+    </small>
+  </div>   
+  </div>     	
+<div class="row">
+    <label>Tag: </label> 
+    <input type="text" ng-model="schemaformparams.tag" 
+      	name="tagPattern" value="none" />
+  </div>     	
+</fieldset>
+
+<div class="row">
+<label>Choose input range format: </label>
+<select data-ng-model="radioValue" data-ng-options="item for item in tspanoptions" data-ng-change="changeradiovalue()"></select>
+<!--     <label ng-repeat="n in tspanoptions"> -->
+<!--          <input type="radio" name="tspanchoice" ng-model="$parent.radioValue" ng-value="n" /> {{n}} -->
+<!--     </label> -->
+</div>
+<!--  
+<fieldset class="field_set" ng-show="radioValue == 'run'">
+    <legend class="legend">Search by run number</legend>
+
+<div class="row" >
+    <label>Run number: [start] </label> 
+    <input type="text" ng-model="schemaformparams.timeform.tmin" 
+     	ng-pattern="/[0-9].*/" 
+      	name="runPattern" value="0" required/>
+	<div class="error" 
+        ng-show="iovForm.runPattern.$invalid">
+    <small class="error" 
+        ng-show="iovForm.runPattern.$error.pattern">
+        You have to fill run number range.
+    </small>
+    <small class="error" 
+        ng-show="iovForm.runPattern.$error.required">
+        A number is required.
+    </small>    
+  </div>
+  </div>
+<div class="row">
+      <label>Run number: [end] </label> 
+    <input type="text" ng-model="schemaformparams.timeform.tmax" 
+     	ng-pattern="/[0-9].*/" 
+      	name="runPattern" value="999999" required/>
+	<div class="error" 
+        ng-show="iovForm.runPattern.$invalid">
+    <small class="error" 
+        ng-show="iovForm.runPattern.$error.pattern">
+        You have to fill run number range.
+    </small>
+    <small class="error" 
+        ng-show="iovForm.runPattern.$error.required">
+        A number is required.
+    </small>    
+  </div> 
+  </div> 	
+</fieldset>
+-->
+<!--   <button type="button" class="btn" data-toggle="datepicker"><i class="icon-calendar"></i></button> -->
+<!--   <button type="button" class="btn" data-toggle="timepicker"><i class="icon-time"></i></button> -->
+<!-- 
+<fieldset class="field_set" ng-show="radioValue == 'time'">
+  <legend class="legend">Run search panel using time range</legend>
+<div class="control-group input-append">
+  <label>Choose start date for time range: [since] </label>
+  <input type="text" ng-model="datepicker.datesince" data-date-format="yyyy/mm/dd" bs-datepicker>
+  <input type="text" ng-model="timepicker.timesince" bs-timepicker>
+</div>
+  <div class="control-group input-append">
+  <label>Choose end date for time range: [until] </label>
+  <input type="text" ng-model="datepicker.dateuntil" data-date-format="yyyy/mm/dd" bs-datepicker>
+  <input type="text" ng-model="timepicker.timeuntil" bs-timepicker>
+  </div>
+</fieldset>	 
+  -->
+  <div class="form-horizontal" ng-controller="dateCntrl">
+		<label>Choose start date for time range: [since] </label>
+            <input id="startDate" class="small" type="text" datepicker-popup="yyyy-MM-dd" ng-model="$parent.datepicker.datesince" is-open="opened" min="minDate" max="'2015-06-22'" 
+                   datepicker-options="dateOptions" 
+                   date-disabled="disabled(date, mode)" 
+                   ng-required="true" 
+                   close-text="Close" />
+   <div ng-model="$parent.timepicker.timesince" ng-change="changed()" class="small" style="display:inline-block;">
+        <timepicker id="startTime" hour-step="1" minute-step="5" show-meridian="ismeridian"></timepicker>
+   </div>       
+  </div>
+  <div class="form-horizontal" ng-controller="dateCntrl">    
+		<label>Choose end date for time range: [until] </label>
+            <input id="endDate" class="small" type="text" datepicker-popup="yyyy-MM-dd" ng-model="$parent.datepicker.dateuntil" is-open="opened" min="minDate" max="'2030-06-22'" 
+                   datepicker-options="dateOptions" 
+                   date-disabled="disabled(date, mode)" 
+                   ng-required="true" 
+                   close-text="Close" />
+   <div ng-model="$parent.timepicker.timeuntil" ng-change="changed()" class="small" style="display:inline-block;">
+        <timepicker id="endTime" hour-step="1" minute-step="5" show-meridian="ismeridian"></timepicker>
+   </div>
+  </div>
+  
+ <div class="row">
+  <button type="submit" class="button radius">Search</button>
+ </div> 
+</form>
+
+</div>
+</div>
+</div>
+</div>
+<tabset> 
+<tab ng-repeat="tab in tabs" heading="{{tab.title}}"
+	active="tab.active" disabled="tab.disabled"> {{tab.content}}
+<div class="report-container" ng-show="tab.showiovs == true">
+	<div class="gridStyle" ng-grid="tagIovGridOptions"></div>
+</div>
+</tab>
+</tabset>
