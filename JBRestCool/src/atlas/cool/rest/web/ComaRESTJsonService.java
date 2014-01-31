@@ -14,10 +14,33 @@ import javax.ws.rs.Produces;
 
 import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.CrViewRuninfo;
+import atlas.cool.rest.model.NodeGtagTagType;
+import atlas.cool.rest.model.NodeType;
+import atlas.cool.rest.model.SchemaNodeTagType;
 
 /**
- * @author formica
+ * JAX-RS Example
  * 
+ * This class produces a RESTful service to read the contents of the COMA
+ * tables.
+ * 
+ * <p>
+ * The base URL used by the following methods starts with
+ * </p>
+ * <p>
+ * <b>URL: https://hostname:port/JBRestCool/rest/coma/</b>
+ * </p>
+ * <p>
+ * Hostname: voatlas135
+ * </p>
+ * <p>
+ * Port: 8443 [8080]
+ * </p>
+ * <p>
+ * The protocol used is https for the moment
+ * </p>
+ * 
+ * @author formica
  */
 @Path("/comajson")
 @RequestScoped
@@ -88,13 +111,14 @@ public class ComaRESTJsonService extends ComaRESTImpl implements IComaREST {
 	 * @param period
 	 * @return
 	 */
+	@Override
 	@GET
 	@Produces("application/json")
 	@Path("/{runstart}/{runend}/{rtype}/{period}/runs")
-	public List<CrViewRuninfo> listRuns(@PathParam("runstart") BigDecimal runstart,
-			@PathParam("runend") BigDecimal runend,
-			@PathParam("rtype") String rtype, 
-			@PathParam("period") String period){
+	public List<CrViewRuninfo> listRuns(@PathParam("runstart") final BigDecimal runstart,
+			@PathParam("runend") final BigDecimal runend,
+			@PathParam("rtype") final String rtype,
+			@PathParam("period") final String period) {
 		return super.listRuns(runstart, runend, rtype, period);
 	}
 
@@ -103,14 +127,55 @@ public class ComaRESTJsonService extends ComaRESTImpl implements IComaREST {
 	 * @param end
 	 * @return
 	 */
+	@Override
 	@GET
 	@Produces("application/json")
 	@Path("/{since}/{until}/{timespan}/{rtype}/{period}/runsbyiov")
-	public List<CrViewRuninfo> listRuns(@PathParam("since") String since,
-			@PathParam("until") String until, @PathParam("timespan") String timespan, 
-			@PathParam("rtype") String rtype, @PathParam("period") String period){
+	public List<CrViewRuninfo> listRuns(@PathParam("since") final String since,
+			@PathParam("until") final String until,
+			@PathParam("timespan") final String timespan,
+			@PathParam("rtype") final String rtype,
+			@PathParam("period") final String period) {
 		return super.listRuns(since, until, timespan, rtype, period);
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.IComaREST#listNodesInSchema(java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/nodes")
+	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
+			@PathParam("db") String db) {
+		return super.listNodesInSchema(schema, db);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.IComaREST#listTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{node:.*}/tags")
+	public List<SchemaNodeTagType> listTagsInNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("node") String node) {
+		return super.listTagsInNodesSchema(schema, db, node);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.IComaREST#listGlobalTagsTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{gtag}/trace")
+	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("gtag") String gtag) {
+		return super.listGlobalTagsTagsInNodesSchema(schema, db, gtag);
+	}
+	
 
 }

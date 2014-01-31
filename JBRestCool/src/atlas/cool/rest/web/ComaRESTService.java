@@ -14,6 +14,9 @@ import javax.ws.rs.Produces;
 
 import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.CrViewRuninfo;
+import atlas.cool.rest.model.NodeGtagTagType;
+import atlas.cool.rest.model.NodeType;
+import atlas.cool.rest.model.SchemaNodeTagType;
 
 /**
  * JAX-RS Example
@@ -135,5 +138,44 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 			@PathParam("period") final String period) {
 		return super.listRuns(since, until, timespan, rtype, period);
 	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.IComaREST#listNodesInSchema(java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/nodes")
+	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
+			@PathParam("db") String db) {
+		return super.listNodesInSchema(schema, db);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.IComaREST#listTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{node:.*}/tags")
+	public List<SchemaNodeTagType> listTagsInNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("node") String node) {
+		return super.listTagsInNodesSchema(schema, db, node);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.IComaREST#listGlobalTagsTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{gtag}/trace")
+	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("gtag") String gtag) {
+		return super.listGlobalTagsTagsInNodesSchema(schema, db, gtag);
+	}
+	
 
 }

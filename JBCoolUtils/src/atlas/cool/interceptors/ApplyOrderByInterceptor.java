@@ -25,8 +25,8 @@ public class ApplyOrderByInterceptor extends EmptyInterceptor {
 
 	private static final String orderby = "";
 
-	private final Logger log = Logger
-			.getLogger(ApplyOrderByInterceptor.class.getName());
+	private final Logger log = Logger.getLogger(ApplyOrderByInterceptor.class
+			.getName());
 
 	/**
 	 * 

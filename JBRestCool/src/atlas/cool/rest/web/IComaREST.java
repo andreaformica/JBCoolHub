@@ -10,6 +10,9 @@ import javax.ws.rs.Produces;
 
 import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.CrViewRuninfo;
+import atlas.cool.rest.model.NodeGtagTagType;
+import atlas.cool.rest.model.NodeType;
+import atlas.cool.rest.model.SchemaNodeTagType;
 
 /**
  * @author formica
@@ -86,5 +89,75 @@ public interface IComaREST {
 	@Path("/{state}/{since}/{until}/gtagstate")
 	List<ComaCbGtagStates> listGtagStatesAtTime(@PathParam("state") final String state,
 			@PathParam("since") final String since);
+
+	/**
+	 * <p>
+	 * Method : /{schema}/{db}/nodes
+	 * </p>
+	 * <p>
+	 * It retrieves a list of nodes in XML format.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @return
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/nodes")
+	public List<NodeType> listNodesInSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db);
+
+	/**
+	 * <p>
+	 * Method : /{schema}/{db}/{node}/tags
+	 * </p>
+	 * <p>
+	 * It retrieves a list of tags in XML format.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param node
+	 *            The node name : a search string like MDT, in this case we do
+	 *            not use full folder name
+	 * @return An XML list of tags for the given node.
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{node:.*}/tags")
+	public List<SchemaNodeTagType> listTagsInNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("node") String node);
+
+	/**
+	 * <p>
+	 * Method : /{schema}/{db}/{gtag}/trace
+	 * </p>
+	 * <p>
+	 * It retrieves a list of tags associated to the given global tag in XML
+	 * format.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param gtag
+	 *            The Cool global tag : COMCOND-BLKPA-006-09
+	 * @return An XML list of schemas and folders and tags which are associated
+	 *         to the global tag.
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{gtag}/trace")
+	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("gtag") String gtag);
+
 
 }

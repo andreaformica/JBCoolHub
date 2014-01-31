@@ -19,9 +19,13 @@ import atlas.coma.dao.ComaCbDAO;
 import atlas.coma.exceptions.ComaQueryException;
 import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.CrViewRuninfo;
+import atlas.cool.dao.ComaDAO;
 import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
+import atlas.cool.rest.model.NodeGtagTagType;
+import atlas.cool.rest.model.NodeType;
+import atlas.cool.rest.model.SchemaNodeTagType;
 
 /**
  * @author formica
@@ -33,7 +37,9 @@ public class ComaRESTImpl implements IComaREST {
 	@Inject
 	protected CoolUtilsDAO coolutilsdao;
 	@Inject
-	protected ComaCbDAO comadao;
+	protected ComaCbDAO comacbdao;
+	@Inject
+	protected ComaDAO comadao;
 	@Inject
 	protected Logger log;
 
@@ -50,7 +56,7 @@ public class ComaRESTImpl implements IComaREST {
 		log.info("Calling listRuns..." + runstart + " " + runend);
 		List<CrViewRuninfo> results = null;
 		try {
-			results = comadao.findRunsInRange(runstart, runend);
+			results = comacbdao.findRunsInRange(runstart, runend);
 		} catch (final ComaQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -102,7 +108,7 @@ public class ComaRESTImpl implements IComaREST {
 			if (state.equals("all")) {
 				gtagstate = "%";
 			}
-			results = comadao.findGtagState(gtagstate);
+			results = comacbdao.findGtagState(gtagstate);
 		} catch (final ComaQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -136,7 +142,7 @@ public class ComaRESTImpl implements IComaREST {
 				final BigDecimal lsince = (BigDecimal) trmap.get("since");
 				attime = new Date(lsince.longValue() / CoolIov.TO_NANOSECONDS);
 			}
-			results = comadao.findGtagStateAtTime(gtagstate, attime);
+			results = comacbdao.findGtagStateAtTime(gtagstate, attime);
 		} catch (final ComaQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -168,7 +174,7 @@ public class ComaRESTImpl implements IComaREST {
 			if (period.equals("all")) {
 				pp = "%";
 			}
-			results = comadao.findRunsInRange(runstart, runend, rt, pp);
+			results = comacbdao.findRunsInRange(runstart, runend, rt, pp);
 		} catch (final ComaQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -207,7 +213,7 @@ public class ComaRESTImpl implements IComaREST {
 			final BigDecimal du = (BigDecimal) trmap.get("until");
 			final Timestamp ssince = new Timestamp(ds.longValue());
 			final Timestamp suntil = new Timestamp(du.longValue());
-			results = comadao.findRunsInRange(ssince, suntil, rt, pp);
+			results = comacbdao.findRunsInRange(ssince, suntil, rt, pp);
 			return results;
 		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block
@@ -217,6 +223,66 @@ public class ComaRESTImpl implements IComaREST {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.IComaREST#listNodesInSchema(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
+			@PathParam("db") String db) {
+		log.info("Calling listNodesInSchema..." + schema + " " + db);
+		List<NodeType> results = null;
+		try {
+			results = comadao.retrieveNodesFromSchemaAndDb(schema + "%", db, "%");
+		} catch (final CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return results;
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.IComaREST#listTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<SchemaNodeTagType> listTagsInNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("node") String node) {
+		List<SchemaNodeTagType> results = null;
+		String lnode = node;
+		try {
+		if (node.equals("all")) {
+			lnode = "%";
+		} else {
+			lnode = "%" + node + "%";
+		}
+		results = comadao.retrieveTagsFromNodesSchemaAndDb(schema + "%", db, lnode, null);
+			} catch (final CoolIOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		return results;
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.IComaREST#listGlobalTagsTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("gtag") String gtag) {
+		log.info("Calling listGlobalTagsTagsInNodesSchema..." + schema + " " + db);
+		List<NodeGtagTagType> results = null;
+		try {
+			results = comadao.retrieveGtagTagsFromSchemaAndDb(schema + "%", db, "%"
+					+ gtag + "%");
+		} catch (final CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return results;
 	}
 
 }
