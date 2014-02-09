@@ -11,6 +11,7 @@ sharedServices
 .factory('HostSvc', function() {
 //	var resthost = 'pcsaclay32c.cern.ch';
 	var resthost = 'localhost';
+	//var resthost = 'voatlas135.cern.ch';
 		return {
 			gethost: function() {
 				return resthost;

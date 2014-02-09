@@ -39,6 +39,25 @@ import atlas.cool.rest.utils.TimestampStringFormatter;
 				+ " folder_channeltablename, " + " schema_name, " + " dbname, "
 				+ " iov_base, " + " iov_type, " + " rownum "
 				+ "from table(cool_select_pkg.f_getall_nodes(:schema,:dbname,:node))", resultClass = NodeType.class),
+		@NamedNativeQuery(name = NodeType.QUERY_COMA_FINDNODES, query = "select   node_id,"
+				+ " node_name , "
+				+ " node_fullpath ,"
+				+ " node_description ,"
+				+ " node_isleaf ,"
+				+ " node_instime ,"
+				+ " node_tinstime ,"
+				+ " lastmod_date ,"
+				+ " folder_versioning ,"
+				+ " folder_payloadspec ,"
+				+ " folder_iovtablename ,"
+				+ " folder_tagtablename ,"
+				+ " folder_channeltablename, "
+				+ " schema_name, "
+				+ " dbname, "
+				+ " iov_base, "
+				+ " iov_type, "
+				+ " rownum "
+				+ "from table(coma_select_pkg.f_getall_nodes(:schema,:dbname,:node))", resultClass = NodeType.class),
 		@NamedNativeQuery(name = NodeType.QUERY_FINDALLNODES, query = "select   node_id,"
 				+ " node_name , " + " node_fullpath ," + " node_description ,"
 				+ " node_isleaf ," + " node_instime ," + " node_tinstime ,"
@@ -111,7 +130,7 @@ public class NodeType implements Serializable {
 	 * 
 	 */
 	@Transient
-	@XmlElement(name = "parserHeader", type = String.class)
+	@XmlElement(name = "parserHeader", type = ParserHeader.class)
 	private ParserHeader parserHeader = null;
 
 	/**
@@ -426,7 +445,8 @@ public class NodeType implements Serializable {
 	}
 
 	/**
-	 * @param header the header to set
+	 * @param header
+	 *            the header to set
 	 */
 	public void setParserHeader(final ParserHeader header) {
 		this.parserHeader = header;

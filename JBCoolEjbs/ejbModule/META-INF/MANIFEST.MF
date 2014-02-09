@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Dependencies: atlas.common, org.sqlite, com.oracle.db
+Dependencies: atlas.common export, org.sqlite export, com.oracle.db export
 Class-Path: JBCoolUtils.jar 
  
 

@@ -41,6 +41,7 @@
 				<include name="**/*.MF" />
 				<include name="**/*html" />
 				<exclude name="etc/**" />
+				<exclude name="**/ejb*.xml" />
 				<exclude name="**/*-ds.xml" />
 				<exclude name="**/persistence.xml" />
 

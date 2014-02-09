@@ -8,7 +8,6 @@
       <!-- If you are running in a production environment, add a managed 
          data source, the example data source is just for development and testing! -->
       <jta-data-source>java:jboss/datasources/JBCoolRestDS</jta-data-source>
-      <jar-file>JBCoolUtils.jar</jar-file>
       <jar-file>JBCoolEjbs.jar</jar-file>
       <jar-file>JBComaEjbs.jar</jar-file>
       <properties>
