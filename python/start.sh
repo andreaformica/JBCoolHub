@@ -1,0 +1,2 @@
+#!/bin/sh
+python runParser.py --tree --hist --url 'http://voatlas135.cern.ch:8080/JBRestCool/rest/plsqlcooljson/ATLAS_COOLOFL_RPC/COMP200/RPC/DQMF/ELEMENT_STATUS/fld/RPCDQMFElementStatus_2012_Jaunuary_26/tag/1650186752/chanid/0/Inf/time/data/list' --tree_name 'rpc0' --file_name 'parse_0.10.3.root'
