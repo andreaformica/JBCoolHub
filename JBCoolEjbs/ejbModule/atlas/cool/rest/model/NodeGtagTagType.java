@@ -130,7 +130,24 @@ import atlas.cool.annotations.CoolQuery;
 				+ " tag_lock_status, "
 				+ " sys_instime, "
 				+ " rownum "
-				+ "from table(coma_select_pkg.f_getall_tagsforgtag(:schema,:dbname,:gtag))", resultClass = NodeGtagTagType.class) })
+				+ "from table(coma_select_pkg.f_getall_tagsforgtag(:schema,:dbname,:gtag))", resultClass = NodeGtagTagType.class),
+		@NamedNativeQuery(name = NodeGtagTagType.QUERY_COMA_FINDTAGS_GTAGS_BACKTRACE, query = "select   "
+				+ " schema_name, "
+				+ " db_name, "
+				+ " gtag_id, "
+				+ " gtag_name, "
+				+ " gtag_description, "
+				+ " gtag_lock_status, "
+				+ " node_id,"
+				+ " node_name , "
+				+ " node_fullpath ,"
+				+ " tag_id, "
+				+ " tag_name, "
+				+ " tag_description, "
+				+ " tag_lock_status, "
+				+ " sys_instime, "
+				+ " rownum "
+				+ "from table(coma_select_pkg.f_getall_gtagsfortag(:schema,:dbname,:tag))", resultClass = NodeGtagTagType.class) })
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class NodeGtagTagType implements Serializable {
@@ -183,6 +200,8 @@ public class NodeGtagTagType implements Serializable {
 	public static final String QUERY_FINDGTAGS_FORTAG = "cool.findgtagsfortag";
 	@CoolQuery(name = "coma.findgtagstagstrace", params = "schema;dbname;gtag")
 	public static final String QUERY_COMA_FINDGTAGS_TAGS_TRACE = "coma.findgtagstagstrace";
+	@CoolQuery(name = "coma.findtaggtagsbacktrace", params = "schema;dbname;tag")
+	public static final String QUERY_COMA_FINDTAGS_GTAGS_BACKTRACE = "coma.findtaggtagsbacktrace";
 
 	/**
 	 * @return the gtagId

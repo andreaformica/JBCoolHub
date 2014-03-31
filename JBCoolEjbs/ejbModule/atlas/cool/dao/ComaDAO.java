@@ -33,6 +33,15 @@ public interface ComaDAO {
 	 */
 	List<NodeGtagTagType> retrieveGtagTagsFromSchemaAndDb(String schema, String db,
 			String gtag) throws CoolIOException;
+	/**
+	 * @param schema
+	 * @param db
+	 * @param tag
+	 * @return
+	 * @throws CoolIOException
+	 */
+	List<NodeGtagTagType> retrieveTagGtagsFromSchemaAndDb(String schema, String db,
+			String tag) throws CoolIOException;
 
 	/**
 	 * @param schema

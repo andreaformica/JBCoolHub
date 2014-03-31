@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 
 import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.CrViewRuninfo;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
@@ -175,6 +176,19 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("gtag") String gtag) {
 		return super.listGlobalTagsTagsInNodesSchema(schema, db, gtag);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ComaRESTImpl#retrieveTagGtagsFromSchemaAndDb(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{tag}/backtrace")
+	public List<NodeGtagTagType> retrieveTagGtagsFromSchemaAndDb(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("tag") String tag) throws CoolIOException {
+		return super.retrieveTagGtagsFromSchemaAndDb(schema, db, tag);
 	}
 	
 

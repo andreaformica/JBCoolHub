@@ -285,4 +285,22 @@ public class ComaRESTImpl implements IComaREST {
 		return results;
 	}
 
+    /* (non-Javadoc)
+	 * @see atlas.cool.rest.web.IComaREST#retrieveTagGtagsFromSchemaAndDb(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public List<NodeGtagTagType> retrieveTagGtagsFromSchemaAndDb(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("tag") String tag) throws CoolIOException {
+		log.info("Calling retrieveTagGtagsFromSchemaAndDb..." + schema + " " + db);
+		List<NodeGtagTagType> results = null;
+		try {
+			results = comadao.retrieveTagGtagsFromSchemaAndDb(schema + "%", db, "%"
+					+ tag + "%");
+		} catch (final CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return results;
+	}
+
 }

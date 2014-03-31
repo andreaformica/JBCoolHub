@@ -10,6 +10,7 @@ import javax.ws.rs.Produces;
 
 import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.CrViewRuninfo;
+import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
@@ -159,5 +160,22 @@ public interface IComaREST {
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("gtag") String gtag);
 
+
+	/**
+	 * @param schema
+	 * @param db
+	 * @param tag
+	 * 		The leaf tag which you want to backtrace
+	 * @return
+	 * 		A list of global tags in which the given tag appears
+	 * @throws CoolIOException
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{tag}/backtrace")
+	List<NodeGtagTagType> retrieveTagGtagsFromSchemaAndDb(
+			@PathParam("schema") String schema, 
+			@PathParam("db") String db,
+			@PathParam("tag") String tag) throws CoolIOException;
 
 }

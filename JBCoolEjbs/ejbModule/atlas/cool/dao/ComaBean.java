@@ -112,4 +112,22 @@ public class ComaBean implements ComaDAO {
 		return taglist;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.ComaDAO#retrieveTagGtagsFromSchemaAndDb(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<NodeGtagTagType> retrieveTagGtagsFromSchemaAndDb(String schema,
+			String db, String tag) throws CoolIOException {
+		final Object[] params = new Object[3];
+		params[0] = schema;
+		params[1] = db;
+		params[2] = tag;
+		log.info("Using query " + NodeGtagTagType.QUERY_COMA_FINDTAGS_GTAGS_BACKTRACE + " with "
+				+ schema + " " + db + " " + tag);
+		final List<NodeGtagTagType> gtaglist = (List<NodeGtagTagType>) coolrep
+				.findCoolList(NodeGtagTagType.QUERY_COMA_FINDTAGS_GTAGS_BACKTRACE, params);
+		return gtaglist;
+	}
+
+	
 }
