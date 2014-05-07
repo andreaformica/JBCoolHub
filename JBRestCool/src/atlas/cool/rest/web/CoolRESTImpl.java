@@ -112,6 +112,28 @@ public class CoolRESTImpl implements ICoolREST {
 		}
 		return results;
 	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolREST#listNodesInSchema(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{node:.*}/nodes")
+	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
+			@PathParam("db") String db, @PathParam("node") String node) {
+		log.info("Calling listNodesInSchema..." + schema + " " + db+" "+node);
+		List<NodeType> results = null;
+		try {
+			results = coolutilsdao.listNodesInSchema(schema, db, node);
+		} catch (final CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return results;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -185,6 +207,26 @@ public class CoolRESTImpl implements ICoolREST {
 		List<NodeGtagTagType> results = null;
 		try {
 			results = cooldao.retrieveGtagTagsFromSchemaAndDb(schema + "%", db, "%"
+					+ gtag + "%");
+		} catch (final CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return results;
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolREST#listGlobalTagsTagsInBranchNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<NodeGtagTagType> listGlobalTagsTagsInBranchNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("gtag") String gtag) {
+		log.info("Calling listGlobalTagsTagsInBranchNodesSchema..." + schema + " " + db);
+		List<NodeGtagTagType> results = null;
+		try {
+			results = cooldao.retrieveGtagBranchTagsFromSchemaAndDb(schema + "%", db, "%"
 					+ gtag + "%");
 		} catch (final CoolIOException e) {
 			// TODO Auto-generated catch block

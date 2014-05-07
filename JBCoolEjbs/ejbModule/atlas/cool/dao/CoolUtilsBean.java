@@ -4,6 +4,7 @@
 package atlas.cool.dao;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,8 +30,10 @@ import javax.inject.Named;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
 import atlas.coma.dao.ComaCbDAO;
+import atlas.coma.dao.ComaRunDAO;
 import atlas.coma.exceptions.ComaQueryException;
 import atlas.coma.model.CrViewRuninfo;
+import atlas.coma.model.NemoRun;
 import atlas.cool.annotations.CoolQueryRepository;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
@@ -65,6 +68,11 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 	 */
 	@Inject
 	private ComaCbDAO comadao;
+	/**
+	 * 
+	 */
+	@Inject
+	private ComaRunDAO comarundao;
 	/**
 	 * 
 	 */
@@ -293,6 +301,20 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 		log.info("Calling listNodesInSchema..." + schema + " " + db);
 		List<NodeType> results = null;
 		results = cooldao.retrieveNodesFromSchemaAndDb(schema + "%", db, "%");
+
+		return results;
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolUtilsDAO#listNodesInSchema(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<NodeType> listNodesInSchema(String schema, String db,
+			String node) throws CoolIOException {
+		log.info("Calling listNodesInSchema..." + schema + " " + db+" "+node);
+		List<NodeType> results = null;
+		results = cooldao.retrieveNodesFromSchemaAndDb(schema + "%", db, "%"+node+"%");
 
 		return results;
 	}
@@ -1802,6 +1824,160 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 			}
 			timerangeMap.put("since", lsince);
 			timerangeMap.put("until", luntil);
+			timerangeMap.put("iovbase", outputformat);
+			log.info("Converted " + since + " to " + lsince + " and " + until + " to "
+					+ luntil + " output " + outputformat);
+		} catch (final ParseException e) {
+			throw new CoolIOException(e.getMessage());
+		} catch (final Exception e) {
+			throw new CoolIOException(e.getMessage());
+		}
+		return timerangeMap;
+	}
+
+	
+	
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolUtilsDAO#getNemoTimeRange(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Map<String, Object> getNemoTimeRange(String since, String until,
+			String timespan) throws CoolIOException {
+		final Map<String, Object> timerangeMap = new HashMap<String, Object>();
+
+		BigDecimal lsince = null;
+		BigDecimal luntil = null;
+		Date datesince = null;
+		Date dateuntil = null;
+		Date runmindate = null;
+		Date runmaxdate = null;
+		Integer runmin = null;
+		Integer runmax = null;
+		
+		String outputformat = "all";
+		timerangeMap.put("coolsince", "null");
+		timerangeMap.put("cooluntil", "null");
+		timerangeMap.put("coolrunmin", "null");
+		timerangeMap.put("coolrunmax", "null");
+		timerangeMap.put("since", "null");
+		timerangeMap.put("until", "null");
+		timerangeMap.put("runmin", "null");
+		timerangeMap.put("runmax", "null");
+		timerangeMap.put("runmindate", "null");
+		timerangeMap.put("runmaxdate", "null");
+		timerangeMap.put("sincedate", "null");
+		timerangeMap.put("untildate", "null");
+		try {
+			List<NemoRun> nemolist = null;
+
+			if (since.equals("0")) {
+				lsince = new BigDecimal(0L);
+				datesince = new Date(0);
+				since = df.format(datesince);
+				nemolist = comarundao.getNemoRunList(datesince, datesince);
+				if (nemolist != null && nemolist.size()>0) {
+					runmin = nemolist.get(0).getRun();
+					runmindate = nemolist.get(0).getRunSorDate();
+				}
+			}
+			if (until.equals("Inf")) {
+				if (timespan.equals("date") || timespan.equals("time")) {
+					luntil = new BigDecimal(CoolIov.COOL_MAX_DATE);
+					dateuntil = new Date(CoolIov.COOL_MAX_DATE_MILLISECONDS);
+					until = df.format(dateuntil);
+					nemolist = comarundao.getNemoRunList(dateuntil, dateuntil);
+				} else {
+					until = "99999999";
+				}
+				if (nemolist != null && nemolist.size()>0) {
+					runmax = nemolist.get(nemolist.size()-1).getRun();
+					runmaxdate = nemolist.get(nemolist.size()-1).getRunSorDate();
+				}
+			}
+			
+			if (timespan.equals("time")) {
+				// Consider input time in cool format: nanoseconds
+				lsince = new BigDecimal(since);
+				luntil = new BigDecimal(until);
+				
+				if (lsince.longValue() > luntil.longValue()) {
+					log.log(Level.SEVERE, "Until time preceeds Since time...!!!!");
+					throw new CoolIOException("Cannot query DB with this range (since before until)...");
+				}
+
+				datesince = new Date(new Long(lsince.longValue() / 1000000L));
+				dateuntil = new Date(new Long(luntil.longValue() / 1000000L));
+
+				log.info("Searching runs using date "+datesince+" "+dateuntil);
+				nemolist = comarundao.getNemoRunList(datesince, dateuntil);
+				log.info("Retrieved list of runs "+(nemolist == null ? "none" : nemolist.size()));
+				
+			} else if (timespan.equals("date")) {
+				// Consider input time as a date string in YYYYMMddHHmmss
+				datesince = df.parse(since);
+				dateuntil = df.parse(until);
+				lsince = new BigDecimal(datesince.getTime() * CoolIov.TO_NANOSECONDS);
+				luntil = new BigDecimal(dateuntil.getTime() * CoolIov.TO_NANOSECONDS);
+				if (lsince.longValue() > luntil.longValue()) {
+					log.log(Level.SEVERE, "Until time preceeds Since time...!!!!");
+					throw new CoolIOException("Cannot query DB with this range (since before until)...");
+				}
+				log.info("Searching runs using date "+datesince+" "+dateuntil);
+				nemolist = comarundao.getNemoRunList(datesince, dateuntil);
+				log.info("Retrieved list of runs "+(nemolist == null ? "none" : nemolist.size()));
+			} else if (timespan.equals("run")) {
+				// Consider input time as run number
+				lsince = null;
+				luntil = null;
+				datesince = null;
+				dateuntil = null;
+				runmin = new Integer(since);
+				runmax = new Integer(until);
+				nemolist = comarundao.getNemoRunList(runmin, runmax);
+				log.info("Retrieved nemo run list using "+runmin+" "+runmax+" size "+nemolist.size());
+			} else if (timespan.equals("coolrun")) {
+				// Consider input time as run number
+				lsince = null;
+				luntil = null;
+				datesince = null;
+				dateuntil = null;
+				
+				runmin = CoolIov.getRun(new BigInteger(since)).intValue();
+				runmax = CoolIov.getRun(new BigInteger(until)).intValue();
+				nemolist = comarundao.getNemoRunList(runmin, runmax);
+				log.info("Retrieved nemo run list using "+runmin+" "+runmax+" size "+nemolist.size());
+			}
+			
+			if (nemolist != null && nemolist.size()>0) {
+				runmin = nemolist.get(0).getRun();
+				runmindate = nemolist.get(0).getRunSorDate();
+				runmax = nemolist.get(nemolist.size()-1).getRun();
+				runmaxdate = nemolist.get(nemolist.size()-1).getRunSorDate();
+				if (lsince == null || luntil == null) {
+					datesince = runmindate;
+					dateuntil = runmaxdate;
+					lsince = new BigDecimal(datesince.getTime()*CoolIov.TO_NANOSECONDS);
+					luntil = new BigDecimal(dateuntil.getTime()*CoolIov.TO_NANOSECONDS);
+				}
+			}
+
+			
+			timerangeMap.put("coolsince", lsince);
+			timerangeMap.put("cooluntil", luntil);
+			if (datesince != null && dateuntil != null) {
+				timerangeMap.put("since", datesince.getTime()/1000L);
+				timerangeMap.put("until", dateuntil.getTime()/1000L);
+				timerangeMap.put("sincedate", datesince.toString());
+				timerangeMap.put("untildate", dateuntil.toString());
+			}
+			if (runmin != null && runmax != null) {
+				timerangeMap.put("runmin", runmin);
+				timerangeMap.put("runmax", runmax);
+				timerangeMap.put("runmindate", runmindate.toString());
+				timerangeMap.put("runmaxdate", runmaxdate.toString());
+				timerangeMap.put("coolrunmin", CoolIov.getCoolRun(runmin.toString()));
+				timerangeMap.put("coolrunmax", CoolIov.getCoolRun(runmax.toString()));
+			}
 			timerangeMap.put("iovbase", outputformat);
 			log.info("Converted " + since + " to " + lsince + " and " + until + " to "
 					+ luntil + " output " + outputformat);

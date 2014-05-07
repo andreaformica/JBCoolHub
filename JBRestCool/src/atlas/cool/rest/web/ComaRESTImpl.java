@@ -16,9 +16,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import atlas.coma.dao.ComaCbDAO;
+import atlas.coma.dao.ComaRunDAO;
 import atlas.coma.exceptions.ComaQueryException;
+import atlas.coma.model.ComaCbClass;
 import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.CrViewRuninfo;
+import atlas.coma.model.NemoRun;
 import atlas.cool.dao.ComaDAO;
 import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.exceptions.CoolIOException;
@@ -41,6 +44,8 @@ public class ComaRESTImpl implements IComaREST {
 	@Inject
 	protected ComaDAO comadao;
 	@Inject
+	protected ComaRunDAO comarundao;
+	@Inject
 	protected Logger log;
 
 	/**
@@ -49,6 +54,73 @@ public class ComaRESTImpl implements IComaREST {
 	public ComaRESTImpl() {
 		super();
 	}
+		
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.IComaREST#listNemoRuns(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{start}/{end}/{tspan}/nemoruns")
+	public List<NemoRun> listNemoRuns(@PathParam("start") String start, @PathParam("end") String end,
+			@PathParam("tspan") String tspan) {
+		try {
+			// Time selection
+			final Map<String, Object> trmap = coolutilsdao.getNemoTimeRange(start, end,
+					tspan);
+			
+			if (trmap == null) {
+				return null;
+			}
+			for (String key : trmap.keySet()) {
+				log.info("Key "+key+" has value "+trmap.get(key).toString());
+			}
+
+			Date since = null;
+			Date until = null;
+			Integer rmin = (Integer)trmap.get("runmin");
+			Integer rmax = (Integer)trmap.get("runmax");
+			if (rmin == null || rmax == null) {
+				since = new Date((Long)trmap.get("since") * 1000L);
+				until = new Date((Long)trmap.get("until") * 1000L);
+				return comarundao.getNemoRunList(since,until);
+			} else {
+				return comarundao.getNemoRunList(rmin, rmax);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.IComaREST#getNemoTimeRangeConversion(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{start}/{end}/{tspan}/nemotimerange")
+	public Map<String, Object> getNemoTimeRangeConversion(@PathParam("start") String start,
+			@PathParam("end") String end, @PathParam("tspan") String tspan) {
+		try {
+			// Time selection
+			final Map<String, Object> trmap = coolutilsdao.getNemoTimeRange(start, end,
+					tspan);
+			
+			if (trmap == null) {
+				return null;
+			}
+			for (String key : trmap.keySet()) {
+				log.info("Key "+key+" has value "+trmap.get(key).toString());
+			}
+			return trmap;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 	@Override
 	public List<CrViewRuninfo> listRuns(@PathParam("runstart") final BigDecimal runstart,
@@ -297,6 +369,29 @@ public class ComaRESTImpl implements IComaREST {
 			results = comadao.retrieveTagGtagsFromSchemaAndDb(schema + "%", db, "%"
 					+ tag + "%");
 		} catch (final CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return results;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.IComaREST#getClassificationForSchemaAndNode(java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{node:.*}/classification")
+	public List<ComaCbClass> getClassificationForSchemaAndNode(@PathParam("schema") String schema,
+			@PathParam("node") String node) throws CoolIOException {
+		log.info("Calling getClassificationForSchemaAndNode..." + schema + " " + node);
+		List<ComaCbClass> results = null;
+		try {
+			if (node.equals("all"))
+				node = "";
+			results = comacbdao.findFolderClassification("%"+schema+"%", "%"+node+"%");
+		} catch (ComaQueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

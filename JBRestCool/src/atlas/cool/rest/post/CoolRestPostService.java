@@ -3,7 +3,10 @@
  */
 package atlas.cool.rest.post;
 
+import java.util.logging.Logger;
+
 import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -16,14 +19,17 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.Form;
+import org.jfree.util.Log;
 
+import atlas.cool.dao.CoolDAO;
+import atlas.cool.dao.ShellDAO;
 import atlas.cool.dao.mdb.GtagCoverage;
 
 /**
  * @author formica
  * 
  */
-@Path("/globaltag")
+@Path("/post")
 public class CoolRestPostService {
 
 	@Resource(mappedName = "queue/gtagCoverageQueue")
@@ -32,12 +38,19 @@ public class CoolRestPostService {
 	@Resource(mappedName = "java:/ConnectionFactory")
 	private ConnectionFactory cf;
 
+	@Inject
+	protected Logger log;
+
+	@Inject
+	protected ShellDAO shell;
+
 	/**
+	 * Call via JMS asynchronous method for global tag coverage
 	 * @param input
 	 * @return
 	 */
 	@POST
-	@Path("/coverage")
+	@Path("/gtag/coverage")
 	public Response checkGlobalTagCoverage(@Form final GlobalTagForm form) {
 
 		String globaltagname = form.getGlobalTagName();
@@ -75,4 +88,26 @@ public class CoolRestPostService {
 
 	}
 
+	@POST
+	@Path("/tree")
+	public Response getRootTreeForPayload(@Form final RootTreeForm form) {
+		String url = form.getUrl();
+		String outputfname = "test.root";
+		try {
+			String command = ("/tmp/start.sh "+url+" "+outputfname);
+			log.info("Launch shell command "+command);
+			shell.executeCommand(command);
+
+			return Response.status(200)
+					.entity("Sumbitted request for tree producer using url : " + url)
+					.build();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return Response.status(401)
+				.entity("Error occurred when submitting tree producer for : " + url + " !")
+				.build();
+		
+	}
 }

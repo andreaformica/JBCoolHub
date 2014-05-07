@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import atlas.coma.exceptions.ComaQueryException;
+import atlas.coma.model.ComaCbClass;
 import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.ComaCbSchemas;
 import atlas.coma.model.ComaCbamiGtags;
@@ -95,4 +96,12 @@ public interface ComaCbDAO {
 	 * @throws ComaQueryException
 	 */
 	CrViewRuninfo findRun(BigDecimal run) throws ComaQueryException;
+	
+	/**
+	 * @param schema
+	 * @param node
+	 * @return
+	 * @throws ComaQueryException
+	 */
+	List<ComaCbClass> findFolderClassification(String schema, String node) throws ComaQueryException;
 }

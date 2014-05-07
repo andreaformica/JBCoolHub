@@ -4,7 +4,9 @@
 package atlas.cool.rest.web;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.GET;
@@ -12,8 +14,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import atlas.coma.model.ComaCbClass;
 import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.CrViewRuninfo;
+import atlas.coma.model.NemoRun;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
@@ -50,6 +54,37 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see atlas.cool.rest.web.IComaREST#listNemoRuns(java.lang.Long,
+	 * java.lang.Long)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{start}/{end}/{tspan}/nemoruns")
+	public List<NemoRun> listNemoRuns(@PathParam("start") String start,
+			@PathParam("end") String end, @PathParam("tspan") String tspan) {
+		// TODO Auto-generated method stub
+		return super.listNemoRuns(start, end, tspan);
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ComaRESTImpl#getNemoTimeRangeConversion(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{start}/{end}/{tspan}/nemotimerange")
+	public Map<String, Object> getNemoTimeRangeConversion(@PathParam("start") String start,
+			@PathParam("end") String end, @PathParam("tspan") String tspan) {
+		// TODO Auto-generated method stub
+		return super.getNemoTimeRangeConversion(start, end, tspan);
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see atlas.cool.rest.web.ComaRESTImpl#listRuns(java.math.BigDecimal,
 	 * java.math.BigDecimal)
 	 */
@@ -57,7 +92,8 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	@GET
 	@Produces("application/xml")
 	@Path("/{runstart}/{runend}/runs")
-	public List<CrViewRuninfo> listRuns(@PathParam("runstart") final BigDecimal runstart,
+	public List<CrViewRuninfo> listRuns(
+			@PathParam("runstart") final BigDecimal runstart,
 			@PathParam("runend") final BigDecimal runend) {
 		// TODO Auto-generated method stub
 		return super.listRuns(runstart, runend);
@@ -88,7 +124,8 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	@GET
 	@Produces("application/xml")
 	@Path("/{state}/gtagstate")
-	public List<ComaCbGtagStates> listGtagStates(@PathParam("state") final String state) {
+	public List<ComaCbGtagStates> listGtagStates(
+			@PathParam("state") final String state) {
 		return super.listGtagStates(state);
 	}
 
@@ -101,7 +138,8 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	@Produces("application/xml")
 	@Path("/{state}/{since}/gtagstate")
 	public List<ComaCbGtagStates> listGtagStatesAtTime(
-			@PathParam("state") final String state, @PathParam("since") final String since) {
+			@PathParam("state") final String state,
+			@PathParam("since") final String since) {
 		return super.listGtagStatesAtTime(state, since);
 	}
 
@@ -116,7 +154,8 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	@GET
 	@Produces("application/xml")
 	@Path("/{runstart}/{runend}/{rtype}/{period}/runs")
-	public List<CrViewRuninfo> listRuns(@PathParam("runstart") final BigDecimal runstart,
+	public List<CrViewRuninfo> listRuns(
+			@PathParam("runstart") final BigDecimal runstart,
 			@PathParam("runend") final BigDecimal runend,
 			@PathParam("rtype") final String rtype,
 			@PathParam("period") final String period) {
@@ -140,8 +179,11 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 		return super.listRuns(since, until, timespan, rtype, period);
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.IComaREST#listNodesInSchema(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.rest.web.IComaREST#listNodesInSchema(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	@GET
@@ -152,8 +194,12 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 		return super.listNodesInSchema(schema, db);
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.IComaREST#listTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.IComaREST#listTagsInNodesSchema(java.lang.String,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	@GET
@@ -165,8 +211,12 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 		return super.listTagsInNodesSchema(schema, db, node);
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.IComaREST#listGlobalTagsTagsInNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.IComaREST#listGlobalTagsTagsInNodesSchema(java.lang
+	 * .String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	@GET
@@ -178,8 +228,12 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 		return super.listGlobalTagsTagsInNodesSchema(schema, db, gtag);
 	}
 
-	/* (non-Javadoc)
-	 * @see atlas.cool.rest.web.ComaRESTImpl#retrieveTagGtagsFromSchemaAndDb(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * atlas.cool.rest.web.ComaRESTImpl#retrieveTagGtagsFromSchemaAndDb(java
+	 * .lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	@GET
@@ -190,6 +244,18 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 			@PathParam("tag") String tag) throws CoolIOException {
 		return super.retrieveTagGtagsFromSchemaAndDb(schema, db, tag);
 	}
-	
+
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ComaRESTImpl#getClassificationForSchemaAndNode(java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{node:.*}/classification")
+	public List<ComaCbClass> getClassificationForSchemaAndNode(@PathParam("schema") String schema,
+			@PathParam("node") String node) throws CoolIOException {
+		return super.getClassificationForSchemaAndNode(schema, node);
+	}
 
 }

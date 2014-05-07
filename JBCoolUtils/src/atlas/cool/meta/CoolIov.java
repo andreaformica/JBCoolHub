@@ -34,6 +34,14 @@ public final class CoolIov implements Serializable {
 	 */
 	public static long TO_MILLISECONDS = 1000L;
 
+
+	public static float COOL_TO_MILLISECONDS = new Float(1./1000000L);
+
+	/**
+	 * The cool max date in milliseconds.
+	 */
+	public static long COOL_MAX_DATE_MILLISECONDS = 9223372036854L;
+
 	/**
 	 * Cool Max data in COOL format.
 	 */

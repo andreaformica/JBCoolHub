@@ -2,14 +2,17 @@ package atlas.cool.rest.web;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import atlas.coma.model.ComaCbClass;
 import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.CrViewRuninfo;
+import atlas.coma.model.NemoRun;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
@@ -20,6 +23,29 @@ import atlas.cool.rest.model.SchemaNodeTagType;
  * 
  */
 public interface IComaREST {
+
+	/**
+	 * @param runstart
+	 * @param runend
+	 * @return
+	 */
+	@GET
+	@Produces("application/xml")
+	@Path("/{start}/{end}/{tspan}/nemoruns")
+	List<NemoRun> listNemoRuns(@PathParam("start") String start,
+			@PathParam("end") String end, @PathParam("tspan") String tspan);
+
+	/**
+	 * @param start
+	 * @param end
+	 * @param timespan: time, date, run
+	 * @return
+	 */
+	@GET
+	@Produces("application/xml")
+	@Path("/{start}/{end}/{tspan}/nemotimerange")
+	Map<String,Object> getNemoTimeRangeConversion(@PathParam("start") String start,
+			@PathParam("end") String end, @PathParam("tspan") String tspan);
 
 	/**
 	 * @param runstart
@@ -177,5 +203,23 @@ public interface IComaREST {
 			@PathParam("schema") String schema, 
 			@PathParam("db") String db,
 			@PathParam("tag") String tag) throws CoolIOException;
+	
+
+	/**
+	 * @param schema
+	 * @param db
+	 * @param tag
+	 * 		The leaf tag which you want to backtrace
+	 * @return
+	 * 		A list of global tags in which the given tag appears
+	 * @throws CoolIOException
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{node:.*}/classification")
+	List<ComaCbClass> getClassificationForSchemaAndNode(
+			@PathParam("schema") String schema, 
+			@PathParam("node") String node) throws CoolIOException;
+
 
 }

@@ -6,6 +6,7 @@ package atlas.coma.dao;
 import java.util.Date;
 import java.util.List;
 
+import atlas.coma.model.NemoRun;
 import atlas.coma.model.PeriodSummary;
 import atlas.coma.model.RunSummary;
 import atlas.cool.exceptions.CoolIOException;
@@ -51,4 +52,20 @@ public interface ComaRunDAO {
 	 * @throws CoolIOException
 	 */
 	List<PeriodSummary> getSubPeriodsByProject(String project) throws CoolIOException;
+	
+	/**
+	 * @param since
+	 * @param until
+	 * @return
+	 * @throws CoolIOException
+	 */
+	List<NemoRun> getNemoRunList(Date since, Date until) throws CoolIOException;
+
+	/**
+	 * @param rmin
+	 * @param rmax
+	 * @return
+	 * @throws CoolIOException
+	 */
+	List<NemoRun> getNemoRunList(Integer rmin, Integer rmax) throws CoolIOException;
 }

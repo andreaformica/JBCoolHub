@@ -63,6 +63,29 @@ public interface ICoolREST {
 
 	/**
 	 * <p>
+	 * Method : /{schema}/{db}/nodes
+	 * </p>
+	 * <p>
+	 * It retrieves a list of nodes in XML format.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param node 
+	 * 			  The node search string: e.g. MDT 
+	 * @return
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{node:.*}/nodes")
+	public abstract List<NodeType> listNodesInSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,@PathParam("node") String node);
+
+
+	/**
+	 * <p>
 	 * Method : /{schema}/{db}/{node}/tags
 	 * </p>
 	 * <p>
@@ -133,6 +156,31 @@ public interface ICoolREST {
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{gtag}/trace")
 	public abstract List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("gtag") String gtag);
+
+	/**
+	 * <p>
+	 * Method : /{schema}/{db}/{gtag}/fulltrace
+	 * </p>
+	 * <p>
+	 * It retrieves a list of tags associated to the given global tag in XML
+	 * format. In this case, intermediate level folder tags are shown as well.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param gtag
+	 *            The Cool global tag : COMCOND-BLKPA-006-09
+	 * @return An XML list of schemas and folders and tags which are associated
+	 *         to the global tag.
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{gtag}/fulltrace")
+	public abstract List<NodeGtagTagType> listGlobalTagsTagsInBranchNodesSchema(
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("gtag") String gtag);
 

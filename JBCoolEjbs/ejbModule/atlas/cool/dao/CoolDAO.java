@@ -326,4 +326,16 @@ public interface CoolDAO {
 	 */
 	List<atlas.cool.summary.model.CoolIovRanges> findIovRangesList(BigDecimal iovid, BigDecimal since) throws CoolIOException;
 
+	/**
+	 * Retrieves tags associated to global tags considering also intermediate branch tags.
+	 * 
+	 * @param schema
+	 * @param db
+	 * @param gtag
+	 * @return
+	 * @throws CoolIOException
+	 */
+	List<NodeGtagTagType> retrieveGtagBranchTagsFromSchemaAndDb(String schema,
+			String db, String gtag)  throws CoolIOException;
+
 }

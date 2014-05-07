@@ -87,6 +87,19 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 		return super.listNodesInSchema(schema, db);
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listNodesInSchema(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{node:.*}/nodes")
+	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
+			@PathParam("db") String db, @PathParam("node") String node) {
+		// TODO Auto-generated method stub
+		return super.listNodesInSchema(schema, db, node);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -140,6 +153,20 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 			@PathParam("gtag") final String gtag) {
 		// TODO Auto-generated method stub
 		return super.listGlobalTagsTagsInNodesSchema(schema, db, gtag);
+	}
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listGlobalTagsTagsInBranchNodesSchema(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{gtag}/fulltrace")	
+	public List<NodeGtagTagType> listGlobalTagsTagsInBranchNodesSchema(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("gtag") String gtag) {
+		// TODO Auto-generated method stub
+		return super.listGlobalTagsTagsInBranchNodesSchema(schema, db, gtag);
 	}
 
 	/*

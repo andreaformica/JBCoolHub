@@ -18,38 +18,51 @@ import atlas.cool.annotations.CoolQuery;
 
 /**
  * <p>
- * This POJO represents the association between a global tag and a leaf tag in a given
- * node. Cool tags are defined in the _TAGS table of a COOL schema for every folder
- * (node), as well as inside the main _TAGS table, where global tags are stored.
+ * This POJO represents the association between a global tag and a leaf tag in a
+ * given node. Cool tags are defined in the _TAGS table of a COOL schema for
+ * every folder (node), as well as inside the main _TAGS table, where global
+ * tags are stored.
  * </p>
  * <p>
  * The Queries defined for this POJO are:<br>
  * 
  * <b>QUERY_FINDGTAGS_TAGS_TRACE [cool_select_pkg]</b><br>
- * This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching
- * nodes/tags; it uses internally the function
+ * This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of
+ * matching nodes/tags; it uses internally the function
  * cool_select_pkg.f_getall_tagsforgtag(.....).<br>
- * For every node/tag associated with the given gtag, there is one line with information
- * on schema and db, gtag informations, tag informations, and node informations.<br>
+ * For every node/tag associated with the given gtag, there is one line with
+ * information on schema and db, gtag informations, tag informations, and node
+ * informations.<br>
+ * 
+ * <b>QUERY_FINDGTAGS_TAGS_FULLTRACE [cool_select_pkg]</b><br>
+ * This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of
+ * matching nodes/tags; it uses internally the function
+ * cool_select_pkg.f_getall_branchtagsforgtag(.....).<br>
+ * For every node/tag associated with the given gtag, there is one line with
+ * information on schema and db, gtag informations, tag informations, and node
+ * informations. The result contains all intermediate branch level tags.<br>
  * 
  * <b>QUERY_FINDGTAGS_FORTAG [cool_select_pkg]</b><br>
- * This query takes as arguments the SCHEMA, DB, GTAG, TAG, NODE and retrieves a list of
- * matching nodes/tags/gtags; it uses internally the function
+ * This query takes as arguments the SCHEMA, DB, GTAG, TAG, NODE and retrieves a
+ * list of matching nodes/tags/gtags; it uses internally the function
  * cool_select_pkg.f_getall_tagsforgtag(.....).<br>
- * For every node/tag associated with the given gtag, there is one line with information
- * on schema and db, gtag informations, tag informations, and node informations.<br>
+ * For every node/tag associated with the given gtag, there is one line with
+ * information on schema and db, gtag informations, tag informations, and node
+ * informations.<br>
  * 
  * <b>QUERY_FINDGTAG_DOUBLEFLD [cool_select_pkg]</b><br>
- * This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching
- * nodes/tags/gtags; it uses internally the function
+ * This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of
+ * matching nodes/tags/gtags; it uses internally the function
  * cool_select_pkg.f_getall_doubletagsforgtag(.....).<br>
- * It is used to search for folders which are associated twice to a given global tag.
+ * It is used to search for folders which are associated twice to a given global
+ * tag.
  * 
  * <b>QUERY_COMA_FINDGTAGS_TAGS_TRACE [coma_select_pkg]</b><br>
- * This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of matching
- * nodes/tags/gtags; it uses internally the function
+ * This query takes as arguments the SCHEMA, DB, GTAG and retrieves a list of
+ * matching nodes/tags/gtags; it uses internally the function
  * cool_select_pkg.f_getall_tagsforgtag(.....).<br>
- * It is the same as the first query described, but the info is retrieved from COMA.
+ * It is the same as the first query described, but the info is retrieved from
+ * COMA.
  * </p>
  * 
  * @author formica
@@ -78,6 +91,23 @@ import atlas.cool.annotations.CoolQuery;
 				+ " sys_instime, "
 				+ " rownum "
 				+ "from table(cool_select_pkg.f_getall_tagsforgtag(:schema,:dbname,:gtag))", resultClass = NodeGtagTagType.class),
+		@NamedNativeQuery(name = NodeGtagTagType.QUERY_FINDGTAGS_TAGS_FULLTRACE, query = "select   "
+				+ " schema_name, "
+				+ " db_name, "
+				+ " gtag_id, "
+				+ " gtag_name, "
+				+ " gtag_description, "
+				+ " gtag_lock_status, "
+				+ " node_id,"
+				+ " node_name , "
+				+ " node_fullpath ,"
+				+ " tag_id, "
+				+ " tag_name, "
+				+ " tag_description, "
+				+ " tag_lock_status, "
+				+ " sys_instime, "
+				+ " rownum "
+				+ "from table(cool_select_pkg.f_getall_branchtagsforgtag(:schema,:dbname,:gtag))", resultClass = NodeGtagTagType.class),
 		@NamedNativeQuery(name = NodeGtagTagType.QUERY_FINDGTAGS_FORTAG, query = "select   "
 				+ " schema_name, "
 				+ " db_name, "
@@ -202,6 +232,8 @@ public class NodeGtagTagType implements Serializable {
 	public static final String QUERY_COMA_FINDGTAGS_TAGS_TRACE = "coma.findgtagstagstrace";
 	@CoolQuery(name = "coma.findtaggtagsbacktrace", params = "schema;dbname;tag")
 	public static final String QUERY_COMA_FINDTAGS_GTAGS_BACKTRACE = "coma.findtaggtagsbacktrace";
+	@CoolQuery(name = "cool.findgtagstagsfulltrace", params = "schema;dbname;gtag")
+	public static final String QUERY_FINDGTAGS_TAGS_FULLTRACE = "cool.findgtagstagsfulltrace";
 
 	/**
 	 * @return the gtagId

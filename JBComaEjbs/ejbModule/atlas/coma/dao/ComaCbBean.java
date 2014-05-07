@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import atlas.coma.exceptions.ComaQueryException;
+import atlas.coma.model.ComaCbClass;
 import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.ComaCbSchemas;
 import atlas.coma.model.ComaCbamiGtags;
@@ -237,5 +238,27 @@ public class ComaCbBean implements ComaCbDAO {
 		}
 		return runlist;
 	}
+
+	/* (non-Javadoc)
+	 * @see atlas.coma.dao.ComaCbDAO#findFolderClassification(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<ComaCbClass> findFolderClassification(String schema, String node)
+			throws ComaQueryException {
+		final Object[] params = new Object[2];
+		params[0] = schema;
+		params[1] = node;
+		log.fine("Using query " + ComaCbClass.QUERY_FIND_FOLDER_CLASS + " with " + schema
+				+ " " + node);
+		List<ComaCbClass> runlist = null;
+		try {
+			runlist = (List<ComaCbClass>) coolrep.findCoolList(
+					ComaCbClass.QUERY_FIND_FOLDER_CLASS, params);
+		} catch (final CoolIOException e) {
+			throw new ComaQueryException(e.getMessage());
+		}
+		return runlist;
+	}
+	
 	
 }

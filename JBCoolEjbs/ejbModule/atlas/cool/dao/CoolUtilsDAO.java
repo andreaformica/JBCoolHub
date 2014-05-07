@@ -67,6 +67,16 @@ public interface CoolUtilsDAO {
 	 * @return
 	 * @throws CoolIOException
 	 */
+	List<NodeType> listNodesInSchema(String schema, String db, String node)
+			throws CoolIOException;
+
+	/**
+	 * @param schema
+	 * @param db
+	 * @param node
+	 * @return
+	 * @throws CoolIOException
+	 */
 	List<SchemaNodeTagType> listTagsInNodesSchema(String schema,
 			String db, String node) throws CoolIOException;
 
@@ -272,6 +282,42 @@ public interface CoolUtilsDAO {
 	Map<String, Object> getTimeRange(String since, String until,
 			String timespan) throws CoolIOException;
 
+	/**
+	 * <p>
+	 * This method is the same as the getTimeRange, but using NEMO table instead of COMA.
+	 * This method is used to parse the timespan string in the URL. Several
+	 * format options are then available when asking for input time range. Users
+	 * should know in advance, nevertheless, the format of the folder their are
+	 * asking for data: time or run-lumi based.
+	 * </p>
+	 * <p>
+	 * List of format depending on timespan field, in bold the type of folder
+	 * for which they should be used:
+	 * </p>
+	 * <p>
+	 * <ul>
+	 * <li>time : give since and until times in Cool time format (nanoseconds
+	 * from Epoch) <b>time</b></li>
+	 * <li>date : give since and until times in date format yyyyMMddhhmmss
+	 * <b>time</b></li>
+	 * <li>runlb : give since and until times in run and lumi bloc as [run]-[lb]
+	 * <b>run-lumi</b></li>
+	 * <li>runtime: give since and until times in run number, will be converted
+	 * in time using start and end of selected runs <b>time</b></li>
+	 * <li>daterun: give since and until times in date format yyyyMMddhhmmss,
+	 * will be converted in run range <b>run-lumi</b></li>
+	 * </ul>
+	 * </p>
+	 * 
+	 * @param since
+	 * @param until
+	 * @param timespan
+	 * @return
+	 * @throws CoolIOException
+	 */
+	Map<String, Object> getNemoTimeRange(String since, String until,
+			String timespan) throws CoolIOException;
+	
 	/**
 	 * @param ivr
 	 * @param iovbase

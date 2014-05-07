@@ -153,6 +153,25 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 				.findCoolList(NodeGtagTagType.QUERY_FINDGTAGS_TAGS_TRACE, params);
 		return gtaglist;
 	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolDAO#retrieveGtagBranchTagsFromSchemaAndDb(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public List<NodeGtagTagType> retrieveGtagBranchTagsFromSchemaAndDb(
+			String schema, String db, String gtag) throws CoolIOException {
+		final Object[] params = new Object[3];
+		params[0] = schema;
+		params[1] = db;
+		params[2] = gtag;
+		log.info("Using query " + NodeGtagTagType.QUERY_FINDGTAGS_TAGS_FULLTRACE + " with "
+				+ schema + " " + db + " " + gtag);
+		final List<NodeGtagTagType> gtaglist = (List<NodeGtagTagType>) coolrep
+				.findCoolList(NodeGtagTagType.QUERY_FINDGTAGS_TAGS_FULLTRACE, params);
+		return gtaglist;
+	}
 
 	/*
 	 * (non-Javadoc)
