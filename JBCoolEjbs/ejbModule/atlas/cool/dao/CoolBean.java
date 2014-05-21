@@ -344,6 +344,7 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 				+ " " + node + " " + tag);
 		final List<IovType> iovstatlist = (List<IovType>) coolrep.findCoolList(
 				IovType.QUERY_FINDIOVS, params);
+		log.info("Retrieved list of IovType "+((iovstatlist == null) ? "NULL" : iovstatlist.size()));
 		return iovstatlist;
 	}
 

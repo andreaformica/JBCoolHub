@@ -23,7 +23,6 @@ import atlas.coma.model.PeriodSummary;
 import atlas.coma.model.RunSummary;
 import atlas.connection.dao.CoolRepositoryDAO;
 import atlas.cool.exceptions.CoolIOException;
-import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.utils.PrintPojo;
 
 /**
