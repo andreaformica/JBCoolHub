@@ -56,7 +56,21 @@ import atlas.cool.meta.CoolIov;
 				+ " iov_base "
 				+ " from table(cool_select_pkg.f_Get_IovsRangeForChannelName("
 				+ " :schema,:db,:node,:tag,:channame,:since,:until)) "
-				+ " order by channel_id, iov_since asc", resultClass = CoolIovType.class) })
+				+ " order by channel_id, iov_since asc", resultClass = CoolIovType.class),
+		@NamedNativeQuery(name = CoolIovType.QUERY_LASTMODIOV, query = "select   object_id,"
+				+ " channel_name , "
+				+ " channel_id ,"
+				+ " iov_since ,"
+				+ " iov_until ,"
+				+ " user_tag_id ,"
+				+ " tag_name ,"
+				+ " sys_instime ,"
+				+ " lastmod_date ,"
+				+ " new_head_id, "
+				+ " iov_base "
+				+ " from table(cool_select_pkg.f_Get_LastModIov("
+				+ " :schema,:db,:node,:seqid,:lmd)) "
+				+ " ", resultClass = CoolIovType.class) })
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class CoolIovType implements Serializable {
@@ -155,6 +169,11 @@ public class CoolIovType implements Serializable {
 	 */
 	@CoolQuery(name = "cool.findiovsinrangebychan", params = "schema;db;node;tag;channame;since;until")
 	public static final String QUERY_FINDIOVS_INRANGE_BYCHAN = "cool.findiovsinrangebychan";
+	/**
+	 * 
+	 */
+	@CoolQuery(name = "cool.findlastmodiov", params = "schema;db;node;seqid;lmd")
+	public static final String QUERY_LASTMODIOV = "cool.findlastmodiov";
 
 	/**
 	 * 

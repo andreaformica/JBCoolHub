@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import atlas.cool.exceptions.CoolIOException;
+import atlas.cool.rest.model.LastModTimeType;
 import atlas.cool.summary.model.CondNodeStats;
 import atlas.cool.summary.model.CoolCoverage;
 
@@ -77,4 +78,15 @@ public interface CondToolsDAO {
      * @throws CoolIOException
      */
     CoolCoverage findGlobalTagCoverage(String gtag) throws CoolIOException;
+    
+    /**
+     * @param schema
+     * @param db
+     * @param node
+     * @param tbl
+     * @param tmodsince
+     * @return
+     * @throws CoolIOException
+     */
+    List<LastModTimeType> findLastModTime(String schema, String db, String node, String tbl, Date tmodsince) throws CoolIOException;
 }

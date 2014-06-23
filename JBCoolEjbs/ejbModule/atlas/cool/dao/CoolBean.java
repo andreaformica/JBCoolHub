@@ -4,6 +4,7 @@
 package atlas.cool.dao;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -477,6 +478,27 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 		// TODO: use this as an example for future need in pagination (2013/06/04)
 		// List<CoolIovType> iovlist =
 		// coolrep.findCoolList(CoolIovType.class,CoolIovType.QUERY_FINDIOVS_INRANGE_BYCHAN,params);
+		return iovlist;
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolDAO#retrieveLastModIovsFromNodeSchemaAndDb(java.lang.String, java.lang.String, java.lang.String, java.math.BigDecimal, java.sql.Timestamp)
+	 */
+	@Override
+	public List<CoolIovType> retrieveLastModIovsFromNodeSchemaAndDb(
+			String schema, String db, String node, BigDecimal seqid, Timestamp  lmd)
+			throws CoolIOException {
+		final Object[] params = new Object[5];
+		params[0] = schema;
+		params[1] = db;
+		params[2] = node;
+		params[3] = seqid;
+		params[4] = lmd;
+		log.info("Using query " + CoolIovType.QUERY_LASTMODIOV + " with "
+				+ schema + " " + db + " " + node + " " + lmd+ " "+seqid);
+		final List<CoolIovType> iovlist = (List<CoolIovType>) coolrep.findCoolList(
+				CoolIovType.QUERY_LASTMODIOV, params);
 		return iovlist;
 	}
 

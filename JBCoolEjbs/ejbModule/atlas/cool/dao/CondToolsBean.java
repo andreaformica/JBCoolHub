@@ -23,6 +23,7 @@ import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
 import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.IovRange;
+import atlas.cool.rest.model.LastModTimeType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.summary.model.CondNodeStats;
 import atlas.cool.summary.model.CoolCoverage;
@@ -116,18 +117,23 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 					final atlas.cool.summary.model.CoolIovSummary summary = coolsummobjlist
 							.get(0);
 
-					// Verify the total number of iovs...if it is equal skip the update.
-					final Long dbtotaliovs = summary.getCoolTotaliovs().longValue();
+					// Verify the total number of iovs...if it is equal skip the
+					// update.
+					final Long dbtotaliovs = summary.getCoolTotaliovs()
+							.longValue();
 					final Long newtotal = iovsummary.getTotalIovs();
 					if (dbtotaliovs == newtotal) {
 						log.fine("SKIP channel: Same number of total iovs for "
-								+ iovsummary.getSchema() + " " + iovsummary.getNode()
-								+ " " + iovsummary.getChanId());
+								+ iovsummary.getSchema() + " "
+								+ iovsummary.getNode() + " "
+								+ iovsummary.getChanId());
 					} else {
 						log.warning("Different number of total iovs for "
-								+ iovsummary.getSchema() + " " + iovsummary.getNode()
-								+ " " + iovsummary.getChanId());
-						// The number of iovs is not the same...update the summary
+								+ iovsummary.getSchema() + " "
+								+ iovsummary.getNode() + " "
+								+ iovsummary.getChanId());
+						// The number of iovs is not the same...update the
+						// summary
 						summary.setCoolChannelName(iovsummary.getChannelName());
 						summary.setCoolGlobalTagName(globaltag);
 						summary.setCoolSummary(iovsummary.getSummary());
@@ -139,14 +145,17 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 								.getMinuntil()));
 						summary.setCoolMaxiovuntil(new BigDecimal(iovsummary
 								.getMaxuntil()));
-						summary.setCoolTotaliovs(new BigDecimal(iovsummary.getTotalIovs()));
+						summary.setCoolTotaliovs(new BigDecimal(iovsummary
+								.getTotalIovs()));
 						// log.info("Updating " + summary.toString());
 						// Merge the summary
 						coolrep.merge(summary);
 						// log message
-						if (icount % 100 == 0 && iovsummary.getIovlist() != null) {
+						if (icount % 100 == 0
+								&& iovsummary.getIovlist() != null) {
 							log.info("Updating " + summary.toString()
-									+ " with iovranges " + iovsummary.getIovlist().size());
+									+ " with iovranges "
+									+ iovsummary.getIovlist().size());
 						}
 						synchroIovRanges(summary, iovsummary.getIovlist());
 					}
@@ -159,14 +168,20 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 					summary.setCoolNodeIovbase(iovsummary.getIovbase());
 					summary.setCoolTagName(tag);
 					summary.setCoolGlobalTagName(globaltag);
-					summary.setCoolChannelId(new BigDecimal(iovsummary.getChanId()));
+					summary.setCoolChannelId(new BigDecimal(iovsummary
+							.getChanId()));
 					summary.setCoolChannelName(iovsummary.getChannelName());
 					summary.setCoolSummary(iovsummary.getSummary());
-					summary.setCoolMiniovsince(new BigDecimal(iovsummary.getMinsince()));
-					summary.setCoolMaxiovsince(new BigDecimal(iovsummary.getMaxsince()));
-					summary.setCoolMiniovuntil(new BigDecimal(iovsummary.getMinuntil()));
-					summary.setCoolMaxiovuntil(new BigDecimal(iovsummary.getMaxuntil()));
-					summary.setCoolTotaliovs(new BigDecimal(iovsummary.getTotalIovs()));
+					summary.setCoolMiniovsince(new BigDecimal(iovsummary
+							.getMinsince()));
+					summary.setCoolMaxiovsince(new BigDecimal(iovsummary
+							.getMaxsince()));
+					summary.setCoolMiniovuntil(new BigDecimal(iovsummary
+							.getMinuntil()));
+					summary.setCoolMaxiovuntil(new BigDecimal(iovsummary
+							.getMaxuntil()));
+					summary.setCoolTotaliovs(new BigDecimal(iovsummary
+							.getTotalIovs()));
 					coolrep.persist(summary);
 					if (icount % 100 == 0) {
 						log.info("Inserting " + summary.toString());
@@ -214,15 +229,16 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 			newrange.setCoolIovuntilStr(iovRange.getUntilCoolStr());
 			newrange.setCoolIovSummary(iovsumm);
 			// final List<CoolIovRanges> dbranges = cooldao.findIovRangesList(
-			// iovsumm.getCoolIovsummaryId(), new BigDecimal(iovRange.getSince()));
+			// iovsumm.getCoolIovsummaryId(), new
+			// BigDecimal(iovRange.getSince()));
 			/*
 			 * if (dbranges != null && dbranges.size() == 1) { //
-			 * log.info("Compare range with the DB "); final CoolIovRanges oldrange =
-			 * dbranges.get(0); if (oldrange.equals(newrange)) {
+			 * log.info("Compare range with the DB "); final CoolIovRanges
+			 * oldrange = dbranges.get(0); if (oldrange.equals(newrange)) {
 			 * log.fine("Iovrange is the same....do not update"); } else {
-			 * log.fine("Iovrange is not the same, should update it"); } } else { //
-			 * log.info("Cannot find range in DB, persist it"); coolrep.persist(newrange);
-			 * }
+			 * log.fine("Iovrange is not the same, should update it"); } } else
+			 * { // log.info("Cannot find range in DB, persist it");
+			 * coolrep.persist(newrange); }
 			 */
 		}
 		// coolrep.flush();
@@ -231,8 +247,9 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see atlas.cool.dao.remote.CondToolsDAORemote#insertCoolIovRanges(java.lang.String,
-	 * java.lang.String, java.lang.String, java.lang.String)
+	 * @see
+	 * atlas.cool.dao.remote.CondToolsDAORemote#insertCoolIovRanges(java.lang
+	 * .String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -241,8 +258,9 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 		try {
 
 			final Collection<CoolIovSummary> summarylist = coolutilsdao
-					.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, node, tag,
-							new BigDecimal(0L), new BigDecimal(CoolIov.COOL_MAX_DATE));
+					.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db,
+							node, tag, new BigDecimal(0L), new BigDecimal(
+									CoolIov.COOL_MAX_DATE));
 			if (summarylist == null) {
 				return;
 			}
@@ -262,9 +280,12 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 						final CoolIovRanges newrange = new CoolIovRanges();
 						newrange.setCoolIovbase(iovsumm.getCoolNodeIovbase());
 						newrange.setCoolIovrangeIshole(iovRange.getIshole());
-						newrange.setCoolIovrangeNiovs(new BigDecimal(iovRange.getNiovs()));
-						newrange.setCoolIovrangeSince(new BigDecimal(iovRange.getSince()));
-						newrange.setCoolIovrangeUntil(new BigDecimal(iovRange.getUntil()));
+						newrange.setCoolIovrangeNiovs(new BigDecimal(iovRange
+								.getNiovs()));
+						newrange.setCoolIovrangeSince(new BigDecimal(iovRange
+								.getSince()));
+						newrange.setCoolIovrangeUntil(new BigDecimal(iovRange
+								.getUntil()));
 						newrange.setCoolIovsinceStr(iovRange.getSinceCoolStr());
 						newrange.setCoolIovuntilStr(iovRange.getUntilCoolStr());
 						newrange.setCoolIovSummary(iovsumm);
@@ -282,17 +303,19 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * atlas.cool.dao.remote.CondToolsDAORemote#checkGlobalTagForSchemaDB(java.lang.String
-	 * , java.lang.String, java.lang.String, java.lang.Boolean)
+	 * atlas.cool.dao.remote.CondToolsDAORemote#checkGlobalTagForSchemaDB(java
+	 * .lang.String , java.lang.String, java.lang.String, java.lang.Boolean)
 	 */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public void checkGlobalTagForSchemaDB(final String gtag, final String schema,
-			final String db, final Boolean ignoreExistingSchemas) throws CoolIOException {
+	public void checkGlobalTagForSchemaDB(final String gtag,
+			final String schema, final String db,
+			final Boolean ignoreExistingSchemas) throws CoolIOException {
 		final int maxschemas = 9999;
 		try {
 			List<NodeGtagTagType> nodeingtagList = null;
-			nodeingtagList = cooldao.retrieveGtagTagsFromSchemaAndDb(schema, db, gtag);
+			nodeingtagList = cooldao.retrieveGtagTagsFromSchemaAndDb(schema,
+					db, gtag);
 			int icount = 0;
 
 			for (final NodeGtagTagType nodeGtagTagType : nodeingtagList) {
@@ -317,8 +340,8 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 								.getCoolIovRangeses();
 						if (iovranges != null && iovranges.size() > 0) {
 							log.info("Skipping schema " + coolschema + " node "
-									+ nodeGtagTagType.getNodeFullpath() + " tag "
-									+ nodeGtagTagType.getTagName());
+									+ nodeGtagTagType.getNodeFullpath()
+									+ " tag " + nodeGtagTagType.getTagName());
 							continue;
 						} else {
 							toupdate = true;
@@ -327,18 +350,20 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 					if (toupdate) {
 						log.info("Found schema " + coolschema + " node "
 								+ nodeGtagTagType.getNodeFullpath() + " tag "
-								+ nodeGtagTagType.getTagName() + " with empty ranges...!");
+								+ nodeGtagTagType.getTagName()
+								+ " with empty ranges...!");
 						updateTableForNodeAndTag(nodeGtagTagType.getGtagName(),
-								coolschema, db, nodeGtagTagType.getNodeFullpath(),
+								coolschema, db,
+								nodeGtagTagType.getNodeFullpath(),
 								nodeGtagTagType.getTagName());
 					}
 				} else {
-					log.info("Insert new summary for " + coolschema + " " + db + " "
-							+ nodeGtagTagType.getNodeFullpath() + " "
+					log.info("Insert new summary for " + coolschema + " " + db
+							+ " " + nodeGtagTagType.getNodeFullpath() + " "
 							+ nodeGtagTagType.getTagName());
 
-					updateTableForNodeAndTag(nodeGtagTagType.getGtagName(), coolschema,
-							db, nodeGtagTagType.getNodeFullpath(),
+					updateTableForNodeAndTag(nodeGtagTagType.getGtagName(),
+							coolschema, db, nodeGtagTagType.getNodeFullpath(),
 							nodeGtagTagType.getTagName());
 				}
 			}
@@ -358,13 +383,16 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 120)
-	protected void updateTableForNodeAndTag(final String globaltag, final String schema,
-			final String db, final String node, final String tag) {
+	protected void updateTableForNodeAndTag(final String globaltag,
+			final String schema, final String db, final String node,
+			final String tag) {
 		try {
-			log.info("Updating db for " + schema + " " + db + " " + node + " " + tag);
+			log.info("Updating db for " + schema + " " + db + " " + node + " "
+					+ tag);
 			final Collection<CoolIovSummary> summarylist = coolutilsdao
-					.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db, node, tag,
-							new BigDecimal(0L), new BigDecimal(CoolIov.COOL_MAX_DATE));
+					.listIovsSummaryInNodesSchemaTagRangeAsList(schema, db,
+							node, tag, new BigDecimal(0L), new BigDecimal(
+									CoolIov.COOL_MAX_DATE));
 			if (summarylist != null && summarylist.size() > 0) {
 				log.info("retrieved summarylist of size " + summarylist.size());
 				updateTable(globaltag, summarylist);
@@ -396,7 +424,8 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see atlas.cool.dao.CondToolsDAO#getNodeStatsForSchemaDb(java.lang.String,
+	 * @see
+	 * atlas.cool.dao.CondToolsDAO#getNodeStatsForSchemaDb(java.lang.String,
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -406,23 +435,25 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 		params[0] = schema;
 		params[1] = db;
 		params[2] = "/%";
-		log.info("Using query " + CondNodeStats.QUERY_NODESSTATINFO + " with " + schema
-				+ " " + db);
-		final List<CondNodeStats> statlist = (List<CondNodeStats>) coolrep.findCoolList(
-				CondNodeStats.QUERY_NODESSTATINFO, params);
+		log.info("Using query " + CondNodeStats.QUERY_NODESSTATINFO + " with "
+				+ schema + " " + db);
+		final List<CondNodeStats> statlist = (List<CondNodeStats>) coolrep
+				.findCoolList(CondNodeStats.QUERY_NODESSTATINFO, params);
 		return statlist;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see atlas.cool.dao.CondToolsDAO#updateGlobalTagForSchemaDB(java.lang.String,
+	 * @see
+	 * atlas.cool.dao.CondToolsDAO#updateGlobalTagForSchemaDB(java.lang.String,
 	 * java.lang.String, java.lang.String, java.lang.Boolean)
 	 */
 	@Override
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public void updateGlobalTagForSchemaDB(final String gtag, final String schema,
-			final String db, final Boolean ignoreExistingSchemas) throws CoolIOException {
+	public void updateGlobalTagForSchemaDB(final String gtag,
+			final String schema, final String db,
+			final Boolean ignoreExistingSchemas) throws CoolIOException {
 		// Add bookkeeping of update
 		final CoolCoverage coolcovrun = new CoolCoverage(gtag);
 		coolcovrun.setDbName(db);
@@ -452,10 +483,11 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 10)
 	public void insertCoverageInfo(final String gtag, final String db,
-			final Date instime, final Integer nupdschemas, final Integer nupdfolders,
-			final String comment) throws CoolIOException {
-		final CoolCoverage coolcov = new CoolCoverage(gtag, db, instime, nupdschemas,
-				nupdfolders, comment);
+			final Date instime, final Integer nupdschemas,
+			final Integer nupdfolders, final String comment)
+			throws CoolIOException {
+		final CoolCoverage coolcov = new CoolCoverage(gtag, db, instime,
+				nupdschemas, nupdfolders, comment);
 
 		try {
 			coolrep.persist(coolcov);
@@ -476,8 +508,9 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 10)
-	public void updateCoverageInfo(final String gtag, String db, Integer nupdschemas,
-			Integer nupdfolders, String comment) throws CoolIOException {
+	public void updateCoverageInfo(final String gtag, String db,
+			Integer nupdschemas, Integer nupdfolders, String comment)
+			throws CoolIOException {
 
 		final CoolCoverage coolcov = coolrep.findObj(CoolCoverage.class, gtag);
 		try {
@@ -487,8 +520,8 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 						|| nupdfolders == null) {
 					log.severe("Cannot insert new coverage summary with null values...");
 				}
-				insertCoverageInfo(gtag, db, new Date(), nupdschemas, nupdfolders,
-						comment);
+				insertCoverageInfo(gtag, db, new Date(), nupdschemas,
+						nupdfolders, comment);
 			} else {
 				// update the info
 				log.info("Update information for " + gtag + " with comment "
@@ -498,17 +531,19 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 					log.info("Input fields are empty: get information from cool_iov_summary");
 					final List<CoolCoverage> covlist = getSummaryCoverage(gtag);
 					if (covlist != null && covlist.size() > 0) {
-						log.fine("List of coverage of size "+covlist.size());
+						log.fine("List of coverage of size " + covlist.size());
 						final CoolCoverage newcoolcov = covlist.get(0);
 						db = newcoolcov.getDbName();
 						nupdfolders = newcoolcov.getnUpdatedFolders();
 						nupdschemas = newcoolcov.getnUpdatedSchemas();
 						comment = " Source:CoolIovSummary ";
-						log.info("Filled fields from cool_iov_summary :"+nupdfolders+" "+nupdschemas+" and db "+db);
+						log.info("Filled fields from cool_iov_summary :"
+								+ nupdfolders + " " + nupdschemas + " and db "
+								+ db);
 					}
 				}
-				log.info("Using input fields: " + nupdfolders + " " + nupdschemas + " "
-						+ comment);
+				log.info("Using input fields: " + nupdfolders + " "
+						+ nupdschemas + " " + comment);
 				coolcov.setDbName(db);
 				coolcov.setnUpdatedFolders(nupdfolders);
 				coolcov.setnUpdatedSchemas(nupdschemas);
@@ -516,7 +551,8 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 				coolrep.merge(coolcov);
 			}
 		} catch (final Exception e) {
-			throw new CoolIOException("update coverage got exception " + e.getMessage());
+			throw new CoolIOException("update coverage got exception "
+					+ e.getMessage());
 		}
 	}
 
@@ -527,13 +563,14 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 	 * @return
 	 * @throws Exception
 	 */
-	protected List<CoolCoverage> getSummaryCoverage(final String gtag) throws Exception {
+	protected List<CoolCoverage> getSummaryCoverage(final String gtag)
+			throws Exception {
 		List<CoolCoverage> covlist = null;
 		final Object[] params = new Object[1];
 		params[0] = gtag;
 		log.info("Using query " + CoolCoverage.QUERY_GETLOG + " with " + gtag);
-		covlist = (List<CoolCoverage>) coolrep.findCoolList(CoolCoverage.QUERY_GETLOG,
-				params);
+		covlist = (List<CoolCoverage>) coolrep.findCoolList(
+				CoolCoverage.QUERY_GETLOG, params);
 		return covlist;
 	}
 
@@ -543,10 +580,35 @@ public class CondToolsBean implements CondToolsDAO, CondToolsDAORemote {
 	 * @see atlas.cool.dao.CondToolsDAO#findGlobalTagCoverage(java.lang.String)
 	 */
 	@Override
-	public CoolCoverage findGlobalTagCoverage(final String gtag) throws CoolIOException {
+	public CoolCoverage findGlobalTagCoverage(final String gtag)
+			throws CoolIOException {
 		CoolCoverage coolcov = null;
 		coolcov = coolrep.findObj(CoolCoverage.class, gtag);
 		return coolcov;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see atlas.cool.dao.CondToolsDAO#findLastModTime(java.lang.String,
+	 * java.lang.String, java.lang.String, java.lang.String, java.util.Date)
+	 */
+	@Override
+	public List<LastModTimeType> findLastModTime(final String schema,
+			final String db, final String node, final String tbl,
+			final Date tmodsince) throws CoolIOException {
+		List<LastModTimeType> modlist = null;
+		final Object[] params = new Object[5];
+		params[0] = schema+"%";
+		params[1] = db;
+		params[2] = "%"+node+"%";
+		params[3] = tbl;
+		params[4] = tmodsince;
+		log.info("Using query " + LastModTimeType.QUERY_MODTABLE + " with "
+				+ schema + "," + db + "," + node + "," + tbl + "," + tmodsince);
+		modlist = (List<LastModTimeType>) coolrep.findCoolList(
+				LastModTimeType.QUERY_MODTABLE, params);
+		return modlist;
 	}
 
 }

@@ -1,6 +1,7 @@
 package atlas.cool.dao;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 import atlas.cool.exceptions.CoolIOException;
@@ -293,6 +294,23 @@ public interface CoolDAO {
 			String db, String node, String tag, Long chanid, BigDecimal since,
 			BigDecimal until) throws CoolIOException;
 
+	/**
+	 * @param schema
+	 * 			The schema name.
+	 * @param db
+	 * 			The db instance.
+	 * @param node
+	 * 			The node full path.
+	 * @param objid
+	 * 			The id of the entry flagged as last entry.
+	 * @param lmd
+	 * 			The time of last modification.
+	 * @return
+	 * @throws CoolIOException
+	 * TODO: Add number to select object ID from the iov table.
+	 */
+	List<CoolIovType> retrieveLastModIovsFromNodeSchemaAndDb(String schema,
+			String db, String node, BigDecimal seqid, Timestamp lmd) throws CoolIOException;
 	/**
 	 * @param schema
 	 * @param db
