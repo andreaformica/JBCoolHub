@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.ws.rs.NameBinding;
-import javax.ws.rs.Path;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
@@ -90,6 +89,8 @@ public class HeaderDecoratorFilter implements ContainerResponseFilter {
 		try {
 			final MultivaluedMap<String, Object> mvm = res.getHeaders();
 			mvm.add("Access-Control-Allow-Origin", "*");
+			mvm.add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
+			mvm.add("Access-Control-Allow-Headers", "X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept");
 			final Set<String> keys = mvm.keySet();
 			for (final String akey : keys) {
 				log.info("Header " + akey + " is " + mvm.get(akey));

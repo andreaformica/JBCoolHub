@@ -81,6 +81,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/nodes")
+	@FilteredResponse
 	public List<NodeType> listNodesInSchema(@PathParam("schema") final String schema,
 			@PathParam("db") final String db) {
 		// TODO Auto-generated method stub
@@ -94,6 +95,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{node:.*}/nodes")
+	@FilteredResponse
 	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
 			@PathParam("db") String db, @PathParam("node") String node) {
 		// TODO Auto-generated method stub
@@ -111,6 +113,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{node:.*}/tags")
+	@FilteredResponse
 	public List<SchemaNodeTagType> listTagsInNodesSchema(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
 			@PathParam("node") final String node) {
@@ -129,6 +132,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{node:.*}/fld/{channel}/channels")
+	@FilteredResponse
 	public List<ChannelType> listChannelsInNodesSchema(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
 			@PathParam("node") final String node,
@@ -148,6 +152,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{gtag}/trace")
+	@FilteredResponse
 	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
 			@PathParam("gtag") final String gtag) {
@@ -211,6 +216,21 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 
 		return super.listIovsInNodesSchemaTagRangeAsList(schema, db, fld, tag, channel,
 				chansel, since, until, timespan);
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listNumIovsInNodesSchemaTagAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{num}/lastiovs")
+	public NodeType listNumIovsInNodesSchemaTagAsList(@PathParam("schema") String schema,
+			@PathParam("db") String db, @PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("num") String num) {
+		// TODO Auto-generated method stub
+		return super.listNumIovsInNodesSchemaTagAsList(schema, db, fld, tag, num);
 	}
 
 	/*

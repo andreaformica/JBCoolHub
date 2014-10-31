@@ -15,8 +15,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
+
+import javax.inject.Inject;
 
 import atlas.cool.exceptions.CoolIOException;
+import atlas.cool.meta.HeaderMapEntry;
 import atlas.cool.meta.ParserHeader;
 import atlas.cool.rest.model.CoolIovType;
 
@@ -30,6 +34,9 @@ public class CoolPayloadTransform {
 	 * 
 	 */
 	private final CoolPayload pyld;
+
+	@Inject
+	private Logger log;
 
 	/**
 	 * Header string in the format proposed by Ivan.
@@ -79,7 +86,7 @@ public class CoolPayloadTransform {
 			final List<CoolIovType> iovlist = new ArrayList<CoolIovType>();
 			final List<Map<String, Object>> pyldmap = this.pyld.getDataList();
 
-			final Set<Object> headeriovlist = new HashSet<Object>();
+			final Set<HeaderMapEntry> headeriovlist = new HashSet<HeaderMapEntry>();
 			final Map<String, Object> iovheader = new HashMap<String, Object>();
 			final Map<String, Object> payloadobjheader = new HashMap<String, Object>();
 			iovheader.put("objectId", "Long");
@@ -154,15 +161,18 @@ public class CoolPayloadTransform {
 								value = map.get(akey);
 							}
 						} else {
-							String classname = value.getClass().getName();
-							if (classname.contains(".")) {
-								final String[] arrclass = classname
-										.split("\\.");
-								if (arrclass.length > 0) {
-									classname = arrclass[arrclass.length - 1];
+							if (getheader) {
+								String classname = value.getClass().getName();
+								if (classname.contains(".")) {
+									final String[] arrclass = classname
+											.split("\\.");
+									if (arrclass.length > 0) {
+										classname = arrclass[arrclass.length - 1];
+									}
 								}
+
+								payloadobjheader.put(akey, classname);
 							}
-							payloadobjheader.put(akey, classname);
 						}
 						payloadObjcolumns.put(akey, value);
 					}
@@ -172,7 +182,9 @@ public class CoolPayloadTransform {
 					getheader = false;
 					// pyldHeader += pyldContent;
 					iovheader.put("payloadObj", payloadobjheader);
-					headeriovlist.add(iovheader);
+					HeaderMapEntry hme = new HeaderMapEntry();
+					hme.setCol(iovheader);
+					headeriovlist.add(hme);
 					String name = "Header";
 					if (this.pyld.getParser() != null) {
 						name = this.pyld.getParser().toString();

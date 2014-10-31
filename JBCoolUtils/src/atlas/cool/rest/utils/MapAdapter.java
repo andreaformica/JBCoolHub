@@ -32,7 +32,11 @@ public class MapAdapter extends XmlAdapter<MapWrapper, Map<String, String>> {
 		Set<String> keys = amap.keySet();
 		List<MapEntry> entrylist = new ArrayList<MapEntry>();
 		for (String akey : keys) {
-			MapEntry mpe = new MapEntry(akey, amap.get(akey));
+			String value = amap.get(akey);
+			if (value == null) {
+				value = "null";
+			}
+			MapEntry mpe = new MapEntry(akey, value);
 			entrylist.add(mpe);
 		}
 		mrw.column = entrylist;

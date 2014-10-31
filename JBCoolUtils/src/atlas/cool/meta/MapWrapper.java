@@ -13,5 +13,5 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public class MapWrapper {
 	@XmlElement
-	public List<MapEntry>column;
+	public List<MapEntry> column;
 }
