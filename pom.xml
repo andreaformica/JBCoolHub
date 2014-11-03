@@ -13,6 +13,7 @@
     <module>JBCoolUtils</module>
     <module>JBComaEjbs</module>
     <module>JBCoolEjbs</module>
+    <module>JBRestCool</module>
     <module>JBCoolEAR</module>
   </modules>
 </project>
