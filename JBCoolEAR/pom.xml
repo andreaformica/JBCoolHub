@@ -1,0 +1,103 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>JBCoolEAR</groupId>
+  <artifactId>JBCoolEAR</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>ear</packaging>
+  <name>JBCoolEARMvn</name>
+  <description>Maven project for JBCool Cool package</description>
+
+<parent>
+  <groupId>JBCool</groupId>
+  <artifactId>jbcool</artifactId>
+  <version>1.0-SNAPSHOT</version>
+</parent>
+  
+  <dependencies>
+        <dependency>
+            <groupId>JBCoolUtils</groupId>
+            <artifactId>JBCoolUtils</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>JBComaEjbs</groupId>
+            <artifactId>JBComaEjbs</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>JBCoolEjbs</groupId>
+            <artifactId>JBCoolEjbs</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>JBRestCool</groupId>
+            <artifactId>JBRestCool</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+	   <groupId>org.primefaces</groupId>
+	   <artifactId>primefaces</artifactId>
+	   <version>4.0</version>
+        </dependency>
+        <dependency>
+    	  <groupId>org.primefaces.extensions</groupId>
+	  <artifactId>all-themes</artifactId>
+	  <version>1.0.8</version>
+        </dependency>
+</dependencies>
+<properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+</properties>    
+
+  <build>
+    <sourceDirectory>EarContent/</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>EarContent/</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-ear-plugin</artifactId>
+        <version>2.9.1</version>
+        <configuration>
+          <defaultLibBundleDir>lib/</defaultLibBundleDir>
+          <skinnyWars>true</skinnyWars>
+<!--          <packagingIncludes>META-INF/**,**/JB*.jar</packagingIncludes> -->
+          <modules>
+             <ejbModule>
+               <groupId>JBCoolUtils</groupId>
+               <artifactId>JBCoolUtils</artifactId>
+               <bundleFileName>JBCoolUtils.jar</bundleFileName>
+             </ejbModule>
+             <ejbModule>
+               <groupId>JBCoolEjbs</groupId>
+               <artifactId>JBCoolEjbs</artifactId>
+               <bundleFileName>JBCoolEjbs.jar</bundleFileName>
+             </ejbModule>
+             <ejbModule>
+               <groupId>JBComaEjbs</groupId>
+               <artifactId>JBComaEjbs</artifactId>
+               <bundleFileName>JBComaEjbs.jar</bundleFileName>
+             </ejbModule>
+             <webModule>
+               <groupId>JBRestCool</groupId>
+               <artifactId>JBRestCool</artifactId>
+               <contextRoot>/JBRestCool</contextRoot>
+               <bundleFileName>JBRestCool.war</bundleFileName>
+             </webModule>
+          </modules>
+          <includeInApplicationXml>true</includeInApplicationXml>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>  
+</project>

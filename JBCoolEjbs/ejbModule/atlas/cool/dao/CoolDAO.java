@@ -281,6 +281,24 @@ public interface CoolDAO {
 	 *            The COOL node.
 	 * @param tag
 	 *            The tag.
+	 * @param num
+	 *            The number of iovs to retrieve per channel.
+	 * @return
+	 * @throws CoolIOException
+	 */
+	List<CoolIovType> retrieveIovsLastNumFromNodeSchemaAndDb(String schema,
+			String db, String node, String tag, Integer num) throws CoolIOException;
+
+
+	/**
+	 * @param schema
+	 *            The DB schema name.
+	 * @param db
+	 *            The DB instance.
+	 * @param node
+	 *            The COOL node.
+	 * @param tag
+	 *            The tag.
 	 * @param chanid
 	 *            The channel ID.
 	 * @param since

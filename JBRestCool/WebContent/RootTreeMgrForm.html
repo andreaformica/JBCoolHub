@@ -1,0 +1,31 @@
+<html>
+<body>
+	<h1>JAX-RS Tree producer Form</h1>
+
+	<p>
+		The following form can be used to submit a request for tree producing out of 
+		a given payload retrieved via the server by a python script.
+	</p>
+	<form action="rest/post/tree" method="post">
+		
+		<label>Select a schema : </label><input type="text" name="schema" size="50" />
+		<br>
+		<label>Select a db : </label><input type="text" name="db" size="50" />
+		<br>
+		<label>Select a node : </label><input type="text" name="folder" size="50" />
+		<br>
+		<label>Select a tag : </label><input type="text" name="tag" size="50" />
+		<br>
+		<label>Select a channel : </label><input type="text" name="channel" size="50" />
+		<br>
+		<label>Select a since   : </label><input type="text" name="since" size="50" />
+		<br>
+		<label>Select a until   : </label><input type="text" name="until" size="50" />
+		<br>
+		<label>Select a tspan   : </label><input type="text" name="tspan" size="50" />
+		<br>
+		<input type="submit" value="Produce Tree" />
+	</form>
+
+</body>
+</html>

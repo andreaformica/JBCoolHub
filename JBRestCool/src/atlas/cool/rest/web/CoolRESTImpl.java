@@ -358,6 +358,27 @@ public class CoolRESTImpl implements ICoolREST {
 		return selnode;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.ICoolREST#listNumIovsInNodesSchemaTagAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{num}/lastiovs")
+	public NodeType listNumIovsInNodesSchemaTagAsList(@PathParam("schema") String schema,
+			@PathParam("db") String db, @PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("num") String num) {
+		NodeType selnode = null;
+		try {
+			Integer numiovs = new Integer(num);
+			selnode = coolutilsdao.listIovsLastNumInNodesSchemaTagAsList(schema, db, fld, tag, numiovs);
+		} catch (final CoolIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return selnode;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -62,7 +62,7 @@ public class CoolGtagChecks {
 		// TODO Auto-generated constructor stub
 
 		destAddrs.add("andrea.formica1971@gmail.com");
-		destAddrs.add("david.south@cern.ch");
+		destAddrs.add("michael.boehler@cern.ch ");
 		destAddrs.add("voica@mail.desy.de");
 	}
 

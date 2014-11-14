@@ -32,7 +32,14 @@ public class MapObjAdapter extends XmlAdapter<MapWrapper, Map<String, Object>> {
 		Set<String> keys = amap.keySet();
 		List<MapEntry> entrylist = new ArrayList<MapEntry>();
 		for (String akey : keys) {
-			MapEntry mpe = new MapEntry(akey, amap.get(akey).toString());
+			String objval = "";
+			Object value = amap.get(akey);
+			if (value == null) {
+				objval="null";
+			} else {
+				objval = value.toString();
+			}
+			MapEntry mpe = new MapEntry(akey, objval);
 			entrylist.add(mpe);
 		}
 		mrw.column = entrylist;

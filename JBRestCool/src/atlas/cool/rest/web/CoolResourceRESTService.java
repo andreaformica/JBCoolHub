@@ -226,6 +226,21 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 				chansel, since, until, timespan);
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see atlas.cool.rest.web.CoolRESTImpl#listNumIovsInNodesSchemaTagAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	@GET
+	@Produces("application/xml")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{num}/lastiovs")
+	public NodeType listNumIovsInNodesSchemaTagAsList(@PathParam("schema") String schema,
+			@PathParam("db") String db, @PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("num") String num) {
+		// TODO Auto-generated method stub
+		return super.listNumIovsInNodesSchemaTagAsList(schema, db, fld, tag, num);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

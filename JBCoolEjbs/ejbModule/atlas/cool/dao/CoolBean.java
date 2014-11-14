@@ -502,6 +502,26 @@ public class CoolBean implements CoolDAO, CoolDAORemote {
 		return iovlist;
 	}
 
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolDAO#retrieveIovsLastNumFromNodeSchemaAndDb(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Integer)
+	 */
+	@Override
+	public List<CoolIovType> retrieveIovsLastNumFromNodeSchemaAndDb(
+			String schema, String db, String node, String tag, Integer num)
+			throws CoolIOException {
+		final Object[] params = new Object[5];
+		params[0] = schema;
+		params[1] = db;
+		params[2] = node;
+		params[3] = tag;
+		params[4] = num;
+		log.info("Using query " + CoolIovType.QUERY_LASTNIOVS + " with "
+				+ schema + " " + db + " " + node + " " + tag+ " "+num);
+		final List<CoolIovType> iovlist = (List<CoolIovType>) coolrep.findCoolList(
+				CoolIovType.QUERY_LASTNIOVS, params);
+		return iovlist;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

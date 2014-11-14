@@ -31,10 +31,14 @@ import atlas.cool.annotations.CoolQuery;
  */
 @Entity
 @NamedNativeQueries({ @NamedNativeQuery(name = ChannelType.QUERY_FINDCHANNELS, query = "select   "
+	  	+ " schema_name, "
+	  	+ " dbname as db_name, "
+	  	+ " node_fullpath, "
 		+ " channel_id, "
 		+ " channel_name, "
-		+ " description as channel_description "
-		+ " from table(cool_select_pkg.f_Get_Channels(:schema,:dbname,:node,:chan)) ", 
+		+ " description as channel_description, "
+		+ " rownum "
+		+ " from table(cool_select_pkg.f_GetAll_Channels(:schema,:dbname,:node,:chan)) ", 
 		resultClass = ChannelType.class) })
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -45,10 +49,12 @@ public class ChannelType implements Serializable {
 	 */
 	private static final long serialVersionUID = -4191330973579854508L;
 
+	@Id
+	@Column(name = "ROWNUM")
+	private Long rowid;
 	/**
 	 * 
 	 */
-	@Id
 	@Column(name = "CHANNEL_ID", precision = 20)
 	private BigDecimal channelId;
 	/**
@@ -61,6 +67,15 @@ public class ChannelType implements Serializable {
 	 */
 	@Column(name = "CHANNEL_DESCRIPTION", length = 255)
 	private String channelDescription;
+
+	@Column(name = "SCHEMA_NAME", length = 30)
+	private String schemaName;
+
+	@Column(name = "DB_NAME", length = 30)
+	private String dbName;
+
+	@Column(name = "NODE_FULLPATH", length = 255)
+	private String nodeFullpath;
 
 	@CoolQuery(name = "cool.findchannels", params = "schema;dbname;node;chan")
 	public static final String QUERY_FINDCHANNELS = "cool.findchannels";
@@ -112,6 +127,48 @@ public class ChannelType implements Serializable {
 
 	public final String getLabel() {
 		return channelId.toString() + ": " + channelName;
+	}
+
+	/**
+	 * @return the schemaName
+	 */
+	public String getSchemaName() {
+		return schemaName;
+	}
+
+	/**
+	 * @param schemaName the schemaName to set
+	 */
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;
+	}
+
+	/**
+	 * @return the dbName
+	 */
+	public String getDbName() {
+		return dbName;
+	}
+
+	/**
+	 * @param dbName the dbName to set
+	 */
+	public void setDbName(String dbName) {
+		this.dbName = dbName;
+	}
+
+	/**
+	 * @return the nodeFullpath
+	 */
+	public String getNodeFullpath() {
+		return nodeFullpath;
+	}
+
+	/**
+	 * @param nodeFullpath the nodeFullpath to set
+	 */
+	public void setNodeFullpath(String nodeFullpath) {
+		this.nodeFullpath = nodeFullpath;
 	}
 
 }

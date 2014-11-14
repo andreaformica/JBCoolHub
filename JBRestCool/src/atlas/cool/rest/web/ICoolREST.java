@@ -252,6 +252,38 @@ public interface ICoolREST {
 			@PathParam("since") String since, @PathParam("until") String until,
 			@PathParam("timespan") String timespan);
 
+
+	/**
+	 * <p>
+	 * Method :
+	 * /{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list
+	 * </p>
+	 * <p>
+	 * It retrieves iovs in a given range for every channel. The date format is a number
+	 * representing a date: yyyyMMddhhmmss ; it does not take fractions of seconds. For details on how the
+	 * timespan option is implemented see @See CoolRESTImpl documentation for method getTimeRange.
+	 * </p>
+	 * 
+	 * @param schema
+	 *            The Database Schema: e.g. ATLAS_COOLOFL_MUONALIGN
+	 * @param db
+	 *            The Cool Instance name: e.g. COMP200
+	 * @param fld
+	 *            The folder name: /MUONALIGN/MDT/BARREL
+	 * @param tag
+	 *            The tag name.
+	 * @param num
+	 *            The number of iovs per channel to retrieve.
+	 *            
+	 * @return A JSON file with iovs for all channels.
+	 */
+	@GET
+	@Produces("application/json")
+	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{num}/lastiovs")
+	public abstract NodeType listNumIovsInNodesSchemaTagAsList(
+			@PathParam("schema") String schema, @PathParam("db") String db,
+			@PathParam("fld") String fld, @PathParam("tag") String tag,
+			@PathParam("num") String num);
 	
 	/**
 	 * <p>

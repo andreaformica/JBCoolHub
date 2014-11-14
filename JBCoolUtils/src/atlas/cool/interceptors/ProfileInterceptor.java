@@ -39,7 +39,7 @@ public class ProfileInterceptor {
 	 * 	Exception.
 	 */
 	@AroundInvoke
-	public final Object trace(final InvocationContext ctx) throws Exception {
+	public Object trace(final InvocationContext ctx) throws Exception {
 		log.info("*** TracingInterceptor intercepting "
 				+ ctx.getMethod().getName());
 		long start = System.currentTimeMillis();

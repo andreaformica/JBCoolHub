@@ -69,8 +69,20 @@ import atlas.cool.meta.CoolIov;
 				+ " new_head_id, "
 				+ " iov_base "
 				+ " from table(cool_select_pkg.f_Get_LastModIov("
-				+ " :schema,:db,:node,:seqid,:lmd)) "
-				+ " ", resultClass = CoolIovType.class) })
+				+ " :schema,:db,:node,:seqid,:lmd)) " + " ", resultClass = CoolIovType.class),
+		@NamedNativeQuery(name = CoolIovType.QUERY_LASTNIOVS, query = "select   object_id,"
+				+ " channel_name , "
+				+ " channel_id ,"
+				+ " iov_since ,"
+				+ " iov_until ,"
+				+ " user_tag_id ,"
+				+ " tag_name ,"
+				+ " sys_instime ,"
+				+ " lastmod_date ,"
+				+ " new_head_id, "
+				+ " iov_base "
+				+ " from table(cool_select_pkg.f_Get_LastNumIovs("
+				+ " :schema,:db,:node,:mtag,:num)) " + " ", resultClass = CoolIovType.class) })
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class CoolIovType implements Serializable {
@@ -174,6 +186,11 @@ public class CoolIovType implements Serializable {
 	 */
 	@CoolQuery(name = "cool.findlastmodiov", params = "schema;db;node;seqid;lmd")
 	public static final String QUERY_LASTMODIOV = "cool.findlastmodiov";
+	/**
+	 * 
+	 */
+	@CoolQuery(name = "cool.findlastniovs", params = "schema;db;node;mtag;num")
+	public static final String QUERY_LASTNIOVS = "cool.findlastniovs";
 
 	/**
 	 * 
@@ -199,9 +216,10 @@ public class CoolIovType implements Serializable {
 	 */
 	public CoolIovType(final BigDecimal objectId, final Long channelId,
 			final String channelName, final BigDecimal iovSince,
-			final BigDecimal iovUntil, final Long tagId, final Timestamp sysInstime,
-			final Timestamp lastmodDate, final BigDecimal newHeadId,
-			final String tagName, final String iovBase) {
+			final BigDecimal iovUntil, final Long tagId,
+			final Timestamp sysInstime, final Timestamp lastmodDate,
+			final BigDecimal newHeadId, final String tagName,
+			final String iovBase) {
 		super();
 		this.objectId = objectId;
 		this.channelId = channelId;
@@ -214,10 +232,10 @@ public class CoolIovType implements Serializable {
 		this.newHeadId = newHeadId;
 		this.tagName = tagName;
 		this.iovBase = iovBase;
-		untilCoolStr = CoolIov.getCoolTimeRunLumiString(iovUntil.longValueExact(),
-				iovBase);
-		sinceCoolStr = CoolIov.getCoolTimeRunLumiString(iovSince.longValueExact(),
-				iovBase);
+		untilCoolStr = CoolIov.getCoolTimeRunLumiString(
+				iovUntil.longValueExact(), iovBase);
+		sinceCoolStr = CoolIov.getCoolTimeRunLumiString(
+				iovSince.longValueExact(), iovBase);
 	}
 
 	/**
@@ -309,8 +327,8 @@ public class CoolIovType implements Serializable {
 	@XmlElement
 	public final String getSinceCoolStr() {
 		if (sinceCoolStr == null || sinceCoolStr.isEmpty()) {
-			sinceCoolStr = CoolIov.getCoolTimeRunLumiString(iovSince.longValueExact(),
-					iovBase);
+			sinceCoolStr = CoolIov.getCoolTimeRunLumiString(
+					iovSince.longValueExact(), iovBase);
 		}
 		return sinceCoolStr;
 	}
@@ -346,8 +364,8 @@ public class CoolIovType implements Serializable {
 	@XmlElement
 	public final String getUntilCoolStr() {
 		if (untilCoolStr == null || untilCoolStr.isEmpty()) {
-			untilCoolStr = CoolIov.getCoolTimeRunLumiString(iovUntil.longValueExact(),
-					iovBase);
+			untilCoolStr = CoolIov.getCoolTimeRunLumiString(
+					iovUntil.longValueExact(), iovBase);
 		}
 		return untilCoolStr;
 	}
@@ -431,7 +449,7 @@ public class CoolIovType implements Serializable {
 	public final void setPayloadObj(final Map<String, Object> payloadobj) {
 		this.payloadObj = payloadobj;
 	}
-	
+
 	/**
 	 * @param sinceCoolStr
 	 *            the sinceCoolStr to set
@@ -498,7 +516,8 @@ public class CoolIovType implements Serializable {
 	 */
 	@Override
 	public int hashCode() {
-		return this.getChannelId().hashCode() + this.getIovSince().toString().hashCode()
+		return this.getChannelId().hashCode()
+				+ this.getIovSince().toString().hashCode()
 				+ this.getIovUntil().toString().hashCode();
 	}
 

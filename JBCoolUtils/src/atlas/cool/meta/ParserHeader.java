@@ -18,7 +18,7 @@ public class ParserHeader {
 	@XmlTransient
 	private String name;
 	
-	private Set<?> iovList;
+	private Set<HeaderMapEntry> iovList;
 
 	
 	/**
@@ -32,7 +32,7 @@ public class ParserHeader {
 	 * @param name
 	 * @param children
 	 */
-	public ParserHeader(String name, Set<?> children) {
+	public ParserHeader(String name, Set<HeaderMapEntry> children) {
 		super();
 		this.name = name;
 		this.iovList = children;
@@ -52,13 +52,13 @@ public class ParserHeader {
 	/**
 	 * @return the children
 	 */
-	public Set<?> getIovList() {
+	public Set<HeaderMapEntry> getIovList() {
 		return iovList;
 	}
 	/**
 	 * @param children the children to set
 	 */
-	public void setIovList(Set<?> children) {
+	public void setIovList(Set<HeaderMapEntry> children) {
 		this.iovList = children;
 	}
 

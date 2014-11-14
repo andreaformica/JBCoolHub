@@ -478,6 +478,58 @@ public class CoolUtilsBean implements CoolUtilsDAO {
 
 		return selnode;
 	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see atlas.cool.dao.CoolUtilsDAO#listIovsLastNumInNodesSchemaTagAsList(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.Integer)
+	 */
+	@Override
+	public NodeType listIovsLastNumInNodesSchemaTagAsList(String schema,
+			String db, String fld, String tag, Integer num)
+			throws CoolIOException {
+		log.info("Calling listIovsLastNumInNodesSchemaTagAsList..." + schema + " " + db
+				+ " folder " + fld + " tag " + tag + " " + num );
+		List<CoolIovType> iovlist = null;
+		NodeType selnode = null;
+
+		String node = fld;
+		if (!fld.startsWith("/")) {
+			node = "/" + fld;
+		}
+		final List<NodeType> nodes = cooldao.retrieveNodesFromSchemaAndDb(schema, db,
+				node);
+		if (nodes != null && nodes.size() > 0) {
+			for (final NodeType anode : nodes) {
+				log.info("Found " + anode.getNodeFullpath() + " of type "
+						+ anode.getNodeIovType());
+				selnode = anode;
+			}
+		}
+		if (selnode == null) {
+			throw new CoolIOException("Cannot find node...");
+		}
+		String seltag = tag;
+		if (tag.toLowerCase().equals("none")) {
+			log.info("Tag is null, so this is a single version folder...");
+			seltag = null;
+		}
+		Integer numiovs = num;
+		if (num == null) {
+			numiovs=10;
+		}
+
+		iovlist = cooldao.retrieveIovsLastNumFromNodeSchemaAndDb(schema, db,
+				node, seltag, numiovs);
+		if (iovlist != null)
+			log.info("Found list of "+iovlist.size()+" iovs...");
+		else
+			log.warning("No iovs retrieved from query");
+		
+		selnode.setIovList(iovlist);
+
+		return selnode;
+	}
 
 	/*
 	 * (non-Javadoc)

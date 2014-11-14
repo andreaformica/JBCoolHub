@@ -126,6 +126,18 @@ public interface CoolUtilsDAO {
 	 * @param schema
 	 * @param db
 	 * @param fld
+	 * @param tag
+	 * @param num
+	 * @return
+	 * @throws CoolIOException
+	 */
+	NodeType listIovsLastNumInNodesSchemaTagAsList(String schema,
+			String db, String fld, String tag, Integer num) throws CoolIOException;
+
+	/**
+	 * @param schema
+	 * @param db
+	 * @param fld
 	 * @param tag1
 	 * @param tag2
 	 * @param channel
