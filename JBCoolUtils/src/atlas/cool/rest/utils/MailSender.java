@@ -48,7 +48,7 @@ public class MailSender {
 		InternetAddress fromAddress = null;
 		InternetAddress[] toAddress = new InternetAddress[dest.length];
 		try {
-			fromAddress = new InternetAddress("JBCool-monitor@voatlas");
+			fromAddress = new InternetAddress("JBCool-monitor@aiatlas");
 			toAddress = new InternetAddress[dest.length];
 			for (int i = 0; i < dest.length; i++) {
 				if (dest[i] != null) {
