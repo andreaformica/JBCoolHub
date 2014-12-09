@@ -405,11 +405,12 @@ class JBCoolMigTools():
     def createInstanceBySchema(self, schemafilename=_schemafilename):
         jsonfile = open(schemafilename,'r').read()
         data = json.loads(jsonfile)
+        instancename = data['db']
         for aschema in data['schemas']:
             scriptname = aschema['shortName']+'-condbr2.sh'
-            outfname = aschema['shortName']+'-CONDBR2.sqlite'
+            outfname = aschema['shortName']+'-%s.sqlite' % instancename
             if self._mergedsqlite:
-                outfname="ALLCONDBR2.sqlite"
+                outfname="ALL%s.sqlite" % instancename
             print 'Create script for migration of ',aschema['shortName']
             buf = self.createInstance(aschema['shortName'], outfname)
             outf = open(scriptname,'w')
@@ -419,11 +420,12 @@ class JBCoolMigTools():
     def copyInstanceBySchema(self, timestampobj, schemafilename=_schemafilename):
         jsonfile = open(schemafilename,'r').read()
         data = json.loads(jsonfile)
+        instancename = data['db']
         for aschema in data['schemas']:
             scriptname = aschema['shortName']+'-copycondbr2.sh'
-            outfname = aschema['shortName']+'-CONDBR2.sqlite'
+            outfname = aschema['shortName']+'-%s.sqlite' % instancename
             if self._mergedsqlite:
-                outfname="ALLCONDBR2.sqlite"
+                outfname="ALL%s.sqlite" % instancename
             print 'Create script for copy of ',aschema['shortName']
             buf = self.copy2Instance(aschema['shortName'], timestampobj, outfname)
             outf = open(scriptname,'w')
