@@ -21,6 +21,8 @@ import atlas.cool.rest.model.SchemaNodeTagType;
 import atlas.cool.rest.model.SchemaType;
 import atlas.cool.rest.utils.FilteredResponse;
 
+import org.jboss.resteasy.annotations.GZIP;
+
 /**
  * JAX-RS Example
  * 
@@ -64,6 +66,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 * @see atlas.cool.rest.web.CoolRESTImpl#listSchemasInDb(java.lang.String, java.lang.String)
 	 */
 	@GET
+	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/schemas")
 	public List<SchemaType> listSchemasInDb(
@@ -79,6 +82,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 */
 	@Override
 	@GET
+	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/nodes")
 	@FilteredResponse
@@ -93,6 +97,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 */
 	@Override
 	@GET
+	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{node:.*}/nodes")
 	@FilteredResponse
@@ -111,6 +116,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 */
 	@Override
 	@GET
+	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{node:.*}/tags")
 	@FilteredResponse
@@ -130,6 +136,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 */
 	@Override
 	@GET
+	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{node:.*}/fld/{channel}/channels")
 	@FilteredResponse
@@ -150,6 +157,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 */
 	@Override
 	@GET
+	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{gtag}/trace")
 	@FilteredResponse
@@ -165,6 +173,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 */
 	@Override
 	@GET
+	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{gtag}/fulltrace")	
 	public List<NodeGtagTagType> listGlobalTagsTagsInBranchNodesSchema(
@@ -183,6 +192,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 */
 	@Override
 	@GET
+	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsperchan")
 	public List<IovType> getIovStatPerChannel(@PathParam("schema") final String schema,
@@ -203,6 +213,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 */
 	@Override
 	@GET
+	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
 	public NodeType listIovsInNodesSchemaTagRangeAsList(
@@ -224,6 +235,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 */
 	@Override
 	@GET
+	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{num}/lastiovs")
 	public NodeType listNumIovsInNodesSchemaTagAsList(@PathParam("schema") String schema,
@@ -244,6 +256,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 */
 	@Override
 	@GET
+	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
 	public NodeType listIovsInNodesSchemaTagRangeSortedAsList(
@@ -271,6 +284,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 */
 	@Override
 	@GET
+	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/data/list")
 	@FilteredResponse
@@ -297,6 +311,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 */
 	@Override
 	@GET
+	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{channel}/{chansel}/{since}/{until}/{timespan}/data/list")
 	public NodeType listPayloadInNodesSchemaTagRangeSortedAsList(
@@ -323,6 +338,7 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	 */
 	@Override
 	@GET
+	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/{timespan}/rangesummary/list")
 	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(
