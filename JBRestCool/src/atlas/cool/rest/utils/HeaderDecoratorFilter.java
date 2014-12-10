@@ -76,12 +76,12 @@ public class HeaderDecoratorFilter implements ContainerResponseFilter {
 	@Override
 	public void filter(final ContainerRequestContext req,
 			final ContainerResponseContext res) throws IOException {
-		if (applyFilter(res)) {
-			log.info("Method has been intercepted ... " + req);
-		} else {
-			log.info("Method is not filtered  ... " + req);
-			return;
-		}
+		//if (applyFilter(res)) {
+		//	log.info("Method has been intercepted ... " + req);
+		//} else {
+		//	log.info("Method is not filtered  ... " + req);
+		//	return;
+		//}
 
 		log.info("Header   response filter :" + req.getMethod());
 		log.info("         response context entity output stream "
@@ -90,7 +90,9 @@ public class HeaderDecoratorFilter implements ContainerResponseFilter {
 			final MultivaluedMap<String, Object> mvm = res.getHeaders();
 			mvm.add("Access-Control-Allow-Origin", "*");
 			mvm.add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
-			mvm.add("Access-Control-Allow-Headers", "X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept");
+			//mvm.add("Access-Control-Allow-Headers", "X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept");
+			mvm.add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
+			mvm.add("Access-Control-Allow-Credentials", "true");	
 			final Set<String> keys = mvm.keySet();
 			for (final String akey : keys) {
 				log.info("Header " + akey + " is " + mvm.get(akey));
