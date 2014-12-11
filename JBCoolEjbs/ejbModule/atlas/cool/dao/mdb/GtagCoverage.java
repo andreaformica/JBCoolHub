@@ -32,8 +32,6 @@ public class GtagCoverage implements Serializable {
 		if (destAddrs == null) {
 			this.destAddrs = new ArrayList<String>();
 			this.destAddrs.add("andrea.formica1971@gmail.com");
-			this.destAddrs.add("david.south@cern.ch");
-			this.destAddrs.add("voica@mail.desy.de");
 		}
 	}
 

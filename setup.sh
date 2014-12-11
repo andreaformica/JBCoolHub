@@ -1,3 +1,4 @@
+#!/bin/sh
 alldirs=`ls -1`
 alldirs=`find . -name "build.xml" -print | awk -F'/' '{print $2}'`
 wdir=$PWD
@@ -22,7 +23,7 @@ fi
 
 for adir in $alldirs; do
 echo "present directory is $wdir: examine $adir"
-echo "linking common and externals"
+echo "linking common and externals inside $adir"
 cd $adir
 if [ ! -e common ]; then
  echo "directory common does not exists...linking it"
