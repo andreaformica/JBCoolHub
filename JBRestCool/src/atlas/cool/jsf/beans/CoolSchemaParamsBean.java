@@ -27,6 +27,7 @@ import org.primefaces.model.chart.CartesianChartModel;
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.CoolPayloadDAO;
 import atlas.cool.exceptions.CoolIOException;
+import atlas.cool.jsf.utils.DbList;
 import atlas.cool.jsf.utils.PayloadHelperBean;
 import atlas.cool.payload.model.CoolPayload;
 import atlas.cool.rest.model.ChannelType;
@@ -137,10 +138,7 @@ public class CoolSchemaParamsBean implements Serializable {
 	protected void initDbs() {
 
 		if (dbList == null) {
-			dbList = new ArrayList<String>();
-			dbList.add("COMP200");
-			dbList.add("OFLP200");
-			dbList.add("MONP200");
+			dbList = DbList.createDbList();
 		}
 	}
 

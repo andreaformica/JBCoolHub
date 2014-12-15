@@ -35,3 +35,6 @@ lib/JBComaEjbs.jar
 lib/JBCoolEjbs.jar
 lib/JBCoolUtils.jar
 lib/JBRestCool.war
+python/COOL*.sh
+python/*.json
+

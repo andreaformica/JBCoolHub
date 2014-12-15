@@ -16,6 +16,7 @@ import javax.inject.Named;
 
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.exceptions.CoolIOException;
+import atlas.cool.jsf.utils.DbList;
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.SchemaType;
@@ -71,10 +72,7 @@ public class CoolParamsBean implements Serializable {
 	 */
 	protected void initDbs() {
 		if (dbList == null) {
-			dbList = new ArrayList<String>();
-			dbList.add("COMP200");
-			dbList.add("OFLP200");
-			dbList.add("MONP200");
+			dbList = DbList.createDbList();
 		}
 	}
 

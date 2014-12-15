@@ -20,7 +20,7 @@ import javax.ws.rs.core.MultivaluedMap;
  * 
  */
 // @Provider
-// @FrontierResponse
+@FrontierResponse
 public class FrontierResponseFilter implements ContainerResponseFilter {
 
 	public static boolean send_stale_if_error = true;
