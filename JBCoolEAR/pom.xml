@@ -39,6 +39,12 @@
             <type>war</type>
         </dependency>
         <dependency>
+            <groupId>JBCoolJS</groupId>
+            <artifactId>JBCoolJS</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
 	   <groupId>org.primefaces</groupId>
 	   <artifactId>primefaces</artifactId>
 	   <version>4.0</version>
@@ -93,6 +99,12 @@
                <artifactId>JBRestCool</artifactId>
                <contextRoot>/JBRestCool</contextRoot>
                <bundleFileName>JBRestCool.war</bundleFileName>
+             </webModule>
+             <webModule>
+               <groupId>JBCoolJS</groupId>
+               <artifactId>JBCoolJS</artifactId>
+               <contextRoot>/JBCoolJS</contextRoot>
+               <bundleFileName>JBCoolJS.war</bundleFileName>
              </webModule>
           </modules>
           <includeInApplicationXml>true</includeInApplicationXml>
