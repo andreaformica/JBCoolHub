@@ -1,0 +1,37 @@
+<!-- <script> -->
+<!-- // window.onload=function(){BuildSimpleGUI();}; -->
+<!-- </script> -->
+<div id='main' class='column'>
+      <h1><font face='Verdana' size='4'>Read a ROOT file with Javascript</font></h1>
+      <p><b>Select a ROOT file to read, or enter a url (*): </b><br/>
+      <small><sub>*: Other URLs might not work because of cross site scripting protection, see e.g. 
+      <a href="https://developer.mozilla.org/en/http_access_control">developer.mozilla.org/http_access_control</a> on how to avoid it.</sub></small></p>
+      <form name="ex">
+         <div style='margin-left:10px;'>
+            <input type="text" name="state" value="{{selrootfile.name}}" size="30" id="urlToLoad"/><br/>
+    <select name="s" size="1" ng-model="selrootfile" 
+          ng-options="c.name for c in rootfiles">
+          <option value=" " selected="selected">-- choose Rootfile --</option>
+    </select>
+        <p class="comment">Currently selected: {{selrootfile.name}}</p>
+    
+<!--             <select name="s" size="1"
+               onchange="document.ex.state.value = document.ex.s.options[document.ex.s.selectedIndex].value;document.ex.s.selectedIndex=0;document.ex.s.value=''">
+               <option value = " " selected = "selected">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+               <option value = "/web/jbcool/trees/Parse_0.9.3.1.root">Parse_0.9.3.1.root</option>
+               <option value = "/web/jbcool/trees/hsimple.root">hsimple.root</option>
+            </select> -->
+         </div>
+         <input style='padding:2px; margin-left:10px; margin-top:5px;'
+               onclick='ReadFile()' type='button' title='Read the Selected File' value='Load'/>
+         <input style='padding:2px; margin-left:10px;'
+               onclick='ResetUI()' type='button' title='Clear All' value='Reset'/>
+      </form>
+
+      <br/>
+      <div id='status'></div>
+      </div>
+
+      <div id='reportHolder' class='column'>
+         <div id='report'> </div>
+      </div>

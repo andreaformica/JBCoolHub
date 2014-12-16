@@ -1,0 +1,35 @@
+
+<div class="pane">
+<div class="row">
+<div class="span">
+ <div class="panel panel-info">
+    <div class="panel-heading">
+      <h2 class="panel-title">
+        Tag Coverage in svg mode for {{schemaformparams.tag}}
+      </h2>
+ </div>
+ <svg width="1000px" height="(channels * svgutil.getLinewidth() + svgutil.getSvgheight()) px" 
+ 	xmlns="http://www.w3.org/2000/svg" version="1.1">
+ 	
+ 	</svg>
+<table class="coverage">
+<thead>
+<th>Id </th>  
+<th>Name </th>
+<th>Type </th>
+<th>List of iovs and holes</th>
+</thead>
+<tbody>
+<tr ng-repeat="chan in schemaformparams.chanlist">
+<td>{{chan.chanId}}</td>
+<td>{{chan.channelName}}</td>
+<td>{{chan.iovbase}}</td>
+<td ng-repeat="iov in chan.iovlist" ng-class="isholerow(iov.ishole)">
+{{iov.niovs}} <a ng-href="#/runinfo/{{iov.sinceUrl}}/{{iov.untilUrl}}/{{chan.iovbase}}">[ {{iov.sinceCoolStr}} - {{iov.untilCoolStr}} ]</a></td> 
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
