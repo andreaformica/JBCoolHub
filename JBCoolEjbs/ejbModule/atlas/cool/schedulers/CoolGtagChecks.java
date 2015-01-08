@@ -64,12 +64,14 @@ public class CoolGtagChecks {
 		destAddrs.add("andrea.formica1971@gmail.com");
 		destAddrs.add("michael.boehler@cern.ch ");
 		destAddrs.add("voica@mail.desy.de");
+		destAddrs.add("susumu.oda@cern.ch");
 	}
 
 	/**
-     * 
+	 * TODO: allow external switch for schedulers
+     * Scheduler for tag coverage, disabled by default. Uncomment to enable it.
      */
-	@Schedule(dayOfWeek = "*", hour = "0", persistent = false)
+//	@Schedule(dayOfWeek = "*", hour = "0", persistent = false)
 	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 20)
 	public void checkCoverage() {
 		String globaltagname = "COMCOND-BLKPA-RUN1-01";

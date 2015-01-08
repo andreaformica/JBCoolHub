@@ -19,9 +19,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.Form;
-import org.jfree.util.Log;
 
-import atlas.cool.dao.CoolDAO;
 import atlas.cool.dao.ShellDAO;
 import atlas.cool.dao.mdb.GtagCoverage;
 
