@@ -16,10 +16,8 @@ import javax.inject.Inject;
 
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
-import atlas.coma.dao.ComaCbDAO;
 import atlas.cool.dao.CondToolsDAO;
 import atlas.cool.dao.CoolDAO;
-import atlas.cool.dao.CoolUtilsDAO;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.meta.CoolIov;
 import atlas.cool.rest.model.CoolIovType;
@@ -41,13 +39,9 @@ import atlas.cool.rest.utils.PrintPojo;
 public class LastModChecks {
 
 	@Inject
-	private ComaCbDAO comadao;
-	@Inject
 	private CoolDAO cooldao;
 	@Inject
 	private CondToolsDAO condtoolsdao;
-	@Inject
-	private CoolUtilsDAO coolutilsdao;
 	@Inject
 	private MailSender mailsender;
 
@@ -71,7 +65,7 @@ public class LastModChecks {
      * 
      */
 //	@//Schedule(dayOfWeek = "*", hour = "*", minute = "*/5", persistent = false)
-	@Schedule(dayOfWeek = "*", hour = "6", persistent = false)
+//	@Schedule(dayOfWeek = "*", hour = "6", persistent = false)
 	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 20)
 	public void checkLastModTime() {
 		final String db = "COMP200";
