@@ -1,1 +1,16 @@
 Add external and common projects. Run setup.sh.
+
+For Maven usage the previous step is not needed.
+Just type 
+    mvn clean install
+to build the ear in JBCoolEAR/target
+
+Copy the ear in $JBOSS_HOME/standalone/deployments after having the
+datasource defined as well as messaging queue which are needed by schedulers.
+A correct and working standalone.xml file is needed in order for the
+ear to correctly deploy.
+
+I have tested that instead of installing new modules is possible for
+DB drivers to deploy the jar files directly in 
+JBOSS_HOME/standalone/deployments
+

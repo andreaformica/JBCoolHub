@@ -36,6 +36,8 @@ public class CoolRepository implements CoolRepositoryDAO {
 	/**
 	 * 
 	 */
+//	@PersistenceContext(unitName="primary") : this one is defined in the
+//  Resources class inside atlas.cool.rest.utils
 	@Inject
 	private EntityManager em;
 
