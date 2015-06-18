@@ -1,4 +1,7 @@
-package atlas.cool.rest.web;
+package atlas.cool.rest.web.xml;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 import java.io.BufferedReader;
 import java.io.FileWriter;
@@ -17,6 +20,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import org.jboss.resteasy.annotations.GZIP;
 
 import oracle.sql.BLOB;
 import oracle.sql.CLOB;
@@ -24,6 +30,7 @@ import atlas.coma.exceptions.ComaQueryException;
 import atlas.cool.dao.CoolResultSetDAO;
 import atlas.cool.exceptions.CoolIOException;
 import atlas.cool.payload.model.CoolPayload;
+import atlas.cool.rest.impl.CoolRESTImpl;
 import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.IovType;
@@ -31,6 +38,7 @@ import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
 import atlas.cool.rest.model.SchemaType;
+import atlas.cool.rest.web.ICoolREST;
 
 /**
  * JAX-RS Example
@@ -56,6 +64,7 @@ import atlas.cool.rest.model.SchemaType;
  */
 @Path("/plsqlcool")
 @RequestScoped
+@Api(value="/plsqlcool")
 public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 
 	@Inject
@@ -76,7 +85,8 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 * @see atlas.cool.rest.web.CoolRESTImpl#listSchemasInDb(java.lang.String, java.lang.String)
 	 */
 	@GET
-	@Produces("application/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/schemas")
 	public  List<SchemaType> listSchemasInDb(
 			@PathParam("schema") final String schema, @PathParam("db") final String db) {
@@ -91,7 +101,9 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@GZIP
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/nodes")
 	public List<NodeType> listNodesInSchema(@PathParam("schema") final String schema,
 			@PathParam("db") final String db) {
@@ -106,11 +118,13 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@GZIP
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{node:.*}/nodes")
-	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
+	public List<NodeType> listNodesInSchemaNode(@PathParam("schema") String schema,
 			@PathParam("db") String db, @PathParam("node") String node) {
-		return super.listNodesInSchema(schema, db, node);
+		return super.listNodesInSchemaNode(schema, db, node);
 	}
 
 	/*
@@ -122,7 +136,9 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@GZIP
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{node:.*}/tags")
 	public List<SchemaNodeTagType> listTagsInNodesSchema(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
@@ -140,7 +156,9 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@GZIP
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{node:.*}/fld/{channel}/channels")
 	public List<ChannelType> listChannelsInNodesSchema(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
@@ -159,7 +177,9 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@GZIP
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{gtag}/trace")
 	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
@@ -173,7 +193,9 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@GZIP	
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{gtag}/fulltrace")
 	public List<NodeGtagTagType> listGlobalTagsTagsInBranchNodesSchema(
 			@PathParam("schema") String schema, @PathParam("db") String db,
@@ -191,7 +213,9 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@GZIP	
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsperchan")
 	public List<IovType> getIovStatPerChannel(@PathParam("schema") final String schema,
 			@PathParam("db") final String db, @PathParam("fld") final String fld,
@@ -211,7 +235,9 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@GZIP	
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
 	public NodeType listIovsInNodesSchemaTagRangeAsList(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
@@ -232,7 +258,9 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@GZIP	
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{num}/lastiovs")
 	public NodeType listNumIovsInNodesSchemaTagAsList(@PathParam("schema") String schema,
 			@PathParam("db") String db, @PathParam("fld") String fld, @PathParam("tag") String tag,
@@ -252,7 +280,9 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@GZIP	
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{channel}/{chansel}/{since}/{until}/{timespan}/iovs/list")
 	public NodeType listIovsInNodesSchemaTagRangeSortedAsList(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
@@ -279,7 +309,9 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@GZIP	
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{channel}/{chansel}/{since}/{until}/{timespan}/data/list")
 	public NodeType listPayloadInNodesSchemaTagRangeAsList(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
@@ -304,7 +336,9 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@GZIP	
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{sort:.*}/sort/{channel}/{chansel}/{since}/{until}/{timespan}/data/list")
 	public NodeType listPayloadInNodesSchemaTagRangeSortedAsList(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
@@ -330,7 +364,9 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@GZIP	
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/{timespan}/rangesummary/list")
 	public Collection<CoolIovSummary> listIovsSummaryInNodesSchemaTagRangeAsList(
 			@PathParam("schema") final String schema, @PathParam("db") final String db,
@@ -367,6 +403,8 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 * @return
 	 */
 	@GET
+	@GZIP
+	@ApiOperation(produces="text/plain",value="Payload retrieval.")
 	@Produces("text/plain")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{time}/{chan}/payload")
 	public String getPayload(@PathParam("schema") final String schema,
@@ -430,6 +468,8 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 * @return Returns a text file with the payloads.
 	 */
 	@GET
+	@GZIP
+	@ApiOperation(produces="text/plain",value="Payload retrieval.")
 	@Produces("text/plain")
 	// @Path("/payload/{id}")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{stime}/{etime}/{chan}/payloads")
@@ -497,6 +537,8 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	 * @return An XML list of holes.
 	 */
 	@GET
+	@GZIP
+	@ApiOperation(produces="text/xml",value="Iov holes.")	
 	@Produces("text/xml")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/holes")
 	public List<IovType> getIovHolesPerChannel(@PathParam("schema") final String schema,
@@ -539,6 +581,8 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	}
 
 	@GET
+	@GZIP
+	@ApiOperation(produces="text/html",value="Iov summary dump.")
 	@Produces("text/html")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/iovsummary/{type}/dump")
 	public String dumpIovsSummaryInNodesSchemaTag(
@@ -573,6 +617,8 @@ public class CoolResourceRESTService extends CoolRESTImpl implements ICoolREST {
 	}
 
 	@GET
+	@GZIP
+	@ApiOperation(produces="text/html",value="Iov summary dump.")
 	@Produces("text/html")
 	@Path("/{schema}/{db}/{fld:.*}/fld/{tag:.*}/tag/{since}/{until}/{timespan}/rangesummary/{type}/dump")
 	public String dumpIovsSummaryInNodesSchemaTagRange(

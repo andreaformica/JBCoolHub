@@ -1,4 +1,7 @@
-package atlas.cool.rest.web;
+package atlas.cool.rest.web.xml;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -24,6 +27,7 @@ import atlas.cool.rest.model.CmpCoolComaTagType;
  */
 @Path("/comacool")
 @RequestScoped
+@Api(value="/comacool")
 public class ComaCoolResourceRESTService {
 
 	@Inject
@@ -38,6 +42,7 @@ public class ComaCoolResourceRESTService {
 	 * @return
 	 */
 	@GET
+	@ApiOperation(produces="text/html", value = "Compare nodes.")
 	@Produces("text/html")
 	@Path("/{schema}/{db}/nodes")
 	public String cmpNodesInSchema(@PathParam("schema") final String schema,
@@ -93,6 +98,7 @@ public class ComaCoolResourceRESTService {
 	 * @return
 	 */
 	@GET
+	@ApiOperation(produces="text/html", value = "Compare tags.")
 	@Produces("text/html")
 	@Path("/{schema}/{db}/tags")
 	public String cmpTagsInSchema(@PathParam("schema") final String schema,
@@ -159,6 +165,7 @@ public class ComaCoolResourceRESTService {
 	 * @return
 	 */
 	@GET
+	@ApiOperation(produces="text/html", value = "Compare global tag trace.")
 	@Produces("text/html")
 	@Path("/{schema}/{db}/{gtag}/trace")
 	public String cmpGlobalTagsInSchema(@PathParam("schema") final String schema,

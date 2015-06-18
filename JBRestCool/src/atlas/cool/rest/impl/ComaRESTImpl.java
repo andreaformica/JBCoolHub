@@ -1,4 +1,4 @@
-package atlas.cool.rest.web;
+package atlas.cool.rest.impl;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -29,6 +29,7 @@ import atlas.cool.meta.CoolIov;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
+import atlas.cool.rest.web.IComaREST;
 
 /**
  * @author formica
@@ -146,7 +147,7 @@ public class ComaRESTImpl implements IComaREST {
 	@GET
 	@Produces("application/xml")
 	@Path("/{since}/{until}/{timespan}/runsbyiov")
-	public List<CrViewRuninfo> listRuns(@PathParam("since") final String since,
+	public List<CrViewRuninfo> listRunsByIov(@PathParam("since") final String since,
 			@PathParam("until") final String until,
 			@PathParam("timespan") final String timespan) {
 		// TODO Auto-generated method stub
@@ -231,7 +232,7 @@ public class ComaRESTImpl implements IComaREST {
 	 * @see atlas.cool.rest.web.IComaREST#listRuns(java.math.BigDecimal,
 	 * java.math.BigDecimal, java.lang.String)
 	 */
-	public List<CrViewRuninfo> listRuns(@PathParam("runstart") final BigDecimal runstart,
+	public List<CrViewRuninfo> listRunsBetween(@PathParam("runstart") final BigDecimal runstart,
 			@PathParam("runend") final BigDecimal runend,
 			@PathParam("rtype") final String rtype,
 			@PathParam("period") final String period) {
@@ -260,7 +261,7 @@ public class ComaRESTImpl implements IComaREST {
 	 * @see atlas.cool.rest.web.IComaREST#listRuns(java.lang.String,
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public List<CrViewRuninfo> listRuns(@PathParam("since") final String since,
+	public List<CrViewRuninfo> listRunsByIovBetween(@PathParam("since") final String since,
 			@PathParam("until") final String until,
 			@PathParam("timespan") final String timespan,
 			@PathParam("rtype") final String rtype,

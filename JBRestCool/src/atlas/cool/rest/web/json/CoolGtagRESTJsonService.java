@@ -1,7 +1,9 @@
 /**
  * 
  */
-package atlas.cool.rest.web;
+package atlas.cool.rest.web.json;
+
+import io.swagger.annotations.Api;
 
 import java.util.List;
 
@@ -11,11 +13,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import atlas.cool.rest.impl.CoolGtagRESTImpl;
 import atlas.cool.rest.model.GtagTagDiffType;
 import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.utils.FilteredResponse;
-import atlas.cool.summary.model.CondSchema;
+import atlas.cool.rest.web.ICoolGtagREST;
 import atlas.cool.summary.model.CoolCoverage;
 import atlas.cool.summary.model.D3TreeMap;
 
@@ -26,6 +29,7 @@ import atlas.cool.summary.model.D3TreeMap;
 @Path("/coolgtagjson")
 @RequestScoped
 @FilteredResponse
+////@Api(value="coolgtagjson")
 public class CoolGtagRESTJsonService extends CoolGtagRESTImpl implements ICoolGtagREST {
 
 	/*

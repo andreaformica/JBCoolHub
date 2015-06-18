@@ -1,7 +1,7 @@
 /**
  * 
  */
-package atlas.cool.rest.web;
+package atlas.cool.rest.impl;
 
 import java.math.BigDecimal;
 import java.net.InetAddress;
@@ -35,6 +35,7 @@ import atlas.cool.rest.model.GtagType;
 import atlas.cool.rest.model.IovType;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
+import atlas.cool.rest.web.ICoolGtagREST;
 import atlas.cool.summary.model.CondNodeStats;
 import atlas.cool.summary.model.CondSchema;
 import atlas.cool.summary.model.CoolCoverage;
@@ -266,7 +267,7 @@ public class CoolGtagRESTImpl implements ICoolGtagREST {
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public String listIovsSummaryInNodesSchema(@PathParam("schema") final String schema,
+	public String listIovsSummaryInNodesSchemaBetween(@PathParam("schema") final String schema,
 			@PathParam("db") final String db, @PathParam("gtag") final String gtag,
 			@PathParam("since") final String since,
 			@PathParam("until") final String until,

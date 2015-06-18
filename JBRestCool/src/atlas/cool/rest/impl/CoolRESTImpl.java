@@ -1,4 +1,4 @@
-package atlas.cool.rest.web;
+package atlas.cool.rest.impl;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -32,6 +32,7 @@ import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
 import atlas.cool.rest.model.SchemaType;
+import atlas.cool.rest.web.ICoolREST;
 
 /**
  * This class implements the RESTful services to read the contents of the Cool
@@ -122,7 +123,7 @@ public class CoolRESTImpl implements ICoolREST {
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{node:.*}/nodes")
-	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
+	public List<NodeType> listNodesInSchemaNode(@PathParam("schema") String schema,
 			@PathParam("db") String db, @PathParam("node") String node) {
 		log.info("Calling listNodesInSchema..." + schema + " " + db+" "+node);
 		List<NodeType> results = null;

@@ -1,7 +1,9 @@
 /**
  * 
  */
-package atlas.cool.rest.web;
+package atlas.cool.rest.web.json;
+
+import io.swagger.annotations.Api;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,9 +20,11 @@ import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.CrViewRuninfo;
 import atlas.coma.model.NemoRun;
 import atlas.cool.exceptions.CoolIOException;
+import atlas.cool.rest.impl.ComaRESTImpl;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
+import atlas.cool.rest.web.IComaREST;
 
 /**
  * JAX-RS Example
@@ -48,6 +52,7 @@ import atlas.cool.rest.model.SchemaNodeTagType;
  */
 @Path("/comajson")
 @RequestScoped
+///////@Api(value="/comajson")
 public class ComaRESTJsonService extends ComaRESTImpl implements IComaREST {
 
 
@@ -107,11 +112,11 @@ public class ComaRESTJsonService extends ComaRESTImpl implements IComaREST {
 	@GET
 	@Produces("application/json")
 	@Path("/{since}/{until}/{timespan}/runsbyiov")
-	public List<CrViewRuninfo> listRuns(@PathParam("since") final String since,
+	public List<CrViewRuninfo> listRunsByIov(@PathParam("since") final String since,
 			@PathParam("until") final String until,
 			@PathParam("timespan") final String timespan) {
 		// TODO Auto-generated method stub
-		return super.listRuns(since, until, timespan);
+		return super.listRunsByIov(since, until, timespan);
 	}
 
 	/**
@@ -152,12 +157,12 @@ public class ComaRESTJsonService extends ComaRESTImpl implements IComaREST {
 	@GET
 	@Produces("application/json")
 	@Path("/{runstart}/{runend}/{rtype}/{period}/runs")
-	public List<CrViewRuninfo> listRuns(
+	public List<CrViewRuninfo> listRunsBetween(
 			@PathParam("runstart") final BigDecimal runstart,
 			@PathParam("runend") final BigDecimal runend,
 			@PathParam("rtype") final String rtype,
 			@PathParam("period") final String period) {
-		return super.listRuns(runstart, runend, rtype, period);
+		return super.listRunsBetween(runstart, runend, rtype, period);
 	}
 
 	/**
@@ -169,12 +174,12 @@ public class ComaRESTJsonService extends ComaRESTImpl implements IComaREST {
 	@GET
 	@Produces("application/json")
 	@Path("/{since}/{until}/{timespan}/{rtype}/{period}/runsbyiov")
-	public List<CrViewRuninfo> listRuns(@PathParam("since") final String since,
+	public List<CrViewRuninfo> listRunsByIovBetween(@PathParam("since") final String since,
 			@PathParam("until") final String until,
 			@PathParam("timespan") final String timespan,
 			@PathParam("rtype") final String rtype,
 			@PathParam("period") final String period) {
-		return super.listRuns(since, until, timespan, rtype, period);
+		return super.listRunsByIovBetween(since, until, timespan, rtype, period);
 	}
 
 	/*

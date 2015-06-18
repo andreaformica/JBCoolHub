@@ -80,7 +80,7 @@ public interface ICoolREST {
 	@GET
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{node:.*}/nodes")
-	public abstract List<NodeType> listNodesInSchema(
+	public abstract List<NodeType> listNodesInSchemaNode(
 			@PathParam("schema") String schema, @PathParam("db") String db,@PathParam("node") String node);
 
 

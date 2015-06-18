@@ -68,7 +68,7 @@ public interface IComaREST {
 	@GET
 	@Produces("application/xml")
 	@Path("/{runstart}/{runend}/{rtype}/{period}/runs")
-	List<CrViewRuninfo> listRuns(@PathParam("runstart") BigDecimal runstart,
+	List<CrViewRuninfo> listRunsBetween(@PathParam("runstart") BigDecimal runstart,
 			@PathParam("runend") BigDecimal runend,
 			@PathParam("period") String rtype, 
 			@PathParam("period") String period);
@@ -81,7 +81,7 @@ public interface IComaREST {
 	@GET
 	@Produces("application/xml")
 	@Path("/{since}/{until}/{timespan}/runsbyiov")
-	List<CrViewRuninfo> listRuns(@PathParam("since") String since,
+	List<CrViewRuninfo> listRunsByIov(@PathParam("since") String since,
 			@PathParam("until") String until, @PathParam("timespan") String timespan);
 
 	/**
@@ -92,7 +92,7 @@ public interface IComaREST {
 	@GET
 	@Produces("application/xml")
 	@Path("/{since}/{until}/{timespan}/{rtype}/{period}/runsbyiov")
-	List<CrViewRuninfo> listRuns(@PathParam("since") String since,
+	List<CrViewRuninfo> listRunsByIovBetween(@PathParam("since") String since,
 			@PathParam("until") String until, @PathParam("timespan") String timespan, 
 			@PathParam("period") String rtype, @PathParam("period") String period);
 

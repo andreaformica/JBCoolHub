@@ -1,4 +1,7 @@
-package atlas.cool.rest.web;
+package atlas.cool.rest.web.xml;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -12,6 +15,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import atlas.cool.dao.CoolDAO;
 import atlas.cool.exceptions.CoolIOException;
@@ -28,6 +32,7 @@ import atlas.cool.rest.model.SchemaNodeTagType;
  */
 @Path("/cooldb")
 @RequestScoped
+@Api(value="/cooldb")
 public class CoolCherryPyResourceRESTService {
 
 	@Inject
@@ -41,7 +46,8 @@ public class CoolCherryPyResourceRESTService {
 	 * @return
 	 */
 	@GET
-	@Produces("text/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}")
 	public List<NodeType> listNodesInSchema(@PathParam("schema") final String schema,
 			@PathParam("db") final String db) {
@@ -74,6 +80,7 @@ public class CoolCherryPyResourceRESTService {
 	 */
 	@GET
 	@Produces("text/plain")
+	@ApiOperation(produces="text/plain", value = "Node list in Cherrypy Cool style.")
 	@Path("/{schema}/{db}/nodelist")
 	public String listNodesInSchemaString(@PathParam("schema") final String schema,
 			@PathParam("db") final String db) {
@@ -104,6 +111,7 @@ public class CoolCherryPyResourceRESTService {
 	 * @return
 	 */
 	@GET
+	@ApiOperation(produces="text/plain", value = "Node list length in Cherrypy Cool style.")
 	@Produces("text/plain")
 	@Path("/{schema}/{db}/{node:.*}/length")
 	public String countChannelsInSchemaNodeString(
@@ -137,6 +145,7 @@ public class CoolCherryPyResourceRESTService {
 	 * @return
 	 */
 	@GET
+	@ApiOperation(produces="text/plain", value = "Node list in Cherrypy Cool style.")
 	@Produces("text/plain")
 	@Path("/{schema}/{db}/{node:.*}/list")
 	public String listChannelsInSchemaNodeString(
@@ -173,6 +182,7 @@ public class CoolCherryPyResourceRESTService {
 	 * @return
 	 */
 	@GET
+	@ApiOperation(produces="text/plain", value = "Node names in Cherrypy Cool style.")
 	@Produces("text/plain")
 	@Path("/{schema}/{db}/{node:.*}/names")
 	public String namesChannelsInSchemaNodeString(
@@ -211,6 +221,7 @@ public class CoolCherryPyResourceRESTService {
 	 * @return
 	 */
 	@GET
+	@ApiOperation(produces="text/plain", value = "Node tags list in Cherrypy Cool style.")
 	@Produces("text/plain")
 	@Path("/{schema}/{db}/{node:.*}/tags")
 	public String listTagsInSchemaNodeString(@PathParam("schema") final String schema,
@@ -252,6 +263,7 @@ public class CoolCherryPyResourceRESTService {
 	 * @return
 	 */
 	@GET
+	@ApiOperation(produces="text/plain", value = "Global Tag trace in Cherrypy Cool style.")	
 	@Produces("text/plain")
 	@Path("/{schema}/{db}/tags/{gtag}")
 	public String listAssociatedTagsInSchemaNodeString(

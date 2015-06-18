@@ -1,7 +1,9 @@
 /**
  * 
  */
-package atlas.cool.rest.web;
+package atlas.cool.rest.web.xml;
+
+import io.swagger.annotations.Api;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -13,15 +15,18 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import atlas.coma.model.ComaCbClass;
 import atlas.coma.model.ComaCbGtagStates;
 import atlas.coma.model.CrViewRuninfo;
 import atlas.coma.model.NemoRun;
 import atlas.cool.exceptions.CoolIOException;
+import atlas.cool.rest.impl.ComaRESTImpl;
 import atlas.cool.rest.model.NodeGtagTagType;
 import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
+import atlas.cool.rest.web.IComaREST;
 
 /**
  * JAX-RS Example
@@ -49,6 +54,7 @@ import atlas.cool.rest.model.SchemaNodeTagType;
  */
 @Path("/coma")
 @RequestScoped
+@Api(value="/coma")
 public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 
 	/*
@@ -59,7 +65,8 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{start}/{end}/{tspan}/nemoruns")
 	public List<NemoRun> listNemoRuns(@PathParam("start") String start,
 			@PathParam("end") String end, @PathParam("tspan") String tspan) {
@@ -73,7 +80,8 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{start}/{end}/{tspan}/nemotimerange")
 	public Map<String, Object> getNemoTimeRangeConversion(@PathParam("start") String start,
 			@PathParam("end") String end, @PathParam("tspan") String tspan) {
@@ -90,7 +98,8 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{runstart}/{runend}/runs")
 	public List<CrViewRuninfo> listRuns(
 			@PathParam("runstart") final BigDecimal runstart,
@@ -107,13 +116,14 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{since}/{until}/{timespan}/runsbyiov")
-	public List<CrViewRuninfo> listRuns(@PathParam("since") final String since,
+	public List<CrViewRuninfo> listRunsByIov(@PathParam("since") final String since,
 			@PathParam("until") final String until,
 			@PathParam("timespan") final String timespan) {
 		// TODO Auto-generated method stub
-		return super.listRuns(since, until, timespan);
+		return super.listRunsByIov(since, until, timespan);
 	}
 
 	/**
@@ -122,7 +132,8 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{state}/gtagstate")
 	public List<ComaCbGtagStates> listGtagStates(
 			@PathParam("state") final String state) {
@@ -135,7 +146,8 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{state}/{since}/gtagstate")
 	public List<ComaCbGtagStates> listGtagStatesAtTime(
 			@PathParam("state") final String state,
@@ -152,14 +164,15 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{runstart}/{runend}/{rtype}/{period}/runs")
-	public List<CrViewRuninfo> listRuns(
+	public List<CrViewRuninfo> listRunsBetween(
 			@PathParam("runstart") final BigDecimal runstart,
 			@PathParam("runend") final BigDecimal runend,
 			@PathParam("rtype") final String rtype,
 			@PathParam("period") final String period) {
-		return super.listRuns(runstart, runend, rtype, period);
+		return super.listRunsBetween(runstart, runend, rtype, period);
 	}
 
 	/**
@@ -169,14 +182,15 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{since}/{until}/{timespan}/{rtype}/{period}/runsbyiov")
-	public List<CrViewRuninfo> listRuns(@PathParam("since") final String since,
+	public List<CrViewRuninfo> listRunsByIovBetween(@PathParam("since") final String since,
 			@PathParam("until") final String until,
 			@PathParam("timespan") final String timespan,
 			@PathParam("rtype") final String rtype,
 			@PathParam("period") final String period) {
-		return super.listRuns(since, until, timespan, rtype, period);
+		return super.listRunsByIovBetween(since, until, timespan, rtype, period);
 	}
 
 	/*
@@ -187,7 +201,8 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/nodes")
 	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
 			@PathParam("db") String db) {
@@ -203,7 +218,8 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{node:.*}/tags")
 	public List<SchemaNodeTagType> listTagsInNodesSchema(
 			@PathParam("schema") String schema, @PathParam("db") String db,
@@ -220,7 +236,8 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{gtag}/trace")
 	public List<NodeGtagTagType> listGlobalTagsTagsInNodesSchema(
 			@PathParam("schema") String schema, @PathParam("db") String db,
@@ -237,7 +254,8 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{db}/{tag}/backtrace")
 	public List<NodeGtagTagType> retrieveTagGtagsFromSchemaAndDb(
 			@PathParam("schema") String schema, @PathParam("db") String db,
@@ -251,7 +269,8 @@ public class ComaRESTService extends ComaRESTImpl implements IComaREST {
 	 */
 	@Override
 	@GET
-	@Produces("application/xml")
+	@Produces({MediaType.APPLICATION_JSON, 
+        MediaType.APPLICATION_XML})
 	@Path("/{schema}/{node:.*}/classification")
 	public List<ComaCbClass> getClassificationForSchemaAndNode(@PathParam("schema") String schema,
 			@PathParam("node") String node) throws CoolIOException {

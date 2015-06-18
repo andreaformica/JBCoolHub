@@ -1,4 +1,4 @@
-package atlas.cool.rest.web;
+package atlas.cool.rest.web.xml;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

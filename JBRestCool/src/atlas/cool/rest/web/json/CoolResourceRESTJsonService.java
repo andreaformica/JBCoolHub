@@ -1,7 +1,10 @@
 /**
  * 
  */
-package atlas.cool.rest.web;
+package atlas.cool.rest.web.json;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,6 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import atlas.cool.rest.impl.CoolRESTImpl;
 import atlas.cool.rest.model.ChannelType;
 import atlas.cool.rest.model.CoolIovSummary;
 import atlas.cool.rest.model.IovType;
@@ -20,6 +24,7 @@ import atlas.cool.rest.model.NodeType;
 import atlas.cool.rest.model.SchemaNodeTagType;
 import atlas.cool.rest.model.SchemaType;
 import atlas.cool.rest.utils.FilteredResponse;
+import atlas.cool.rest.web.ICoolREST;
 
 import org.jboss.resteasy.annotations.GZIP;
 
@@ -49,6 +54,7 @@ import org.jboss.resteasy.annotations.GZIP;
 @Path("/plsqlcooljson")
 @FilteredResponse
 @RequestScoped
+/////@Api(value="/plsqlcooljson")
 public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolREST {
 
 	/*
@@ -69,6 +75,8 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@GZIP
 	@Produces("application/json")
 	@Path("/{schema}/{db}/schemas")
+////	@ApiOperation(value = "Find list of schemas",
+////    notes = "Use incomplete schema name for a global search: ATLAS_COOLOFL_M; the instance name should be complete")
 	public List<SchemaType> listSchemasInDb(
 			@PathParam("schema") final String schema, @PathParam("db") final String db) {
 		return super.listSchemasInDb(schema, db);
@@ -101,10 +109,10 @@ public class CoolResourceRESTJsonService extends CoolRESTImpl implements ICoolRE
 	@Produces("application/json")
 	@Path("/{schema}/{db}/{node:.*}/nodes")
 	@FilteredResponse
-	public List<NodeType> listNodesInSchema(@PathParam("schema") String schema,
+	public List<NodeType> listNodesInSchemaNode(@PathParam("schema") String schema,
 			@PathParam("db") String db, @PathParam("node") String node) {
 		// TODO Auto-generated method stub
-		return super.listNodesInSchema(schema, db, node);
+		return super.listNodesInSchemaNode(schema, db, node);
 	}
 
 	/*

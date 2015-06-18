@@ -73,7 +73,7 @@ public interface ICoolGtagREST {
 	@GET
 	@Produces("text/html")
 	@Path("/{schema}/{db}/{gtag}/{since}/{until}/{timespan}/{type}/summary") 
-	String listIovsSummaryInNodesSchema(
+	String listIovsSummaryInNodesSchemaBetween(
 			@PathParam("schema") String schema, @PathParam("db") String db,
 			@PathParam("gtag") String gtag, @PathParam("since") String since,
 			@PathParam("until") String until, @PathParam("timespan") String timespan,
